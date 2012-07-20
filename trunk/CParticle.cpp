@@ -30,7 +30,7 @@ double CParticle::Get_Mass(){
 }
 
 
-void CParticle::Set_Charge(int in_C){
+void CParticle::Set_Charge(double in_C){
   Charge = in_C;
 }
 
