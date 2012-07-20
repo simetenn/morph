@@ -1,6 +1,6 @@
 CC = mpic++
 #CC = g++
-CFlags = 
+CFlags = -g -Wall
 SOURCES = main.cpp CArray.cpp CMPI.cpp CVector.cpp CParticle.cpp CParticles.cpp #CArray.h
 EXECUTABLE = main
 VPATH = .
@@ -12,8 +12,8 @@ VPATH = .
 all:
 	$(CC) -o $(EXECUTABLE) $(CFLAGS) $(SOURCES)
 
-main.o:
-	$(CC) -o main $(CFLAGS) main.cpp
+main:
+	$(CC) -o $(EXECUTABLE) $(CFLAGS) main.cpp
 
 CArray.o:
 	$(CC) -c $(CFLAGS) CArray.cpp

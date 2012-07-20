@@ -1,6 +1,6 @@
 #include "CArray.h"
 //#include "CVector.h"
-#include "CParticle.h"
+#include "CParticles.h"
 //#include <vector>
 using namespace std;
 
@@ -33,16 +33,17 @@ int main(int argc, char **argv){
   //vector<double> Vector(3,0);
   //cout << Vector.size() << endl;  
 
-  CParticle a,b,c;
-  
-  a.Set_Position(1,1,1);
+  CParticles a;
+  a.Get_data("particle.dat");
+  a.print_Particles();
+  /*a.Set_Position(1,1,1);
   a.Set_Velocity(1,1,1);
   a.Set_Acceleration(1,1,1);
   //a.Set_Mass(1);
   a.print_Particle();
   a.Move(1);
-  a.print_Particle();
-
+  a.print_Particle();*/
+  
 
 
 
