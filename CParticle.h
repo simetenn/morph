@@ -13,7 +13,7 @@ class CParticle : public CVector {
   void Set_Velocity(double Vx, double Vy, double Vz);
   void Set_Acceleration(double Ax, double Ay, double Az);
   void Set_Mass(double in_M);
-  void Set_Charge(int in_C);
+  void Set_Charge(double in_C);
   void Set_data(vector<double> data);
 
   int Get_ID();
@@ -30,8 +30,8 @@ class CParticle : public CVector {
   protected:
   
   CVector P,V,A;
-  double Mass;
-  int Charge,ID;
+  double Mass, Charge;
+  int ID;
   
   static int ID_Generator;
 

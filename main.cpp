@@ -34,7 +34,7 @@ int main(int argc, char **argv){
   //cout << Vector.size() << endl;  
 
   CParticles a;
-  a.Get_data("particle.dat");
+  a.Get_data("particles.dat");
   a.print_Particles();
   /*a.Set_Position(1,1,1);
   a.Set_Velocity(1,1,1);

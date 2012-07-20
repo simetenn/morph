@@ -22,7 +22,7 @@ void CParticles::Get_data(string filename){
     getline(file,line);
     split(strData, line, is_any_of("\t "));
     
-    int length = strData.size()-1;
+    int length = strData.size();
     vector<double> tmpData (length);
     
     
@@ -37,7 +37,7 @@ void CParticles::Get_data(string filename){
     int nr = 1;
     while (file.good()){
       getline(file,line);
-      split(strData, line, is_any_of("\t "));
+      split(strData, line, is_any_of(" "));
       
       for (int i = 0; i < length; i++){
 	tmpData[i] = atof(strData[i].c_str());
@@ -54,6 +54,7 @@ void CParticles::Get_data(string filename){
   else cout << "Unable to open file" << endl; 
   
   nrParticles = Particles.size();
+  
 }
 
 void CParticles::print_Particles(){
