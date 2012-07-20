@@ -3,15 +3,13 @@
 
 using namespace std;
 
-int CParticle::ID_Generator = 1;
+int CParticle::ID_Generator = 0;
 
 
 CParticle::CParticle(){
   CVector P,V,A;
-  //double Mass = 1;// <- Why do this not work?
-  Set_Mass(1);
-  //int Charge = 0;
-  Set_Charge(0);
+  Mass = 1;
+  Charge = 0;
   Generate_ID();
   
 }
@@ -51,6 +49,19 @@ void CParticle::Set_Velocity(double Vx, double Vy, double Vz){
 void CParticle::Set_Acceleration(double Ax, double Ay, double Az){
   A.Set(Ax,Ay,Az);
 }
+
+
+void CParticle::Set_data(vector<double> data){
+  Set_Mass(data[0]);
+  Set_Charge(data[1]);
+  Set_Position(data[2],data[3],data[4]);
+  Set_Velocity(data[5],data[6],data[7]);
+  Set_Acceleration(data[8],data[9],data[10]);
+  
+    
+}
+
+
 
 
 void CParticle::Move(double dt){

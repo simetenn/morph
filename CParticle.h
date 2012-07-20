@@ -14,7 +14,8 @@ class CParticle : public CVector {
   void Set_Acceleration(double Ax, double Ay, double Az);
   void Set_Mass(double in_M);
   void Set_Charge(int in_C);
-  
+  void Set_data(vector<double> data);
+
   int Get_ID();
   double Get_Mass();//experimental, add for all values or remove this
   
