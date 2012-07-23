@@ -34,8 +34,10 @@ int main(int argc, char **argv){
   //cout << Vector.size() << endl;  
 
   CParticles a;
-  a.Get_data("particles.dat");
-  a.print_Particles();
+  a.get_Data ("particles.dat");
+  //a.print_Particles();
+  a.initialize_Halos();
+  a.print_Halos();
   /*a.Set_Position(1,1,1);
   a.Set_Velocity(1,1,1);
   a.Set_Acceleration(1,1,1);

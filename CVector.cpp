@@ -2,47 +2,42 @@
 #include <iostream>
 #include <cmath>
 
-//using std::vector;
 using namespace std;
 
-int CVector::Dimensions = 3;
-
 CVector::CVector(){
-  /*double x = 0;
-  double y = 0;
-  double z = 0;*/
-  //vector<double> Vector (Dimensions);
-  Vector = new double [Dimensions];
+  Dimensions = 3;
+  Vector.resize(Dimensions);
+  //Vector = new double [Dimensions];
   for (int i = 0;i<Dimensions;i++){
     Vector[i] = 0;
   }
 }
 
 CVector::CVector(double in_x, double in_y, double in_z){
-  /*x = in_;x
-  y = in_y;
-  z = in_z*/;
-  //vector<double> Vector (Dimensions);
-  Vector = new double [Dimensions];
+  Dimensions = 3;
+  Vector.resize(Dimensions);
   
   Vector[0] = in_x;
   Vector[1] = in_y;
   Vector[2] = in_z;
-  //cout << Vector.size() << endl;
+}
+
+
+//Untested
+CVector::CVector(vector<double> in_Vector){
+  Vector = in_Vector;
+  Dimensions =  Vector.size();
 }
 
 CVector::CVector(const CVector& in_Vector){
-  /*x = in_Vector.x;
-  y = in_Vector.y;
-  z = in_Vector.z;*/
   Vector = in_Vector.Vector;
 }
 
 
 CVector::~CVector(){
-  if (Vector != NULL){ 
+  /*if (Vector != NULL){ 
     delete[] Vector;
-  }
+    }*/
 }
 
 void CVector::Set(double x,double y,double z){
@@ -68,10 +63,11 @@ void CVector::print(){
 
 
 double& CVector::operator[](int element){
-  if (Vector == NULL){
+  /*if (Vector == NULL){
     throw "Array not initialized";
   }
-  else if (element >= Dimensions || element < -Dimensions) {
+  else*/
+  if (element >= Dimensions || element < -Dimensions) {
     throw "Index out of bounds";
   }  
  else if (element < 0){
@@ -202,3 +198,28 @@ double CVector::Sum() const{
   return sum;
 }
 
+double CVector::x(){
+  return Vector[0];
+}
+
+double CVector::y(){
+  return Vector[1];
+}
+
+double CVector::z(){
+  return Vector[2];
+}
+
+
+double CVector::Quadrant(){
+
+  if (Vector[0] > 0 &&  Vector[1] > 0 && Vector[2] < 0) return 1;      //x+,y+,z-
+  else if (Vector[0] > 0 &&  Vector[1] < 0 && Vector[2] < 0) return 2; //x+,y-,z-
+  else if (Vector[0] > 0 &&  Vector[1] < 0 && Vector[2] > 0) return 3; //x+,y-,z+
+  else if (Vector[0] < 0 &&  Vector[1] > 0 && Vector[2] > 0) return 4; //x-,y+,z+
+  else if (Vector[0] < 0 &&  Vector[1] > 0 && Vector[2] < 0) return 5; //x-,y+,z-
+  else if (Vector[0] < 0 &&  Vector[1] < 0 && Vector[2] < 0) return 6; //x-,y-,z-
+  else if (Vector[0] < 0 &&  Vector[1] < 0 && Vector[2] > 0) return 7; //x-,y-,z+
+  else return 0;                                           //x+,y+,z+
+  //The last else might be dangerous
+}

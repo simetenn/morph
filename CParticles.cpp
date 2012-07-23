@@ -8,15 +8,17 @@ CParticles::CParticles(){
 }
 
 CParticles::~CParticles(){
+  for (int i = 0; i < nrParticles;i++){
+    delete Particles[i];// <- correct?
+  }
 }
 
-void CParticles::Get_data(string filename){
+void CParticles::get_Data(string filename){
   vector<string> strData;
   
   ifstream file(filename.c_str());
   string line;
-  //CParticle* tmpParticle;
-
+  
   if (file.is_open()){
     
     getline(file,line);
@@ -62,3 +64,27 @@ void CParticles::print_Particles(){
     Particles[i]->print_Particle();
   }
 }
+
+
+void CParticles::initialize_Halos(){
+  nrHalos = 8;
+  Halos.resize(nrHalos);
+  for (int i = 0; i < nrParticles;i++){
+    Halos[(Particles[i]->get_P()).Quadrant()].push_back(Particles[i]);
+  }
+    
+
+}
+
+void CParticles::print_Halos(){
+  for (int i = 0;i < nrHalos; i++){
+    cout << "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^" << endl;
+    cout << "Halo nr: " << i << endl;
+    cout << "nr of particles in halo: " << Halos[i].size() << endl;
+    cout << "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^" << endl;
+    for (int j = 0;j < Halos[i].size();j++){
+      Halos[i][j]->print_Particle();
+    }
+  }
+}
+

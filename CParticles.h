@@ -12,12 +12,15 @@ class CParticles : public CParticle {
   CParticles();
   ~CParticles();
   
-  void Get_data(string filename);
+  void get_Data(string filename);
   void print_Particles();
-
+  void print_Halos();
+  void initialize_Halos();
+  
  protected:
   vector<CParticle*> Particles;
-  int nrParticles;
+  vector<vector<CParticle*> > Halos;
+  int nrParticles,nrHalos ;
   
 
 };
