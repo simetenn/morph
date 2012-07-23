@@ -25,7 +25,7 @@ void CParticle::Set_Mass(double in_M){
 }
 
 
-double CParticle::Get_Mass(){
+double CParticle::get_Mass(){
   return Mass;
 }
 
@@ -61,6 +61,19 @@ void CParticle::Set_data(vector<double> data){
     
 }
 
+CVector& CParticle::get_P(){
+  return P;
+}
+
+CVector& CParticle::get_V(){
+  return V;
+}
+
+CVector& CParticle::get_A(){
+  return A;
+}
+
+
 
 
 
@@ -87,7 +100,7 @@ void CParticle::Generate_ID(){
 }
 
 
-int CParticle::Get_ID(){
+int CParticle::get_ID(){
   return ID;
 }
 
@@ -105,3 +118,4 @@ void CParticle::print_Particle(){
   A.print();
   cout << "------------------------------------" << endl;
 }
+

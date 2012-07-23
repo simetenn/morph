@@ -16,8 +16,11 @@ class CParticle : public CVector {
   void Set_Charge(double in_C);
   void Set_data(vector<double> data);
 
-  int Get_ID();
-  double Get_Mass();//experimental, add for all values or remove this
+  int get_ID();
+  double get_Mass();
+  CVector& get_P();
+  CVector& get_V();
+  CVector& get_A();
   
   double Ekin();
   CVector Momentum();
@@ -26,7 +29,7 @@ class CParticle : public CVector {
   
   void print_Particle();
   
-
+  
   protected:
   
   CVector P,V,A;

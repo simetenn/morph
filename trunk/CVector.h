@@ -6,6 +6,7 @@ class CVector{
 
   CVector();
   CVector(double in_x, double in_y, double in_z);
+  CVector(vector<double> in_Vector);
   CVector(const CVector& in_Vector);
 
   ~CVector();
@@ -32,13 +33,19 @@ class CVector{
   double Dot(const CVector& other) const;
   
   double Sum() const;
-
+  
   void Set(double x,double y,double z);
+
+  double x();
+  double y();
+  double z();
+    
+  double Quadrant();
 
  protected:
   //double x,y,z;
-  //vector<double> Vector;
-  double* Vector;
-  static int Dimensions; 
+  vector<double> Vector;
+  //double* Vector;
+  int Dimensions; 
 
 };
