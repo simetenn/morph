@@ -1,6 +1,6 @@
 from numpy import random
 
-nrParticle = 1000
+nrParticle = 20
 nrData = 10
 data = random.uniform(-1,1,nrParticle*nrData)
 data.resize(nrParticle,nrData)

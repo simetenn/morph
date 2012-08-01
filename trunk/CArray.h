@@ -11,14 +11,23 @@ class CArray : public CMPI {
   
   void linspace(double start, double end, int in_length);
   void print();
-  double sum_MPI(int argc,char **argv);
+  //double sum_MPI(int argc,char **argv);
   double sum();
-  double len(); 
+  int len(); 
   double get(int element);
   double& operator[](int element);
   CArray operator+(double number);
+  CArray* operator+(CArray* inArray);
   //CArray& operator=(const CArray &other);
-  void split_array();
+  
+  void send(int in_processor);
+  void recieve(int in_processor);
+
+  void send_slave();
+  void recieve_slave();
+  
+
+
   CArray* gather_sum();
   
  protected:

@@ -4,15 +4,34 @@
 using namespace std;
 
 int CParticle::ID_Generator = 0;
-
+int CParticle::ParticleSize = 11;
 
 CParticle::CParticle(){
   CVector P,V,A;
   Mass = 1;
   Charge = 0;
   Generate_ID();
-  
 }
+CParticle::CParticle(double* in_array){
+  //Some way to test if length of the array is 11
+  //try {
+  CVector P (in_array[2],in_array[3],in_array[4]);
+  CVector V (in_array[5],in_array[6],in_array[7]);
+  CVector A (in_array[8],in_array[9],in_array[10]);
+  Mass = in_array[0];
+  Charge = in_array[1];
+  /*}
+  catch {
+    CVector P,V,A;
+    Mass = 1;
+    Charge = 0;
+    Generate_ID()
+    }*/
+  
+  Generate_ID();
+}
+
+
 
 CParticle::~CParticle(){
 }
@@ -51,7 +70,7 @@ void CParticle::Set_Acceleration(double Ax, double Ay, double Az){
 }
 
 
-void CParticle::Set_data(vector<double> data){
+void CParticle::Set_Data(vector<double> data){
   Set_Mass(data[0]);
   Set_Charge(data[1]);
   Set_Position(data[2],data[3],data[4]);
@@ -61,6 +80,8 @@ void CParticle::Set_data(vector<double> data){
     
 }
 
+
+//Make these constant in some way or another
 CVector& CParticle::get_P(){
   return P;
 }
@@ -119,3 +140,16 @@ void CParticle::print_Particle(){
   cout << "------------------------------------" << endl;
 }
 
+
+double* CParticle::Particle2Array(){
+  double * tmpArray = new double [ParticleSize]; //<- Memory leak
+  tmpArray[0] = Mass;
+  tmpArray[1] = Charge;
+  
+  for (int i = 0;i<Dimensions;i++){
+    tmpArray[i+2] = P[i];
+    tmpArray[i+5] = V[i];
+    tmpArray[i+8] = A[i];
+  }
+  return tmpArray;
+}

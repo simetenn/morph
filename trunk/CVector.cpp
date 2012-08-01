@@ -64,11 +64,11 @@ void CVector::print(){
 
 double& CVector::operator[](int element){
   /*if (Vector == NULL){
-    throw "Array not initialized";
+    throw "tArray not initialized";
   }
   else*/
-  if (element >= Dimensions || element < -Dimensions) {
-    throw "Index out of bounds";
+  if (element >= Dimensions || element < -Dimensions) { 
+   throw "Index out of bounds";
   }  
  else if (element < 0){
     return Vector[Dimensions+element];
