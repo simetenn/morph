@@ -65,7 +65,7 @@ void CMPI::send_array_master(double* master_send_array, int processor, int lengt
 double* CMPI::receive_array_master(int processor, int& master_length){
   MPI_Status Stat;
   MPI_Recv(&master_length,1,MPI_INT,processor,processor+2*size,MPI_COMM_WORLD, &Stat);
-  double* master_receive_array = new double [master_length]; 
+  double* master_receive_array = new double [master_length]; //<- Memory leak
   MPI_Irecv(master_receive_array,master_length,MPI_DOUBLE,processor,processor+3*size,MPI_COMM_WORLD, &Req_receive[processor-1]);
   
   return master_receive_array;
@@ -100,16 +100,14 @@ double* CMPI::receive_array_slave(int& slave_length){
   return slave_receive_array;
 }
 
-
+//Specialized
 void CMPI::send_array_master_all(double* master_send_array, int length){
-  //Add posibilities for all numbers of processors
+  
   int average_array_length = length/(size-1);
   int reminder = length % (size-1);
   int sub_array_length = average_array_length;
   int array_start_index = 0;
-  //cout << "new output" << endl;
-  //cout << sub_array_length << endl;
-  //cout << reminder << endl;
+
   for (int p=1; p < size; p++){
     if (p < reminder+1){
       sub_array_length = average_array_length+1;

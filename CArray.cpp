@@ -13,8 +13,9 @@ CArray::CArray(){
 
 CArray::CArray(int in_length){
   length = in_length;
+  //cout << "__________________________________" << endl; 
   array = new double [length];
-  }
+}
 
 
 CArray::CArray(int in_length, double* in_array){
@@ -69,7 +70,7 @@ void CArray::print(){
 
 
 
-double CArray::sum_MPI(int argc,char **argv){
+/*double CArray::sum_MPI(int argc,char **argv){
   CMPI::initialize_CMPI(argc,argv);
   //Master node
   
@@ -96,7 +97,7 @@ double CArray::sum_MPI(int argc,char **argv){
   }
 
 
-}
+  }*/
 
 double CArray::sum(){
   double sum = 0;
@@ -107,12 +108,27 @@ double CArray::sum(){
 }
 
 
-double CArray::len(){
+int CArray::len(){
   return length;
 }
 
 
 double& CArray::operator[](int element){
+  if (array == NULL){
+    throw "Array not initialized";
+  }
+  else if (element >= length || element < -length) {
+    throw "Index out of bounds";
+  } 
+  else if (element < 0){
+    return array[length+element];
+  }
+  else {
+    return array[element];
+  }
+}
+
+double CArray::get(int element){
   if (array == NULL){
     throw "Array not initialized";
   }
@@ -136,6 +152,17 @@ CArray CArray::operator+(double number){
   return tmp;
 }
 
+CArray* CArray::operator+(CArray* inArray){
+  double tmp[length+inArray->length];
+  for (int i =0; i< length;i++) {
+    tmp[i] = array[i];
+  }
+  for (int j =0; j< length;j++) {
+    tmp[length + j] = inArray->get(j);
+  }
+  return new CArray(length+inArray->length,tmp);
+}
+
 
 /*CArray& CArray::operator=(const CArray &other){
   length = other.length;
@@ -149,12 +176,35 @@ CArray CArray::operator+(double number){
   }*/
 
 
-void CArray::split_array(){
-  CMPI::send_array_master_all(array, length);
+
+void CArray::send(int in_processor){
+  CMPI::send_array_master(array, in_processor,length);
+}
+
+void CArray::recieve(int in_processor){
+  //int master_length;
+  array = CMPI::receive_array_master(in_processor, length);
+  //return new CArray(master_length, resArray);
+}
+
+
+void CArray::send_slave(){
+  CMPI::send_array_slave(array, length);
+}
+
+
+void CArray::recieve_slave(){
+  array = CMPI::receive_array_slave(length);
+  //return new CArray(slave_length,resArray);
 }
 
 
 
+
+
+
+
+//specialized
 CArray* CArray::gather_sum(){
   int result_length;
   double **results = CMPI::receive_array_master_all(result_length);

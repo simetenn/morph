@@ -23,9 +23,11 @@ class CMPI {
   //void receive_array_slave(double* slave_receive_array, int slave_length);
   double* receive_array_slave(int& slave_length);
 
+  int size, rank;
+
  protected:
   
-  int size, rank;
+  
   MPI_Request* Req_receive;
   int argc; 
   char **argv;
