@@ -8,7 +8,7 @@
 using namespace boost;
 
 
-class CParticles : public CParticle, public CArray{
+class CParticles : public CParticle{
  public:
   CParticles();
   CParticles(CArray* inArray);

@@ -8,6 +8,7 @@ using namespace std;
 CArray::CArray(){
   length = 0;
   array = NULL;
+  CMPI();
 }
 
 
@@ -15,19 +16,22 @@ CArray::CArray(int in_length){
   length = in_length;
   //cout << "__________________________________" << endl; 
   array = new double [length];
+  CMPI();
 }
 
 
 CArray::CArray(int in_length, double* in_array){
   length = in_length;
   array = in_array;
-  }
+  CMPI();
+}
 
 //Destrutor
 CArray::~CArray(){
   if (array != NULL){
     delete[] array;
   }
+  //~CMPI(); <-why not working?
 }
 
 
@@ -181,21 +185,27 @@ void CArray::send(int in_processor){
   CMPI::send_array_master(array, in_processor,length);
 }
 
-void CArray::recieve(int in_processor){
+void CArray::recieve(int in_processor, MPI_Request* Req){
   //int master_length;
-  array = CMPI::receive_array_master(in_processor, length);
+  array = CMPI::receive_array_master(in_processor, length, Req);
   //return new CArray(master_length, resArray);
 }
 
+/*void CArry:a:recieve(int in_processor){
+  //int master_length;
+  array = CMPI::receive_array_master(in_processor, length, Req);
+  //return new CArray(master_length, resArray);
+  }*/
 
 void CArray::send_slave(){
   CMPI::send_array_slave(array, length);
 }
 
 
+
 void CArray::recieve_slave(){
   array = CMPI::receive_array_slave(length);
-  //return new CArray(slave_length,resArray);
+  //return new CArray(slave_length,resArray);}
 }
 
 
@@ -207,6 +217,7 @@ void CArray::recieve_slave(){
 //specialized
 CArray* CArray::gather_sum(){
   int result_length;
+  int size = getSize();
   double **results = CMPI::receive_array_master_all(result_length);
   double* resArray = new double [size-1]; // <-- Memory leak
   
