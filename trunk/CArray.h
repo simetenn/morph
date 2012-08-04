@@ -21,7 +21,7 @@ class CArray : public CMPI {
   //CArray& operator=(const CArray &other);
   
   void send(int in_processor);
-  void recieve(int in_processor);
+  void recieve(int in_processor,MPI_Request* Req);
 
   void send_slave();
   void recieve_slave();

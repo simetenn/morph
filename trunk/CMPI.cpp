@@ -2,6 +2,14 @@
 #include <iostream>
 using namespace std;
 
+CMPI::CMPI(){
+  MPI_Comm_size(MPI_COMM_WORLD, &size);
+  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+  
+  //MPI_Request* Req_receive = new MPI_Request [size-1];
+  //Stat_receive = new MPI_Status [size-1];
+}
+
 CMPI::CMPI(int argc, char **argv){
   
   MPI_Init(&argc, &argv);
@@ -9,7 +17,7 @@ CMPI::CMPI(int argc, char **argv){
   MPI_Comm_size(MPI_COMM_WORLD, &size);
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
-  Req_receive = new MPI_Request [size-1];
+  //MPI_Request* Req_receive = new MPI_Request [size-1];
   //Stat_receive = new MPI_Status [size-1];
 }
 
@@ -20,16 +28,16 @@ void CMPI::initialize_CMPI(int argc, char **argv){
   MPI_Comm_size(MPI_COMM_WORLD, &size);
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
-  Req_receive = new MPI_Request [size-1];
+  //MPI_Request* Req_receive = new MPI_Request [size-1];
   //Stat_receive = new MPI_Status [size-1];
 }
 
 CMPI::~CMPI(){
-  MPI_Finalize();
+  //MPI_Finalize();
   
-  if (Req_receive != NULL){ 
-    delete[] Req_receive;
-  }
+  //if (Req_receive != NULL){ 
+  //delete[] Req_receive;
+  //}
   
   /*if (results != NULL){
     for (int p=0; p < size; p++){
@@ -56,17 +64,17 @@ void CMPI::CMPI(&argc, &argv){
 void CMPI::send_array_master(double* master_send_array, int processor, int length){
   MPI_Request Req[2];
   //send the length
-    MPI_Isend(&length,1,MPI_INT,processor,processor,MPI_COMM_WORLD, &Req[0]);
+  MPI_Isend(&length,1,MPI_INT,processor,processor,MPI_COMM_WORLD, &Req[0]);
   //send the array
-    MPI_Isend(master_send_array,length,MPI_DOUBLE,processor,processor+size,MPI_COMM_WORLD, &Req[1]);
+  MPI_Isend(master_send_array,length,MPI_DOUBLE,processor,processor+size,MPI_COMM_WORLD, &Req[1]);
 }
 
 //This is probably wrong, compare with receive_array_master_all
-double* CMPI::receive_array_master(int processor, int& master_length){
+double* CMPI::receive_array_master(int processor, int& master_length, MPI_Request* Req){
   MPI_Status Stat;
   MPI_Recv(&master_length,1,MPI_INT,processor,processor+2*size,MPI_COMM_WORLD, &Stat);
   double* master_receive_array = new double [master_length]; //<- Memory leak
-  MPI_Irecv(master_receive_array,master_length,MPI_DOUBLE,processor,processor+3*size,MPI_COMM_WORLD, &Req_receive[processor-1]);
+  MPI_Irecv(master_receive_array,master_length,MPI_DOUBLE,processor,processor+3*size,MPI_COMM_WORLD, Req);
   
   return master_receive_array;
 }
@@ -93,10 +101,10 @@ void CMPI::send_array_slave(double* slave_send_array, int length){
 
 double* CMPI::receive_array_slave(int& slave_length){
   MPI_Status Stat;
+
   MPI_Recv(&slave_length,1,MPI_INT,0,rank,MPI_COMM_WORLD,&Stat);
   double* slave_receive_array = new double [slave_length]; 
   MPI_Recv(slave_receive_array,slave_length,MPI_DOUBLE,0,rank+size,MPI_COMM_WORLD,&Stat);
-    
   return slave_receive_array;
 }
 
@@ -160,4 +168,58 @@ double** CMPI::receive_array_master_all(int& slave_length){
   
   return result;
 
+}
+
+int CMPI::WaitOne(MPI_Request* Req){
+  int processor;
+  MPI_Status Stat [size-1];
+  MPI_Waitany(size-1,Req,&processor, Stat);
+  return processor;
+}
+
+void CMPI::WaitAll(MPI_Request* Req){
+  MPI_Status Stat [size-1];
+  MPI_Waitall(size-1,Req,Stat);
+}
+
+int CMPI::getRank(){
+  return rank;
+}
+int CMPI::getSize(){
+  return size;
+}
+
+int CMPI::listener(MPI_Request* Req){
+  MPI_Status Stat;
+  int flag, p;
+  
+  while (true) {
+    for (p = 0;p<size-1;p++){
+      MPI_Test(&Req[p],&flag,&Stat);
+      if (flag == 1) return p+1;
+    }
+  }
+}
+
+void CMPI::isEnd(){
+  int flag;
+  MPI_Irecv(&flag,1,MPI_INT,0,rank+10*size,MPI_COMM_WORLD, endReq);
+}
+
+int CMPI::testEnd(){  
+  MPI_Status Stat;
+  int flag;
+  MPI_Test(endReq,&flag,&Stat);
+  return flag;
+}
+
+
+
+void CMPI::End(){
+  MPI_Request Req[1];
+  int flag = 1;
+  
+  for (int p = 1;p<size;p++){
+    MPI_Isend(&flag,1,MPI_INT,p,p+10*size,MPI_COMM_WORLD, Req);
+  }
 }
