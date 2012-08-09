@@ -2,6 +2,8 @@
 #include <iostream>
 using namespace std;
 
+
+
 CMPI::CMPI(){
   MPI_Comm_size(MPI_COMM_WORLD, &size);
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
@@ -9,6 +11,8 @@ CMPI::CMPI(){
   //MPI_Request* Req_receive = new MPI_Request [size-1];
   //Stat_receive = new MPI_Status [size-1];
 }
+
+
 
 CMPI::CMPI(int argc, char **argv){
   
@@ -21,6 +25,8 @@ CMPI::CMPI(int argc, char **argv){
   //Stat_receive = new MPI_Status [size-1];
 }
 
+
+
 void CMPI::initialize_CMPI(int argc, char **argv){
   
   MPI_Init(&argc, &argv);
@@ -32,7 +38,10 @@ void CMPI::initialize_CMPI(int argc, char **argv){
   //Stat_receive = new MPI_Status [size-1];
 }
 
+
+
 CMPI::~CMPI(){
+
   //MPI_Finalize();
   
   //if (Req_receive != NULL){ 
@@ -46,17 +55,8 @@ CMPI::~CMPI(){
     delete[] results;
     }*/
   //delete[] Stat_receive;
+
 }
-/*
-void CMPI::CMPI(&argc, &argv){
-
-  MPI_Init(&argc, &argv);
-  MPI_Comm_size(MPI_COMM_WORLD, &size);
-  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-
-  }*/
-
-
 
 
 
@@ -69,7 +69,9 @@ void CMPI::send_array_master(double* master_send_array, int processor, int lengt
   MPI_Isend(master_send_array,length,MPI_DOUBLE,processor,processor+size,MPI_COMM_WORLD, &Req[1]);
 }
 
-//This is probably wrong, compare with receive_array_master_all
+
+
+//Recieve an array in the Master processor from the slave node
 double* CMPI::receive_array_master(int processor, int& master_length, MPI_Request* Req){
   MPI_Status Stat;
   MPI_Recv(&master_length,1,MPI_INT,processor,processor+2*size,MPI_COMM_WORLD, &Stat);
@@ -79,11 +81,13 @@ double* CMPI::receive_array_master(int processor, int& master_length, MPI_Reques
   return master_receive_array;
 }
 
-
+//Send an array to the Master processor from the slave processor
 void CMPI::send_array_slave(double* slave_send_array, int length){
   MPI_Send(&length,1,MPI_INT,0,rank+2*size,MPI_COMM_WORLD);
   MPI_Send(slave_send_array,length,MPI_DOUBLE,0,rank+3*size,MPI_COMM_WORLD);
 }
+
+
 
 
 /*void CMPI::receive_array_slave(double* slave_receive_array, int slave_length){
@@ -99,6 +103,10 @@ void CMPI::send_array_slave(double* slave_send_array, int length){
   cout << slave_receive_array[9] <<endl;
   }*/
 
+
+
+
+//Recieve an array in the Slave process from the Master process
 double* CMPI::receive_array_slave(int& slave_length){
   MPI_Status Stat;
 
@@ -108,7 +116,9 @@ double* CMPI::receive_array_slave(int& slave_length){
   return slave_receive_array;
 }
 
-//Specialized
+
+
+//Specialized, not used in CArray.
 void CMPI::send_array_master_all(double* master_send_array, int length){
   
   int average_array_length = length/(size-1);
@@ -130,6 +140,8 @@ void CMPI::send_array_master_all(double* master_send_array, int length){
     
 }
 
+
+
 /*void CMPI::receive_array_master_all(double** results, int length){
   
   MPI_Status Stat[size-1];
@@ -146,6 +158,8 @@ void CMPI::send_array_master_all(double* master_send_array, int length){
 }*/
 
 
+
+//Master process recieve from all slave processes
 double** CMPI::receive_array_master_all(int& slave_length){
   
   MPI_Status Stat[size-1];
@@ -170,6 +184,8 @@ double** CMPI::receive_array_master_all(int& slave_length){
 
 }
 
+
+//Wait for one processor to finish
 int CMPI::WaitOne(MPI_Request* Req){
   int processor;
   MPI_Status Stat [size-1];
@@ -177,35 +193,53 @@ int CMPI::WaitOne(MPI_Request* Req){
   return processor;
 }
 
+
+
+//Wait for all processors to finish 
 void CMPI::WaitAll(MPI_Request* Req){
   MPI_Status Stat [size-1];
   MPI_Waitall(size-1,Req,Stat);
 }
 
+
+
+
 int CMPI::getRank(){
   return rank;
 }
+
+
+
 int CMPI::getSize(){
   return size;
 }
 
+
+
+//Test which slave processor finishes first and return processor nr
 int CMPI::listener(MPI_Request* Req){
   MPI_Status Stat;
   int flag, p;
   
   while (true) {
-    for (p = 0;p<size-1;p++){
-      MPI_Test(&Req[p],&flag,&Stat);
-      if (flag == 1) return p+1;
+    for (p = 1;p<size;p++){
+      MPI_Test(&Req[p-1],&flag,&Stat);
+      if (flag == 1) return p;
     }
   }
 }
 
+
+
+//Start to listen for end signal in slave process
 void CMPI::isEnd(){
   int flag;
   MPI_Irecv(&flag,1,MPI_INT,0,rank+10*size,MPI_COMM_WORLD, endReq);
 }
 
+
+
+//Test if end signal is sent
 int CMPI::testEnd(){  
   MPI_Status Stat;
   int flag;
@@ -215,6 +249,7 @@ int CMPI::testEnd(){
 
 
 
+//Send end signal from Master process to all slave processes
 void CMPI::End(){
   MPI_Request Req[1];
   int flag = 1;

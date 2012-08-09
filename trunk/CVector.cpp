@@ -4,6 +4,8 @@
 
 using namespace std;
 
+
+
 CVector::CVector(){
   Dimensions = 3;
   Vector.resize(Dimensions);
@@ -12,6 +14,8 @@ CVector::CVector(){
     Vector[i] = 0;
   }
 }
+
+
 
 CVector::CVector(double in_x, double in_y, double in_z){
   Dimensions = 3;
@@ -29,9 +33,12 @@ CVector::CVector(vector<double> in_Vector){
   Dimensions =  Vector.size();
 }
 
+
+
 CVector::CVector(const CVector& in_Vector){
   Vector = in_Vector.Vector;
 }
+
 
 
 CVector::~CVector(){
@@ -39,6 +46,8 @@ CVector::~CVector(){
     delete[] Vector;
     }*/
 }
+
+
 
 void CVector::Set(double x,double y,double z){
   Vector[0] = x;
@@ -62,6 +71,7 @@ void CVector::print(){
 }
 
 
+
 double& CVector::operator[](int element){
   /*if (Vector == NULL){
     throw "tArray not initialized";
@@ -78,6 +88,8 @@ double& CVector::operator[](int element){
   }
 }
 
+
+
 CVector CVector::operator+(const CVector& other) const{
   CVector resVector;
   for (int i =0; i< Dimensions;i++) {
@@ -87,6 +99,8 @@ CVector CVector::operator+(const CVector& other) const{
   //return CVector (x + other.x, y + other.y,z + other.z); 
 }
 
+
+
 /*CVector operator+(int number){
   CVector resVector;
   for (int i =0; i< Dimensions;i++) {
@@ -94,6 +108,8 @@ CVector CVector::operator+(const CVector& other) const{
    }
   return resVector;
   }*/
+
+
 
 CVector CVector::Add(double number) const{
   CVector resVector;
@@ -104,6 +120,7 @@ CVector CVector::Add(double number) const{
   }
 
 
+
 CVector CVector::operator-(const CVector& other) const {
   CVector resVector;
   for (int i =0; i< Dimensions;i++) {
@@ -112,6 +129,8 @@ CVector CVector::operator-(const CVector& other) const {
   return resVector;
   //return CVector (x - other.x, y - other.y,z - other.z); 
 }
+
+
 
 CVector CVector::Subtract(double number) const{
   CVector resVector;
@@ -190,6 +209,7 @@ double CVector::Dot(const CVector& other) const{
 }
 
 
+
 double CVector::Sum() const{
   double sum = 0;
   for (int i =0; i< Dimensions;i++) {
@@ -198,13 +218,16 @@ double CVector::Sum() const{
   return sum;
 }
 
+
 double CVector::x(){
   return Vector[0];
 }
 
+
 double CVector::y(){
   return Vector[1];
 }
+
 
 double CVector::z(){
   return Vector[2];
@@ -213,13 +236,13 @@ double CVector::z(){
 
 double CVector::Quadrant(){
 
-  if (Vector[0] > 0 &&  Vector[1] > 0 && Vector[2] < 0) return 1;      //x+,y+,z-
-  else if (Vector[0] > 0 &&  Vector[1] < 0 && Vector[2] < 0) return 2; //x+,y-,z-
-  else if (Vector[0] > 0 &&  Vector[1] < 0 && Vector[2] > 0) return 3; //x+,y-,z+
-  else if (Vector[0] < 0 &&  Vector[1] > 0 && Vector[2] > 0) return 4; //x-,y+,z+
-  else if (Vector[0] < 0 &&  Vector[1] > 0 && Vector[2] < 0) return 5; //x-,y+,z-
-  else if (Vector[0] < 0 &&  Vector[1] < 0 && Vector[2] < 0) return 6; //x-,y-,z-
-  else if (Vector[0] < 0 &&  Vector[1] < 0 && Vector[2] > 0) return 7; //x-,y-,z+
-  else return 0;                                           //x+,y+,z+
+  if (Vector[0] > 0 &&  Vector[1] > 0 && Vector[2] < 0) return 1;       //x+,y+,z-
+  else if (Vector[0] > 0 &&  Vector[1] < 0 && Vector[2] < 0) return 2;  //x+,y-,z-
+  else if (Vector[0] > 0 &&  Vector[1] < 0 && Vector[2] > 0) return 3;  //x+,y-,z+
+  else if (Vector[0] < 0 &&  Vector[1] > 0 && Vector[2] > 0) return 4;  //x-,y+,z+
+  else if (Vector[0] < 0 &&  Vector[1] > 0 && Vector[2] < 0) return 5;  //x-,y+,z-
+  else if (Vector[0] < 0 &&  Vector[1] < 0 && Vector[2] < 0) return 6;  //x-,y-,z-
+  else if (Vector[0] < 0 &&  Vector[1] < 0 && Vector[2] > 0) return 7;  //x-,y-,z+
+  else return 0;                                                        //x+,y+,z+
   //The last else might be dangerous
 }

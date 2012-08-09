@@ -4,6 +4,7 @@
 
 using namespace std;
 
+
 //Default constructor
 CArray::CArray(){
   length = 0;
@@ -12,12 +13,13 @@ CArray::CArray(){
 }
 
 
+
 CArray::CArray(int in_length){
   length = in_length;
-  //cout << "__________________________________" << endl; 
-  array = new double [length];
+  array = new double [length]; //<- memory leak
   CMPI();
 }
+
 
 
 CArray::CArray(int in_length, double* in_array){
@@ -25,6 +27,8 @@ CArray::CArray(int in_length, double* in_array){
   array = in_array;
   CMPI();
 }
+
+
 
 //Destrutor
 CArray::~CArray(){
@@ -57,12 +61,13 @@ void CArray::linspace(double start, double end, int in_length){
   if (array != NULL){
     delete[] array;
   }
-  array = new double [length];
+  array = new double [length]; //<- memory leak
   double step = (end-start)/(length-1);
   for (int i = 0; i < length; i++) {
       array[i] = start + i*step;
   }
 }
+
 
 
 void CArray::print(){
@@ -103,6 +108,8 @@ void CArray::print(){
 
   }*/
 
+
+
 double CArray::sum(){
   double sum = 0;
   for (int i =0; i< length;i++) {
@@ -112,9 +119,11 @@ double CArray::sum(){
 }
 
 
+
 int CArray::len(){
   return length;
 }
+
 
 
 double& CArray::operator[](int element){
@@ -132,6 +141,8 @@ double& CArray::operator[](int element){
   }
 }
 
+
+
 double CArray::get(int element){
   if (array == NULL){
     throw "Array not initialized";
@@ -148,6 +159,7 @@ double CArray::get(int element){
 }
 
 
+
 CArray CArray::operator+(double number){
   CArray tmp (length);
   for (int i =0; i< length;i++) {
@@ -155,6 +167,8 @@ CArray CArray::operator+(double number){
   }
   return tmp;
 }
+
+
 
 CArray* CArray::operator+(CArray* inArray){
   double tmp[length+inArray->length];
@@ -164,8 +178,9 @@ CArray* CArray::operator+(CArray* inArray){
   for (int j =0; j< length;j++) {
     tmp[length + j] = inArray->get(j);
   }
-  return new CArray(length+inArray->length,tmp);
+  return new CArray(length+inArray->length,tmp); //<- memory leak
 }
+
 
 
 /*CArray& CArray::operator=(const CArray &other){
@@ -185,17 +200,23 @@ void CArray::send(int in_processor){
   CMPI::send_array_master(array, in_processor,length);
 }
 
+
+
 void CArray::recieve(int in_processor, MPI_Request* Req){
   //int master_length;
   array = CMPI::receive_array_master(in_processor, length, Req);
-  //return new CArray(master_length, resArray);
+  //return new ACrray(master_length, resArray);
 }
 
-/*void CArry:a:recieve(int in_processor){
+
+
+/*void CArray::recieve(int in_processor){
   //int master_length;
   array = CMPI::receive_array_master(in_processor, length, Req);
   //return new CArray(master_length, resArray);
   }*/
+
+
 
 void CArray::send_slave(){
   CMPI::send_array_slave(array, length);
@@ -226,7 +247,7 @@ CArray* CArray::gather_sum(){
   }
   
 
-  CArray* sumArray = new CArray(size-1, resArray);
+  CArray* sumArray = new CArray(size-1, resArray);//<- memory leak
   return sumArray;
   //delete[] resArray;  
 }
