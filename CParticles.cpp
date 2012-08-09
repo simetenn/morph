@@ -233,17 +233,12 @@ void CParticles::master(){
     count++;
   }
   
-  while (count <= (nrHalos-size+1)) {
-    
+  cout << "------------"<< endl;
+  
+  while (count < nrHalos) {
     cout << count << endl;
     processor = MPI.listener(Req);
     cout << processor << endl;
-    //MPI_Status Stat [size-1];
-    //MPI_Waitany(size-1,Req,&processor, Stat);
-    //MPI_Request* Req = new MPI_Request [size-1];
-    //MPI_Status* Stat = new MPI_Status [size-1];
-    //MPI_Waitany(size-1,Req,&processor,Stat);
-    //Particles2Array(Halos[count])->send(processor)
     finalHalos.addHalos(Array[processor]);
     Array[processor-1] = Halo2Array(Halos[count]);
     Array[processor-1]->send(processor);
@@ -252,8 +247,9 @@ void CParticles::master(){
     //MPI_Request Req [size-1];
     
   }
-  MPI.WaitAll(Req);
+  if (size != MPI.getRank()) MPI.WaitAll(Req);
   MPI.End();
+  cout <<"end of master" << endl;
 }
 
 
@@ -273,21 +269,25 @@ void CParticles::slave(){
   //  CArray tmpArray;
   //CArray* HalosArray = &tmpArray;
   CArray HalosArray;
-  CArray test;
   CMPI MPI;
   //cout << "size "<< size << endl;
   //cout << "rank "<<rank<<endl;
   //for (int i = 0;i<8;i++) {
   MPI.isEnd();
+  //int test = 0;
   while (true) {
-    if (MPI.testEnd() == 1) break;
+  //for (int i = 0;i<nrHalos;i++){  
+    //cout << test << endl;
+    //cout << MPI.testEnd() << endl;
+    //if (MPI.testEnd() == 1) break;
     HalosArray.recieve_slave();
     CParticles slaveParticles (&HalosArray);
     //slaveParticles.DoSomething();
     slaveParticles.Halos2Array()->send_slave();
     //resArray->send_slave();
-    
+    //test++;
   }
+  cout << "finished loop" << endl;
 }
 
 

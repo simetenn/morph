@@ -27,13 +27,21 @@ int main(int argc, char **argv){
     a.initialize_Halos();
     //a.print_Halos();
     a.master();
+    cout << "master" << endl;
+    MPI_Barrier(MPI_COMM_WORLD);
+    cout << "master" << endl;
     MPI_Finalize();
-    }
+  }
       
   
   else {
     CParticles b;
     b.slave();
+    cout << "same slave"<< endl;
+    MPI_Barrier(MPI_COMM_WORLD);
+    cout << "same slave"<< endl;
+    MPI_Finalize();
   }
+  //MPI_Finalize();
 
 }

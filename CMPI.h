@@ -6,11 +6,7 @@
 class CMPI {
  
  private:
-  //int m_argc;
-  //char **m_argv;
-
   
-
  public:
   CMPI();
   CMPI(int argc, char **argv);
@@ -30,25 +26,25 @@ class CMPI {
   double* receive_array_slave(int& slave_length);
   int WaitOne(MPI_Request* Req);
   void WaitAll(MPI_Request* Req);
+  
+  //Test which slave processor finishes first and return processor nr
   int listener(MPI_Request* Req);
   
   int getRank();
   int getSize();
   
+  //Start to listen for end signal in slave process
   void isEnd();
+  //Send end signal from Master process to all slave processes
   void End();
+  //Test if end signal is sent
   int testEnd();
   
  protected:
   
   int size, rank;
-  //int rank;
-  MPI_Request endReq [1];
-  //MPI_Status* Stat_receive;
+  MPI_Request* endReq;
   int argc; 
   char **argv;
   
-  
-  //MPI_Status* Stat_receive;
- 
 };
