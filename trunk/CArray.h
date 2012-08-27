@@ -25,7 +25,7 @@ class CArray : public CMPI {
 
   void send_slave();
   void recieve_slave();
-  
+  void initialize();
 
 
   CArray* gather_sum();

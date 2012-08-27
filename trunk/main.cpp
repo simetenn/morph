@@ -26,6 +26,7 @@ int main(int argc, char **argv){
     //a.print_Particles();
     a.initialize_Halos();
     //a.print_Halos();
+    cout << "tralala" << endl;
     a.master();
     cout << "master" << endl;
     MPI_Barrier(MPI_COMM_WORLD);

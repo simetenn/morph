@@ -38,7 +38,7 @@ CParticles::CParticles(CArray* inArray){
       
       
       //takes up extra 
-      Particles.push_back(new CParticle); //Slow way to do this??
+      Particles.push_back(new CParticle); //Slow way to do this?? //<- memory leak?
       Particles[particle_count]->Set_Data(tmpArray);
       //Halos[i].push_back(Particles[particle_count]);
       //tmpParticles.push_back(new CParticle); //Slow way to do this??
@@ -128,6 +128,8 @@ void CParticles::print_Halos(){
   }
 }
 
+
+
 CArray*  CParticles::Halo2Array(vector<CParticle*> in_vector){//pointer
   double* Array = new double [ParticleSize*in_vector.size()+2]; // Memory leak
   Array[0] = 1;
@@ -167,6 +169,8 @@ CArray*  CParticles::Halos2Array(){//pointer
   }
   return new CArray(ParticleSize*nrParticles+nrHalos+1,Array); //Memory leak
 }
+
+
 
 void CParticles::addHalos(CArray* inArray){
   int oldnrHalos = nrHalos;
@@ -214,7 +218,7 @@ void CParticles::addHalos(CArray* inArray){
 
 
 void CParticles::master(){
-  
+  cout << "in master" << endl;
   CMPI MPI;
 
   int count = 0;
@@ -223,18 +227,27 @@ void CParticles::master(){
   CParticles finalHalos;
   
   MPI_Request Req [size-1];
+  //Do not think this initializes the arrays, might create 
   vector<CArray*> Array (size-1);
-  
+  //for (int i =0;i<size-1;i++){
+  //  *(new CArray ()) Array[i];
+  //}
+
+
+  //Initialize, sending one halo to each processor
   for (int p = 1;p<size;p++){
+    cout << p<< endl;
     //Array.push_back(Halo2Array(Halos[count]));
     Array[p-1] = Halo2Array(Halos[count]);
+    cout << "afgjn"<<endl;
     Array[p-1]->send(p);
+    cout << "afgjn 2"<<endl;
     Array[p-1]->recieve(p, &Req[p-1]);
+    cout << "afgjn 4"<<endl;
     count++;
   }
-  
-  cout << "------------"<< endl;
-  
+  cout << "finished first round of halos" << endl;
+  //Send halo to processor as soon as a processor finishes
   while (count < nrHalos) {
     cout << count << endl;
     processor = MPI.listener(Req);
@@ -247,6 +260,7 @@ void CParticles::master(){
     //MPI_Request Req [size-1];
     
   }
+  
   if (size != MPI.getRank()) MPI.WaitAll(Req);
   MPI.End();
   cout <<"end of master" << endl;
