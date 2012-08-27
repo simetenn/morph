@@ -74,8 +74,15 @@ void CMPI::send_array_master(double* master_send_array, int processor, int lengt
 //Recieve an array in the Master processor from the slave node
 double* CMPI::receive_array_master(int processor, int& master_length, MPI_Request* Req){
   MPI_Status Stat;
-  MPI_Recv(&master_length,1,MPI_INT,processor,processor+2*size,MPI_COMM_WORLD, &Stat);
+  cout << "in CMPI recieve master" << endl;
+  //cout << master_length << endl;
+  int re = 1;
+  //cout << size << endl;
+  MPI_Recv(&re,1,MPI_INT,1,5,MPI_COMM_WORLD, &Stat);
+  //MPI_Recv(&master_length,1,MPI_INT,processor,processor+2*size,MPI_COMM_WORLD,&Stat);
+  cout << "in CMPI recieve master 2" << endl;
   double* master_receive_array = new double [master_length]; //<- Memory leak
+  cout << "in CMPI recieve master 3" << endl;
   MPI_Irecv(master_receive_array,master_length,MPI_DOUBLE,processor,processor+3*size,MPI_COMM_WORLD, Req);
   
   return master_receive_array;
@@ -111,7 +118,7 @@ double* CMPI::receive_array_slave(int& slave_length){
   MPI_Status Stat;
 
   MPI_Recv(&slave_length,1,MPI_INT,0,rank,MPI_COMM_WORLD,&Stat);
-  double* slave_receive_array = new double [slave_length]; 
+  double* slave_receive_array = new double [slave_length]; //<- memory leak
   MPI_Recv(slave_receive_array,slave_length,MPI_DOUBLE,0,rank+size,MPI_COMM_WORLD,&Stat);
   return slave_receive_array;
 }
