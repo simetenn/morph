@@ -42,7 +42,7 @@ class CMPI {
   
  protected:
   
-  int size, rank;
+  int size, rank,flag;
   MPI_Request* endReq;
   int argc; 
   char **argv;

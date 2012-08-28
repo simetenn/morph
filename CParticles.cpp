@@ -40,6 +40,7 @@ CParticles::CParticles(CArray* inArray){
       //takes up extra 
       Particles.push_back(new CParticle); //Slow way to do this?? //<- memory leak?
       Particles[particle_count]->Set_Data(tmpArray);
+      Halos[i].push_back(Particles[particle_count]);
       //Halos[i].push_back(Particles[particle_count]);
       //tmpParticles.push_back(new CParticle); //Slow way to do this??
       //tmpParticles[j]->Set_Data(tmpArray);
@@ -152,13 +153,13 @@ CArray*  CParticles::Halos2Array(){//pointer
   int particle_count = 1+nrHalos;
   double* tmpArray;
   Array[0] = nrHalos;
-  //cout << Halos[0]
+  
   for (int i = 0; i<nrHalos;i++){
     //cout << "Halo nr:" << i << endl;
     //cout << Halos[i].size() << endl;
+    
     HaloSize = Halos[i].size();
     Array[i+1] = HaloSize;
-    
     for (int j=0;j<HaloSize;j++){
       tmpArray = Particles[j]->Particle2Array();
       for (int k = 0; k < ParticleSize;k++){
@@ -167,6 +168,7 @@ CArray*  CParticles::Halos2Array(){//pointer
       }
     }
   }
+  
   return new CArray(ParticleSize*nrParticles+nrHalos+1,Array); //Memory leak
 }
 
@@ -174,6 +176,7 @@ CArray*  CParticles::Halos2Array(){//pointer
 
 void CParticles::addHalos(CArray* inArray){
   int oldnrHalos = nrHalos;
+  
   int newnrHalos = inArray->get(0);
   nrHalos += newnrHalos;
   
@@ -188,9 +191,7 @@ void CParticles::addHalos(CArray* inArray){
   Halos.resize(nrHalos);
 
   for (int i = 0; i<newnrHalos;i++){
-    
-    for (int j = 0;i < inArray->get(i+1);j++){
-      
+    for (int j = 0;j < inArray->get(i+1);j++){
       for (int k = 0; k < ParticleSize;k++){
 	tmpArray[k] = inArray->get(particle_count*ParticleSize+1+newnrHalos+k);
       }
@@ -218,7 +219,6 @@ void CParticles::addHalos(CArray* inArray){
 
 
 void CParticles::master(){
-  cout << "in master" << endl;
   CMPI MPI;
 
   int count = 0;
@@ -227,32 +227,35 @@ void CParticles::master(){
   CParticles finalHalos;
   
   MPI_Request Req [size-1];
-  //Do not think this initializes the arrays, might create 
   vector<CArray*> Array (size-1);
-  //for (int i =0;i<size-1;i++){
-  //  *(new CArray ()) Array[i];
-  //}
+  //Not needed
+  /*for (int i =0;i<size-1;i++){
+    Array[i] = new CArray ();
+    }*/
 
 
   //Initialize, sending one halo to each processor
   for (int p = 1;p<size;p++){
-    cout << p<< endl;
+    cout << "Initializing for processor nr: " << p << endl;
     //Array.push_back(Halo2Array(Halos[count]));
     Array[p-1] = Halo2Array(Halos[count]);
-    cout << "afgjn"<<endl;
     Array[p-1]->send(p);
-    cout << "afgjn 2"<<endl;
+    //Probably can keep it as it is, as Array is an array of pointers to CArray objects. Might otherwise be problems with changing length of arrays
+    //Array[p-1]->print();
     Array[p-1]->recieve(p, &Req[p-1]);
-    cout << "afgjn 4"<<endl;
+    //return 0;
     count++;
   }
-  cout << "finished first round of halos" << endl;
+  
+  cout << "-------------------------------------------------" << endl;
+  cout << "Finished distributing halos to each processor" << endl;
+  cout << "-------------------------------------------------" << endl;
   //Send halo to processor as soon as a processor finishes
   while (count < nrHalos) {
-    cout << count << endl;
+    cout << "Finished with halo nr: " << count +1 << endl;
     processor = MPI.listener(Req);
-    cout << processor << endl;
-    finalHalos.addHalos(Array[processor]);
+    cout << "Finished in processor: " << processor  << endl;        
+    finalHalos.addHalos(Array[processor-1]);
     Array[processor-1] = Halo2Array(Halos[count]);
     Array[processor-1]->send(processor);
     Array[processor-1]->recieve(processor,&Req[processor-1]);
@@ -285,18 +288,24 @@ void CParticles::slave(){
   CArray HalosArray;
   CMPI MPI;
   //cout << "size "<< size << endl;
-  //cout << "rank "<<rank<<endl;
+  
   //for (int i = 0;i<8;i++) {
   MPI.isEnd();
+  
   //int test = 0;
   while (true) {
   //for (int i = 0;i<nrHalos;i++){  
-    //cout << test << endl;
+    
     //cout << MPI.testEnd() << endl;
-    //if (MPI.testEnd() == 1) break;
+    if (MPI.testEnd() == 1) break;
+    
     HalosArray.recieve_slave();
+    //HalosArray.print();
     CParticles slaveParticles (&HalosArray);
+    //slaveParticles.print_Particles();
     //slaveParticles.DoSomething();
+
+
     slaveParticles.Halos2Array()->send_slave();
     //resArray->send_slave();
     //test++;
@@ -308,3 +317,5 @@ void CParticles::slave(){
 void CParticles::HaloSort(){
 
 }
+
+

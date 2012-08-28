@@ -12,11 +12,6 @@ CArray::CArray(){
   CMPI();
 }
 
-void CArray::initialize(){
-  length = 0;
-  array = NULL;
-  CMPI();
-}
 
 CArray::CArray(int in_length){
   length = in_length;
@@ -142,17 +137,20 @@ double& CArray::operator[](int element){
   }
   else {
     return array[element];
-  }
-}
+  }}
+
 
 
 
 double CArray::get(int element){
   if (array == NULL){
+    cout << "Array not initialized" << endl;
     throw "Array not initialized";
   }
   else if (element >= length || element < -length) {
+    cout << "Index out of bounds" << endl;
     throw "Index out of bounds";
+    
   } 
   else if (element < 0){
     return array[length+element];
@@ -208,8 +206,6 @@ void CArray::send(int in_processor){
 
 void CArray::recieve(int in_processor, MPI_Request* Req){
   //int master_length;
-  cout << "in recieve" << endl;
-  cout << "length: "<<length << endl;
   array = CMPI::receive_array_master(in_processor, length, Req);
   //return new ACrray(master_length, resArray);
 }
