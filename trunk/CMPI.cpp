@@ -74,15 +74,15 @@ void CMPI::send_array_master(double* master_send_array, int processor, int lengt
 //Recieve an array in the Master processor from the slave node
 double* CMPI::receive_array_master(int processor, int& master_length, MPI_Request* Req){
   MPI_Status Stat;
-  cout << "in CMPI recieve master" << endl;
-  //cout << master_length << endl;
-  int re = 1;
-  //cout << size << endl;
-  MPI_Recv(&re,1,MPI_INT,1,5,MPI_COMM_WORLD, &Stat);
-  //MPI_Recv(&master_length,1,MPI_INT,processor,processor+2*size,MPI_COMM_WORLD,&Stat);
-  cout << "in CMPI recieve master 2" << endl;
+  MPI_Request* tmpReq;
+  //MPI_Recv(&re,1,MPI_INT,1,5,MPI_COMM_WORLD, &Stat);
+  MPI_Recv(&master_length,1,MPI_INT,processor,processor+2*size,MPI_COMM_WORLD,&Stat);
+  //Alternative way to do this
+  //cout << "alternate way" << endl;
+  //MPI_Irecv(&re,1,MPI_INT,processor,processor+2*size,MPI_COMM_WORLD, tmpReq);
+  //cout << "waiting..." << endl;
+  //MPI_Wait(tmpReq,&Stat);
   double* master_receive_array = new double [master_length]; //<- Memory leak
-  cout << "in CMPI recieve master 3" << endl;
   MPI_Irecv(master_receive_array,master_length,MPI_DOUBLE,processor,processor+3*size,MPI_COMM_WORLD, Req);
   
   return master_receive_array;
@@ -103,7 +103,7 @@ void CMPI::send_array_slave(double* slave_send_array, int length){
   
   //slave_receive_array = new double [slave_length]; //memory leak
   double tmp [slave_length]; //memory leak
-  //cou t<< slave_receive_array <<endl;
+  //cout<< slave_receive_array <<endl;
   MPI_Recv(slave_receive_array,slave_length,MPI_DOUBLE,0,rank+size,MPI_COMM_WORLD,&Stat);
   //cout << tmp[1] <<endl;
   //slave_receive_array = tm;p
@@ -240,7 +240,7 @@ int CMPI::listener(MPI_Request* Req){
 
 //Start to listen for end signal in slave process
 void CMPI::isEnd(){
-  int flag;
+  flag = 0;
   MPI_Irecv(&flag,1,MPI_INT,0,rank+10*size,MPI_COMM_WORLD, endReq);
 }
 
@@ -249,9 +249,9 @@ void CMPI::isEnd(){
 //Test if end signal is sent
 int CMPI::testEnd(){  
   MPI_Status Stat;
-  int flag;
-  MPI_Test(endReq,&flag,&Stat);
-  return flag;
+  int testflag;
+  MPI_Test(endReq,&testflag,&Stat);
+  return testflag;
 }
 
 
@@ -259,9 +259,9 @@ int CMPI::testEnd(){
 //Send end signal from Master process to all slave processes
 void CMPI::End(){
   MPI_Request Req[1];
-  int flag = 1;
+  int sendflag = 1;
   
   for (int p = 1;p<size;p++){
-    MPI_Isend(&flag,1,MPI_INT,p,p+10*size,MPI_COMM_WORLD, Req);
+    MPI_Isend(&sendflag,1,MPI_INT,p,p+10*size,MPI_COMM_WORLD, Req);
   }
 }

@@ -26,22 +26,21 @@ int main(int argc, char **argv){
     //a.print_Particles();
     a.initialize_Halos();
     //a.print_Halos();
-    cout << "tralala" << endl;
     a.master();
-    cout << "master" << endl;
     MPI_Barrier(MPI_COMM_WORLD);
     cout << "master" << endl;
-    MPI_Finalize();
+    //MPI_Finalize();
+    cout << "after finalize in master" << endl;
   }
       
   
   else {
     CParticles b;
     b.slave();
-    cout << "same slave"<< endl;
     MPI_Barrier(MPI_COMM_WORLD);
-    cout << "same slave"<< endl;
-    MPI_Finalize();
+    cout << "slave"<< endl;
+    //MPI_Finalize();
+    cout << "after finalize in slave" << endl;
   }
   //MPI_Finalize();
 
