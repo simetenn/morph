@@ -4,7 +4,6 @@
 
 using namespace std;
 
-
 //Default constructor
 CArray::CArray(){
   length = 0;
@@ -12,7 +11,7 @@ CArray::CArray(){
   CMPI();
 }
 
-
+//Create a CArray with length and no elements
 CArray::CArray(int in_length){
   length = in_length;
   array = new double [length]; //<- memory leak
@@ -20,13 +19,12 @@ CArray::CArray(int in_length){
 }
 
 
-
+//create a CArray from an array
 CArray::CArray(int in_length, double* in_array){
   length = in_length;
   array = in_array;
   CMPI();
 }
-
 
 
 //Destrutor
@@ -36,23 +34,6 @@ CArray::~CArray(){
   }
   //~CMPI(); <-why not working?
 }
-
-
-
-/*
-CArray::CArray() : CMPI(argc,argv) {
-  length = 0;
-  array = NULL;
-}
-
-CArray::CArray(int in_length) : CMPI(argc, argv) {
-  length = in_length;
-  array = new double [length];
-  }CArray(int in_length);
-*/
-
-
-
 
 
 void CArray::linspace(double start, double end, int in_length){
@@ -77,38 +58,6 @@ void CArray::print(){
 }
 
 
-
-/*double CArray::sum_MPI(int argc,char **argv){
-  CMPI::initialize_CMPI(argc,argv);
-  //Master node
-  
-  if (rank == 0) {
-    
-    split_array();
-    
-    CArray* sumArray = gather_sum();
-    
-    return sumArray->sum();
-    delete[] sumArray;  
-    
-  }
-  else {
-    int slave_length; 
-    double *slave_array = CMPI::receive_array_slave(slave_length);
-    double sum = 0;
-    
-    for (int i = 0; i<slave_length;i++){
-      sum += slave_array[i];
-    }
-    CMPI::send_array_slave(&sum, 1);
-    delete[] slave_array;
-  }
-
-
-  }*/
-
-
-
 double CArray::sum(){
   double sum = 0;
   for (int i =0; i< length;i++) {
@@ -118,11 +67,9 @@ double CArray::sum(){
 }
 
 
-
 int CArray::len(){
   return length;
 }
-
 
 
 double& CArray::operator[](int element){
@@ -161,7 +108,7 @@ double CArray::get(int element){
 }
 
 
-
+//Add a number to a CArray
 CArray CArray::operator+(double number){
   CArray tmp (length);
   for (int i =0; i< length;i++) {
@@ -171,7 +118,7 @@ CArray CArray::operator+(double number){
 }
 
 
-
+//Add two CArrays
 CArray* CArray::operator+(CArray* inArray){
   double tmp[length+inArray->length];
   for (int i =0; i< length;i++) {
@@ -184,20 +131,7 @@ CArray* CArray::operator+(CArray* inArray){
 }
 
 
-
-/*CArray& CArray::operator=(const CArray &other){
-  length = other.length;
-  double array [other.length];
-  for (int i = 0; i <  other.length;i++) {
-    array[i] = other.array[i];
-  }
-  cout << array[1] << endl;
-  return *this;
-  
-  }*/
-
-
-
+//Send a CArray from the master processor to a slave processor
 void CArray::send(int in_processor){
   CMPI::send_array_master(array, in_processor,length);
 }
@@ -205,19 +139,8 @@ void CArray::send(int in_processor){
 
 
 void CArray::recieve(int in_processor, MPI_Request* Req){
-  //int master_length;
   array = CMPI::receive_array_master(in_processor, length, Req);
-  //return new ACrray(master_length, resArray);
 }
-
-
-
-/*void CArray::recieve(int in_processor){
-  //int master_length;
-  array = CMPI::receive_array_master(in_processor, length, Req);
-  //return new CArray(master_length, resArray);
-  }*/
-
 
 
 void CArray::send_slave(){
@@ -228,7 +151,6 @@ void CArray::send_slave(){
 
 void CArray::recieve_slave(){
   array = CMPI::receive_array_slave(length);
-  //return new CArray(slave_length,resArray);}
 }
 
 
@@ -248,8 +170,77 @@ CArray* CArray::gather_sum(){
     resArray[i] = results[i][0];
   }
   
-
   CArray* sumArray = new CArray(size-1, resArray);//<- memory leak
   return sumArray;
-  //delete[] resArray;  
 }
+
+
+
+
+
+
+
+
+
+
+/*
+CArray::CArray() : CMPI(argc,argv) {
+  length = 0;
+  array = NULL;
+}
+
+CArray::CArray(int in_length) : CMPI(argc, argv) {
+  length = in_length;
+  array = new double [length];
+  }CArray(int in_length);
+*/
+
+
+
+/*void CArray::recieve(int in_processor){
+  //int master_length;
+  array = CMPI::receive_array_master(in_processor, length, Req);
+  //return new CArray(master_length, resArray);
+  }*/
+
+
+/*double CArray::sum_MPI(int argc,char **argv){
+  CMPI::initialize_CMPI(argc,argv);
+  //Master node
+  
+  if (rank == 0) {
+    
+    split_array();
+    
+    CArray* sumArray = gather_sum();
+    
+    return sumArray->sum();
+    delete[] sumArray;  
+    
+  }
+  else {
+    int slave_length; 
+    double *slave_array = CMPI::receive_array_slave(slave_length);
+    double sum = 0;
+    
+    for (int i = 0; i<slave_length;i++){
+      sum += slave_array[i];
+    }
+    CMPI::send_array_slave(&sum, 1);
+    delete[] slave_array;
+  }
+
+
+  }*/
+
+
+/*CArray& CArray::operator=(const CArray &other){
+  length = other.length;
+  double array [other.length];
+  for (int i = 0; i <  other.length;i++) {
+    array[i] = other.array[i];
+  }
+  cout << array[1] << endl;
+  return *this;
+  
+  }*/

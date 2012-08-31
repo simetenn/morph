@@ -7,14 +7,12 @@ int CParticle::ID_Generator = 0;
 int CParticle::ParticleSize = 11;
 
 
-
 CParticle::CParticle(){
   CVector P,V,A;
   Mass = 1;
   Charge = 0;
   Generate_ID();
 }
-
 
 
 CParticle::CParticle(double* in_array){
@@ -37,11 +35,8 @@ CParticle::CParticle(double* in_array){
 }
 
 
-
 CParticle::~CParticle(){
 }
-
-
 
 
 void CParticle::Set_Mass(double in_M){
@@ -57,7 +52,6 @@ double CParticle::get_Mass(){
 void CParticle::Set_Charge(double in_C){
   Charge = in_C;
 }
-
 
 
 void CParticle::Set_Position(double Px, double Py, double Pz){
@@ -89,16 +83,15 @@ CVector& CParticle::get_P(){
   return P;
 }
 
+
 CVector& CParticle::get_V(){
   return V;
 }
 
+
 CVector& CParticle::get_A(){
   return A;
 }
-
-
-
 
 
 void CParticle::Move(double dt){
@@ -109,17 +102,14 @@ void CParticle::Move(double dt){
 }
 
 
-
 double CParticle::Ekin(){
   return 0.5*Mass*V.Length2();
 }
 
 
-
 CVector CParticle::Momentum(){
   return (V*Mass);
 }
-
 
 
 void CParticle::Generate_ID(){
@@ -131,7 +121,6 @@ void CParticle::Generate_ID(){
 int CParticle::get_ID(){
   return ID;
 }
-
 
 
 void CParticle::print_Particle(){
@@ -147,7 +136,6 @@ void CParticle::print_Particle(){
   A.print();
   cout << "------------------------------------" << endl;
 }
-
 
 
 double* CParticle::Particle2Array(){
