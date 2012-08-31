@@ -27,10 +27,12 @@ int main(int argc, char **argv){
     a.initialize_Halos();
     //a.print_Halos();
     a.master();
+    //exit(1);
     MPI_Barrier(MPI_COMM_WORLD);
     cout << "master" << endl;
     //MPI_Finalize();
     cout << "after finalize in master" << endl;
+    
   }
       
   
@@ -42,6 +44,8 @@ int main(int argc, char **argv){
     //MPI_Finalize();
     cout << "after finalize in slave" << endl;
   }
+  
   //MPI_Finalize();
+  
 
 }

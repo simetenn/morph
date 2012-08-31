@@ -28,8 +28,6 @@ class CParticles : public CParticle{
   void master();
   void slave();
 
-
-
  protected:
   vector<CParticle*> Particles;
   vector<vector<CParticle*> > Halos;

@@ -237,7 +237,7 @@ int CMPI::listener(MPI_Request* Req){
 }
 
 
-
+/*
 //Start to listen for end signal in slave process
 void CMPI::isEnd(){
   flag = 0;
@@ -251,6 +251,7 @@ int CMPI::testEnd(){
   MPI_Status Stat;
   int testflag;
   MPI_Test(endReq,&testflag,&Stat);
+  cout << "flag:"<<testflag << endl;
   return testflag;
 }
 
@@ -258,10 +259,31 @@ int CMPI::testEnd(){
 
 //Send end signal from Master process to all slave processes
 void CMPI::End(){
-  MPI_Request Req[1];
   int sendflag = 1;
   
   for (int p = 1;p<size;p++){
-    MPI_Isend(&sendflag,1,MPI_INT,p,p+10*size,MPI_COMM_WORLD, Req);
+    MPI_Rsend(&sendflag,1,MPI_INT,p,p+10*size,MPI_COMM_WORLD);
   }
+}
+*/
+
+void CMPI::End(int processor, int sendflag){
+  MPI_Request Req;
+
+  MPI_Isend(&sendflag,1,MPI_INT,processor,processor+10*size,MPI_COMM_WORLD,&Req);
+}
+
+/*void CMPI::Continue(int processor){
+  int sendflag = 0;
+  
+  MPI_Send(&sendflag,1,MPI_INT,processor,processor+10*size,MPI_COMM_WORLD);
+  }*/
+
+int CMPI::ifEnd(){
+  MPI_Status Stat;
+  MPI_Request Req;
+  int flag;
+  //CMPI::receive_array_master(results[p],p,&length);
+  MPI_Recv(&flag,1,MPI_INT,0,rank+10*size,MPI_COMM_WORLD, &Stat);
+  return flag;
 }

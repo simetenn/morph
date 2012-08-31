@@ -14,10 +14,12 @@ CParticles::~CParticles(){
   }
 }
 
-
+//Creates CParticles from an Array formated in a specific way. 
+//nr of Halos : nr of particles in each Halo : ... : ParticleArray : ParticleArray : ...
 CParticles::CParticles(CArray* inArray){
   nrHalos = inArray->get(0);
   
+  //Gives warning if the length of the array is not compatible with the size of a particle
   if ((inArray->len()-1-nrHalos) % ParticleSize != 0) {
     cout << "Warning: Length of array not compatible with ParticleSize"<< endl;
   }
@@ -29,30 +31,30 @@ CParticles::CParticles(CArray* inArray){
   int particle_count = 0;
   
   for (int i = 0; i<nrHalos;i++){
-    
     for (int j = 0;j < inArray->get(i+1);j++){
-      
+      //Gets the particle data for a single particle, stored in tmpArray
       for (int k = 0; k < ParticleSize;k++){
 	tmpArray[k] = inArray->get(particle_count*ParticleSize+1+nrHalos+k);
       }
-      
-      
+            
       //takes up extra 
+      //Create a new particle from tmpArray
       Particles.push_back(new CParticle); //Slow way to do this?? //<- memory leak?
       Particles[particle_count]->Set_Data(tmpArray);
+      //Store the particle in correct halo
       Halos[i].push_back(Particles[particle_count]);
       //Halos[i].push_back(Particles[particle_count]);
       //tmpParticles.push_back(new CParticle); //Slow way to do this??
       //tmpParticles[j]->Set_Data(tmpArray);
       particle_count++;
     }
-    
     //Halos.push_back(tmpParticles);
     //tmpParticles.clear();
   }
-  
 }
-  
+
+
+//Get data from my own type of input file
 void CParticles::get_Data(string filename){
   vector<string> strData;
   
@@ -96,9 +98,10 @@ void CParticles::get_Data(string filename){
   else cout << "Unable to open file" << endl; 
   
   nrParticles = Particles.size();
-  
 }
 
+
+//Print particles
 void CParticles::print_Particles(){
   for (int i = 0; i < nrParticles;i++){
     Particles[i]->print_Particle();
@@ -106,16 +109,17 @@ void CParticles::print_Particles(){
 }
 
 
+//Initialize the halos in my own fake datasett 
 void CParticles::initialize_Halos(){
   nrHalos = 8;
   Halos.resize(nrHalos);
   for (int i = 0; i < nrParticles;i++){
     Halos[(Particles[i]->get_P()).Quadrant()].push_back(Particles[i]);
-  }
-    
-
+  } 
 }
 
+
+//Print information for each halo
 void CParticles::print_Halos(){
   for (int i = 0;i < nrHalos; i++){
     cout << "__________________________________" << endl;
@@ -130,7 +134,7 @@ void CParticles::print_Halos(){
 }
 
 
-
+//Convert from one halo to an array
 CArray*  CParticles::Halo2Array(vector<CParticle*> in_vector){//pointer
   double* Array = new double [ParticleSize*in_vector.size()+2]; // Memory leak
   Array[0] = 1;
@@ -146,7 +150,7 @@ CArray*  CParticles::Halo2Array(vector<CParticle*> in_vector){//pointer
 }
 
 
-
+//Convert from several halos to one array
 CArray*  CParticles::Halos2Array(){//pointer
   double* Array = new double [ParticleSize*nrParticles+nrHalos+1]; // Memory leak
   int HaloSize;
@@ -173,7 +177,7 @@ CArray*  CParticles::Halos2Array(){//pointer
 }
 
 
-
+//Add a halo to the exsisting ones
 void CParticles::addHalos(CArray* inArray){
   int oldnrHalos = nrHalos;
   
@@ -239,8 +243,9 @@ void CParticles::master(){
     cout << "Initializing for processor nr: " << p << endl;
     //Array.push_back(Halo2Array(Halos[count]));
     Array[p-1] = Halo2Array(Halos[count]);
+    MPI.End(p,0);
     Array[p-1]->send(p);
-    //Probably can keep it as it is, as Array is an array of pointers to CArray objects. Might otherwise be problems with changing length of arrays
+    //Probably can be kept it as it is, as Array is an array of pointers to CArray objects. Might otherwise be problems with changing length of arrays
     //Array[p-1]->print();
     Array[p-1]->recieve(p, &Req[p-1]);
     //return 0;
@@ -254,9 +259,10 @@ void CParticles::master(){
   while (count < nrHalos) {
     cout << "Finished with halo nr: " << count +1 << endl;
     processor = MPI.listener(Req);
-    cout << "Finished in processor: " << processor  << endl;        
+    //cout << "Finished in processor: " << processor  << endl;        
     finalHalos.addHalos(Array[processor-1]);
     Array[processor-1] = Halo2Array(Halos[count]);
+    MPI.End(processor,0);
     Array[processor-1]->send(processor);
     Array[processor-1]->recieve(processor,&Req[processor-1]);
     count++;
@@ -264,8 +270,15 @@ void CParticles::master(){
     
   }
   
-  if (size != MPI.getRank()) MPI.WaitAll(Req);
-  MPI.End();
+  //if (size != MPI.getRank()) MPI.WaitAll(Req);
+  MPI.WaitAll(Req);
+  cout << "<<sending end signal to slaves>>" << endl;
+  //MPI.End();
+  
+  for (int p = 1;p < size;p++){
+    MPI.End(p,1);
+  }
+  
   cout <<"end of master" << endl;
 }
 
@@ -290,15 +303,18 @@ void CParticles::slave(){
   //cout << "size "<< size << endl;
   
   //for (int i = 0;i<8;i++) {
-  MPI.isEnd();
-  
+  int flag;
   //int test = 0;
   while (true) {
-  //for (int i = 0;i<nrHalos;i++){  
     
+  //for (int i = 0;i<8;i++){  
     //cout << MPI.testEnd() << endl;
-    if (MPI.testEnd() == 1) break;
+    //if (MPI.testEnd() == 1) {
+    //  cout << "<<recieved end signal>>" << endl;
+    //  break;
+    //}
     
+    if (MPI.ifEnd() == 1) break;
     HalosArray.recieve_slave();
     //HalosArray.print();
     CParticles slaveParticles (&HalosArray);
@@ -309,9 +325,12 @@ void CParticles::slave(){
     slaveParticles.Halos2Array()->send_slave();
     //resArray->send_slave();
     //test++;
+
   }
   cout << "finished loop" << endl;
 }
+
+
 
 
 void CParticles::HaloSort(){
