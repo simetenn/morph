@@ -15,7 +15,7 @@ CParticles::~CParticles(){
 }
 
 //Creates CParticles from an Array formated in a specific way. 
-//nr of Halos : nr of particles in each Halo : ... : ParticleArray : ParticleArray : ...
+//nr of Halos : nr of particles in 1st Halo :  nr of particles in 2nd Halo : ... : ParticleArray : ParticleArray : ...
 CParticles::CParticles(CArray* inArray){
   nrHalos = inArray->get(0);
   
@@ -29,7 +29,9 @@ CParticles::CParticles(CArray* inArray){
   
   Halos.resize(nrHalos);
   int particle_count = 0;
+
   
+  //Loop over all halos and all particles in each halo
   for (int i = 0; i<nrHalos;i++){
     for (int j = 0;j < inArray->get(i+1);j++){
       //Gets the particle data for a single particle, stored in tmpArray
@@ -37,15 +39,11 @@ CParticles::CParticles(CArray* inArray){
 	tmpArray[k] = inArray->get(particle_count*ParticleSize+1+nrHalos+k);
       }
             
-      //takes up extra 
       //Create a new particle from tmpArray
       Particles.push_back(new CParticle); //Slow way to do this?? //<- memory leak?
       Particles[particle_count]->Set_Data(tmpArray);
       //Store the particle in correct halo
       Halos[i].push_back(Particles[particle_count]);
-      //Halos[i].push_back(Particles[particle_count]);
-      //tmpParticles.push_back(new CParticle); //Slow way to do this??
-      //tmpParticles[j]->Set_Data(tmpArray);
       particle_count++;
     }
     //Halos.push_back(tmpParticles);
@@ -62,21 +60,18 @@ void CParticles::get_Data(string filename){
   string line;
   
   if (file.is_open()){
-    
     getline(file,line);
     split(strData, line, is_any_of("\t "));
     
     data_size = strData.size();
     vector<double> tmpData (data_size);
-    
-    
+        
     for (int i = 0; i < data_size; i++){
       tmpData[i] = atof(strData[i].c_str());
     }
       
     Particles.push_back(new CParticle);
     Particles[0]->Set_Data(tmpData);
-    //Particles[0]->print_Particle();
     
     int nr = 1;
     while (file.good()){
@@ -221,7 +216,7 @@ void CParticles::addHalos(CArray* inArray){
 
 
 
-
+//Master process
 void CParticles::master(){
   CMPI MPI;
 
@@ -232,11 +227,6 @@ void CParticles::master(){
   
   MPI_Request Req [size-1];
   vector<CArray*> Array (size-1);
-  //Not needed
-  /*for (int i =0;i<size-1;i++){
-    Array[i] = new CArray ();
-    }*/
-
 
   //Initialize, sending one halo to each processor
   for (int p = 1;p<size;p++){
@@ -245,10 +235,7 @@ void CParticles::master(){
     Array[p-1] = Halo2Array(Halos[count]);
     MPI.End(p,0);
     Array[p-1]->send(p);
-    //Probably can be kept it as it is, as Array is an array of pointers to CArray objects. Might otherwise be problems with changing length of arrays
-    //Array[p-1]->print();
     Array[p-1]->recieve(p, &Req[p-1]);
-    //return 0;
     count++;
   }
   
@@ -259,27 +246,20 @@ void CParticles::master(){
   while (count < nrHalos) {
     cout << "Finished with halo nr: " << count +1 << endl;
     processor = MPI.listener(Req);
-    //cout << "Finished in processor: " << processor  << endl;        
     finalHalos.addHalos(Array[processor-1]);
     Array[processor-1] = Halo2Array(Halos[count]);
     MPI.End(processor,0);
     Array[processor-1]->send(processor);
     Array[processor-1]->recieve(processor,&Req[processor-1]);
     count++;
-    //MPI_Request Req [size-1];
     
   }
   
-  //if (size != MPI.getRank()) MPI.WaitAll(Req);
   MPI.WaitAll(Req);
-  cout << "<<sending end signal to slaves>>" << endl;
-  //MPI.End();
-  
+      
   for (int p = 1;p < size;p++){
     MPI.End(p,1);
   }
-  
-  cout <<"end of master" << endl;
 }
 
 
@@ -294,47 +274,31 @@ void CParticles::master(){
   }*/
 
 
+
+//slave processor
 void CParticles::slave(){
   
-  //  CArray tmpArray;
-  //CArray* HalosArray = &tmpArray;
   CArray HalosArray;
   CMPI MPI;
-  //cout << "size "<< size << endl;
-  
-  //for (int i = 0;i<8;i++) {
   int flag;
-  //int test = 0;
+  
   while (true) {
-    
-  //for (int i = 0;i<8;i++){  
-    //cout << MPI.testEnd() << endl;
-    //if (MPI.testEnd() == 1) {
-    //  cout << "<<recieved end signal>>" << endl;
-    //  break;
-    //}
-    
     if (MPI.ifEnd() == 1) break;
     HalosArray.recieve_slave();
-    //HalosArray.print();
     CParticles slaveParticles (&HalosArray);
+    
     //slaveParticles.print_Particles();
     //slaveParticles.DoSomething();
 
-
     slaveParticles.Halos2Array()->send_slave();
-    //resArray->send_slave();
-    //test++;
-
   }
-  cout << "finished loop" << endl;
 }
 
 
 
 
 void CParticles::HaloSort(){
-
+  
 }
 
 

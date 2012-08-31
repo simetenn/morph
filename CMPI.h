@@ -1,8 +1,6 @@
 #include <mpi.h>
 #include <vector>
 
-//extern int size;
-
 class CMPI {
  
  private:
@@ -33,14 +31,10 @@ class CMPI {
   int getRank();
   int getSize();
   
-  
-  //Start to listen for end signal in slave process
-  //void isEnd();
+  //Sending/reciving signals to determine if the slave processor is finished
   int ifEnd();
-  //Send end signal from Master process to all slave processes
   void End(int processor, int sendflag);
-  //Test if end signal is sent
-  //int testEnd();
+  
   
   
  protected:
