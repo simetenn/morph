@@ -30,7 +30,18 @@ void CMPI::initialize_CMPI(int argc, char **argv){
 
 CMPI::~CMPI(){
 
-
+  //if (Req_receive != NULL){ 
+  //delete[] Req_receive;
+  //}
+  
+  /*if (results != NULL){
+    for (int p=0; p < size; p++){
+      delete[] results[p];
+    }
+    delete[] results;
+    }*/
+  
+  //delete[] Stat_receive;
 }
 
 

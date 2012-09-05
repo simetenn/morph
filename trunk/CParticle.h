@@ -33,10 +33,12 @@ class CParticle : public CVector {
   
   void print_Particle();
   
+
+  CVector P,V,A;
   
   protected:
   
-  CVector P,V,A;
+  
   double Mass, Charge;
   int ID;
   

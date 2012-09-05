@@ -27,7 +27,7 @@ CArray::CArray(int in_length, double* in_array){
 }
 
 
-//Destrutor
+//Destrutro
 CArray::~CArray(){
   if (array != NULL){
     delete[] array;
