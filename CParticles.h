@@ -9,28 +9,38 @@ using namespace boost;
 
 class CParticles : public CParticle{
  public:
-  CParticles();
-  CParticles(CArray* inArray);
-  ~CParticles();
-  
-  void get_Data(string filename);
-  void print_Particles();
-  void print_Halos();
-  void initialize_Halos();
-  CArray* Halo2Array(vector<CParticle*> in_vector);
-  CArray* Halos2Array();
-  CArray* Array2Halos(CArray* inArray);
-  //void Array2Particles(CArray* inArray);
-  void HaloSort();
-  //void sendHalo(int halonr)
-  void addHalos(CArray* inArray);
-  void master();
-  void slave();
+	CParticles();
+	CParticles(CArray* inArray);
+	~CParticles();
+
+	void get_Data(string filename);
+	void print_Particles();
+	void print_Halos();
+	void initialize_Halos();
+	CArray* Halo2Array(vector<CParticle*> in_vector);
+	CArray* Halos2Array();
+	CArray* Array2Halos(CArray* inArray);
+	//void Array2Particles(CArray* inArray);
+	void HaloSort();
+	//void sendHalo(int halonr)
+	void addHalos(CArray* inArray);
+	void master();
+	void slave();
+
+	void LoadBin(string Filename);
+
+	// Particle Save structure: Keep only P and V!
+	struct particle_save {
+		CVector P, V;
+		unsigned int halo;
+	};
+
+
 
  protected:
-  vector<CParticle*> Particles;
-  vector<vector<CParticle*> > Halos;
-  int nrParticles,nrHalos,data_size;
-  
+	vector<CParticle*> Particles;
+	vector<vector<CParticle*> > Halos;
+	int nrParticles,nrHalos,data_size;
+
 
 };
