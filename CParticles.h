@@ -26,6 +26,9 @@ class CParticles : public CParticle{
 	void addHalos(CArray* inArray);
 	void master();
 	void slave();
+	int size();
+	int sizeHalos;
+		
 
 	void LoadBin(string Filename);
 
@@ -35,7 +38,9 @@ class CParticles : public CParticle{
 		unsigned int halo;
 	};
 
+	void SeparateClustersMPI();
 
+	
 
  protected:
 	vector<CParticle*> Particles;

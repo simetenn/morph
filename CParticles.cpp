@@ -172,7 +172,7 @@ CArray*	 CParticles::Halos2Array(){//pointer
 }
 
 
-//Add a halo to the exsisting ones
+//Add a halo to the existing ones
 void CParticles::addHalos(CArray* inArray){
 	int oldnrHalos = nrHalos;
 
@@ -187,8 +187,9 @@ void CParticles::addHalos(CArray* inArray){
 	//vector<CParticle* > tmpParticles;
 	vector<double> tmpArray (ParticleSize);
 
-	Halos.resize(nrHalos);
-
+	//Halos.resize(nrHalos);
+	vector<CParticle*> tmp;
+	Halos.push_back(tmp);
 	for (int i = 0; i<newnrHalos;i++){
 		for (int j = 0;j < inArray->get(i+1);j++){
 			for (int k = 0; k < ParticleSize;k++){
@@ -329,4 +330,31 @@ void CParticles::LoadBin(string Filename){
 
 	f.close();
 	delete[] block;
+}
+
+
+int CParticles::size(){
+	return nrParticles;
+}
+
+
+int CParticles::sizeHalos(){
+	return nrHalos;
+}
+
+
+void CParticles::SeparateClustersMPI(){
+	/*double maxV = 0;
+	for (int i=0;i<nrParticles;i++) {
+		maxV = max(Particles[i]->V.Length(), maxV);
+	}
+	B = 1.0/maxV/100.0; // why?
+	cout << " B: " << B << endl;
+
+	for (int i = 0, i < nrParticles,i++){
+		
+	}
+	*/
+
+
 }
