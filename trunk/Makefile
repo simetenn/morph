@@ -7,7 +7,7 @@ CC = mpic++
 VPATH = .:/~/Master/mybody/mybody/source
 
 CFlags = -g -Wall
-SOURCES = main.cpp CArray.cpp CMPI.cpp CVector.cpp CParticle.cpp CParticles.cpp #CHaloFinder.cpp CHalo.cpp #CArray.h
+SOURCES = main.cpp CArray.cpp CMPI.cpp CVector.cpp CParticle.cpp CParticles.cpp CHalo.cpp CHalos.cpp #CHaloFinder.cpp CHalo.cpp #CArray.h
 EXECUTABLE = main
 SOURCEDIR = ~/Master/mybody/mybody
 #OSOURCES = CHalo.cpp CHaloFinder.cpp CHaloList.cpp
