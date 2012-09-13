@@ -48,6 +48,11 @@ CVector::~CVector(){
 }
 
 
+int CVector::getDimensions(){
+	return Dimensions;
+}
+
+
 
 void CVector::Set(double x,double y,double z){
   Vector[0] = x;

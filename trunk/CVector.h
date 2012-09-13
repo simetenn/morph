@@ -23,7 +23,8 @@ class CVector{
   CVector operator/(double number) const;
   CVector operator*(double number) const;
   
-
+  int getDimensions();
+  
   double Length2() const;
   double Length() const;
   

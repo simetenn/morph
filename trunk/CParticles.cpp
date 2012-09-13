@@ -5,6 +5,8 @@ using namespace boost;
 
 CParticles::CParticles(){
 	nrParticles = 0;
+	CParticle tmpParticle;
+	ParticleSize = tmpParticle.getParticleSize();
 }
 
 CParticles::~CParticles(){
@@ -16,6 +18,8 @@ CParticles::~CParticles(){
 //Creates CParticles from an Array formated in a specific way.
 //nr of Halos : nr of particles in 1st Halo :  nr of particles in 2nd Halo : ... : ParticleArray : ParticleArray : ...
 CParticles::CParticles(CArray* inArray){
+	CParticle tmpParticle;
+	ParticleSize = tmpParticle.getParticleSize();
 	if ((inArray->len()) % ParticleSize != 0) {
 		cout << "Warning: Length of array not compatible with ParticleSize"<< endl;
 	}
@@ -36,7 +40,7 @@ CParticles::CParticles(CArray* inArray){
 	}
 }
 
-
+//Write this in some other way.
 void CParticles::initialize_CParticles(CArray* inArray){
 	if ((inArray->len()) % ParticleSize != 0) {
 		cout << "Warning: Length of array not compatible with ParticleSize"<< endl;
@@ -124,55 +128,21 @@ CParticle* CParticles::operator[](int element){
 	}
 }
 
-
-
-
-
-//Master process
-void CParticles::master(){
-	CMPI MPI;
-
-	int count = 0;
-	int processor;
-	int size = MPI.getSize();
-	CParticles finalHalos;
-
-	MPI_Request Req [size-1];
-	vector<CArray*> Array (size-1);
-
-	//Initialize, sending one halo to each processor
-	for (int p = 1;p<size;p++){
-		cout << "Initializing for processor nr: " << p << endl;
-		//Array.push_back(Halo2Array(Halos[count]));
-		Array[p-1] = Halo2Array(Halos[count]);
-		MPI.End(p,0);
-		Array[p-1]->send(p);
-		Array[p-1]->recieve(p, &Req[p-1]);
-		count++;
+CParticle* CParticles::get(int element){
+	if (element >= nrParticles || element < -nrParticles) {
+		throw "Index out of bounds";
 	}
-
-	cout << "-------------------------------------------------" << endl;
-	cout << "Finished distributing halos to each processor" << endl;
-	cout << "-------------------------------------------------" << endl;
-	//Send halo to processor as soon as a processor finishes
-	while (count < nrHalos) {
-		cout << "Finished with halo nr: " << count +1 << endl;
-		processor = MPI.listener(Req);
-		finalHalos.addHalos(Array[processor-1]);
-		Array[processor-1] = Halo2Array(Halos[count]);
-		MPI.End(processor,0);
-		Array[processor-1]->send(processor);
-		Array[processor-1]->recieve(processor,&Req[processor-1]);
-		count++;
-
+	else if (element < 0){
+		return Particles[nrParticles+element];
 	}
-
-	MPI.WaitAll(Req);
-
-	for (int p = 1;p < size;p++){
-		MPI.End(p,1);
+	else {
+		return Particles[element];
 	}
 }
+
+
+
+
 
 
 /*CParticles CParticles::operator+(CParticles inParticles){
@@ -187,24 +157,7 @@ void CParticles::master(){
 
 
 
-//slave processor
-void CParticles::slave(){
 
-	CArray HalosArray;
-	CMPI MPI;
-	int flag;
-
-	while (true) {
-		if (MPI.ifEnd() == 1) break;
-		HalosArray.recieve_slave();
-		CParticles slaveParticles (&HalosArray);
-
-		//slaveParticles.print_Particles();
-		//slaveParticles.DoSomething();
-
-		slaveParticles.Halos2Array()->send_slave();
-	}
-}
 
 
 
@@ -233,7 +186,7 @@ void CParticles::LoadBin(string Filename){
 }
 
 
-int CParticles::size(){
+int CParticles::getnrParticles(){
 	return nrParticles;
 }
 
@@ -257,4 +210,19 @@ void CParticles::SeparateClustersMPI(){
 	*/
 
 
+}
+
+
+CArray* CParticles::Particles2Array(){//pointer
+	//int ParticleSize =
+	double* Array = new double [ParticleSize*nrParticles]; // Memory leak
+
+	for (int i = 0; i < nrParticles;i++){
+		double* tmpArray = Particles[i]->Particle2Array();
+		for (int j = 0; j < ParticleSize;j++){
+			Array[i*ParticleSize+j] = tmpArray[j];
+		}
+	}
+	//return Array;
+	return new CArray(ParticleSize*nrParticles,Array); //Memory leak
 }
