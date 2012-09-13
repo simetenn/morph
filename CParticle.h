@@ -1,8 +1,7 @@
 #include "CVector.h"
 
 
-
-class CParticle : public CVector {
+class CParticle{
  public:
 
 	CParticle();
@@ -29,20 +28,22 @@ class CParticle : public CVector {
 	double Ekin();
 	CVector Momentum();
 	void Move(double dt);
-
+	int getParticleSize();
 
 	void print_Particle();
 
-
+	//put this private, and get the code to work in some way. ???
 	CVector P,V,A;
-
+	
  protected:
 
-
+	
 	double Mass, Charge;
 	int ID;
 
-	static int ID_Generator,ParticleSize;
+	int ParticleSize;
+	
+	static int ID_Generator;
 
 	void Generate_ID();
 

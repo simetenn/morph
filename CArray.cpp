@@ -175,7 +175,9 @@ CArray* CArray::gather_sum(){
 }
 
 
-
+double* CArray::CArray2array(){
+	return array;
+}
 
 
 

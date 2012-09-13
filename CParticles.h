@@ -7,7 +7,7 @@
 using namespace boost;
 
 
-class CParticles : public CParticle{
+class CParticles{
  public:
 	CParticles();
 	CParticles(CArray* inArray);
@@ -19,13 +19,15 @@ class CParticles : public CParticle{
 	
 	//void Array2Particles(CArray* inArray);
 	//void sendHalo(int halonr)
-	void master();
-	void slave();
-	int size();
 
+	int getnrParticles();
+	
 
 	CParticle* operator[](int element);
+	CParticle* get(int element);
 
+	CArray* Particles2Array();
+	
 	void LoadBin(string Filename);
 
 	// Particle Save structure: Keep only P and V!
@@ -35,12 +37,11 @@ class CParticles : public CParticle{
 	};
 
 	void SeparateClustersMPI();
-
 	
 
  protected:
 	vector<CParticle*> Particles;
-	int nrParticles,data_size;
+	int nrParticles,data_size,ParticleSize;
 
 
 };
