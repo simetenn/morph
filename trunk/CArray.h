@@ -1,11 +1,13 @@
 #include <iostream>
+//#include <vector>
 #include "CMPI.h"
 
-class CArray : public CMPI {
+class CArray : public CMPI { 
  public:
 
   CArray();
   CArray(int in_length);
+  //CArray( vector<double> in_vector);
   CArray(int in_length, double* in_array);
   ~CArray();
   
@@ -15,10 +17,13 @@ class CArray : public CMPI {
   double sum();
   int len(); 
   double get(int element);
+  void set(int element,double value);
   double& operator[](int element);
   CArray operator+(double number);
   CArray* operator+(CArray* inArray);
-  //CArray& operator=(const CArray &other);
+  //CArray& operator=(CArray &other);
+
+  void push_back(double in_value);
   
   void send(int in_processor);
   void recieve(int in_processor,MPI_Request* Req);

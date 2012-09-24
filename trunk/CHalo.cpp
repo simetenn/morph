@@ -28,9 +28,19 @@ CHalo::CHalo(CArray* inArray){
 }
 
 
+CParticles* CHalo::getCParticles(){
+	return &Halo;
+}
+
+int CHalo::getnrParticles(){
+	return Halo.getnrParticles();
+}
+
 CHalo::~CHalo(){
 
 }
+
+
 
 /*CHalo::CHalo(CArray* inArray){
   HaloMass = 0;
@@ -72,6 +82,10 @@ CArray*	 CHalo::Halo2Array(){//pointer
 }
 
 
+void CHalo::addParticle(CParticle* inParticle){
+	nrParticles += 1;
+	Halo.addParticle(inParticle);
+}
 
 
 
