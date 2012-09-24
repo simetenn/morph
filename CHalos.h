@@ -24,13 +24,20 @@ class CHalos{
 	void master();
 	void slave();
 	int sizeHalos();
-	//void operator+(CHalos* inCHalo);
-	
+	CHalos operator+(CHalos* inCHalo);
+	CHalos operator=(CHalos* inCHalo);
+	int getnrParticles();
+	int getnrHalos();
+	int getnrinHalo(int element);
+	CHalo* getHalo(int element);
+	void get_Data(string filename);
+	CParticles* getCParticles(int element);
+
 	
  protected:
-	int nrHalos,ParticleSize, nrParticles;
+	int nrHalos,ParticleSize, nrParticles, data_size;
 	vector<int> nrinHalo;
 	vector<CHalo*> Halos;
-
+	
 
 };

@@ -13,7 +13,7 @@ class CParticles{
 	CParticles(CArray* inArray);
 	~CParticles();
 
-	void get_Data(string filename);
+	//void get_Data(string filename);
 	void print_Particles();
 	void initialize_CParticles(CArray* inArray);
 	
@@ -23,6 +23,8 @@ class CParticles{
 	int getnrParticles();
 	
 
+	void addParticle(CParticle* inParticle);
+	
 	CParticle* operator[](int element);
 	CParticle* get(int element);
 
@@ -45,3 +47,7 @@ class CParticles{
 
 
 };
+
+
+//ToDo:
+//  Move LoadBin to CHalos.

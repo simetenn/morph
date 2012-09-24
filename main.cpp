@@ -1,4 +1,4 @@
-#include "CParticles.h"
+#include "CHalos.h"
 
 using namespace std;
 
@@ -13,8 +13,8 @@ int main(int argc, char **argv){
 
 	if (rank == 0) {
 
-		CParticles a;
-		//a.get_Data ("particles.dat");
+		CHalos a;
+		a.get_Data ("particles.dat");
 		//a.initialize_Halos();
 		//a.master();
 		MPI_Barrier(MPI_COMM_WORLD);
@@ -22,7 +22,7 @@ int main(int argc, char **argv){
 	}
 
 	else {
-		CParticles b;
+		CHalos b;
 		//b.slave();
 		MPI_Barrier(MPI_COMM_WORLD);
 		MPI_Finalize();

@@ -27,6 +27,8 @@ CParticles::CParticles(CArray* inArray){
 	nrParticles = (inArray->len())/ParticleSize;
 	vector<double> tmpArray (ParticleSize);
 	int particle_count = 0;
+	cout << tmpArray.size() << endl;
+	
 
 	for (int i = 0; i<nrParticles;i++){
 		for (int j = 0; j < ParticleSize;j++){
@@ -63,7 +65,7 @@ void CParticles::initialize_CParticles(CArray* inArray){
 
 
 //Get data from my own type of input file
-void CParticles::get_Data(string filename){
+/*void CParticles::get_Data(string filename){
 	vector<string> strData;
 
 	ifstream file(filename.c_str());
@@ -103,7 +105,7 @@ void CParticles::get_Data(string filename){
 	else cout << "Unable to open file" << endl;
 
 	nrParticles = Particles.size();
-}
+	}*/
 
 
 //Print particles
@@ -225,4 +227,11 @@ CArray* CParticles::Particles2Array(){//pointer
 	}
 	//return Array;
 	return new CArray(ParticleSize*nrParticles,Array); //Memory leak
+}
+
+
+
+void CParticles::addParticle(CParticle* inParticle){
+	nrParticles += 1;
+	Particles.push_back(inParticle);
 }
