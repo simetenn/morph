@@ -30,7 +30,7 @@ class CParticle{
 	void Move(double dt);
 	int getParticleSize();
 
-	void print_Particle();
+	void print();
 
 	//put this private, and get the code to work in some way. ???
 	CVector P,V,A;

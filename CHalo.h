@@ -25,8 +25,13 @@ class CHalo{
 	CParticle* get(int element);
 
 	void addParticle(CParticle* inParticle);
-		
+	CParticle* getParticle(int element);
 
+	void dummy();
+
+	void print();
+
+	
  protected:
 	CParticles Halo;
 	double HaloMass;

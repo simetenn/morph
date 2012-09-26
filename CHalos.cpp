@@ -59,21 +59,42 @@ CHalos::~CHalos(){
 void CHalos::initialize_Halos(){
 	nrHalos = 8;
 	//vector<CHalo*> tmpHalos = Halos;
-	CHalo* tmpHalo = Halos[0];
+	CHalo* oldHalo = Halos[0];
 	Halos.clear();
 	Halos.resize(nrHalos);
+
+
+	for (int i = 0; i < nrHalos; i++){
+		CHalo* tmpHalo = new CHalo();
+		Halos.push_back(tmpHalo);
+	}
+	cout << "esdsdsd" << endl;
+	(oldHalo->getParticle(0)->get_P()).print();
 
 	CParticle tmpParticle;
 	ParticleSize = tmpParticle.getParticleSize();
 
+	//oldHalo->getParticle(0);
+
 	for (int i = 0; i < nrParticles;i++){
+		cout << i << endl;
+
+		Halos[oldHalo->getParticle(i)->get_P().Quadrant()]->addParticle(oldHalo->getParticle(i));
+
+
 		//Halos.push_back(Particles[i]);
-		Halos[tmpHalo->getCParticles()->get(i)->get_P()].push_back(tmpHalo[i]);
+		//cout << tmpHalo->getCParticles()->get(i)->get_P() << endl;
+		//Halos[tmpHalo->getCParticles()->get(i)->get_P()].push_back(tmpHalo[i]);
 		//Halos[(tmpHalos[i]->get_P()).Quadrant()].push_back(tmpHalos[i]);
 	}
-	
+
+	//cout << Halos[0]->getnrParticles() << endl;
+
+	//cout << nrHalos << endl;
 	for (int i = 0; i < nrHalos;i++){
-		nrinHalo.push_back(Halos[i]->getnrParticles());
+		//cout << Halos[i]->getnrParticles() << endl;
+		//nrinHalo.push_back(Halos[i]->getnrParticles());
+		//nrinHalo.push_back(;
 	}
 }
 
@@ -285,12 +306,9 @@ void CHalos::get_Data(string filename){
 			tmpData.push_back(atof(strData[i].c_str()));
 		}
 
-
 		//Particles.push_back(new CParticle);
 		//Particles[0]->Set_Data(tmpData);
-
-
-
+		
 		while (file.good()){
 			getline(file,line);
 			split(strData, line, is_any_of(" "));
@@ -316,13 +334,18 @@ void CHalos::get_Data(string filename){
 	nrParticles = nr;
 
 	double tmpArray [nr*data_size];
-
+	
 	for (int i = 0;i<nr*data_size;i++){
-		tmpArray[0] = tmpData[0];
+		tmpArray[i] = tmpData[i];
 	}
 
+	CArray test =  CArray(nr*data_size,tmpArray);
+	//test.print();
+	
+	CHalo test2 = CHalo (&test);
+	//test2.print();
 	Halos.push_back(new CHalo (new CArray (nr*data_size,tmpArray)));
-
+	
 }
 
 
