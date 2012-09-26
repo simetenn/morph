@@ -19,12 +19,22 @@ CParticle::CParticle(){
 CParticle::CParticle(double* in_array){
 	//Some way to test if length of the array is 11
 	//try {
+	Generate_ID();
+
+	//for (int i = 0; i < 11; i++) {
+	//	cout << in_array[i] << endl;
+	//}
+	
 	ParticleSize = 11;
 	Mass = in_array[0];
 	Charge = in_array[1];
 	CVector P (in_array[2],in_array[3],in_array[4]);
 	CVector V (in_array[5],in_array[6],in_array[7]);
 	CVector A (in_array[8],in_array[9],in_array[10]);
+	//P.print();
+	//V.print();
+	//A.print();
+	
 	/*}
 	  catch {
 	  CVector P,V,A;
@@ -33,7 +43,7 @@ CParticle::CParticle(double* in_array){
 	  Generate_ID()
 	  }*/
 
-	Generate_ID();
+	
 }
 
 
@@ -129,7 +139,7 @@ int CParticle::get_ID(){
 }
 
 
-void CParticle::print_Particle(){
+void CParticle::print(){
 	cout << "------------------------------------" << endl;
 	cout << "Particle ID: " << ID << endl;
 	cout << "Mass: " << Mass << endl;

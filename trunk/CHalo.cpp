@@ -21,7 +21,12 @@ CHalo::CHalo(CParticles* inParticles){
 CHalo::CHalo(CArray* inArray){
 	CParticle tmpParticle;
 	ParticleSize = tmpParticle.getParticleSize();
+
+	//inArray->print();
+	
 	Halo = CParticles(inArray);
+	Halo.print();
+
 	//ParticleSize = Halo[0]->Particle[0].getParticleSize(); //Get this to work!
 	nrParticles = Halo.getnrParticles();
 	HaloMass = 0;
@@ -88,4 +93,17 @@ void CHalo::addParticle(CParticle* inParticle){
 }
 
 
+CParticle* CHalo::getParticle(int element){
+	return Halo.getParticle(element);
+}
 
+
+void CHalo::print(){
+	Halo.print();
+}
+
+
+
+void CHalo::dummy(){
+	cout << "dummy" << endl;
+}

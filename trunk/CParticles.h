@@ -14,7 +14,7 @@ class CParticles{
 	~CParticles();
 
 	//void get_Data(string filename);
-	void print_Particles();
+	void print();
 	void initialize_CParticles(CArray* inArray);
 	
 	//void Array2Particles(CArray* inArray);
@@ -39,7 +39,9 @@ class CParticles{
 	};
 
 	void SeparateClustersMPI();
-	
+
+
+	CParticle* getParticle(int element);
 
  protected:
 	vector<CParticle*> Particles;

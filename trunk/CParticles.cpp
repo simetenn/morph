@@ -20,25 +20,38 @@ CParticles::~CParticles(){
 CParticles::CParticles(CArray* inArray){
 	CParticle tmpParticle;
 	ParticleSize = tmpParticle.getParticleSize();
+
+
 	if ((inArray->len()) % ParticleSize != 0) {
 		cout << "Warning: Length of array not compatible with ParticleSize"<< endl;
 	}
 
+
 	nrParticles = (inArray->len())/ParticleSize;
-	vector<double> tmpArray (ParticleSize);
-	int particle_count = 0;
-	cout << tmpArray.size() << endl;
+
+	//vector<double> tmpArray (ParticleSize);
 	
+	int particle_count = 0;
+	//cout << tmpArray.size() << endl;
+
 
 	for (int i = 0; i<nrParticles;i++){
+
+		double* tmpArray = new double [ParticleSize];
+		
 		for (int j = 0; j < ParticleSize;j++){
-			tmpArray[j] = inArray->get(particle_count*ParticleSize+j);
+			//cout << inArray->get(particle_count*ParticleSize+j)<<endl;
+			tmpArray[j] = inArray->get(ParticleSize*i+j);
+			//cout << tmpArray[j] << endl;
 		}
 
-		Particles.push_back(new CParticle); //Slow way to do this?? //<- memory leak?
-		Particles[particle_count]->Set_Data(tmpArray);
+		CParticle * tmpParticle = new CParticle(tmpArray);
+		tmpParticle->print();
+		
+		Particles.push_back(new CParticle (tmpArray)); //Slow way to do this?? //<- memory leak?
+		//Particles[particle_count]->Set_Data(tmpArray);
 		//Store the particle in correct halo
-		particle_count++;
+		//particle_count++;
 	}
 }
 
@@ -66,52 +79,52 @@ void CParticles::initialize_CParticles(CArray* inArray){
 
 //Get data from my own type of input file
 /*void CParticles::get_Data(string filename){
-	vector<string> strData;
+  vector<string> strData;
 
-	ifstream file(filename.c_str());
-	string line;
+  ifstream file(filename.c_str());
+  string line;
 
-	if (file.is_open()){
-		getline(file,line);
-		split(strData, line, is_any_of("\t "));
+  if (file.is_open()){
+  getline(file,line);
+  split(strData, line, is_any_of("\t "));
 
-		data_size = strData.size();
-		vector<double> tmpData (data_size);
+  data_size = strData.size();
+  vector<double> tmpData (data_size);
 
-		for (int i = 0; i < data_size; i++){
-			tmpData[i] = atof(strData[i].c_str());
-		}
+  for (int i = 0; i < data_size; i++){
+  tmpData[i] = atof(strData[i].c_str());
+  }
 
-		Particles.push_back(new CParticle);
-		Particles[0]->Set_Data(tmpData);
+  Particles.push_back(new CParticle);
+  Particles[0]->Set_Data(tmpData);
 
-		int nr = 1;
-		while (file.good()){
-			getline(file,line);
-			split(strData, line, is_any_of(" "));
+  int nr = 1;
+  while (file.good()){
+  getline(file,line);
+  split(strData, line, is_any_of(" "));
 
-			for (int i = 0; i < data_size; i++){
-				tmpData[i] = atof(strData[i].c_str());
-			}
+  for (int i = 0; i < data_size; i++){
+  tmpData[i] = atof(strData[i].c_str());
+  }
 
-			Particles.push_back(new CParticle); //Memory leak?
-			Particles[nr]->Set_Data(tmpData);
-			//Particles[nr]->print_Particle();
-			nr++;
-		}
-		file.close();
-	}
+  Particles.push_back(new CParticle); //Memory leak?
+  Particles[nr]->Set_Data(tmpData);
+  //Particles[nr]->print_Particle();
+  nr++;
+  }
+  file.close();
+  }
 
-	else cout << "Unable to open file" << endl;
+  else cout << "Unable to open file" << endl;
 
-	nrParticles = Particles.size();
-	}*/
+  nrParticles = Particles.size();
+  }*/
 
 
 //Print particles
-void CParticles::print_Particles(){
+void CParticles::print(){
 	for (int i = 0; i < nrParticles;i++){
-		Particles[i]->print_Particle();
+		Particles[i]->print();
 	}
 }
 
@@ -234,4 +247,14 @@ CArray* CParticles::Particles2Array(){//pointer
 void CParticles::addParticle(CParticle* inParticle){
 	nrParticles += 1;
 	Particles.push_back(inParticle);
+}
+
+
+CParticle* CParticles::getParticle(int element){
+	if (element >= nrParticles){
+		cout << "Particle out of bounds" << endl;
+	}
+	else {
+		return Particles[element];
+	}
 }

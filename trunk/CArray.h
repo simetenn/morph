@@ -34,7 +34,7 @@ class CArray : public CMPI {
 
   double* CArray2array();
 
-  
+  void print_array();
 
   CArray* gather_sum();
   

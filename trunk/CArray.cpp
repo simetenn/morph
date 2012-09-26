@@ -186,7 +186,12 @@ void CArray::recieve_slave(){
 
 
 
-
+void CArray::print_array(){
+	for (int i = 0;i<length;i++){
+		cout << array[i] << ", "; 
+	}
+	cout << endl;
+}
 
 
 
