@@ -16,10 +16,9 @@ class CHalo{
 
 	CArray* Halo2Array();
 
-	int getnrParticles();
-
 	CParticles* getCParticles();
 
+	int getnrParticles();
 	
 	CParticle* operator[](int element);
 	CParticle* get(int element);

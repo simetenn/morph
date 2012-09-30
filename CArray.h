@@ -32,6 +32,8 @@ class CArray : public CMPI {
   void recieve_slave();
   void initialize();
 
+  void front(double in_value);
+  
   double* CArray2array();
 
   void print_array();

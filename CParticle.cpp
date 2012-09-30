@@ -28,13 +28,10 @@ CParticle::CParticle(double* in_array){
 	ParticleSize = 11;
 	Mass = in_array[0];
 	Charge = in_array[1];
-	CVector P (in_array[2],in_array[3],in_array[4]);
-	CVector V (in_array[5],in_array[6],in_array[7]);
-	CVector A (in_array[8],in_array[9],in_array[10]);
-	//P.print();
-	//V.print();
-	//A.print();
-	
+	P.Set(in_array[2],in_array[3],in_array[4]);
+	V.Set(in_array[5],in_array[6],in_array[7]);
+	A.Set(in_array[8],in_array[9],in_array[10]);
+		
 	/*}
 	  catch {
 	  CVector P,V,A;

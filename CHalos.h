@@ -12,7 +12,7 @@ class CHalos{
 	~CHalos();
 
 	void HaloSort();
-	void print_Halos();
+	void printHalos();
 	void initialize_Halos();
 
 
@@ -32,7 +32,8 @@ class CHalos{
 	CHalo* getHalo(int element);
 	void get_Data(string filename);
 	CParticles* getCParticles(int element);
-
+	void print();
+	void addHalos(CArray* inArray);
 	
  protected:
 	int nrHalos,ParticleSize, nrParticles, data_size;

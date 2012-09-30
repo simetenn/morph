@@ -21,39 +21,25 @@ CParticles::CParticles(CArray* inArray){
 	CParticle tmpParticle;
 	ParticleSize = tmpParticle.getParticleSize();
 
-
 	if ((inArray->len()) % ParticleSize != 0) {
 		cout << "Warning: Length of array not compatible with ParticleSize"<< endl;
 	}
 
-
 	nrParticles = (inArray->len())/ParticleSize;
-
-	//vector<double> tmpArray (ParticleSize);
-	
 	int particle_count = 0;
-	//cout << tmpArray.size() << endl;
-
-
+	
 	for (int i = 0; i<nrParticles;i++){
-
 		double* tmpArray = new double [ParticleSize];
 		
 		for (int j = 0; j < ParticleSize;j++){
-			//cout << inArray->get(particle_count*ParticleSize+j)<<endl;
 			tmpArray[j] = inArray->get(ParticleSize*i+j);
-			//cout << tmpArray[j] << endl;
 		}
 
 		CParticle * tmpParticle = new CParticle(tmpArray);
-		tmpParticle->print();
-		
-		Particles.push_back(new CParticle (tmpArray)); //Slow way to do this?? //<- memory leak?
-		//Particles[particle_count]->Set_Data(tmpArray);
-		//Store the particle in correct halo
-		//particle_count++;
+		Particles.push_back(tmpParticle);
 	}
 }
+
 
 //Write this in some other way.
 void CParticles::initialize_CParticles(CArray* inArray){
@@ -128,6 +114,30 @@ void CParticles::print(){
 	}
 }
 
+
+
+void CParticles::set(CArray* inArray){
+	CParticle tmpParticle;
+	ParticleSize = tmpParticle.getParticleSize();
+
+	if ((inArray->len()) % ParticleSize != 0) {
+		cout << "Warning: Length of array not compatible with ParticleSize"<< endl;
+	}
+
+	nrParticles = (inArray->len())/ParticleSize;
+	int particle_count = 0;
+	
+	for (int i = 0; i<nrParticles;i++){
+		double* tmpArray = new double [ParticleSize];
+		
+		for (int j = 0; j < ParticleSize;j++){
+			tmpArray[j] = inArray->get(ParticleSize*i+j);
+		}
+
+		CParticle * tmpParticle = new CParticle(tmpArray);
+		Particles.push_back(tmpParticle);
+	}
+}
 
 
 

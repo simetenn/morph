@@ -16,7 +16,7 @@ class CParticles{
 	//void get_Data(string filename);
 	void print();
 	void initialize_CParticles(CArray* inArray);
-	
+	void set(CArray* inArray);
 	//void Array2Particles(CArray* inArray);
 	//void sendHalo(int halonr)
 
