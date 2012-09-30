@@ -16,14 +16,16 @@ int main(int argc, char **argv){
 		CHalos a;
 		a.get_Data ("particles.dat");
 		a.initialize_Halos();
-		//a.master();
+		a.printHalos();
+		a.master();
+		a.printHalos();
 		MPI_Barrier(MPI_COMM_WORLD);
 		MPI_Finalize();
 	}
 
 	else {
 		CHalos b;
-		//b.slave();
+		b.slave();
 		MPI_Barrier(MPI_COMM_WORLD);
 		MPI_Finalize();
 	}

@@ -19,16 +19,16 @@ CArray::CArray(int in_length){
 }
 
 /*CArray::CArray(vector<double> in_vector){
-	length = in_vector.size();
-	array = new double [length];
-		
-	for (int i = 0;i<length;i++){
-		array[0] = in_vector[0];
-	}
-	
-	array = new double [length]; //<- memory leak
-	CMPI();
-}
+  length = in_vector.size();
+  array = new double [length];
+
+  for (int i = 0;i<length;i++){
+  array[0] = in_vector[0];
+  }
+
+  array = new double [length]; //<- memory leak
+  CMPI();
+  }
 */
 
 
@@ -188,7 +188,7 @@ void CArray::recieve_slave(){
 
 void CArray::print_array(){
 	for (int i = 0;i<length;i++){
-		cout << array[i] << ", "; 
+		cout << array[i] << ", ";
 	}
 	cout << endl;
 }
@@ -289,13 +289,37 @@ array = CMPI::receive_array_master(in_processor, length, Req);
 
 
 void CArray::push_back(double in_value){
-	double* oldArray = array;
+	double oldArray [length];
+	
+	for (int i = 0;i<length;i++){
+		oldArray[i] = array[i];
+	}	
+
 	length += 1;
-	delete [] array;
+	delete[] array;
 	array = new double [length];
 
 	for (int i = 0;i<length-1;i++){
 		array[i] = oldArray[i];
 	}
 	array[length-1] = in_value;
+}
+
+void CArray::front(double in_value){
+	double oldArray [length];
+	
+	for (int i = 0;i<length;i++){
+		oldArray[i] = array[i];
+	}
+	
+	length += 1;
+	delete[] array;
+	
+	array = new double [length];
+
+	array[0] = in_value;
+	for (int i = 0;i<length-1;i++){
+		array[i+1] = oldArray[i];
+	}
+	
 }
