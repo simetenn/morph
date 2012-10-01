@@ -7,12 +7,13 @@ int CParticle::ID_Generator = 0;
 
 
 CParticle::CParticle(){
-	ParticleSize = 11;
+	ParticleSize = 12;
 
 	CVector P,V,A;
 	Mass = 1;
 	Charge = 0;
 	Generate_ID();
+	Halo = -1;
 }
 
 
@@ -25,12 +26,13 @@ CParticle::CParticle(double* in_array){
 	//	cout << in_array[i] << endl;
 	//}
 	
-	ParticleSize = 11;
-	Mass = in_array[0];
-	Charge = in_array[1];
-	P.Set(in_array[2],in_array[3],in_array[4]);
-	V.Set(in_array[5],in_array[6],in_array[7]);
-	A.Set(in_array[8],in_array[9],in_array[10]);
+	ParticleSize = 12;
+	Halo = in_array[0];
+	Mass = in_array[1];
+	Charge = in_array[2];
+	P.Set(in_array[3],in_array[4],in_array[5]);
+	V.Set(in_array[6],in_array[7],in_array[8]);
+	A.Set(in_array[9],in_array[10],in_array[11]);
 		
 	/*}
 	  catch {
@@ -79,6 +81,14 @@ void CParticle::Set_Velocity(double Vx, double Vy, double Vz){
 
 void CParticle::Set_Acceleration(double Ax, double Ay, double Az){
 	A.Set(Ax,Ay,Az);
+}
+
+void CParticle::setP(CVector inP){
+	P = inP;
+}
+
+void CParticle::setV(CVector inV){
+	V = inV;
 }
 
 
@@ -153,13 +163,30 @@ void CParticle::print(){
 
 double* CParticle::Particle2Array(){
 	double * tmpArray = new double [ParticleSize]; //<- Memory leak
-	tmpArray[0] = Mass;
-	tmpArray[1] = Charge;
+	tmpArray[0] = Halo;
+	tmpArray[1] = Mass;
+	tmpArray[2] = Charge;
 
 	for (int i = 0;i<P.getDimensions();i++){
-		tmpArray[i+2] = P[i];
-		tmpArray[i+5] = V[i];
-		tmpArray[i+8] = A[i];
+		tmpArray[i+3] = P[i];
+		tmpArray[i+6] = V[i];
+		tmpArray[i+9] = A[i];
 	}
 	return tmpArray;
 }
+
+
+
+void CParticle::setHalo(int element){
+	Halo = element;
+}
+
+int CParticle::gotHalo(){
+	if (Halo != -1 ) {
+		return 1;
+	}
+	else {
+		return 0;
+	}
+}
+

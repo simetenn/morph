@@ -391,7 +391,7 @@ void CHalos::master(){
 	vector<CArray*> Array (size-1);
 	CParticle tmpParticle;
 
-	
+
 	//Initialize, sending one halo to each processor
 	for (int p = 1; p < size; p++){
 		cout << "Initializing for processor nr: " << p << endl;
@@ -413,17 +413,19 @@ void CHalos::master(){
 	while (count < nrHalos) {
 		cout << "Calculating for halo nr: " << count + 1 << endl;
 		processor = MPI.listener(Req);
-		
+
 		FinalHalos.addHalos(Array[processor-1]);
-		
+
 		Array[processor-1] =  Halos[count]->Halo2Array();
 		MPI.End(processor,0);
+
 		Array[processor-1]->front(Array[processor-1]->len()/tmpParticle.getParticleSize());
 		Array[processor-1]->front(1);
+
 		Array[processor-1]->send(processor);
 		Array[processor-1]->recieve(processor,&Req[processor-1]);
 		count++;
-		
+
 	}
 
 	MPI.WaitAll(Req);
@@ -449,7 +451,7 @@ void CHalos::slave(){
 	while (true) {
 		if (MPI.ifEnd() == 1) break;
 		HalosArray.recieve_slave();
-		
+
 		//HalosArray.front(HalosArray.len()/tmpParticle.getParticleSize());
 		//HalosArray.front(1);
 
@@ -457,7 +459,7 @@ void CHalos::slave(){
 
 		//cout << "Slave " << rank << " recieved halo" << endl;
 		CHalos SlaveHalos (&HalosArray);
-		
+
 		//SlaveHalos.print();
 		//slaveParticles.print_Particles();
 		//slaveParticles.DoSomething();
@@ -468,3 +470,83 @@ void CHalos::slave(){
 }
 
 
+
+
+
+
+
+void CHalos::LoadBin(string Filename){
+	ifstream f(Filename.c_str(), ios::out | ios::binary);
+
+	cout << "reading file..." << endl;
+	unsigned int count = -1;
+	f.read((char *)&count, sizeof(unsigned int));
+	particle_save* block = new particle_save[count];
+	f.read((char *)block, sizeof(particle_save)*count);
+
+
+	Halos.clear();
+	nrinHalo.clear();
+	nrHalos = 1;
+
+	CHalo* tmpHalo = new CHalo();
+	Halos.push_back(tmpHalo);
+
+	cout << "Copying blocks.." << endl;
+
+
+
+	for (int i=0;i<count;i++) {
+
+		CParticle* tmpParticle = new CParticle() ;
+
+		//Particle.push_back(new CParticle); //Memory leak?
+		//tmpParticle->setP(block[i].P);
+		cout << "kraaasj?" << endl;
+		block[i].P;
+		cout << "kraaasj?" << endl;
+		//tmpParticle->P.Set(block[i].P[0],block[i].P[1],block[i].P[2]);
+
+		tmpParticle->setV(block[i].V);
+		tmpParticle->Set_Acceleration(0,0,0);
+
+		tmpHalo->addParticle(tmpParticle);
+
+	}
+
+	cout << "Done loading!" << endl;
+
+	f.close();
+	delete[] block;
+
+	nrParticles = count;
+	nrinHalo.push_back(nrParticles);
+}
+
+
+
+void CHalos::FriendOfFriendN2(){
+
+	double b = 0.2;
+
+	CHalo* oldHalo = Halos[0];
+	CHalo tmpHalo();
+	Halos.clear();
+	nrinHalo.clear();
+	
+	
+
+	for (int i=0;i<nrParticles;i++){
+		CParticle* tmpParticle = oldHalo->getParticle(i);
+		for (int j=0;j<nrParticles;j++){
+			if (i!=j) {
+				double distance = (tmpParticle->get_P() - oldHalo->getParticle(j)->get_P()).Length();
+				if (distance < b ){
+					
+					//Halos[]->addParticle();
+					
+				}
+			}
+		}
+	}
+}

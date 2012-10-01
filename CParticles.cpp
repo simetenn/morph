@@ -15,6 +15,8 @@ CParticles::~CParticles(){
 	}
 }
 
+
+//Not correct comment
 //Creates CParticles from an Array formated in a specific way.
 //nr of Halos : nr of particles in 1st Halo :  nr of particles in 2nd Halo : ... : ParticleArray : ParticleArray : ...
 CParticles::CParticles(CArray* inArray){
@@ -186,29 +188,6 @@ CParticle* CParticles::get(int element){
 
 
 
-void CParticles::LoadBin(string Filename){
-	ifstream f(Filename.c_str(), ios::out | ios::binary);
-
-	cout << "reading file..." << endl;
-	unsigned int count = -1;
-	f.read((char *)&count, sizeof(unsigned int));
-	particle_save* block = new particle_save[count];
-	f.read((char *)block, sizeof(particle_save)*count);
-
-
-	cout << "Copying blocks.." << endl;
-	for (int i=0;i<count;i++) {
-		Particles.push_back(new CParticle); //Memory leak?
-		Particles[i]->P=block[i].P;
-		Particles[i]->V=block[i].V;
-		Particles[i]->Set_Acceleration(0,0,0);
-	}
-
-	cout << "Done loading!" << endl;
-
-	f.close();
-	delete[] block;
-}
 
 
 int CParticles::getnrParticles(){

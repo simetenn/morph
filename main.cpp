@@ -15,10 +15,11 @@ int main(int argc, char **argv){
 
 		CHalos a;
 		a.get_Data ("particles.dat");
+		//a.LoadBin("particles_keep.dat");
 		a.initialize_Halos();
-		a.printHalos();
+		//a.printHalos();
 		a.master();
-		a.printHalos();
+		//a.printHalos();
 		MPI_Barrier(MPI_COMM_WORLD);
 		MPI_Finalize();
 	}
