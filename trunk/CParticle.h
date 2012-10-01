@@ -48,7 +48,7 @@ class CParticle{
 
 	
 	double Mass, Charge;
-	int ID, Halo;
+	int ID, HaloID;
 
 	int ParticleSize;
 	

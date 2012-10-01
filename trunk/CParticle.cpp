@@ -13,7 +13,7 @@ CParticle::CParticle(){
 	Mass = 1;
 	Charge = 0;
 	Generate_ID();
-	Halo = -1;
+	HaloID = -1;
 }
 
 
@@ -27,7 +27,7 @@ CParticle::CParticle(double* in_array){
 	//}
 	
 	ParticleSize = 12;
-	Halo = in_array[0];
+	HaloID = in_array[0];
 	Mass = in_array[1];
 	Charge = in_array[2];
 	P.Set(in_array[3],in_array[4],in_array[5]);
@@ -149,6 +149,7 @@ int CParticle::get_ID(){
 void CParticle::print(){
 	cout << "------------------------------------" << endl;
 	cout << "Particle ID: " << ID << endl;
+	cout << "Halo ID" << HaloID << endl;
 	cout << "Mass: " << Mass << endl;
 	cout << "Charge: " << Charge << endl;
 	cout << "Position:	   ";
@@ -163,7 +164,7 @@ void CParticle::print(){
 
 double* CParticle::Particle2Array(){
 	double * tmpArray = new double [ParticleSize]; //<- Memory leak
-	tmpArray[0] = Halo;
+	tmpArray[0] = HaloID;
 	tmpArray[1] = Mass;
 	tmpArray[2] = Charge;
 
@@ -178,11 +179,11 @@ double* CParticle::Particle2Array(){
 
 
 void CParticle::setHalo(int element){
-	Halo = element;
+	HaloID = element;
 }
 
 int CParticle::gotHalo(){
-	if (Halo != -1 ) {
+	if (HaloID != -1 ) {
 		return 1;
 	}
 	else {
