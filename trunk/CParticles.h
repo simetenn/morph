@@ -30,14 +30,7 @@ class CParticles{
 
 	CArray* Particles2Array();
 	
-	void LoadBin(string Filename);
-
-	// Particle Save structure: Keep only P and V!
-	struct particle_save {
-		CVector P, V;
-		unsigned int halo;
-	};
-
+	
 	void SeparateClustersMPI();
 
 

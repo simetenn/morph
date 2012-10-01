@@ -2,7 +2,10 @@
 #include "CHalo.h"
 //#include "CArray.h"
 
-
+struct particle_save {
+	CVector P, V;
+	unsigned int halo;
+};
 
 class CHalos{
 
@@ -35,10 +38,18 @@ class CHalos{
 	void print();
 	void addHalos(CArray* inArray);
 	
+
+	void LoadBin(string Filename);
+
+	// Particle Save structure: Keep only P and V!
+
+	void FriendOfFriendN2();
+		
+
  protected:
 	int nrHalos,ParticleSize, nrParticles, data_size;
 	vector<int> nrinHalo;
 	vector<CHalo*> Halos;
-	
+
 
 };

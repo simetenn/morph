@@ -8,14 +8,18 @@ class CParticle{
 	CParticle(double* in_array);
 	~CParticle();
 
-
+	
 	void Set_Position(double Px, double Py, double Pz);
 	void Set_Velocity(double Vx, double Vy, double Vz);
 	void Set_Acceleration(double Ax, double Ay, double Az);
 	void Set_Mass(double in_M);
 	void Set_Charge(double in_C);
 	void Set_Data(vector<double> data);
+	
+	void setP(CVector inP);
+	void setV(CVector inV);
 
+	
 	double* Particle2Array();
 
 	int get_ID();
@@ -32,6 +36,11 @@ class CParticle{
 
 	void print();
 
+
+	void setHalo(int element);
+	int gotHalo();
+	
+	
 	//put this private, and get the code to work in some way. ???
 	CVector P,V,A;
 	
@@ -39,7 +48,7 @@ class CParticle{
 
 	
 	double Mass, Charge;
-	int ID;
+	int ID, Halo;
 
 	int ParticleSize;
 	
