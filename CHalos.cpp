@@ -329,7 +329,7 @@ void CHalos::get_Data(string filename){
 		while (file.good()){
 			getline(file,line);
 			split(strData, line, is_any_of(" "));
-
+			tmpData.push_back(-1);
 			for (int i = 0; i < data_size; i++){
 				tmpData.push_back(atof(strData[i].c_str()));
 			}
@@ -350,9 +350,9 @@ void CHalos::get_Data(string filename){
 	nrinHalo.push_back(nr);
 	nrParticles = nr;
 
-	double tmpArray [nr*data_size];
+	double tmpArray [nr*ParticleSize];
 
-	for (int i = 0;i<nr*data_size;i++){
+	for (int i = 0;i<nr*ParticleSize;i++){
 		tmpArray[i] = tmpData[i];
 	}
 
@@ -361,7 +361,7 @@ void CHalos::get_Data(string filename){
 
 	//CHalo test2 = CHalo (&test);
 	//test2.print();
-	Halos.push_back(new CHalo (new CArray (nr*data_size,tmpArray)));
+	Halos.push_back(new CHalo (new CArray (nr*ParticleSize,tmpArray)));
 	//Halos[0]->print();
 }
 

@@ -123,6 +123,8 @@ void CParticles::set(CArray* inArray){
 	ParticleSize = tmpParticle.getParticleSize();
 
 	if ((inArray->len()) % ParticleSize != 0) {
+		cout << (inArray->len()) << endl;
+		cout << ParticleSize<< endl;
 		cout << "Warning: Length of array not compatible with ParticleSize"<< endl;
 	}
 

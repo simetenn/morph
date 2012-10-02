@@ -19,7 +19,7 @@ int main(int argc, char **argv){
 		a.initialize_Halos();
 		//a.printHalos();
 		a.master();
-		//a.printHalos();
+		/a.printHalos();
 		MPI_Barrier(MPI_COMM_WORLD);
 		MPI_Finalize();
 	}
