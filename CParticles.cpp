@@ -249,3 +249,13 @@ CParticle* CParticles::getParticle(int element){
 		return Particles[element];
 	}
 }
+
+
+void CParticles::addParticles(CParticles* inParticles){
+
+	nrParticles += inParticles->getnrParticles();
+	
+	for (int i = 0; i < inParticles->getnrParticles();i++){
+		Particles.push_back(inParticles->getParticle(i));
+	}
+}

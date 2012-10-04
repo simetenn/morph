@@ -25,7 +25,8 @@ class CHalo{
 
 	void addParticle(CParticle* inParticle);
 	CParticle* getParticle(int element);
-
+	void addHalo(CHalo* inHalo);
+	double getHaloMass();
 	void dummy();
 
 	void print();

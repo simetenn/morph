@@ -149,7 +149,7 @@ int CParticle::get_ID(){
 void CParticle::print(){
 	cout << "------------------------------------" << endl;
 	cout << "Particle ID: " << ID << endl;
-	cout << "Halo ID" << HaloID << endl;
+	cout << "Halo ID: " << HaloID << endl;
 	cout << "Mass: " << Mass << endl;
 	cout << "Charge: " << Charge << endl;
 	cout << "Position:	   ";
@@ -179,6 +179,9 @@ double* CParticle::Particle2Array(){
 
 
 void CParticle::setHalo(int element){
+	if (element < 0){
+		cout << "Warning: This is negative, it should always be a positive number !!!!!" << endl;
+	}
 	HaloID = element;
 }
 
@@ -190,4 +193,16 @@ int CParticle::gotHalo(){
 		return 0;
 	}
 }
+int CParticle::getHalo(){
+	return HaloID;
+}
 
+void CParticle::decreaseHalo(){
+	//cout << "HaloID before in decreaseHalo(): " << HaloID << endl;
+	HaloID--;
+	//cout << "HaloID after in decreaseHalo(): " << HaloID << endl;
+
+	if (HaloID < 0){
+		cout << "Warning: HaloID=" << HaloID << "This is negative, it should always be a positive number !!!!!" << endl;
+	}
+}

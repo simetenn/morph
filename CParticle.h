@@ -38,8 +38,9 @@ class CParticle{
 
 
 	void setHalo(int element);
+	void decreaseHalo();
 	int gotHalo();
-	
+	int getHalo();
 	
 	//put this private, and get the code to work in some way. ???
 	CVector P,V,A;

@@ -106,3 +106,12 @@ void CHalo::print(){
 void CHalo::dummy(){
 	cout << "dummy" << endl;
 }
+
+void CHalo::addHalo(CHalo* inHalo){
+	HaloMass += inHalo->getHaloMass();
+	Halo.addParticles(inHalo->getCParticles());
+}
+
+double CHalo::getHaloMass(){
+	return HaloMass;
+}

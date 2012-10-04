@@ -242,7 +242,10 @@ int CHalos::sizeHalos(){
 	return nrHalos;
 }
 
-
+void CHalos::removeHalo(int element){
+	nrinHalo.erase(nrinHalo.begin()+element);
+	Halos.erase(Halos.begin() + element);
+}
 
 CHalos CHalos::operator+(CHalos* inCHalo){
 	int innrParticles = inCHalo->getnrParticles();
@@ -318,7 +321,7 @@ void CHalos::get_Data(string filename){
 
 		data_size = strData.size();
 		//vector<double> tmpData (data_size);
-
+		tmpData.push_back(-1);
 		for (int i = 0; i < data_size; i++){
 			tmpData.push_back(atof(strData[i].c_str()));
 		}
@@ -484,7 +487,6 @@ void CHalos::LoadBin(string Filename){
 	particle_save* block = new particle_save[count];
 	f.read((char *)block, sizeof(particle_save)*count);
 
-
 	Halos.clear();
 	nrinHalo.clear();
 	nrHalos = 1;
@@ -494,23 +496,26 @@ void CHalos::LoadBin(string Filename){
 
 	cout << "Copying blocks.." << endl;
 
-
-
 	for (int i=0;i<count;i++) {
 
 		CParticle* tmpParticle = new CParticle() ;
 
 		//Particle.push_back(new CParticle); //Memory leak?
 		//tmpParticle->setP(block[i].P);
+
+
 		cout << "kraaasj?" << endl;
-		block[i].P;
+		//objects[i].P = block[i].P;
+		//objects[i].V = block[i].V;
+
+		//block[i].P;
 		cout << "kraaasj?" << endl;
 		//tmpParticle->P.Set(block[i].P[0],block[i].P[1],block[i].P[2]);
 
 		tmpParticle->setV(block[i].V);
 		tmpParticle->Set_Acceleration(0,0,0);
 
-		tmpHalo->addParticle(tmpParticle);
+		//tmpHalo->addParticle(tmpParticle);
 
 	}
 
@@ -528,25 +533,131 @@ void CHalos::LoadBin(string Filename){
 void CHalos::FriendOfFriendN2(){
 
 	double b = 0.2;
-
+	int otherHaloID,thisHaloID;
 	CHalo* oldHalo = Halos[0];
-	CHalo tmpHalo();
+	CHalo* noHalo = new CHalo();
+	//tmpParticles
 	Halos.clear();
 	nrinHalo.clear();
-	
-	
 
 	for (int i=0;i<nrParticles;i++){
-		CParticle* tmpParticle = oldHalo->getParticle(i);
+		cout << "Running FoF for particle nr: " << i << endl;
+		CParticle* thisParticle = oldHalo->getParticle(i);
+		thisHaloID = thisParticle->getHalo();
 		for (int j=0;j<nrParticles;j++){
 			if (i!=j) {
-				double distance = (tmpParticle->get_P() - oldHalo->getParticle(j)->get_P()).Length();
+
+				CParticle* otherParticle = oldHalo->getParticle(j);
+				otherHaloID = otherParticle->getHalo();
+				thisHaloID = thisParticle->getHalo();
+				double distance = (thisParticle->get_P() - otherParticle->get_P()).Length();
+
+
+				//cout << distance << endl;
+				//If the particles are within linking distance of each other
 				if (distance < b ){
-					
-					//Halos[]->addParticle();
-					
+					//cout << "Close enough to be linked" << endl;
+					cout <<"thisHaloID: "<<thisHaloID<< "\t otherHaloID: "<<otherHaloID << endl;
+					//If both particles have no halo,
+					//create a new halo and add both particles to that halo
+					if (otherHaloID == -1 and thisHaloID == -1){
+						cout << "None have a halo, assigning both haloID: " << nrHalos << endl;
+						oldHalo->getParticle(i)->setHalo(nrHalos);
+						oldHalo->getParticle(j)->setHalo(nrHalos);
+
+						Halos.push_back(new CHalo());
+
+						Halos[nrHalos]->addParticle(oldHalo->getParticle(i));
+						Halos[nrHalos]->addParticle(oldHalo->getParticle(j));
+						nrinHalo.push_back(2);
+						nrHalos++;
+
+
+						//				cout << oldHalo->getParticle(i)->getHalo() << endl;
+						//cout << Halos[nrHalos-1]->getParticle(nrinHalo[nrHalos-1]-1)->getHalo()<<endl;
+						//cout << Halos[nrHalos-1]->getParticle(nrinHalo[nrHalos-1]-2)->getHalo()<<endl;
+					}
+
+					//Test if both have a halo, but not the same halo.
+					//Then add the smaller halo to the larger,
+					//delete the smaller from Halos and
+					//update HaloID for each particle in the following halos.
+					else if (thisHaloID != -1 and otherHaloID != -1 and	 thisHaloID != otherHaloID){
+						cout << "Both have a halo, but different ones" << endl;
+
+						/*for (int n= 0;n<nrHalos;n++){
+							cout << "for halo nr: " << n<<" nrinHalo: "<<nrinHalo[n] << endl;
+							cout << "---------------" << endl;
+							for (int o= 0;o<nrinHalo[n];o++){
+								cout << Halos[n]->getParticle(o)->getHalo()<< endl;
+							}
+							}*/
+						//exit(1);
+
+						//if (nrinHalo[thisHaloID]>=nrinHalo[otherHaloID]){
+						//cout << thisHaloID << " " << otherHaloID << endl;
+						Halos[thisHaloID]->addHalo(Halos[otherHaloID]);
+						nrinHalo[thisHaloID] += nrinHalo[otherHaloID];
+
+
+						cout << "--------------" << endl;
+						for (int m = 0; m<nrinHalo[otherHaloID];m++){
+
+							Halos[otherHaloID]->getParticle(m)->setHalo(thisHaloID);
+							cout << Halos[otherHaloID]->getParticle(m)->getHalo() << endl;
+
+						}
+						cout << "--------------" << endl;
+
+						//For each halo
+						//cout << "Deleting "<< otherHaloID + 1 << endl;
+
+
+
+						for (int k = otherHaloID+1;k < nrHalos;k++){
+							//cout <<"k="<< k<<endl;
+							//cout <<"nrinHalo[k]="<<nrinHalo[k]<<endl;
+							//for each particle in halo
+							for (int l = 0;l<nrinHalo[k];l++){
+								//Halos[i]->getParticle(j)->setHalo(Halos[i]->getParticle(j)->getHalo - 1);
+								//cout << Halos[k]->getParticle(l)->getHalo() << endl;
+								Halos[k]->getParticle(l)->decreaseHalo();
+							}
+							}
+
+						nrHalos--;
+						Halos.erase(Halos.begin()+otherHaloID);
+						nrinHalo.erase(nrinHalo.begin()+otherHaloID);
+						//exit(1);
+						//If the other particle has a halo, add this particle to
+						//the halo the other particle has
+					}
+					else if (thisHaloID == -1 and otherHaloID != -1){
+						cout << "Only other particle has a halo" << endl;
+						//oldHalo->getParticle(i)->setHalo(otherHaloID);
+						Halos[otherHaloID]->addParticle(oldHalo->getParticle(i));
+						Halos[otherHaloID]->getParticle(nrinHalo[otherHaloID])->setHalo(otherHaloID);
+						nrinHalo[otherHaloID]++;
+
+					}
+
+					else if (otherHaloID == -1 and thisHaloID != -1){
+						cout << "Only this particle has a halo" << endl;
+						//oldHalo->getParticle(j)->setHalo(thisHaloID);
+						Halos[thisHaloID]->addParticle(oldHalo->getParticle(j));
+						Halos[thisHaloID]->getParticle(nrinHalo[thisHaloID])->setHalo(thisHaloID);
+						nrinHalo[thisHaloID]++;
+					}
+
+					/*else {
+					  int HaloID = otherParticle->getHalo();
+					  oldHalo->getParticle(i)->setHalo(HaloID);
+					  Halos[HaloID]->addParticle(oldHalo->getParticle(i));
+					  nrinHalo[HaloID]++;
+					  }*/
 				}
 			}
 		}
 	}
 }
+

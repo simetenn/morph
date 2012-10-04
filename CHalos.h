@@ -37,7 +37,7 @@ class CHalos{
 	CParticles* getCParticles(int element);
 	void print();
 	void addHalos(CArray* inArray);
-	
+	void removeHalo(int element);
 
 	void LoadBin(string Filename);
 

@@ -33,6 +33,7 @@ class CParticles{
 	
 	void SeparateClustersMPI();
 
+	void addParticles(CParticles* inParticles);
 
 	CParticle* getParticle(int element);
 

@@ -14,12 +14,15 @@ int main(int argc, char **argv){
 	if (rank == 0) {
 
 		CHalos a;
+		CParticle d;
 		a.get_Data ("particles.dat");
+		//a.print();
 		//a.LoadBin("particles_keep.dat");
 		a.initialize_Halos();
-		//a.printHalos();
+		//a.FriendOfFriendN2();
+		a.printHalos();
 		a.master();
-		/a.printHalos();
+		a.printHalos();
 		MPI_Barrier(MPI_COMM_WORLD);
 		MPI_Finalize();
 	}
