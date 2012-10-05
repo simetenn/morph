@@ -3,7 +3,7 @@
 //#include "CArray.h"
 
 struct particle_save {
-	CVector P, V;
+	CVector_bare P, V;
 	unsigned int halo;
 };
 
@@ -44,7 +44,7 @@ class CHalos{
 	// Particle Save structure: Keep only P and V!
 
 	void FriendOfFriendN2();
-		
+	void FriendOfFriendGrid();
 
  protected:
 	int nrHalos,ParticleSize, nrParticles, data_size;

@@ -29,7 +29,7 @@ int main(int argc, char **argv){
 
 	else {
 		CHalos b;
-		b.slave();
+		//b.slave();
 		MPI_Barrier(MPI_COMM_WORLD);
 		MPI_Finalize();
 	}

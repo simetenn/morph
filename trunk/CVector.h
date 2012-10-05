@@ -1,6 +1,11 @@
 #include <vector>
 using namespace std;
 
+class CVector_bare{
+ public:
+	double x,y,z;
+};
+
 class CVector{
  public:
 

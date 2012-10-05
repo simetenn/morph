@@ -484,14 +484,20 @@ void CHalos::slave(){
 
 
 void CHalos::LoadBin(string Filename){
-	ifstream f(Filename.c_str(), ios::out | ios::binary);
+	ifstream f(Filename.c_str(), ios::in | ios::binary);
 
 	cout << "reading file..." << endl;
 	unsigned int count = -1;
 	f.read((char *)&count, sizeof(unsigned int));
+	cout << count << endl;
 	particle_save* block = new particle_save[count];
 	f.read((char *)block, sizeof(particle_save)*count);
 
+
+	cout << block[0].P.x<<endl;
+
+	
+	
 	Halos.clear();
 	nrinHalo.clear();
 	nrHalos = 1;
@@ -501,6 +507,7 @@ void CHalos::LoadBin(string Filename){
 
 	cout << "Copying blocks.." << endl;
 
+	
 	for (int i=0;i<count;i++) {
 
 		CParticle* tmpParticle = new CParticle() ;
@@ -514,9 +521,10 @@ void CHalos::LoadBin(string Filename){
 		//objects[i].V = block[i].V;
 
 		//block[i].P;
+		cout << block[i].P.x << endl;
 		cout << "kraaasj?" << endl;
-		tmpParticle->P.Set((block[i].P)[0],(block[i].P)[1],(block[i].P)[2]);
-
+		//tmpParticle->P.Set((block[i].P)[0],(block[i].P)[1],(block[i].P)[2]);
+		tmpParticle->Set_Position(block[i].P.x,block[i].P.y,block[i].P.z);
 		//tmpParticle->setV(()block[i].V);
 		tmpParticle->Set_Acceleration(0,0,0);
 
@@ -532,6 +540,85 @@ void CHalos::LoadBin(string Filename){
 	nrParticles = count;
 	nrinHalo.push_back(nrParticles);
 }
+
+
+
+CParticle* seachParticle;
+CParticles allParticles;
+
+
+void findNeighbors(CParticle* p, CHalo& halo) {
+	p->flag = 1.0;
+	p->killFromList();
+	halo.push_back(p);
+	
+	CHalo venneliste;
+	
+	for (int i=0;i<allParticles.size();i++)
+		if (allParticles[i].flag==0)
+			if (distance(allParticles[i].P,p-P)<listLength) {
+				venneliste.push_back(allParticles[i]);
+				allParticles[i]->flag = 1.0;
+			}
+
+	for (int i=0;i<venneListe.size();i++)
+		findNeighbors(venneListe[i], halo);
+
+	
+}
+
+
+CParticle* findParticle() {
+
+	while (true) {
+		if(searchParticle->flag==0.0)
+			return searchParticle;
+
+		searchParticle = searchParticle->next;
+
+		if (searchParticle == null)
+			return null;
+	}
+	
+}
+
+void FOF(){
+	searchParticle = particles[0];
+	allParticles.clear();
+	CParticle* p = searchParticle;
+	p->prev = null;
+	for(int i=1;i<nrparticles;i++) {
+		allparticles.push_back(p);
+
+		p->flag = 0.0;
+		p->next = particles[i];
+		p->next->prev = p;
+		p = p->next;
+		
+	}
+	p->next = null;
+	
+	boolean done = false;
+
+	while (!done) {
+		CParticle* p = findParticle();
+		if (p==null)
+			done=true;
+		else {
+			Halo* halo = new Halo();
+			halos.push_back(halo);
+			
+			findNeighbors(p, halo);
+		}
+		
+	}
+	
+
+	
+	
+	
+}
+
 
 
 
@@ -666,3 +753,10 @@ void CHalos::FriendOfFriendN2(){
 	}
 }
 
+
+
+
+
+void CHalos::FriendOfFriendGrid(){
+	
+}
