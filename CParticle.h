@@ -10,7 +10,7 @@ class CParticle{
 
 	CParticle* next,*prev;
 
-	int flag;
+	
 	
 	void Set_Position(double Px, double Py, double Pz);
 	void Set_Velocity(double Vx, double Vy, double Vz);
@@ -22,6 +22,8 @@ class CParticle{
 	void setP(CVector inP);
 	void setV(CVector inV);
 
+	int getFlag();
+	void setFlag(int inFlag);
 	
 	double* Particle2Array();
 
@@ -39,7 +41,8 @@ class CParticle{
 
 	void print();
 
-
+	void RemoveFromList();
+	
 	void setHalo(int element);
 	void decreaseHalo();
 	int gotHalo();
@@ -50,7 +53,7 @@ class CParticle{
 	
  protected:
 
-	
+	int flag;
 	double Mass, Charge;
 	int ID, HaloID;
 

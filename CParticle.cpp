@@ -25,7 +25,7 @@ CParticle::CParticle(double* in_array){
 	//for (int i = 0; i < 11; i++) {
 	//	cout << in_array[i] << endl;
 	//}
-	
+
 	ParticleSize = 12;
 	HaloID = in_array[0];
 	Mass = in_array[1];
@@ -33,7 +33,7 @@ CParticle::CParticle(double* in_array){
 	P.Set(in_array[3],in_array[4],in_array[5]);
 	V.Set(in_array[6],in_array[7],in_array[8]);
 	A.Set(in_array[9],in_array[10],in_array[11]);
-		
+
 	/*}
 	  catch {
 	  CVector P,V,A;
@@ -42,7 +42,7 @@ CParticle::CParticle(double* in_array){
 	  Generate_ID()
 	  }*/
 
-	
+
 }
 
 
@@ -193,6 +193,7 @@ int CParticle::gotHalo(){
 		return 0;
 	}
 }
+
 int CParticle::getHalo(){
 	return HaloID;
 }
@@ -206,3 +207,21 @@ void CParticle::decreaseHalo(){
 		cout << "Warning: HaloID=" << HaloID << "This is negative, it should always be a positive number !!!!!" << endl;
 	}
 }
+
+
+int CParticle::getFlag(){
+	return flag;
+}
+
+void CParticle::setFlag(int inFlag){
+	flag = inFlag;
+}
+
+void CParticle::RemoveFromList(){
+	if (next)
+		next->prev = prev;
+
+	if (prev)
+		prev->next = next;
+}
+

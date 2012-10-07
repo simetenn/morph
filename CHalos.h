@@ -43,11 +43,19 @@ class CHalos{
 
 	// Particle Save structure: Keep only P and V!
 
-	void FriendOfFriendN2();
+	void FriendOfFriendN3();
+	
 	void FriendOfFriendGrid();
 
+	//Friend of Friend methods
+	void FriendOfFriendN2();
+	CParticle* findParticle();
+	void findNeighbors(CParticle* inParticle, CHalo* inHalo);
+	
  protected:
 	int nrHalos,ParticleSize, nrParticles, data_size;
+	CParticles allParticles;
+	CParticle* searchParticle;
 	vector<int> nrinHalo;
 	vector<CHalo*> Halos;
 
