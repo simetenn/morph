@@ -608,53 +608,65 @@ void FOF(){
 
 void CHalos::FriendOfFriendN2(){
 	//Is this a true copy?
-	allParticles = *Halos[0]->getCParticles();
+	//allParticles = *Halos[0]->getCParticles();
 
+	
 	searchParticle = Halos[0]->getParticle(0);
 	CParticle* Particle = searchParticle;
 
-	Halos.clear();
-	nrinHalo.clear();
 
 	Particle->prev=NULL;
 	for (int i=1; i < nrParticles;i++){
 		allParticles.addParticle(Particle);
 
 		Particle->setFlag(0);
-		Particle->next = allParticles[i];
+		Particle->next = Halos[0]->getParticle(i);//allParticles[i];
 		Particle->next->prev = Particle;
 		Particle = Particle->next;
 	}
+	allParticles.addParticle(Particle);
 	Particle->setFlag(0);
 	Particle->next = NULL;
+
+	Halos.clear();
+	nrinHalo.clear();
+	
+	//bool done = false;
 	
 	while (true){
-		//cout << "..and around we go.." << endl;
+		cout << "..and around we go.." << endl;
 		Particle = findParticle();
+		cout << "past findParticle" << endl;
 		if (Particle == NULL){
 			cout << "Finished with all particles" << endl;
 			break;
+			//done = true;
 		}
 			
 		else {
 			cout << "eternal" << endl;
 			CHalo* tmpHalo = new CHalo();
 			Halos.push_back(tmpHalo);
-			
+			//cout << allParticles.getnrParticles() << endl;
 			findNeighbors(Particle, tmpHalo);
-			cout << "eternal3" << endl;
+			//cout << tmpHalo->getnrParticles() << endl;
 		}
 	}
+
+	cout << "do i get to here?" << endl;
 }
 
 //This might be obsolete with removing particles from the list
 CParticle* CHalos::findParticle(){
+	
 	while (true){
+		cout << "in findParticle" << endl;
+		
 		if (searchParticle->getFlag() == 0)
 			return searchParticle;
 
 		searchParticle = searchParticle->next;
-
+		//cout << searchParticle << endl;
 		if (searchParticle == NULL)
 			return NULL;
 	}
@@ -669,9 +681,12 @@ void CHalos::findNeighbors(CParticle* inParticle, CHalo* inHalo){
 	inHalo->addParticle(inParticle);
 
 	CHalo FriendList;
-	cout << "..and around we go.." << endl;
-
+	//cout << "..and around we go.." << endl;
+	//cout << allParticles.getnrParticles() << endl;
+	//exit(1);
 	for (int i = 0; i<allParticles.getnrParticles();i++){
+		//cout << "are we here" << endl;
+		//cout << i << endl;
 		if (allParticles[i]->getFlag()==0){
 			double distance = (inParticle->get_P() - allParticles[i]->get_P()).Length();
 			//cout << distance << endl;
@@ -688,11 +703,8 @@ void CHalos::findNeighbors(CParticle* inParticle, CHalo* inHalo){
 	if (FriendList.getnrParticles() != 0){
 		cout << "does it enter here?" << endl;
 		for (int i = 0; i<FriendList.getnrParticles();i++){
-			findNeighbors(FriendList[i],&FriendList);
+			findNeighbors(FriendList[i],inHalo);
 		}
-	}
-	else {
-		return;
 	}
 }
 
