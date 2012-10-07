@@ -486,18 +486,13 @@ void CHalos::slave(){
 void CHalos::LoadBin(string Filename){
 	ifstream f(Filename.c_str(), ios::in | ios::binary);
 
-	cout << "reading file..." << endl;
+	cout << "Reading file..." << endl;
 	unsigned int count = -1;
 	f.read((char *)&count, sizeof(unsigned int));
-	cout << count << endl;
-	particle_save* block = new particle_save[count];
+		particle_save* block = new particle_save[count];
 	f.read((char *)block, sizeof(particle_save)*count);
 
 
-	cout << block[0].P.x<<endl;
-
-	
-	
 	Halos.clear();
 	nrinHalo.clear();
 	nrHalos = 1;
@@ -505,30 +500,22 @@ void CHalos::LoadBin(string Filename){
 	CHalo* tmpHalo = new CHalo();
 	Halos.push_back(tmpHalo);
 
-	cout << "Copying blocks.." << endl;
+	cout << "Copying data..." << endl;
+	cout << "Nr of particles: "<< count << endl;
 
+	count = 1000;
 	
 	for (int i=0;i<count;i++) {
 
 		CParticle* tmpParticle = new CParticle() ;
 
 		//Particle.push_back(new CParticle); //Memory leak?
-		//tmpParticle->setP(block[i].P);
-
-
-		cout << "kraaasj?" << endl;
-		//objects[i].P = block[i].P;
-		//objects[i].V = block[i].V;
-
-		//block[i].P;
-		cout << block[i].P.x << endl;
-		cout << "kraaasj?" << endl;
-		//tmpParticle->P.Set((block[i].P)[0],(block[i].P)[1],(block[i].P)[2]);
+		
 		tmpParticle->Set_Position(block[i].P.x,block[i].P.y,block[i].P.z);
-		//tmpParticle->setV(()block[i].V);
+		tmpParticle->Set_Velocity(block[i].V.x,block[i].V.y,block[i].V.z);
 		tmpParticle->Set_Acceleration(0,0,0);
 
-		//tmpHalo->addParticle(tmpParticle);
+		tmpHalo->addParticle(tmpParticle);
 
 	}
 
@@ -542,7 +529,7 @@ void CHalos::LoadBin(string Filename){
 }
 
 
-
+/*
 CParticle* seachParticle;
 CParticles allParticles;
 
@@ -617,12 +604,110 @@ void FOF(){
 	
 	
 	
+}*/
+
+void CHalos::FriendOfFriendN2(){
+	//Is this a true copy?
+	allParticles = *Halos[0]->getCParticles();
+
+	searchParticle = Halos[0]->getParticle(0);
+	CParticle* Particle = searchParticle;
+
+	Halos.clear();
+	nrinHalo.clear();
+
+	Particle->prev=NULL;
+	for (int i=1; i < nrParticles;i++){
+		allParticles.addParticle(Particle);
+
+		Particle->setFlag(0);
+		Particle->next = allParticles[i];
+		Particle->next->prev = Particle;
+		Particle = Particle->next;
+	}
+	Particle->setFlag(0);
+	Particle->next = NULL;
+	
+	while (true){
+		//cout << "..and around we go.." << endl;
+		Particle = findParticle();
+		if (Particle == NULL){
+			cout << "Finished with all particles" << endl;
+			break;
+		}
+			
+		else {
+			cout << "eternal" << endl;
+			CHalo* tmpHalo = new CHalo();
+			Halos.push_back(tmpHalo);
+			
+			findNeighbors(Particle, tmpHalo);
+			cout << "eternal3" << endl;
+		}
+	}
+}
+
+//This might be obsolete with removing particles from the list
+CParticle* CHalos::findParticle(){
+	while (true){
+		if (searchParticle->getFlag() == 0)
+			return searchParticle;
+
+		searchParticle = searchParticle->next;
+
+		if (searchParticle == NULL)
+			return NULL;
+	}
+}
+
+
+void CHalos::findNeighbors(CParticle* inParticle, CHalo* inHalo){
+	double b = 0.2;
+
+	inParticle->setFlag(1);
+	inParticle->RemoveFromList();
+	inHalo->addParticle(inParticle);
+
+	CHalo FriendList;
+	cout << "..and around we go.." << endl;
+
+	for (int i = 0; i<allParticles.getnrParticles();i++){
+		if (allParticles[i]->getFlag()==0){
+			double distance = (inParticle->get_P() - allParticles[i]->get_P()).Length();
+			//cout << distance << endl;
+			if (distance < b){
+				//cout << "We got 2 neighbouring particles" << endl;
+				allParticles[i]->setFlag(1);
+				//allParticles->RemoveFromList()
+				FriendList.addParticle(allParticles[i]);
+			}
+		}
+	}
+	
+	//cout << FriendList.getnrParticles()<< endl;
+	if (FriendList.getnrParticles() != 0){
+		cout << "does it enter here?" << endl;
+		for (int i = 0; i<FriendList.getnrParticles();i++){
+			findNeighbors(FriendList[i],&FriendList);
+		}
+	}
+	else {
+		return;
+	}
 }
 
 
 
 
-void CHalos::FriendOfFriendN2(){
+
+
+
+
+
+
+
+//Way to slow method, not tested resulst
+void CHalos::FriendOfFriendN3(){
 
 	double b = 0.2;
 	int otherHaloID,thisHaloID;

@@ -16,10 +16,11 @@ int main(int argc, char **argv){
 		CHalos a;
 		CParticle d;
 		//a.get_Data ("particles.dat");
-		//a.print();
+		
 		a.LoadBin("particles_keep.dat");
+		//a.print();
 		//a.initialize_Halos();
-		//a.FriendOfFriendN2();
+		a.FriendOfFriendN2();
 		//a.printHalos();
 		//a.master();
 		//a.printHalos();
@@ -28,6 +29,7 @@ int main(int argc, char **argv){
 	}
 
 	else {
+		
 		CHalos b;
 		//b.slave();
 		MPI_Barrier(MPI_COMM_WORLD);
