@@ -10,9 +10,9 @@ CParticles::CParticles(){
 }
 
 CParticles::~CParticles(){
-	for (int i = 0; i < nrParticles;i++){
-		delete Particles[i];// <- correct?
-	}
+	//for (int i = 0; i < nrParticles;i++){
+	//	delete Particles[i];// <- correct?
+	//}
 }
 
 
