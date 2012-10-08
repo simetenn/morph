@@ -51,6 +51,8 @@ class CHalos{
 	void FriendOfFriendN2();
 	CParticle* findParticle();
 	void findNeighbors(CParticle* inParticle, CHalo* inHalo);
+
+	void saveP();
 	
  protected:
 	int nrHalos,ParticleSize, nrParticles, data_size;
