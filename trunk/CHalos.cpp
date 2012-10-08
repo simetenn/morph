@@ -485,7 +485,7 @@ void CHalos::slave(){
 
 void CHalos::LoadBin(string Filename){
 	ifstream f(Filename.c_str(), ios::in | ios::binary);
-
+	cout << "---------------------------------" << endl;
 	cout << "Reading file..." << endl;
 	unsigned int count = -1;
 	f.read((char *)&count, sizeof(unsigned int));
@@ -520,12 +520,28 @@ void CHalos::LoadBin(string Filename){
 	}
 
 	cout << "Done loading!" << endl;
-
+	cout << "---------------------------------" << endl;
 	f.close();
 	delete[] block;
 
 	nrParticles = count;
 	nrinHalo.push_back(nrParticles);
+}
+
+
+void CHalos::saveP(){
+	fstream file;
+	CVector tmpP;
+	
+	file.open("positions.dat", ios::out);
+	
+	for (int i = 0;i<nrHalos;i++){
+		for (int j = 0;j<nrinHalo[i];j++){
+			tmpP = Halos[i]->getParticle(j)->get_P();
+			file << tmpP.x() << " " << tmpP.y()<< " " << tmpP.z()<< " " <<  i << endl;
+		}
+	}
+	file.close();
 }
 
 
@@ -609,6 +625,7 @@ void FOF(){
 void CHalos::FriendOfFriendN2(){
 	//Is this a true copy?
 	//allParticles = *Halos[0]->getCParticles();
+	int HaloLimit = 10;
 
 	
 	searchParticle = Halos[0]->getParticle(0);
@@ -628,39 +645,54 @@ void CHalos::FriendOfFriendN2(){
 	Particle->setFlag(0);
 	Particle->next = NULL;
 
-	Halos.clear();
-	nrinHalo.clear();
-	
+
+	vector<CHalo*> tmpHalos;
+
 	//bool done = false;
-	
+	cout << "---------------------------------" << endl;
+	cout << "Calculating Friend of Friend(scaling as N^2)" << endl;
+	cout << "..." << endl;
 	while (true){
-		cout << "..and around we go.." << endl;
+		//cout << "..and around we go.." << endl;
 		Particle = findParticle();
-		cout << "past findParticle" << endl;
+		//cout << "past findParticle" << endl;
 		if (Particle == NULL){
-			cout << "Finished with all particles" << endl;
+			//cout << "Finished with all particles" << endl;
 			break;
 			//done = true;
 		}
 			
 		else {
-			cout << "eternal" << endl;
+			//cout << "eternal" << endl;
 			CHalo* tmpHalo = new CHalo();
-			Halos.push_back(tmpHalo);
+			tmpHalos.push_back(tmpHalo);
 			//cout << allParticles.getnrParticles() << endl;
 			findNeighbors(Particle, tmpHalo);
 			//cout << tmpHalo->getnrParticles() << endl;
 		}
 	}
 
-	cout << "do i get to here?" << endl;
+
+	Halos.clear();
+	nrinHalo.clear();
+
+	for (int i = 0; i < tmpHalos.size(); i++){
+		if (tmpHalos[i]->getnrParticles() > HaloLimit){
+			Halos.push_back(tmpHalos[i]);
+			nrinHalo.push_back(tmpHalos[i]->getnrParticles());
+		}
+		nrHalos = Halos.size();
+	}
+	
+	cout << "Finished calculating Friend of Friends" << endl;
+	cout << "---------------------------------" << endl;
 }
 
 //This might be obsolete with removing particles from the list
 CParticle* CHalos::findParticle(){
 	
 	while (true){
-		cout << "in findParticle" << endl;
+		//cout << "in findParticle" << endl;
 		
 		if (searchParticle->getFlag() == 0)
 			return searchParticle;
@@ -674,7 +706,7 @@ CParticle* CHalos::findParticle(){
 
 
 void CHalos::findNeighbors(CParticle* inParticle, CHalo* inHalo){
-	double b = 0.2;
+	double b = 0.02;
 
 	inParticle->setFlag(1);
 	inParticle->RemoveFromList();
@@ -701,7 +733,7 @@ void CHalos::findNeighbors(CParticle* inParticle, CHalo* inHalo){
 	
 	//cout << FriendList.getnrParticles()<< endl;
 	if (FriendList.getnrParticles() != 0){
-		cout << "does it enter here?" << endl;
+		//cout << "does it enter here?" << endl;
 		for (int i = 0; i<FriendList.getnrParticles();i++){
 			findNeighbors(FriendList[i],inHalo);
 		}
@@ -857,3 +889,7 @@ void CHalos::FriendOfFriendN3(){
 void CHalos::FriendOfFriendGrid(){
 	
 }
+
+
+
+ 

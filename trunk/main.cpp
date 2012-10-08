@@ -21,7 +21,8 @@ int main(int argc, char **argv){
 		//a.print();
 		//a.initialize_Halos();
 		a.FriendOfFriendN2();
-		//a.printHalos();
+		a.printHalos();
+		a.saveP();
 		//a.master();
 		//a.printHalos();
 		MPI_Barrier(MPI_COMM_WORLD);
