@@ -2,7 +2,7 @@
 
 using namespace std;
 
-
+//Constructor, creates empty CHalos
 CHalos::CHalos(){
 	CParticle tmpParticle;
 	ParticleSize = tmpParticle.getParticleSize();
@@ -10,46 +10,35 @@ CHalos::CHalos(){
 	nrHalos = 0;
 }
 
-/*
-  CHalos::CHalos(CArray* inArray){
-  nrHalos = inArray->get(0);
-  CParticle tmpParticle;
-  ParticleSize = tmpParticle.getParticleSize();
-  int particle_count = 1+nrHalos;
-  nrParticles = (inArray->len()-1-nrHalos)/ParticleSize;
 
-  for (int i = 0; i < nrHalos; i++){
-  nrinHalo.push_back(inArray->get(1+i));
-
-  double tmpArray[nrinHalo[i]];
-  for (int j = 0; j < nrinHalo[i];j++){
-  tmpArray[j] = inArray->get(particle_count);
-  parti
-*/
-
+//Create CHalos from an in array on the form:
+//nr of halos, nr of particles in halo 1, nr of particles in halo 2, ... ,
+//nr of particles of in halo N, particle array 1, particle array 2, ... ,
+//particle array N
 CHalos::CHalos(CArray* inArray){
 	nrHalos = inArray->get(0);
+
 	CParticle tmpParticle;
 	ParticleSize = tmpParticle.getParticleSize();
+
 	int particle_count = 1+nrHalos;
 	nrParticles = (inArray->len()-1-nrHalos)/ParticleSize;
-	//nrinHalo.push_back(nrParticles);
-
+	
 	for (int i = 0; i < nrHalos; i++){
 		nrinHalo.push_back(inArray->get(1+i));
-
 		double tmpArray[nrinHalo[i]*ParticleSize];
+
 		for (int j = 0; j < nrinHalo[i];j++){
 			for (int k = 0; k < ParticleSize;k++){
 				tmpArray[j*ParticleSize+k] = inArray->get(particle_count);
 				particle_count++;
 			}
 		}
+		
 		CArray* tmpCArray = new CArray(nrinHalo[i]*ParticleSize, tmpArray);
 		CHalo* tmpHalo = new CHalo(tmpCArray); // <- Memory leak
 		Halos.push_back(tmpHalo);
 	}
-
 }
 
 
@@ -63,69 +52,55 @@ CHalos::~CHalos(){
 //Initialize the halos in my own fake datasett
 void CHalos::initialize_Halos(){
 	nrHalos = 8;
-	//vector<CHalo*> tmpHalos = Halos;
 	CHalo* oldHalo = Halos[0];
 	Halos.clear();
 	nrinHalo.clear();
-	//Halos.resize(nrHalos);
-
-
+	
 	for (int i = 0; i < nrHalos; i++){
 		CHalo* tmpHalo = new CHalo();
 
 		Halos.push_back(tmpHalo);
 	}
 
-
 	CParticle tmpParticle;
 	ParticleSize = tmpParticle.getParticleSize();
 
-	//oldHalo->getParticle(0);
-
 	for (int i = 0; i < nrParticles;i++){
 		Halos[(oldHalo->getParticle(i)->get_P()).Quadrant()]->addParticle(oldHalo->getParticle(i));
-
-		//Halos.push_back(Particles[i]);
-		//cout << tmpHalo->getCParticles()->get(i)->get_P() << endl;
-		//Halos[tmpHalo->getCParticles()->get(i)->get_P()].push_back(tmpHalo[i]);
-		//Halos[(tmpHalos[i]->get_P()).Quadrant()].push_back(tmpHalos[i]);
 	}
-
-	//cout << Halos[0]->getnrParticles() << endl;
-
-	//cout << nrHalos << endl;
+	
 	for (int i = 0; i < nrHalos;i++){
 		nrinHalo.push_back(Halos[i]->getnrParticles());
-		//nrinHalo.push_back(;
 	}
 }
 
 
+
+
+//Sort halos by size, not existing yet
 void CHalos::HaloSort(){
 
 }
 
 
+
+//Print out all halos
 void CHalos::printHalos(){
 	for (int i = 0;i < nrHalos; i++){
-
 		cout << "__________________________________" << endl;
 		cout << "								   " << endl;
 		cout << "Halo nr: " << i << endl;
 		cout << "Nr of particles in halo: " << nrinHalo[i] << endl;
 		cout << "__________________________________" << endl;
 		cout << endl;
-		//for (int j = 0;j < Halos[i].size();j++){
-		//Halos[i][j]->print_Particle();
-		//}
 	}
 }
 
 
+//Add halo to the existing ones
 void CHalos::addHalo(CHalo* inHalo){
 	Halos.push_back(inHalo);
 }
-
 
 
 
@@ -141,64 +116,36 @@ void CHalos::addHalos(CArray* inArray){
 	vector<int> tmpnrinHalo;
 	int newnrParticles = (inArray->len()-1-nrHalos)/ParticleSize;
 	nrParticles += newnrParticles;
-	
-	int particle_count = 0;
-	//vector<CParticle* > tmpParticles;
-	//vector<double> tmpArray (ParticleSize);
 
-	//Halos.resize(nrHalos);
+	int particle_count = 0;
+
 	cout << "nrinHalo: " <<inArray->get(1) <<endl;
 	for (int i = 0; i < newnrHalos; i++){
 		nrinHalo.push_back(inArray->get(1+i));
 		tmpnrinHalo.push_back(inArray->get(1+i));
-		
+
 		double tmpArray[tmpnrinHalo[i]*ParticleSize];
 		cout << nrinHalo[i] << endl;
 		for (int j = 0; j < tmpnrinHalo[i];j++){
-			
+
 			for (int k = 0; k < ParticleSize;k++){
 				tmpArray[j*ParticleSize+k] = inArray->get(particle_count);
 				particle_count++;
 			}
 		}
-		
+
 		CArray* tmpCArray = new CArray(tmpnrinHalo[i]*ParticleSize, tmpArray);
 		CHalo* tmpHalo = new CHalo(tmpCArray); // <- Memory leak
 		Halos.push_back(tmpHalo);
 	}
-
-	/*for (int i = 0; i<newnrHalos;i++){
-	  Halos.push_back(CHalo* tmpHalo (Particles));
-
-	  for (int j = 0;j < inArray->get(i+1);j++){
-	  for (int k = 0; k < ParticleSize;k++){
-	  tmpArray[k] = inArray->get(particle_count*ParticleSize+1+newnrHalos+k);
-	  }
-
-
-	  //takes up extra
-
-
-	  Particles.push_back(new CParticle); //Slow way to do this??
-	  Particles[particle_count+oldnrParticles]->Set_Data(tmpArray);
-	  Halos[i].push_back(Particles[oldnrParticles+particle_count]);
-	  //tmpParticles.push_back(new CParticle); //Slow way to do this??
-	  //tmpParticles[j]->Set_Data(tmpArray);
-	  particle_count++;
-	  }
-
-	  //Halos.push_back(tmpParticles);
-	  //tmpParticles.clear();
-	  }*/
 }
 
 
 
 
 
-//Convert from several halos to one array
-CArray*	 CHalos::Halos2Array(){//pointer
-
+//Convert from all halos to one array
+CArray*	 CHalos::Halos2Array(){
 	//rewrite this when time, but seems to work atm
 
 	double* Array = new double [ParticleSize*nrParticles+nrHalos+1]; // Memory leak
@@ -207,9 +154,6 @@ CArray*	 CHalos::Halos2Array(){//pointer
 	Array[0] = nrHalos;
 
 	for (int i = 0; i<nrHalos;i++){
-		//cout << "Halo nr:" << i << endl;
-		//cout << Halos[i].size() << endl;
-
 		Array[i+1] = nrinHalo[i];
 		for (int j=0;j<nrinHalo[i];j++){
 			tmpArray = Halos[i]->get(j)->Particle2Array();
@@ -225,44 +169,63 @@ CArray*	 CHalos::Halos2Array(){//pointer
 
 
 
+//Return total nr of particles
 int CHalos::getnrParticles(){
 	return nrParticles;
 }
 
-int CHalos::getnrHalos(){
-	return nrHalos;
-}
 
+
+//return nr of particles in a halo
 int CHalos::getnrinHalo(int element){
 	return nrinHalo[element];
 }
 
+
+
+//Return a halo
 CHalo* CHalos::getHalo(int element){
 	return Halos[element];
 }
 
 
+
+
+//Return nr of halos
+int CHalos::getnrHalos(){
+	return nrHalos;
+}
+
+
+
+
+//Return nr of halos
 int CHalos::sizeHalos(){
 	return nrHalos;
 }
 
+
+
+
+//Remove halo nr element from CHalos
 void CHalos::removeHalo(int element){
 	nrinHalo.erase(nrinHalo.begin()+element);
 	Halos.erase(Halos.begin() + element);
 }
 
+
+
+
+//Add two CHalos. Not tested, so unsure if correct
 CHalos CHalos::operator+(CHalos* inCHalo){
 	int innrParticles = inCHalo->getnrParticles();
 	int innrHalos = inCHalo->getnrHalos();
-	CArray* resHalos = new CArray(ParticleSize*(nrParticles+innrParticles)+nrHalos+innrHalos+1);
-
 	int particle_count = nrHalos+innrHalos+1;
-
+	
+	CArray* resHalos = new CArray(ParticleSize*(nrParticles+innrParticles)+nrHalos+innrHalos+1);
 	double tmpArray[ParticleSize];
 
 	resHalos[0]=nrParticles+innrParticles;
-
-
 
 	for (int i = 0; i<nrHalos;i++){
 		resHalos[particle_count] = nrinHalo[i];
@@ -282,7 +245,6 @@ CHalos CHalos::operator+(CHalos* inCHalo){
 		}
 	}
 
-
 	for (int i = 0; i<innrHalos;i++){
 		CArray* tmpHaloArray = inCHalo->getHalo(i)->Halo2Array();
 		for (int j = 0;j < tmpHaloArray->len();j++){
@@ -290,33 +252,21 @@ CHalos CHalos::operator+(CHalos* inCHalo){
 			particle_count++;
 		}
 	}
-
-
-
-
-	//for (int i = 0;i<)
-
 	return CHalos(resHalos);
 }
 
 
 
-CHalos CHalos::operator=(CHalos* inCHalo){
-
-}
-
-
 
 
 //Get data from my own type of input file
+//For testing purposes only
 void CHalos::get_Data(string filename){
 	vector<string> strData;
-	//vector<double*> array;
 	ifstream file(filename.c_str());
 	string line;
 	int nr = 1;
-	//vector<>
-
+	
 	vector<double> tmpData;
 
 	if (file.is_open()){
@@ -324,15 +274,12 @@ void CHalos::get_Data(string filename){
 		split(strData, line, is_any_of("\t "));
 
 		data_size = strData.size();
-		//vector<double> tmpData (data_size);
 		tmpData.push_back(-1);
 		for (int i = 0; i < data_size; i++){
 			tmpData.push_back(atof(strData[i].c_str()));
 		}
 
-		//Particles.push_back(new CParticle);
-		//Particles[0]->Set_Data(tmpData);
-
+		
 		while (file.good()){
 			getline(file,line);
 			split(strData, line, is_any_of(" "));
@@ -340,14 +287,6 @@ void CHalos::get_Data(string filename){
 			for (int i = 0; i < data_size; i++){
 				tmpData.push_back(atof(strData[i].c_str()));
 			}
-
-
-
-			//Particles.push_back(new CParticle); //Memory leak?
-			//Particles[nr]->Set_Data(tmpData);
-			//Particles[nr]->print_Particle();
-
-
 			nr++;
 		}
 		file.close();
@@ -363,21 +302,19 @@ void CHalos::get_Data(string filename){
 		tmpArray[i] = tmpData[i];
 	}
 
-	//CArray test =	 CArray(nr*data_size,tmpArray);
-	//test.print();
 
-	//CHalo test2 = CHalo (&test);
-	//test2.print();
 	Halos.push_back(new CHalo (new CArray (nr*ParticleSize,tmpArray)));
-	//Halos[0]->print();
 }
 
 
+//Returns CParticles* for a given halo
 CParticles* CHalos::getCParticles(int element){
 	return Halos[element]->getCParticles();
 }
 
 
+
+//Print out all particles one by one
 void CHalos::print(){
 	for (int i = 0;i<Halos.size();i++){
 		Halos[i]->print();
@@ -385,14 +322,13 @@ void CHalos::print(){
 }
 
 
+
 //Master process
 void CHalos::master(){
 	CMPI MPI;
-
 	int count = 0;
 	int processor;
 	int size = MPI.getSize();
-	//CParticles finalHalos;
 	CHalos FinalHalos;
 	MPI_Request Req [size-1];
 	vector<CArray*> Array (size-1);
@@ -419,14 +355,13 @@ void CHalos::master(){
 	//Send halo to processor as soon as a processor finishes
 	while (count < nrHalos) {
 		cout << "Calculating for halo nr: " << count + 1 << endl;
+		//Listening for a processor to finish
 		processor = MPI.listener(Req);
-		cout << "krasj"<< endl;
 		FinalHalos.addHalos(Array[processor-1]);
-		
+
 		Array[processor-1] =  Halos[count]->Halo2Array();
-		
 		MPI.End(processor,0);
-		
+
 		Array[processor-1]->front(Array[processor-1]->len()/tmpParticle.getParticleSize());
 		Array[processor-1]->front(1);
 
@@ -435,9 +370,10 @@ void CHalos::master(){
 		count++;
 
 	}
-
+	//Waiting for all processors to finish their last task
 	MPI.WaitAll(Req);
 
+	//Send end signal to all processors
 	for (int p = 1;p < size;p++){
 		MPI.End(p,1);
 	}
@@ -445,7 +381,9 @@ void CHalos::master(){
 
 
 
-//slave processor
+//Slave processor, listening for data from the master processor
+//Then does something with the data before sending it back to the
+//master processor
 void CHalos::slave(){
 
 	CArray HalosArray;
@@ -455,25 +393,16 @@ void CHalos::slave(){
 
 	CParticle tmpParticle;
 
-
 	while (true) {
 		if (MPI.ifEnd() == 1) break;
 		HalosArray.recieve_slave();
-
-		//HalosArray.front(HalosArray.len()/tmpParticle.getParticleSize());
-		//HalosArray.front(1);
-
-		//HalosArray.print();
-
+		
 		//cout << "Slave " << rank << " recieved halo" << endl;
 		CHalos SlaveHalos (&HalosArray);
 
-		//SlaveHalos.print();
-		//slaveParticles.print_Particles();
 		//slaveParticles.DoSomething();
 
 		SlaveHalos.Halos2Array()->send_slave();
-		//cout << "Slave " << rank << " finished with halo" << endl;
 	}
 }
 
@@ -481,18 +410,21 @@ void CHalos::slave(){
 
 
 
-
-
+//Load a binary file from a N-body simulation into memory
 void CHalos::LoadBin(string Filename){
 	ifstream f(Filename.c_str(), ios::in | ios::binary);
+	
 	cout << "---------------------------------" << endl;
 	cout << "Reading file..." << endl;
+
 	unsigned int count = -1;
+
+	//Reading binary file into memory
 	f.read((char *)&count, sizeof(unsigned int));
-		particle_save* block = new particle_save[count];
+	particle_save* block = new particle_save[count];
 	f.read((char *)block, sizeof(particle_save)*count);
 
-
+	
 	Halos.clear();
 	nrinHalo.clear();
 	nrHalos = 1;
@@ -501,22 +433,19 @@ void CHalos::LoadBin(string Filename){
 	Halos.push_back(tmpHalo);
 
 	cout << "Copying data..." << endl;
+	count = 1000;
 	cout << "Nr of particles: "<< count << endl;
 
-	count = 1000;
-	
+	//Saving data into existing structure
+	//Saving all Particles into the first halo in Halos, acces with Halos[0]
 	for (int i=0;i<count;i++) {
-
 		CParticle* tmpParticle = new CParticle() ;
 
-		//Particle.push_back(new CParticle); //Memory leak?
-		
 		tmpParticle->Set_Position(block[i].P.x,block[i].P.y,block[i].P.z);
 		tmpParticle->Set_Velocity(block[i].V.x,block[i].V.y,block[i].V.z);
 		tmpParticle->Set_Acceleration(0,0,0);
 
 		tmpHalo->addParticle(tmpParticle);
-
 	}
 
 	cout << "Done loading!" << endl;
@@ -529,153 +458,77 @@ void CHalos::LoadBin(string Filename){
 }
 
 
+
+
+
+//Save positions for each particle belonging to a halo to a text file,
+//together with which halo it belongs too 
 void CHalos::saveP(){
 	fstream file;
 	CVector tmpP;
-	
+
 	file.open("positions.dat", ios::out);
-	
+
+	//Saves position data for each particle to file
 	for (int i = 0;i<nrHalos;i++){
 		for (int j = 0;j<nrinHalo[i];j++){
 			tmpP = Halos[i]->getParticle(j)->get_P();
-			file << tmpP.x() << " " << tmpP.y()<< " " << tmpP.z()<< " " <<  i << endl;
+			file << tmpP.x() << " " << tmpP.y()<< " " << tmpP.z()<< " " <<	i << endl;
 		}
 	}
+	
 	file.close();
 }
 
 
-/*
-CParticle* seachParticle;
-CParticles allParticles;
 
 
-void findNeighbors(CParticle* p, CHalo& halo) {
-	p->flag = 1.0;
-	p->killFromList();
-	halo.push_back(p);
-	
-	CHalo venneliste;
-	
-	for (int i=0;i<allParticles.size();i++)
-		if (allParticles[i].flag==0)
-			if (distance(allParticles[i].P,p-P)<listLength) {
-				venneliste.push_back(allParticles[i]);
-				allParticles[i]->flag = 1.0;
-			}
 
-	for (int i=0;i<venneListe.size();i++)
-		findNeighbors(venneListe[i], halo);
-
-	
-}
-
-
-CParticle* findParticle() {
-
-	while (true) {
-		if(searchParticle->flag==0.0)
-			return searchParticle;
-
-		searchParticle = searchParticle->next;
-
-		if (searchParticle == null)
-			return null;
-	}
-	
-}
-
-void FOF(){
-	searchParticle = particles[0];
-	allParticles.clear();
-	CParticle* p = searchParticle;
-	p->prev = null;
-	for(int i=1;i<nrparticles;i++) {
-		allparticles.push_back(p);
-
-		p->flag = 0.0;
-		p->next = particles[i];
-		p->next->prev = p;
-		p = p->next;
-		
-	}
-	p->next = null;
-	
-	boolean done = false;
-
-	while (!done) {
-		CParticle* p = findParticle();
-		if (p==null)
-			done=true;
-		else {
-			Halo* halo = new Halo();
-			halos.push_back(halo);
-			
-			findNeighbors(p, halo);
-		}
-		
-	}
-	
-
-	
-	
-	
-}*/
-
+//Calculating Friend of Friend using recursion, without a grid.
+//Scales as N^2
+//The following 3 methods are used only for this
 void CHalos::FriendOfFriendN2(){
-	//Is this a true copy?
-	//allParticles = *Halos[0]->getCParticles();
 	int HaloLimit = 10;
+	vector<CHalo*> tmpHalos;
 
-	
+	allParticles = *Halos[0]->getCParticles();
 	searchParticle = Halos[0]->getParticle(0);
 	CParticle* Particle = searchParticle;
 
-
+	//Create a linked list of all particles
 	Particle->prev=NULL;
 	for (int i=1; i < nrParticles;i++){
-		allParticles.addParticle(Particle);
-
 		Particle->setFlag(0);
-		Particle->next = Halos[0]->getParticle(i);//allParticles[i];
+		Particle->next = allParticles[i];
 		Particle->next->prev = Particle;
 		Particle = Particle->next;
 	}
-	allParticles.addParticle(Particle);
 	Particle->setFlag(0);
 	Particle->next = NULL;
 
 
-	vector<CHalo*> tmpHalos;
-
-	//bool done = false;
 	cout << "---------------------------------" << endl;
 	cout << "Calculating Friend of Friend(scaling as N^2)" << endl;
+	cout << "." << endl;
+	cout << ".." << endl;
 	cout << "..." << endl;
+
+	//Using recursion to link all particles belonging to a halo
 	while (true){
-		//cout << "..and around we go.." << endl;
 		Particle = findParticle();
-		//cout << "past findParticle" << endl;
-		if (Particle == NULL){
-			//cout << "Finished with all particles" << endl;
-			break;
-			//done = true;
-		}
-			
+
+		if (Particle == NULL) break;
 		else {
-			//cout << "eternal" << endl;
 			CHalo* tmpHalo = new CHalo();
 			tmpHalos.push_back(tmpHalo);
-			//cout << allParticles.getnrParticles() << endl;
+
 			findNeighbors(Particle, tmpHalo);
-			//cout << tmpHalo->getnrParticles() << endl;
 		}
 	}
 
-
+	//Only saving halos that has more than 10 particles, updating nrinHalos
 	Halos.clear();
 	nrinHalo.clear();
-
 	for (int i = 0; i < tmpHalos.size(); i++){
 		if (tmpHalos[i]->getnrParticles() > HaloLimit){
 			Halos.push_back(tmpHalos[i]);
@@ -683,22 +536,20 @@ void CHalos::FriendOfFriendN2(){
 		}
 		nrHalos = Halos.size();
 	}
-	
+
 	cout << "Finished calculating Friend of Friends" << endl;
 	cout << "---------------------------------" << endl;
 }
 
 //This might be obsolete with removing particles from the list
+//Finds the next particle that has no halo and returns it
 CParticle* CHalos::findParticle(){
-	
 	while (true){
-		//cout << "in findParticle" << endl;
-		
 		if (searchParticle->getFlag() == 0)
 			return searchParticle;
 
 		searchParticle = searchParticle->next;
-		//cout << searchParticle << endl;
+
 		if (searchParticle == NULL)
 			return NULL;
 	}
@@ -713,27 +564,20 @@ void CHalos::findNeighbors(CParticle* inParticle, CHalo* inHalo){
 	inHalo->addParticle(inParticle);
 
 	CHalo FriendList;
-	//cout << "..and around we go.." << endl;
-	//cout << allParticles.getnrParticles() << endl;
-	//exit(1);
+
 	for (int i = 0; i<allParticles.getnrParticles();i++){
-		//cout << "are we here" << endl;
-		//cout << i << endl;
 		if (allParticles[i]->getFlag()==0){
 			double distance = (inParticle->get_P() - allParticles[i]->get_P()).Length();
-			//cout << distance << endl;
+
 			if (distance < b){
-				//cout << "We got 2 neighbouring particles" << endl;
 				allParticles[i]->setFlag(1);
 				//allParticles->RemoveFromList()
 				FriendList.addParticle(allParticles[i]);
 			}
 		}
 	}
-	
-	//cout << FriendList.getnrParticles()<< endl;
+
 	if (FriendList.getnrParticles() != 0){
-		//cout << "does it enter here?" << endl;
 		for (int i = 0; i<FriendList.getnrParticles();i++){
 			findNeighbors(FriendList[i],inHalo);
 		}
@@ -745,19 +589,24 @@ void CHalos::findNeighbors(CParticle* inParticle, CHalo* inHalo){
 
 
 
+//Friend of Friend methode that uses a grid to speed up the calculations
+//Scales as log(N)
+void CHalos::FriendOfFriendGrid(){
+
+}
 
 
 
 
 
-//Way to slow method, not tested resulst
+
+//Do not use this. Way to slow method. It is not tested, but seems to run
 void CHalos::FriendOfFriendN3(){
-
 	double b = 0.2;
 	int otherHaloID,thisHaloID;
 	CHalo* oldHalo = Halos[0];
 	CHalo* noHalo = new CHalo();
-	//tmpParticles
+
 	Halos.clear();
 	nrinHalo.clear();
 
@@ -765,19 +614,16 @@ void CHalos::FriendOfFriendN3(){
 		cout << "Running FoF for particle nr: " << i << endl;
 		CParticle* thisParticle = oldHalo->getParticle(i);
 		thisHaloID = thisParticle->getHalo();
+
 		for (int j=0;j<nrParticles;j++){
 			if (i!=j) {
-
 				CParticle* otherParticle = oldHalo->getParticle(j);
 				otherHaloID = otherParticle->getHalo();
 				thisHaloID = thisParticle->getHalo();
 				double distance = (thisParticle->get_P() - otherParticle->get_P()).Length();
-
-
-				//cout << distance << endl;
+				
 				//If the particles are within linking distance of each other
 				if (distance < b ){
-					//cout << "Close enough to be linked" << endl;
 					cout <<"thisHaloID: "<<thisHaloID<< "\t otherHaloID: "<<otherHaloID << endl;
 					//If both particles have no halo,
 					//create a new halo and add both particles to that halo
@@ -792,11 +638,6 @@ void CHalos::FriendOfFriendN3(){
 						Halos[nrHalos]->addParticle(oldHalo->getParticle(j));
 						nrinHalo.push_back(2);
 						nrHalos++;
-
-
-						//				cout << oldHalo->getParticle(i)->getHalo() << endl;
-						//cout << Halos[nrHalos-1]->getParticle(nrinHalo[nrHalos-1]-1)->getHalo()<<endl;
-						//cout << Halos[nrHalos-1]->getParticle(nrinHalo[nrHalos-1]-2)->getHalo()<<endl;
 					}
 
 					//Test if both have a halo, but not the same halo.
@@ -804,58 +645,30 @@ void CHalos::FriendOfFriendN3(){
 					//delete the smaller from Halos and
 					//update HaloID for each particle in the following halos.
 					else if (thisHaloID != -1 and otherHaloID != -1 and	 thisHaloID != otherHaloID){
-						cout << "Both have a halo, but different ones" << endl;
-
-						/*for (int n= 0;n<nrHalos;n++){
-							cout << "for halo nr: " << n<<" nrinHalo: "<<nrinHalo[n] << endl;
-							cout << "---------------" << endl;
-							for (int o= 0;o<nrinHalo[n];o++){
-								cout << Halos[n]->getParticle(o)->getHalo()<< endl;
-							}
-							}*/
-						//exit(1);
-
-						//if (nrinHalo[thisHaloID]>=nrinHalo[otherHaloID]){
-						//cout << thisHaloID << " " << otherHaloID << endl;
 						Halos[thisHaloID]->addHalo(Halos[otherHaloID]);
 						nrinHalo[thisHaloID] += nrinHalo[otherHaloID];
 
-
-						//cout << "--------------" << endl;
 						for (int m = 0; m<nrinHalo[otherHaloID];m++){
-
 							Halos[otherHaloID]->getParticle(m)->setHalo(thisHaloID);
-							//cout << Halos[otherHaloID]->getParticle(m)->getHalo() << endl;
-
 						}
-						//cout << "--------------" << endl;
-
+						
 						//For each halo
-						//cout << "Deleting "<< otherHaloID + 1 << endl;
-
-
-
 						for (int k = otherHaloID+1;k < nrHalos;k++){
-							//cout <<"k="<< k<<endl;
-							//cout <<"nrinHalo[k]="<<nrinHalo[k]<<endl;
 							//for each particle in halo
 							for (int l = 0;l<nrinHalo[k];l++){
-								//Halos[i]->getParticle(j)->setHalo(Halos[i]->getParticle(j)->getHalo - 1);
-								//cout << Halos[k]->getParticle(l)->getHalo() << endl;
 								Halos[k]->getParticle(l)->decreaseHalo();
 							}
-							}
+						}
 
 						nrHalos--;
 						Halos.erase(Halos.begin()+otherHaloID);
 						nrinHalo.erase(nrinHalo.begin()+otherHaloID);
-						//exit(1);
-						//If the other particle has a halo, add this particle to
-						//the halo the other particle has
 					}
+
+					//If the other particle has a halo, add this particle to
+					//the halo the other particle has
 					else if (thisHaloID == -1 and otherHaloID != -1){
 						cout << "Only other particle has a halo" << endl;
-						//oldHalo->getParticle(i)->setHalo(otherHaloID);
 						Halos[otherHaloID]->addParticle(oldHalo->getParticle(i));
 						Halos[otherHaloID]->getParticle(nrinHalo[otherHaloID])->setHalo(otherHaloID);
 						nrinHalo[otherHaloID]++;
@@ -869,27 +682,8 @@ void CHalos::FriendOfFriendN3(){
 						Halos[thisHaloID]->getParticle(nrinHalo[thisHaloID])->setHalo(thisHaloID);
 						nrinHalo[thisHaloID]++;
 					}
-
-					/*else {
-					  int HaloID = otherParticle->getHalo();
-					  oldHalo->getParticle(i)->setHalo(HaloID);
-					  Halos[HaloID]->addParticle(oldHalo->getParticle(i));
-					  nrinHalo[HaloID]++;
-					  }*/
 				}
 			}
 		}
 	}
 }
-
-
-
-
-
-void CHalos::FriendOfFriendGrid(){
-	
-}
-
-
-
- 

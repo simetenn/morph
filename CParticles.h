@@ -10,40 +10,45 @@ using namespace boost;
 class CParticles{
  public:
 	CParticles();
+	//Creates CParticles from a CArray on the following form:
+	//ParticleArray 1, ParticleArray 2, ParticleArray 3, ... , ParticleArray N
 	CParticles(CArray* inArray);
 	~CParticles();
 
-	//void get_Data(string filename);
-	void print();
-	void initialize_CParticles(CArray* inArray);
+
+	//Sets a already existing CParticles to contain the values from
+	//a CArray on the following form:
+	//[ParticleArray 1, ParticleArray 2, ParticleArray 3, ... , ParticleArray N]
+	//Similar to the constructor
 	void set(CArray* inArray);
-	//void Array2Particles(CArray* inArray);
-	//void sendHalo(int halonr)
 
+	//Print all particles
+	void print();
+
+
+	//return nr of Particles
 	int getnrParticles();
-	
 
-	void addParticle(CParticle* inParticle);
-	
+
+	//Return particle nr #element
 	CParticle* operator[](int element);
+	//Return particle nr #element
 	CParticle* get(int element);
+	//CParticle* getParticle(int element);
 
-	CArray* Particles2Array();
-	
-	
-	void SeparateClustersMPI();
 
+	//Add a particle to CParticles
+	void addParticle(CParticle* inParticle);
+	//Add several particles to CParticles
 	void addParticles(CParticles* inParticles);
 
-	CParticle* getParticle(int element);
+
+	//Convert CParticles to a CArray on the form
+	//[ParticleArray 1, ParticleArray 2, ParticleArray 3, ... , ParticleArray N]
+	CArray* Particles2Array();
+
 
  protected:
 	vector<CParticle*> Particles;
 	int nrParticles,data_size,ParticleSize;
-
-
 };
-
-
-//ToDo:
-//  Move LoadBin to CHalos.

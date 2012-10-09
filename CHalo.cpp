@@ -22,13 +22,7 @@ CHalo::CHalo(CArray* inArray){
 	CParticle tmpParticle;
 	ParticleSize = tmpParticle.getParticleSize();
 
-	//inArray->print();
-
-	//CParticles(inArray).print();
 	Halo.set(inArray);
-	//Halo.print();
-	
-	//ParticleSize = Halo[0]->Particle[0].getParticleSize(); //Get this to work!
 	nrParticles = Halo.getnrParticles();
 	HaloMass = 0;
 }
@@ -69,22 +63,8 @@ CParticle* CHalo::get(int element){
 
 
 //Convert from one halo to an array
-CArray*	 CHalo::Halo2Array(){//pointer
+CArray*	 CHalo::Halo2Array(){
 	return Halo.Particles2Array();
-
-	//int ParticleSize =
-	/*double* Array = new double [ParticleSize*nrParticles]; // Memory leak
-	Array[0] = 1;
-	Array[1] = nrParticles;
-
-	for (int i = 0; i < nrParticles;i++){
-		double* tmpArray = Halo[i]->Particle2Array();
-		for (int j = 0; j < ParticleSize;j++){
-			Array[i*ParticleSize+j+2] = tmpArray[j];
-		}
-	}
-
-	return new CArray(ParticleSize*nrParticles+2,Array); //Memory leak*/
 }
 
 
@@ -95,16 +75,12 @@ void CHalo::addParticle(CParticle* inParticle){
 
 
 CParticle* CHalo::getParticle(int element){
-	return Halo.getParticle(element);
+	return Halo[element];
 }
 
 
 void CHalo::print(){
 	Halo.print();
-}
-
-void CHalo::dummy(){
-	cout << "dummy" << endl;
 }
 
 void CHalo::addHalo(CHalo* inHalo){

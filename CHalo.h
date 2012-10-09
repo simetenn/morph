@@ -8,10 +8,12 @@ class CHalo{
 
  public:
 	CHalo();
+	
 	CHalo(CParticles* inParticles);
 	CHalo(CArray* inArray);
 	~CHalo();
 
+	
 	void print_Halo();
 
 	CArray* Halo2Array();
@@ -27,8 +29,7 @@ class CHalo{
 	CParticle* getParticle(int element);
 	void addHalo(CHalo* inHalo);
 	double getHaloMass();
-	void dummy();
-
+	
 	void print();
 
 	
