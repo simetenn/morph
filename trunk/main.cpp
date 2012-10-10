@@ -1,10 +1,11 @@
-#include "CHalos.h"
+#include "CMain.h"
 
 using namespace std;
 
 
 int main(int argc, char **argv){
 	int rank,size;
+	//CMPI a;
 
 	MPI_Init(&argc, &argv);
 	MPI_Comm_size(MPI_COMM_WORLD, &size);
@@ -12,27 +13,18 @@ int main(int argc, char **argv){
 
 
 	if (rank == 0) {
-
-		CHalos a;
-		CParticle d;
-		//a.get_Data ("particles.dat");
+		CMain m;
+		m.master();
 		
-		a.LoadBin("particles_keep.dat");
-		//a.print();
-		//a.initialize_Halos();
-		a.FriendOfFriendN2();
-		a.printHalos();
-		a.saveP();
-		//a.master();
-		//a.printHalos();
+		
 		MPI_Barrier(MPI_COMM_WORLD);
 		MPI_Finalize();
 	}
 
 	else {
-		
-		CHalos b;
-		//b.slave();
+
+		CMain s;
+		//s.slave();
 		MPI_Barrier(MPI_COMM_WORLD);
 		MPI_Finalize();
 	}
