@@ -22,18 +22,17 @@ class CHalos{
 
 	//Sort halos by size, not existing yet
 	void HaloSort();
-	
+
 
 	//Testing routines, for testing purposes only
 	void initialize_Halos();
 	//Get data from my own type of input file
 	void get_Data(string filename);
 
-	
 
-	//Convert from all halos to one array
+
+	//Convert all halos to one array
 	CArray* Halos2Array();
-	CHalos* Array2Halos(CArray* inArray);
 
 	//Add halo to the existing ones
 	void addHalo(CHalo* inHalo);
@@ -50,7 +49,7 @@ class CHalos{
 	//Add two CHalos. Not tested, so unsure if correct
 	CHalos operator+(CHalos* inCHalo);
 
-	
+
 	//Return total nr of particles
 	int getnrParticles();
 	//Return nr of halos
@@ -62,33 +61,42 @@ class CHalos{
 
 	CHalo* getHalo(int element);
 	//Returns CParticles* for a given halo
-	CParticles* getCParticles(int element);
+	CParticles* getParticles(int element);
 
 	//Print out all particles one by one
 	void print();
 	//Print out all halos
 	void printHalos();
-	
+
+	//Load a binary file from a N-body simulation into memory
 	void LoadBin(string Filename);
+	//savesthe positions of each particle together with the halo it belongs to to file
 	void saveP();
-	
-	
-	void FriendOfFriendGrid();
+
 
 	//Calculating Friend of Friend using recursion, without a grid
 	void FriendOfFriendN2();
-	//The following 2 methods are used only inte above method
+	//The following 2 methods are used only in the above method
+	//Finds the next particle that has no halo assigned and returns it
 	CParticle* findParticle();
+	//Flags the given particle and adds it to the given halo.
+	//Then finds the neighboring particles, within the linking length.
+	//Before calling itself for each particle found this way
 	void findNeighbors(CParticle* inParticle, CHalo* inHalo);
 
-	
-	void FriendOfFriendN3();
-	
 
-	
+	void FriendOfFriendGrid();
+
+
+
+	//Do not use this. Way to slow method. It is not tested, but seems to run
+	void FriendOfFriendN3();
+
+
+
  protected:
-	int nrHalos,ParticleSize, nrParticles, data_size;
-	
+	int nrHalos,ParticleSize, nrParticles;
+
 	CParticles allParticles;
 	CParticle* searchParticle;
 

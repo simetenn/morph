@@ -1,6 +1,4 @@
-//#include <iostream>
 #include "CParticles.h"
-//#include "CArray.h"
 
 
 
@@ -8,35 +6,42 @@ class CHalo{
 
  public:
 	CHalo();
-	
+	//Create a CHalo from CParticles
 	CHalo(CParticles* inParticles);
+	//Creates CHalo from a CArray on the following form:
+	//[ParticleArray 1, ParticleArray 2, ParticleArray 3, ... , ParticleArray N]
 	CHalo(CArray* inArray);
 	~CHalo();
 
-	
-	void print_Halo();
 
+	//Print all particles in halo
+	void print();
+	
+	//Convert from one halo to an CArray
 	CArray* Halo2Array();
 
-	CParticles* getCParticles();
-
-	int getnrParticles();
 	
+	//Return the total mass of the halo
+	double getHaloMass();
+	//Return nr of particles
+	int getnrParticles();
+
+	//Return particle nr #element
 	CParticle* operator[](int element);
 	CParticle* get(int element);
 
+
+	//Get CParticles in the Halo
+	CParticles* getParticles();
+
+	//Add a particle to the halo
 	void addParticle(CParticle* inParticle);
-	CParticle* getParticle(int element);
+	//Add a halo to the halo
 	void addHalo(CHalo* inHalo);
-	double getHaloMass();
-	
-	void print();
 
 	
  protected:
 	CParticles Halo;
 	double HaloMass;
 	int ParticleSize, nrParticles;
-	
-
 };
