@@ -1,3 +1,5 @@
+#pragma once
+
 //#include <iostream>
 #include "CHalo.h"
 //#include "CArray.h"
@@ -50,7 +52,9 @@ class CHalos{
 	CHalos operator+(CHalos* inCHalo);
 
 
-	//Return total nr of particles
+//Flags the given particle and adds it to the given halo.
+//Then finds the neighboring particles, within the linking length.
+//Before calling itself for each particle found this way	//Return total nr of particles
 	int getnrParticles();
 	//Return nr of halos
 	int getnrHalos();

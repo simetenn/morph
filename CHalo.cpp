@@ -1,6 +1,5 @@
 #include "CHalo.h"
 
-
 using namespace std;
 
 CHalo::CHalo(){
