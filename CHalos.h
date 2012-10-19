@@ -1,9 +1,7 @@
 #pragma once
 
-//#include <iostream>
 #include "CHalo.h"
-//#include "CArray.h"
-
+#include "CGrid.h"
 
 //Particle save structure, keeps only P and V.
 struct particle_save {
@@ -22,15 +20,15 @@ class CHalos{
 	CHalos(CArray* inArray);
 	~CHalos();
 
-	//Sort halos by size, not existing yet
-	void HaloSort();
-
 
 	//Testing routines, for testing purposes only
-	void initialize_Halos();
+	void initializeHalos();
 	//Get data from my own type of input file
-	void get_Data(string filename);
+	void getData(string filename);
 
+
+	//Sort halos by size, not existing yet
+	void HaloSort();
 
 
 	//Convert all halos to one array
@@ -39,33 +37,31 @@ class CHalos{
 	//Add halo to the existing ones
 	void addHalo(CHalo* inHalo);
 	//Add halos to the existing ones
-	void addHalosArray(CArray* inArray);
-	//Add halos to the existing ones
 	void addHalos(CArray* inArray);
 	//Remove halo nr element from CHalos
 	void removeHalo(int element);
 
-	void master();
-	void slave();
+
 
 	//Add two CHalos. Not tested, so unsure if correct
 	CHalos operator+(CHalos* inCHalo);
 
 
-//Flags the given particle and adds it to the given halo.
-//Then finds the neighboring particles, within the linking length.
-//Before calling itself for each particle found this way	//Return total nr of particles
-	int getnrParticles();
+	//Flags the given particle and adds it to the given halo.
+	//Then finds the neighboring particles, within the linking length.
+	//Before calling itself for each particle found this way	//Return total nr of particles
+	int getNrParticles();
 	//Return nr of halos
-	int getnrHalos();
-	//Return nr of halos
-	int sizeHalos();
+	int getNrHalos();
 	//return nr of particles in a halo
-	int getnrinHalo(int element);
-
+	int getNrInHalo(int element);
+	//Return a halo
 	CHalo* getHalo(int element);
 	//Returns CParticles* for a given halo
 	CParticles* getParticles(int element);
+	//Returns CParticle* for a given particle
+	CParticle* getParticle(int element);
+
 
 	//Print out all particles one by one
 	void print();
@@ -89,21 +85,30 @@ class CHalos{
 	void findNeighbors(CParticle* inParticle, CHalo* inHalo);
 
 
+	//Friend of Friend methode that uses a grid to speed up the calculations
+	//Scales as something*log(N)
 	void FriendOfFriendGrid();
-
+	//Flags the given particle and adds it to the given halo.
+	//Then finds the neighboring particles, within 26 closest cubes in the grid.
+	//Before calling itself for each particle found this way
+	void findNeighborsGrid(CParticle* inParticle, CHalo* inHalo);
 
 
 	//Do not use this. Way to slow method. It is not tested, but seems to run
 	void FriendOfFriendN3();
 
 
+	void master();
+	void slave();
+
 
  protected:
-	int nrHalos,ParticleSize, nrParticles;
-
+	int NrHalos,ParticleSize, NrParticles;
+	double LinkingLength;
 	CParticles allParticles;
 	CParticle* searchParticle;
+	CGrid Grid;
 
-	vector<int> nrinHalo;
+	vector<int> NrInHalo;
 	vector<CHalo*> Halos;
 };

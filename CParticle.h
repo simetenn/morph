@@ -1,4 +1,5 @@
 #include "CVector.h"
+#include "Constants.h"
 
 
 class CParticle{
@@ -8,7 +9,7 @@ class CParticle{
 	
 	//Create a particle from an array on the following form:
 	//[HaloID,Mass,Charge,Px,Py,Pz,Vx,Vy,Vz,Ax,Ay,Az]
-	CParticle(double* in_array);
+	CParticle(double* inArray);
 
 	~CParticle();
 
@@ -21,30 +22,30 @@ class CParticle{
 
 	//Set the different values a particle has
 	void setHalo(int element);
-	void Set_Mass(double in_M);
-	void Set_Charge(double in_C);
-	void Set_Position(double Px, double Py, double Pz);
-	void Set_Velocity(double Vx, double Vy, double Vz);
-	void Set_Acceleration(double Ax, double Ay, double Az);
+	void setMass(double in_M);
+	void setCharge(double in_C);
+	void setPosition(double Px, double Py, double Pz);
+	void setVelocity(double Vx, double Vy, double Vz);
+	void setAcceleration(double Ax, double Ay, double Az);
 
 	//Set all data, given by a vector
-	void Set_Data(vector<double> data);
+	void setData(vector<double> data);
 
 	void setP(CVector inP);
 	void setV(CVector inV);
 
 
 	//Get the different values a particle has
-	int get_ID();
+	int getID();
 	int getHalo();
-	double get_Mass();
-	CVector& get_P();
-	CVector& get_V();
-	CVector& get_A();
+	double getMass();
+	CVector& getP();
+	CVector& getV();
+	CVector& getA();
 	int getParticleSize();
 
 
-	//Get/set flag value.
+	//Get/set flag value.y
 	//Used in FoF methods to tell if this particle has been tested yet or not
 	void setFlag(int inFlag);
 	int getFlag();
@@ -78,7 +79,7 @@ class CParticle{
 
  protected:
 	static int ID_Generator;
-
+	
 	int ID, HaloID,ParticleSize,flag;
 	double Mass, Charge;
 

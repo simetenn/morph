@@ -4,9 +4,8 @@ using namespace std;
 using namespace boost;
 
 CParticles::CParticles(){
-	nrParticles = 0;
-	CParticle tmpParticle;
-	ParticleSize = tmpParticle.getParticleSize();
+	NrParticles = 0;
+	ParticleSize = myConstants::constants.ParticleSize;
 }
 
 CParticles::~CParticles(){
@@ -19,17 +18,16 @@ CParticles::~CParticles(){
 //Creates CParticles from a CArray on the following form:
 //[ParticleArray 1, ParticleArray 2, ParticleArray 3, ... , ParticleArray N]
 CParticles::CParticles(CArray* inArray){
-	CParticle tmpParticle;
-	ParticleSize = tmpParticle.getParticleSize();
+	ParticleSize = myConstants::constants.ParticleSize;
+
 
 	if (inArray->len() % ParticleSize != 0) {
 		cout << "Warning: Length of array not compatible with ParticleSize"<< endl;
 	}
 
-	nrParticles = (inArray->len())/ParticleSize;
-	int particle_count = 0;
+	NrParticles = (inArray->len())/ParticleSize;
 
-	for (int i = 0; i<nrParticles;i++){
+	for (int i = 0; i<NrParticles;i++){
 		double* tmpArray = new double [ParticleSize];
 
 		for (int j = 0; j < ParticleSize;j++){
@@ -48,17 +46,15 @@ CParticles::CParticles(CArray* inArray){
 //[ParticleArray 1, ParticleArray 2, ParticleArray 3, ... , ParticleArray N]
 //Similar to the constructor
 void CParticles::set(CArray* inArray){
-	CParticle tmpParticle;
-	ParticleSize = tmpParticle.getParticleSize();
+	ParticleSize = myConstants::constants.ParticleSize;
 
 	if ((inArray->len()) % ParticleSize != 0) {
 		cout << "Warning: Length of array not compatible with ParticleSize"<< endl;
 	}
 
-	nrParticles = (inArray->len())/ParticleSize;
-	int particle_count = 0;
+	NrParticles = (inArray->len())/ParticleSize;
 
-	for (int i = 0; i<nrParticles;i++){
+	for (int i = 0; i<NrParticles;i++){
 		double* tmpArray = new double [ParticleSize];
 
 		for (int j = 0; j < ParticleSize;j++){
@@ -74,24 +70,24 @@ void CParticles::set(CArray* inArray){
 
 //Print all particles
 void CParticles::print(){
-	for (int i = 0; i < nrParticles;i++){
+	for (int i = 0; i < NrParticles;i++){
 		Particles[i]->print();
 	}
 }
 
 //Return nr of Particles
-int CParticles::getnrParticles(){
-	return nrParticles;
+int CParticles::getNrParticles(){
+	return NrParticles;
 }
 
 
 //Return particle nr #element
 CParticle* CParticles::operator[](int element){
-	if (element >= nrParticles || element < -nrParticles) {
+	if (element >= NrParticles || element < -NrParticles) {
 		throw "Index out of bounds";
 	}
 	else if (element < 0){
-		return Particles[nrParticles+element];
+		return Particles[NrParticles+element];
 	}
 	else {
 		return Particles[element];
@@ -101,41 +97,30 @@ CParticle* CParticles::operator[](int element){
 
 //Return particle nr #element
 CParticle* CParticles::get(int element){
-	if (element >= nrParticles || element < -nrParticles) {
-		throw "Index out of bounds";
+	if (element >= NrParticles || element < -NrParticles) {
+		throw "Particle out of bounds";
 	}
 	else if (element < 0){
-		return Particles[nrParticles+element];
+		return Particles[NrParticles+element];
 	}
 	else {
 		return Particles[element];
 	}
-	}
-
-
-//Return particle nr #element
-/*CParticle* CParticles::getParticle(int element){
-	if (element >= nrParticles){
-		cout << "Particle out of bounds" << endl;
-	}
-	else {
-		return Particles[element];
-	}
-	}*/
+}
 
 
 //Add a particle to CParticles
 void CParticles::addParticle(CParticle* inParticle){
-	nrParticles += 1;
+	NrParticles += 1;
 	Particles.push_back(inParticle);
 }
 
 
 //Add several particles to CParticles
 void CParticles::addParticles(CParticles* inParticles){
-	nrParticles += inParticles->getnrParticles();
+	NrParticles += inParticles->getNrParticles();
 
-	for (int i = 0; i < inParticles->getnrParticles();i++){
+	for (int i = 0; i < inParticles->getNrParticles();i++){
 		Particles.push_back(inParticles->get(i));
 	}
 }
@@ -145,13 +130,22 @@ void CParticles::addParticles(CParticles* inParticles){
 //Convert CParticles to a CArray on the form
 //[ParticleArray 1, ParticleArray 2, ParticleArray 3, ... , ParticleArray N]
 CArray* CParticles::Particles2Array(){
-	double* Array = new double [ParticleSize*nrParticles]; // Memory leak
+	double* Array = new double [ParticleSize*NrParticles]; // Memory leak
 
-	for (int i = 0; i < nrParticles;i++){
+	for (int i = 0; i < NrParticles;i++){
 		double* tmpArray = Particles[i]->Particle2Array();
 		for (int j = 0; j < ParticleSize;j++){
 			Array[i*ParticleSize+j] = tmpArray[j];
 		}
 	}
-	return new CArray(ParticleSize*nrParticles,Array); //Memory leak
+	return new CArray(ParticleSize*NrParticles,Array); //Memory leak
+}
+
+
+
+	//Set the flag of all particles in CParticles
+void CParticles::setFlag(int inFlag){
+	for (int i = 0; i < NrParticles; i++) {
+		Particles[i]->setFlag(inFlag);
+	}
 }

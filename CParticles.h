@@ -1,3 +1,6 @@
+#pragma once
+
+
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -27,7 +30,7 @@ class CParticles{
 
 
 	//return nr of Particles
-	int getnrParticles();
+	int getNrParticles();
 
 
 	//Return particle nr #element
@@ -47,8 +50,11 @@ class CParticles{
 	//[ParticleArray 1, ParticleArray 2, ParticleArray 3, ... , ParticleArray N]
 	CArray* Particles2Array();
 
+	//Set the flag of all particles in CParticles
+	void setFlag(int inFlag);
 
+	
  protected:
 	vector<CParticle*> Particles;
-	int nrParticles,data_size,ParticleSize;
+	int NrParticles,data_size,ParticleSize;
 };

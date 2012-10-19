@@ -95,7 +95,7 @@ int CVector::getDimensions(){
 //Overloaded operators so the basic math operators does
 //the corresponding vector operation
 
-//Add to vectors together
+//Add two vectors together
 CVector CVector::operator+(const CVector& other) const{
 	CVector resVector;
 	for (int i =0; i< Dimensions;i++) {
@@ -153,6 +153,18 @@ CVector CVector::operator/(double number) const{
 	}
 	return resVector;
 }
+
+//Divide a vector by another
+CVector CVector::operator/(CVector& inVector) const{
+	CVector resVector;
+	for (int i =0; i< Dimensions;i++) {
+		resVector.Vector[i] = Vector[i]/inVector[i];
+
+	}
+	return resVector;
+}
+
+
 
 //Multiply a vector by a number
 CVector CVector::operator*(double number) const{

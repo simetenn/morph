@@ -55,6 +55,8 @@ class CVector{
 
 	//Divide a vector by a number
 	CVector operator/(double number) const;
+	//Divide a vector by another vector
+	CVector operator/(CVector& inVector) const;
 	//Multiply a vector by a number
 	CVector operator*(double number) const;
 

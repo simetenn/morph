@@ -3,17 +3,16 @@
 using namespace std;
 
 CHalo::CHalo(){
-	CParticle tmpParticle;
-	ParticleSize = tmpParticle.getParticleSize();
-	nrParticles = 0;
+	ParticleSize = myConstants::constants.ParticleSize;
+	NrParticles = 0;
 	HaloMass = 0;
 }
 
 //Create a CHalo from CParticles
 CHalo::CHalo(CParticles* inParticles){
-	ParticleSize = inParticles->get(0)->getParticleSize();
+	ParticleSize = myConstants::constants.ParticleSize;
 	Halo = *inParticles;
-	nrParticles = inParticles->getnrParticles();
+	NrParticles = inParticles->getNrParticles();
 	HaloMass = 0;
 }
 
@@ -21,11 +20,10 @@ CHalo::CHalo(CParticles* inParticles){
 //Creates CParticles from a CArray on the following form:
 //[ParticleArray 1, ParticleArray 2, ParticleArray 3, ... , ParticleArray N]
 CHalo::CHalo(CArray* inArray){
-	CParticle tmpParticle;
-	ParticleSize = tmpParticle.getParticleSize();
-	
+	ParticleSize = myConstants::constants.ParticleSize;
+
 	Halo.set(inArray);
-	nrParticles = Halo.getnrParticles();
+	NrParticles = Halo.getNrParticles();
 	HaloMass = 0;
 }
 
@@ -49,8 +47,8 @@ CArray*	 CHalo::Halo2Array(){
 
 
 //Return nr of particles
-int CHalo::getnrParticles(){
-	return nrParticles;
+int CHalo::getNrParticles(){
+	return NrParticles;
 }
 
 //Return the total mass of the halo
@@ -69,12 +67,6 @@ CParticle* CHalo::get(int element){
 	return Halo[element];
 }
 
-/*CParticle* CHalo::getParticle(int element){
-	return Halo[element];
-	}*/
-
-
-
 //Return CParticles
 CParticles* CHalo::getParticles(){
 	return &Halo;
@@ -85,7 +77,7 @@ CParticles* CHalo::getParticles(){
 
 //Add a particle to the array
 void CHalo::addParticle(CParticle* inParticle){
-	nrParticles += 1;
+	NrParticles += 1;
 	Halo.addParticle(inParticle);
 }
 
@@ -98,3 +90,8 @@ void CHalo::addHalo(CHalo* inHalo){
 	Halo.addParticles(inHalo->getParticles());
 }
 
+//Add several particles to the Halo
+void CHalo::addParticles(CParticles* inParticles){
+	Halo.addParticles(inParticles);
+	NrParticles+=inParticles->getNrParticles();
+}

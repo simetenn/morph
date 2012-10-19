@@ -6,11 +6,13 @@ Constants myConstants::constants;
 void CMain::master() {
 	CHalos m;
 	//a.get_Data ("particles.dat");
-	cout << myConstants::constants.test << endl;
-	m.LoadBin("particles_keep.dat");
+	
+	m.LoadBin(myConstants::constants.inFile);
 	//a.print();
 	//a.initialize_Halos();
-	m.FriendOfFriendN2();
+	//m.FriendOfFriendN2();
+	//m.printHalos();
+	m.FriendOfFriendGrid();
 	m.printHalos();
 	m.saveP();
 	//m.master();
