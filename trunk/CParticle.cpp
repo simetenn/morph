@@ -3,12 +3,15 @@
 
 using namespace std;
 
+
+//Constants myConstants::constants;
+
 int CParticle::ID_Generator = 0;
 
 //Creates an "empty" particle
 CParticle::CParticle(){
-	ParticleSize = 12;
-
+	ParticleSize =  myConstants::constants.ParticleSize;
+	
 	CVector P,V,A;
 	Mass = 1;
 	Charge = 0;
@@ -19,17 +22,18 @@ CParticle::CParticle(){
 
 //Create a particle from an array on the following form:
 //[HaloID,Mass,Charge,Px,Py,Pz,Vx,Vy,Vz,Ax,Ay,Az]
-CParticle::CParticle(double* in_array){
-	//Some way to test if length of the array is 12
+CParticle::CParticle(double* inArray){
+	//Some way to test if length of the array is equal to particle size
 	Generate_ID();
 
-	ParticleSize = 12;
-	HaloID = in_array[0];
-	Mass = in_array[1];
-	Charge = in_array[2];
-	P.Set(in_array[3],in_array[4],in_array[5]);
-	V.Set(in_array[6],in_array[7],in_array[8]);
-	A.Set(in_array[9],in_array[10],in_array[11]);
+	ParticleSize =  myConstants::constants.ParticleSize;
+
+	HaloID = inArray[0];
+	Mass = inArray[1];
+	Charge = inArray[2];
+	P.Set(inArray[3],inArray[4],inArray[5]);
+	V.Set(inArray[6],inArray[7],inArray[8]);
+	A.Set(inArray[9],inArray[10],inArray[11]);
 }
 
 
@@ -59,31 +63,31 @@ void CParticle::setHalo(int element){
 	HaloID = element;
 }
 
-void CParticle::Set_Mass(double in_M){
+void CParticle::setMass(double in_M){
 	Mass = in_M;
 }
 
 
-void CParticle::Set_Charge(double in_C){
+void CParticle::setCharge(double in_C){
 	Charge = in_C;
 }
 
 
-void CParticle::Set_Position(double Px, double Py, double Pz){
+void CParticle::setPosition(double Px, double Py, double Pz){
 	P.Set(Px,Py,Pz);
 }
 
 
-void CParticle::Set_Velocity(double Vx, double Vy, double Vz){
+void CParticle::setVelocity(double Vx, double Vy, double Vz){
 	V.Set(Vx,Vy,Vz);
 }
 
 
-void CParticle::Set_Acceleration(double Ax, double Ay, double Az){
+void CParticle::setAcceleration(double Ax, double Ay, double Az){
 	A.Set(Ax,Ay,Az);
 }
 
-void CParticle::Set_Data(vector<double> data){
+void CParticle::setData(vector<double> data){
 	HaloID = data[0];
 	Mass = data[1];
 	Charge = data[2];
@@ -108,7 +112,7 @@ void CParticle::setV(CVector inV){
 
 
 //Get the different values a particle has
-int CParticle::get_ID(){
+int CParticle::getID(){
 	return ID;
 }
 
@@ -116,22 +120,22 @@ int CParticle::getHalo(){
 	return HaloID;
 }
 
-double CParticle::get_Mass(){
+double CParticle::getMass(){
 	return Mass;
 }
 
 
-CVector& CParticle::get_P(){
+CVector& CParticle::getP(){
 	return P;
 }
 
 
-CVector& CParticle::get_V(){
+CVector& CParticle::getV(){
 	return V;
 }
 
 
-CVector& CParticle::get_A(){
+CVector& CParticle::getA(){
 	return A;
 }
 

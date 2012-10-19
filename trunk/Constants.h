@@ -6,23 +6,22 @@
 class Constants {
  public:
 
-	int test;
-
+	int ParticleSize, HaloLimit;
+	double b;
+	string inFile, outFile;
+	
 	Constants() {
-
 		CIniFile IniFile;
-		
 		IniFile.load("mybody.ini");
-		test = IniFile.getdouble("test");
-		
-		// load inifile
+
+		ParticleSize = IniFile.getdouble("ParticleSize");
+		b = IniFile.getdouble("b");
+		HaloLimit = IniFile.getdouble("HaloLimit");
+		inFile = IniFile.getstring("inFile");
+		outFile = IniFile.getstring("outFile");
 	}
-
-
 };
 
-
-//Constants myConstants::constants;
 
 class myConstants {
  public:

@@ -7,7 +7,7 @@ CC = mpic++
 #VPATH = .:/~/Master/mybody/mybody/source
 
 CFlags = -g -Wall
-SOURCES = main.cpp CArray.cpp CMPI.cpp CVector.cpp CParticle.cpp CParticles.cpp CHalo.cpp CHalos.cpp CMain.cpp CUtil.cpp #CHaloFinder.cpp CHalo.cpp #CArray.h
+SOURCES = main.cpp CArray.cpp CMPI.cpp CVector.cpp CParticle.cpp CParticles.cpp CHalo.cpp CHalos.cpp CMain.cpp CUtil.cpp CGrid.cpp #CHaloFinder.cpp CHalo.cpp #CArray.h
 EXECUTABLE = main
 SOURCEDIR = ~/Master/mybody/mybody
 #OSOURCES = CHalo.cpp CHaloFinder.cpp CHaloList.cpp
@@ -34,6 +34,18 @@ CVector.o:
 
 CParticle.o:
 	$(CC) -c $(CFLAGS) CParticle.cpp
+
+CParticles.o:
+	$(CC) -c $(CFLAGS) CParticles.cpp
+
+CHalo.o:
+	$(CC) -c $(CFLAGS) CHalo.cpp
+
+CHalos.o:
+	$(CC) -c $(CFLAGS) CHalos.cpp
+
+CGrid.o:
+	$(CC) -c $(CFLAGS) CGrid.cpp
 
 
 clean:

@@ -26,7 +26,7 @@ class CHalo{
 	//Return the total mass of the halo
 	double getHaloMass();
 	//Return nr of particles
-	int getnrParticles();
+	int getNrParticles();
 
 	//Return particle nr #element
 	CParticle* operator[](int element);
@@ -40,10 +40,11 @@ class CHalo{
 	void addParticle(CParticle* inParticle);
 	//Add a halo to the halo
 	void addHalo(CHalo* inHalo);
-
+	//Add several particles to the Halo
+	void addParticles(CParticles* inParticles);
 	
  protected:
 	CParticles Halo;
 	double HaloMass;
-	int ParticleSize, nrParticles;
+	int ParticleSize, NrParticles;
 };
