@@ -52,9 +52,12 @@ class CParticles{
 
 	//Set the flag of all particles in CParticles
 	void setFlag(int inFlag);
-
+	int getFlag();
+	
+	//Removes all particles in CParticles from a linked list
+	void RemoveFromList();
 	
  protected:
 	vector<CParticle*> Particles;
-	int NrParticles,data_size,ParticleSize;
+	int NrParticles,data_size,ParticleSize,flag;
 };

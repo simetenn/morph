@@ -341,7 +341,7 @@ void CHalos::LoadBin(string Filename){
 
 	cout << "Copying data ..." << endl;
 	//Limit the amount of particles read
-	count = 30000;
+	count = 10000;
 	cout << "Nr of particles: "<< count << endl;
 
 	//Saving data into existing structure
@@ -458,6 +458,7 @@ CParticle* CHalos::findParticle(){
 
 		if (searchParticle == NULL)
 			return NULL;
+
 	}
 }
 
@@ -513,7 +514,7 @@ void CHalos::FriendOfFriendGrid(){
 	}
 	Particle->setFlag(0);
 	Particle->next = NULL;
-	
+
 
 	//Initialize the Grid
 	CVector min(-1,-1,-1);
@@ -521,15 +522,15 @@ void CHalos::FriendOfFriendGrid(){
 	//int Width = 1./(myConstants::constants.b*LinkingLength);
 	int Width = 200;
 	Grid.initialize(&min,&max,Width);
-	
+
 	//for (int i = 0; i < NrHalos;i++){
 	//	Grid.Populate(Halos[i]->getParticles());
 	//}
-	
+
 	Grid.Populate(&allParticles);
 
-	
-	
+
+
 	cout << "---------------------------------" << endl;
 	cout << "Calculating Friend of Friend Grid" << endl;
 	cout << "." << endl;
@@ -569,34 +570,37 @@ void CHalos::FriendOfFriendGrid(){
 //Then finds the neighboring particles, within 26 closest cubes in the grid.
 //Before calling itself for each particle found this way
 void CHalos::findNeighborsGrid(CParticle* inParticle, CHalo* inHalo){
-	inParticle->setFlag(1);
-	inParticle->RemoveFromList();
-	inHalo->addParticle(inParticle);
+	//inParticle->setFlag(1);
+	//inParticle->RemoveFromList();
+	//inHalo->addParticle(inParticle);
 
 	CVector Position = Grid.getPosition(inParticle);
+	CHalo FriendList,tmpList;
 
-	CHalo FriendList;
 	//Loops through all particles and finds the ones
 	//within the linking length not assigned to a halo. Then adds them to a temporary halo
 	for (int i=-1;i<=1;i++){
 		for (int j=-1;j<=1;j++) {
 			for (int k=-1;k<=1;k++) {
-				//Grid.getPeriodic(i,j,k)->print();
-				FriendList.addParticles(Grid.getPeriodic(Position.x()+i,Position.y()+j,Position.z()+k));
-				Grid.getPeriodic(Position.x()+i,Position.y()+j,Position.z()+k)->setFlag(1);
-				//How to flag all these particles
-				//allParticles[i]->setFlag(1);
+				if (Grid.get(Position.x()+i,Position.y()+j,Position.z()+k)->getFlag() == 0){
+					Grid.get(Position.x()+i,Position.y()+j,Position.z()+k)->setFlag(1);
+					FriendList.addParticles(Grid.get(Position.x()+i,Position.y()+j,Position.z()+k));
+					Grid.get(Position.x()+i,Position.y()+j,Position.z()+k)->RemoveFromList();
+					//tmpList.addParticle(Grid.get(Position.x()+i,Position.y()+j,Position.z()+k)->get(0));
+				}
 			}
 		}
 	}
 
-
-
+	
 	//Finds the neighboring particles for each particle found to be within
 	//the linking length and adds them to the given halo
 	for (int i = 0; i<FriendList.getNrParticles();i++){
 		findNeighbors(FriendList[i], inHalo);
-	}
+		}
+	/*for (int i = 0; i<tmpList.getNrParticles();i++){
+			findNeighbors(tmpList[i], inHalo);
+	}*/
 }
 
 

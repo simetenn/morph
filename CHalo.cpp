@@ -95,3 +95,4 @@ void CHalo::addParticles(CParticles* inParticles){
 	Halo.addParticles(inParticles);
 	NrParticles+=inParticles->getNrParticles();
 }
+
