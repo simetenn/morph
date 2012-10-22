@@ -6,6 +6,7 @@ using namespace boost;
 CParticles::CParticles(){
 	NrParticles = 0;
 	ParticleSize = myConstants::constants.ParticleSize;
+	flag = 1;
 }
 
 CParticles::~CParticles(){
@@ -143,9 +144,25 @@ CArray* CParticles::Particles2Array(){
 
 
 
-	//Set the flag of all particles in CParticles
+//Set the flag 
 void CParticles::setFlag(int inFlag){
-	for (int i = 0; i < NrParticles; i++) {
-		Particles[i]->setFlag(inFlag);
+	flag = inFlag;
+	//for (int i = 0; i < NrParticles; i++) {
+	//	Particles[i]->setFlag(inFlag);
+	//}
+}
+
+int CParticles::getFlag(){
+	return flag;
+	//for (int i = 0; i < NrParticles; i++) {
+	//	Particles[i]->setFlag(inFlag);
+	//}
+}
+
+
+//Removes all particles 
+void CParticles::RemoveFromList(){
+	for (int i = 0; i < NrParticles; i++){
+		Particles[i]->RemoveFromList();
 	}
 }

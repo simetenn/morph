@@ -42,7 +42,8 @@ class CHalo{
 	void addHalo(CHalo* inHalo);
 	//Add several particles to the Halo
 	void addParticles(CParticles* inParticles);
-	
+
+
  protected:
 	CParticles Halo;
 	double HaloMass;
