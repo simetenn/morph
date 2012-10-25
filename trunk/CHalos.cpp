@@ -126,10 +126,8 @@ void CHalos::getData(string filename){
 
 //Sort halos by size, not existing yet
 void CHalos::HaloSort(){
-
+	//sort(Halos.begin(),Halos.end(),&HaloSortFunc);
 }
-
-
 
 
 
@@ -187,9 +185,7 @@ void CHalos::addHalos(CArray* inArray){
 		tmpNrInHalo.push_back(inArray->get(1+i));
 
 		double tmpArray[tmpNrInHalo[i]*ParticleSize];
-		cout << NrInHalo[i] << endl;
 		for (int j = 0; j < tmpNrInHalo[i];j++){
-
 			for (int k = 0; k < ParticleSize;k++){
 				tmpArray[j*ParticleSize+k] = inArray->get(particle_count);
 				particle_count++;
@@ -341,7 +337,7 @@ void CHalos::LoadBin(string Filename){
 
 	cout << "Copying data ..." << endl;
 	//Limit the amount of particles read
-	count = 10000;
+	//count = 10000;
 	cout << "Nr of particles: "<< count << endl;
 
 	//Saving data into existing structure
@@ -516,19 +512,21 @@ void CHalos::FriendOfFriendGrid(){
 	Particle->next = NULL;
 
 
+	cout << "---------------------------------" << endl;
+	cout << "Initializing grid" << endl;
+	cout << "." << endl;
+	cout << ".." << endl;
+	cout << "..." << endl;
+
 	//Initialize the Grid
 	CVector min(-1,-1,-1);
 	CVector max(1,1,1);
-	//int Width = 1./(myConstants::constants.b*LinkingLength);
-	int Width = 200;
+	int Width = 250;
 	Grid.initialize(&min,&max,Width);
-
-	//for (int i = 0; i < NrHalos;i++){
-	//	Grid.Populate(Halos[i]->getParticles());
-	//}
-
 	Grid.Populate(&allParticles);
 
+	cout << "Finished initializing grid" << endl;
+	cout << "---------------------------------" << endl;
 
 
 	cout << "---------------------------------" << endl;
@@ -540,14 +538,15 @@ void CHalos::FriendOfFriendGrid(){
 	//Using recursion to link all particles belonging to a halo
 	while (true){
 		Particle = findParticle();
-
+		//cout << Particle << endl;
 		if (Particle == NULL) break;
 		else {
+			//cout << "Assigning new halo" << endl;
 			CHalo* tmpHalo = new CHalo();
 			tmpHalos.push_back(tmpHalo);
-
 			//Calls findNeighbors to find the particles within linking distance
 			findNeighborsGrid(Particle, tmpHalo);
+
 		}
 	}
 
@@ -570,10 +569,6 @@ void CHalos::FriendOfFriendGrid(){
 //Then finds the neighboring particles, within 26 closest cubes in the grid.
 //Before calling itself for each particle found this way
 void CHalos::findNeighborsGrid(CParticle* inParticle, CHalo* inHalo){
-	//inParticle->setFlag(1);
-	//inParticle->RemoveFromList();
-	//inHalo->addParticle(inParticle);
-
 	CVector Position = Grid.getPosition(inParticle);
 	CHalo FriendList,tmpList;
 
@@ -582,25 +577,21 @@ void CHalos::findNeighborsGrid(CParticle* inParticle, CHalo* inHalo){
 	for (int i=-1;i<=1;i++){
 		for (int j=-1;j<=1;j++) {
 			for (int k=-1;k<=1;k++) {
-				if (Grid.get(Position.x()+i,Position.y()+j,Position.z()+k)->getFlag() == 0){
-					Grid.get(Position.x()+i,Position.y()+j,Position.z()+k)->setFlag(1);
-					FriendList.addParticles(Grid.get(Position.x()+i,Position.y()+j,Position.z()+k));
-					Grid.get(Position.x()+i,Position.y()+j,Position.z()+k)->RemoveFromList();
-					//tmpList.addParticle(Grid.get(Position.x()+i,Position.y()+j,Position.z()+k)->get(0));
+				if (Grid.getPeriodic(Position.x()+i,Position.y()+j,Position.z()+k)->getFlag() == 0){
+					Grid.getPeriodic(Position.x()+i,Position.y()+j,Position.z()+k)->setFlag(1);
+					inHalo->addParticles(Grid.getPeriodic(Position.x()+i,Position.y()+j,Position.z()+k));
+					Grid.getPeriodic(Position.x()+i,Position.y()+j,Position.z()+k)->RemoveFromList();
+					tmpList.addParticle(Grid.getPeriodic(Position.x()+i,Position.y()+j,Position.z()+k)->get(0));
 				}
 			}
 		}
 	}
 
-	
 	//Finds the neighboring particles for each particle found to be within
 	//the linking length and adds them to the given halo
-	for (int i = 0; i<FriendList.getNrParticles();i++){
-		findNeighbors(FriendList[i], inHalo);
-		}
-	/*for (int i = 0; i<tmpList.getNrParticles();i++){
-			findNeighbors(tmpList[i], inHalo);
-	}*/
+	for (int i = 0; i<tmpList.getNrParticles();i++){
+		findNeighborsGrid(tmpList[i], inHalo);
+	}
 }
 
 
@@ -696,6 +687,104 @@ void CHalos::FriendOfFriendN3(){
 
 
 
+
+
+void CHalos::FriendOfFriendPhaseSpace(){
+	vector<CHalo*> tmpHalos;
+
+	allParticles = *Halos[0]->getParticles();
+	searchParticle = allParticles[0];//Halos[0]->get(0);
+	CParticle* Particle = searchParticle;
+
+	double SigmaP = Halos[0]->SigmaP();
+	double SigmaV = Halos[0]->SigmaV();
+
+	//Create a linked list of all particles
+	Particle->prev=NULL;
+	for (int i=1; i < NrParticles;i++){
+		Particle->setFlag(0);
+		Particle->next = allParticles[i];
+		Particle->next->prev = Particle;
+		Particle = Particle->next;
+	}
+	Particle->setFlag(0);
+	Particle->next = NULL;
+
+
+	//Using recursion to link all particles belonging to a halo
+	while (true){
+		Particle = findParticle();
+
+		if (Particle == NULL) break;
+		else {
+			CHalo* tmpHalo = new CHalo();
+			tmpHalos.push_back(tmpHalo);
+
+			//Calls findNeighbors to find the particles within linking distance
+			findNeighborsPhaseSpace(Particle, tmpHalo, SigmaP, SigmaV);
+		}
+	}
+
+	//Only saving halos that has more than HaloLimit particles, updating NrInHalos
+	Halos.clear();
+	NrInHalo.clear();
+	for (int i = 0; i < tmpHalos.size(); i++){
+		if (tmpHalos[i]->getNrParticles() > myConstants::constants.HaloLimit){
+			Halos.push_back(tmpHalos[i]);
+			NrInHalo.push_back(tmpHalos[i]->getNrParticles());
+		}
+		NrHalos = Halos.size();
+	}
+}
+
+
+//Flags the given particle and adds it to the given halo.
+//Then finds the neighboring particles, within the linking length.
+//Before calling itself for each particle found this way
+void CHalos::findNeighborsPhaseSpace(CParticle* inParticle, CHalo* inHalo,double SigmaP, double SigmaV){
+	inParticle->setFlag(1);
+	inParticle->RemoveFromList();
+	inHalo->addParticle(inParticle);
+
+	CHalo FriendList;
+	//Loops through all particles and finds the ones
+	//within the linking length not assigned to a halo. Then adds them to a temporary halo
+	for (int i = 0; i<allParticles.getNrParticles();i++){
+		if (allParticles[i]->getFlag()==0){
+			double distance = PhaseSpaceDistance(inParticle,allParticles[i],SigmaP,SigmaV);
+			if (distance < myConstants::constants.PhaseDistance){
+				allParticles[i]->setFlag(1);
+				FriendList.addParticle(allParticles[i]);
+			}
+		}
+	}
+
+	//Finds the neighboring particles for each particle found to be within
+	//the linking length and adds them to the given halo
+	for (int i = 0; i<FriendList.getNrParticles();i++){
+		findNeighborsPhaseSpace(FriendList[i],inHalo,SigmaP,SigmaV);
+	}
+}
+
+double CHalos::PhaseSpaceDistance(CParticle* p1, CParticle* p2, double SigmaP, double SigmaV){
+	return (p1->getP() - p2->getP()).Length2()/SigmaP +  (p1->getV() - p2->getV()).Length2()/SigmaV;
+}
+
+
+
+
+/*void CHalos::SplitHalo(int element){
+  vector<CHalo*> tmpHalos;
+
+  for (int i = 0; i < NrInHalo[element]; i++){
+  Halos[element]->get(i)->setFlag(0);
+  }
+
+  for (int i = 0; i < NrInHalo[element]; i++){
+  Halos[element]->get(i)
+  }
+
+  }*/
 
 
 

@@ -43,6 +43,11 @@ class CHalo{
 	//Add several particles to the Halo
 	void addParticles(CParticles* inParticles);
 
+	//Calculate the standard deviation of the positions in a halo
+	double SigmaP();
+	//Calculate the standard deviation of the velocities in a halo
+	double SigmaV();
+ 
 
  protected:
 	CParticles Halo;

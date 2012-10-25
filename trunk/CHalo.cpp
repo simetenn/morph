@@ -96,3 +96,20 @@ void CHalo::addParticles(CParticles* inParticles){
 	NrParticles+=inParticles->getNrParticles();
 }
 
+
+double CHalo::SigmaP(){
+	double sum = 0;
+	for (int i = 0; i < NrParticles; i++) {
+		sum += Halo[i]->getP().Length();
+	}
+	return sum/NrParticles;
+}
+
+
+double CHalo::SigmaV(){
+	double sum = 0;
+	for (int i = 0; i < NrParticles; i++) {
+		sum += Halo[i]->getV().Length();
+	}
+	return sum/NrParticles;
+}
