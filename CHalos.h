@@ -9,6 +9,9 @@ struct particle_save {
 	unsigned int halo;
 };
 
+//bool HaloSortFunc(CHalo a, CHalo b){
+//	return (a.getNrParticles() < b.getNrParticles());
+//};
 
 class CHalos{
  public:
@@ -30,6 +33,9 @@ class CHalos{
 	//Sort halos by size, not existing yet
 	void HaloSort();
 
+	//bool HaloSortFunc(CHalo a,CHalo b);
+
+
 
 	//Convert all halos to one array
 	CArray* Halos2Array();
@@ -40,6 +46,7 @@ class CHalos{
 	void addHalos(CArray* inArray);
 	//Remove halo nr element from CHalos
 	void removeHalo(int element);
+
 
 
 
@@ -97,7 +104,15 @@ class CHalos{
 	//Do not use this. Way to slow method. It is not tested, but seems to run
 	void FriendOfFriendN3();
 
+	//void SplitHalo(int element);
 
+
+	void FriendOfFriendPhaseSpace();
+	void findNeighborsPhaseSpace(CParticle* inParticle, CHalo* inHalo, double SigmaP, double SigmaV);
+	double PhaseSpaceDistance(CParticle* p1, CParticle* p2, double SigmaP, double SigmaV);
+
+
+	
 	void master();
 	void slave();
 

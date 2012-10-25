@@ -15,13 +15,13 @@ void CMain::master() {
 	m.FriendOfFriendGrid();
 	m.printHalos();
 	m.saveP();
-	//m.master();
+	m.master();
 	//m.printHalos();
 }
 
 void CMain::slave(){
 
 	CHalos s;
-	//s.slave();
+	s.slave();
 }
 

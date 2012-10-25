@@ -147,9 +147,9 @@ CArray* CParticles::Particles2Array(){
 //Set the flag 
 void CParticles::setFlag(int inFlag){
 	flag = inFlag;
-	//for (int i = 0; i < NrParticles; i++) {
-	//	Particles[i]->setFlag(inFlag);
-	//}
+	for (int i = 0; i < NrParticles; i++) {
+		Particles[i]->setFlag(inFlag);
+	}
 }
 
 int CParticles::getFlag(){
