@@ -22,7 +22,8 @@ CHalo::CHalo(CParticles* inParticles){
 CHalo::CHalo(CArray* inArray){
 	ParticleSize = myConstants::constants.ParticleSize;
 
-	Halo.set(inArray);
+	//Halo.set(inArray);
+	Halo = CParticles(inArray);
 	NrParticles = Halo.getNrParticles();
 	HaloMass = 0;
 }

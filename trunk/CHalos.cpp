@@ -15,13 +15,12 @@ CHalos::CHalos(){
 //nr of particles of in halo N, particle array 1, particle array 2, ... ,
 //particle array N
 CHalos::CHalos(CArray* inArray){
+	Halos.clear();
 	NrHalos = inArray->get(0);
 	ParticleSize = myConstants::constants.ParticleSize;
 
-
 	int particle_count = 1+NrHalos;
 	NrParticles = (inArray->len()-1-NrHalos)/ParticleSize;
-
 	for (int i = 0; i < NrHalos; i++){
 		NrInHalo.push_back(inArray->get(1+i));
 		double tmpArray[NrInHalo[i]*ParticleSize];
@@ -178,7 +177,7 @@ void CHalos::addHalos(CArray* inArray){
 	int newNrParticles = (inArray->len()-1-NrHalos)/ParticleSize;
 	NrParticles += newNrParticles;
 
-	int particle_count = 0;
+	int particle_count = 1+newNrHalos;
 
 	for (int i = 0; i < newNrHalos; i++){
 		NrInHalo.push_back(inArray->get(1+i));
@@ -368,7 +367,7 @@ void CHalos::LoadBin(string Filename){
 void CHalos::saveP(){
 	fstream file;
 	CVector tmpP;
-
+	//string out = myConstants::constants.outFile;
 	file.open("positions.dat", ios::out);
 
 	//Saves position data for each particle to file
@@ -698,7 +697,7 @@ void CHalos::FriendOfFriendPhaseSpace(){
 
 	double SigmaP = Halos[0]->SigmaP();
 	double SigmaV = Halos[0]->SigmaV();
-
+	
 	//Create a linked list of all particles
 	Particle->prev=NULL;
 	for (int i=1; i < NrParticles;i++){
@@ -709,7 +708,6 @@ void CHalos::FriendOfFriendPhaseSpace(){
 	}
 	Particle->setFlag(0);
 	Particle->next = NULL;
-
 
 	//Using recursion to link all particles belonging to a halo
 	while (true){
@@ -725,6 +723,7 @@ void CHalos::FriendOfFriendPhaseSpace(){
 		}
 	}
 
+	
 	//Only saving halos that has more than HaloLimit particles, updating NrInHalos
 	Halos.clear();
 	NrInHalo.clear();
@@ -752,7 +751,10 @@ void CHalos::findNeighborsPhaseSpace(CParticle* inParticle, CHalo* inHalo,double
 	for (int i = 0; i<allParticles.getNrParticles();i++){
 		if (allParticles[i]->getFlag()==0){
 			double distance = PhaseSpaceDistance(inParticle,allParticles[i],SigmaP,SigmaV);
+			//cout << distance << endl;
+			//cout << myConstants::constants.PhaseDistance << endl;
 			if (distance < myConstants::constants.PhaseDistance){
+				//cout<< "everin here?"<< endl;
 				allParticles[i]->setFlag(1);
 				FriendList.addParticle(allParticles[i]);
 			}
@@ -767,7 +769,7 @@ void CHalos::findNeighborsPhaseSpace(CParticle* inParticle, CHalo* inHalo,double
 }
 
 double CHalos::PhaseSpaceDistance(CParticle* p1, CParticle* p2, double SigmaP, double SigmaV){
-	return (p1->getP() - p2->getP()).Length2()/SigmaP +  (p1->getV() - p2->getV()).Length2()/SigmaV;
+	return (p1->getP() - p2->getP()).Length2()/(SigmaP*SigmaP) +  (p1->getV() - p2->getV()).Length2()/(SigmaV*SigmaV);
 }
 
 
@@ -793,12 +795,12 @@ double CHalos::PhaseSpaceDistance(CParticle* p1, CParticle* p2, double SigmaP, d
 
 
 //Master process
-void CHalos::master(){
+CHalos* CHalos::master(){
 	CMPI MPI;
 	int count = 0;
 	int processor;
 	int size = MPI.getSize();
-	CHalos FinalHalos;
+	CHalos* FinalHalos = new CHalos();
 	MPI_Request Req [size-1];
 	vector<CArray*> Array (size-1);
 	CParticle tmpParticle;
@@ -808,8 +810,11 @@ void CHalos::master(){
 	for (int p = 1; p < size; p++){
 		cout << "Initializing for processor nr: " << p << endl;
 
+		//Add how many particles in halo to be sent
+		//and that it only is one halo to the CArray
 		Array[p-1] = Halos[count]->Halo2Array();//Halo2Array(Halos[count]);
-		//Array[p-1]->print();
+		Array[p-1]->front(NrInHalo[count]);
+		Array[p-1]->front(1);
 		MPI.End(p,0);
 		Array[p-1]->send(p);
 		Array[p-1]->recieve(p,&Req[p-1]);
@@ -820,20 +825,19 @@ void CHalos::master(){
 	cout << "-------------------------------------------------" << endl;
 	cout << "Finished distributing halos to each processor" << endl;
 	cout << "-------------------------------------------------" << endl;
-	cout << NrHalos << endl;
 	//Send halo to processor as soon as a processor finishes
 	while (count < NrHalos) {
 		cout << "Calculating for halo nr: " << count + 1 << endl;
 		//Listening for a processor to finish
 		processor = MPI.listener(Req);
-		FinalHalos.addHalos(Array[processor-1]);
+		FinalHalos->addHalos(Array[processor-1]);
 
 		Array[processor-1] =  Halos[count]->Halo2Array();
 		MPI.End(processor,0);
 
 		//Add how many particles in halo to be sent
 		//and that it only is one halo to the CArray
-		Array[processor-1]->front(Array[processor-1]->len()/tmpParticle.getParticleSize());
+		Array[processor-1]->front(NrInHalo[count]);
 		Array[processor-1]->front(1);
 
 		//Send the array and start listening for the response
@@ -845,10 +849,15 @@ void CHalos::master(){
 	//Waiting for all processors to finish their last task
 	MPI.WaitAll(Req);
 
+	for (int i = 0; i <= MPI.getRank();i++){
+		FinalHalos->addHalos(Array[i]);
+	}
+	
 	//Send end signal to all processors
 	for (int p = 1;p < size;p++){
 		MPI.End(p,1);
 	}
+	return FinalHalos;
 }
 
 
@@ -872,10 +881,17 @@ void CHalos::slave(){
 		//cout << "Slave " << rank << " recieved halo" << endl;
 		CHalos SlaveHalos (&HalosArray);
 
+		//SlaveHalos.printHalos();
 		//Do something in each slave processor here
-		//slaveParticles.DoSomething();
+		SlaveHalos.FriendOfFriendPhaseSpace();
 
 		SlaveHalos.Halos2Array()->send_slave();
+		/*cout << "------------------------------------------" << endl;
+		cout << SlaveHalos.Halos2Array()->get(0) << endl;
+		cout << SlaveHalos.Halos2Array()->get(1) << endl;
+		cout << SlaveHalos.Halos2Array()->get(2) << endl;
+		cout << SlaveHalos.Halos2Array()->get(3) << endl;
+		cout << SlaveHalos.Halos2Array()->get(4) << endl;*/
 	}
 }
 

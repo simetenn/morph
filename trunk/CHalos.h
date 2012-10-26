@@ -113,7 +113,7 @@ class CHalos{
 
 
 	
-	void master();
+	CHalos* master();
 	void slave();
 
 
