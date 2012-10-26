@@ -4,7 +4,7 @@ Constants myConstants::constants;
 
 
 void CMain::master() {
-	CHalos m;
+	CHalos m,n;
 	//a.get_Data ("particles.dat");
 	
 	m.LoadBin(myConstants::constants.inFile);
@@ -15,7 +15,10 @@ void CMain::master() {
 	m.FriendOfFriendGrid();
 	m.printHalos();
 	m.saveP();
-	m.master();
+	n = *m.master();
+	n.printHalos();
+	//n.print();
+	n.saveP();
 	//m.printHalos();
 }
 
