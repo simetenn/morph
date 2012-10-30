@@ -47,10 +47,12 @@ class CHalo{
 	double SigmaP();
 	//Calculate the standard deviation of the velocities in a halo
 	double SigmaV();
- 
+
+	//Calculate the linking length of a halo
+	double LinkingLength();
 
  protected:
 	CParticles Halo;
-	double HaloMass;
+	double HaloMass;//, SigmaP,SigmaV;
 	int ParticleSize, NrParticles;
 };

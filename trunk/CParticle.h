@@ -61,7 +61,10 @@ class CParticle{
 	CVector Momentum();
 	//Move the particle one timestep
 	void Move(double dt);
+	//CalculatePhaseSpaceDistance between 2 particles
+	double PhaseSpaceDistance(CParticle* p2, double inSigmaP, double inSigmaV);
 
+	
 
 	//Print out all the information contained in one particle
 	void print();

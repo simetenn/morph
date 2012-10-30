@@ -112,7 +112,7 @@ class CHalos{
 	double PhaseSpaceDistance(CParticle* p1, CParticle* p2, double SigmaP, double SigmaV);
 
 
-	
+
 	CHalos* master();
 	void slave();
 
