@@ -137,9 +137,7 @@ void CArray::set(int element,double value){
 	if (element >= length || element < -length) {
 		cout << "Index out of bounds" << endl;
 		throw "Index out of bounds";
-
 	}
-
 	else {
 		array[element] = value;
 	}

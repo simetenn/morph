@@ -198,7 +198,9 @@ CVector CParticle::Momentum(){
 }
 
 
-
+double CParticle::PhaseSpaceDistance(CParticle* p2, double inSigmaP, double inSigmaV){
+	return sqrt((P - p2->getP()).Length2()/(inSigmaP*inSigmaP) +  (V - p2->getV()).Length2()/(inSigmaV*inSigmaV));
+}
 
 
 //Print out all the information contained in one particle

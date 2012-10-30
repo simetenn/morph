@@ -697,7 +697,7 @@ void CHalos::FriendOfFriendPhaseSpace(){
 
 	double SigmaP = Halos[0]->SigmaP();
 	double SigmaV = Halos[0]->SigmaV();
-	
+
 	//Create a linked list of all particles
 	Particle->prev=NULL;
 	for (int i=1; i < NrParticles;i++){
@@ -723,7 +723,7 @@ void CHalos::FriendOfFriendPhaseSpace(){
 		}
 	}
 
-	
+
 	//Only saving halos that has more than HaloLimit particles, updating NrInHalos
 	Halos.clear();
 	NrInHalo.clear();
@@ -751,10 +751,7 @@ void CHalos::findNeighborsPhaseSpace(CParticle* inParticle, CHalo* inHalo,double
 	for (int i = 0; i<allParticles.getNrParticles();i++){
 		if (allParticles[i]->getFlag()==0){
 			double distance = PhaseSpaceDistance(inParticle,allParticles[i],SigmaP,SigmaV);
-			//cout << distance << endl;
-			//cout << myConstants::constants.PhaseDistance << endl;
 			if (distance < myConstants::constants.PhaseDistance){
-				//cout<< "everin here?"<< endl;
 				allParticles[i]->setFlag(1);
 				FriendList.addParticle(allParticles[i]);
 			}
@@ -769,13 +766,13 @@ void CHalos::findNeighborsPhaseSpace(CParticle* inParticle, CHalo* inHalo,double
 }
 
 double CHalos::PhaseSpaceDistance(CParticle* p1, CParticle* p2, double SigmaP, double SigmaV){
-	return (p1->getP() - p2->getP()).Length2()/(SigmaP*SigmaP) +  (p1->getV() - p2->getV()).Length2()/(SigmaV*SigmaV);
+	return sqrt((p1->getP() - p2->getP()).Length2()/(SigmaP*SigmaP) +  (p1->getV() - p2->getV()).Length2()/(SigmaV*SigmaV));
 }
 
 
 
-
-/*void CHalos::SplitHalo(int element){
+/*
+void CHalos::SplitHalo(int element){
   vector<CHalo*> tmpHalos;
 
   for (int i = 0; i < NrInHalo[element]; i++){
@@ -783,11 +780,11 @@ double CHalos::PhaseSpaceDistance(CParticle* p1, CParticle* p2, double SigmaP, d
   }
 
   for (int i = 0; i < NrInHalo[element]; i++){
-  Halos[element]->get(i)
+	  Halos[element]->get(i)
   }
 
-  }*/
-
+  }
+*/
 
 
 
@@ -852,7 +849,7 @@ CHalos* CHalos::master(){
 	for (int i = 0; i <= MPI.getRank();i++){
 		FinalHalos->addHalos(Array[i]);
 	}
-	
+
 	//Send end signal to all processors
 	for (int p = 1;p < size;p++){
 		MPI.End(p,1);
@@ -886,12 +883,6 @@ void CHalos::slave(){
 		SlaveHalos.FriendOfFriendPhaseSpace();
 
 		SlaveHalos.Halos2Array()->send_slave();
-		/*cout << "------------------------------------------" << endl;
-		cout << SlaveHalos.Halos2Array()->get(0) << endl;
-		cout << SlaveHalos.Halos2Array()->get(1) << endl;
-		cout << SlaveHalos.Halos2Array()->get(2) << endl;
-		cout << SlaveHalos.Halos2Array()->get(3) << endl;
-		cout << SlaveHalos.Halos2Array()->get(4) << endl;*/
 	}
 }
 

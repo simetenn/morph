@@ -114,3 +114,32 @@ double CHalo::SigmaV(){
 	}
 	return sum/NrParticles;
 }
+
+
+double CHalo::LinkingLength(){
+	int tmpNrParticles = NrParticles;
+	
+	if (NrParticles > 10000) tmpNrParticles = 10000;
+	vector<double> LinkingLengths (tmpNrParticles);
+	int tmpLinkingLength,prevtmpLinkingLength;
+	double tmpSigmaP = SigmaP();
+	double tmpSigmaV = SigmaV();
+	
+	prevtmpLinkingLength = Halo[0]->PhaseSpaceDistance(Halo[1],tmpSigmaP,tmpSigmaV);
+	for (int i = 0; i < tmpNrParticles; i++) {
+		if (i!=0) {
+			prevtmpLinkingLength = Halo[i]->PhaseSpaceDistance(Halo[0],tmpSigmaP,tmpSigmaV);
+		}
+		for (int j = 1; j < tmpNrParticles; j++) {
+			tmpLinkingLength = Halo[i]->PhaseSpaceDistance(Halo[j],tmpSigmaP,tmpSigmaV);
+			if (i!=j &&  tmpLinkingLength < prevtmpLinkingLength) {
+				prevtmpLinkingLength = tmpLinkingLength;
+			}
+		}
+		LinkingLengths[i] = tmpLinkingLength;
+	}
+
+	sort(LinkingLengths.begin(),LinkingLengths.end());
+	
+	return LinkingLengths[(int) LinkingLengths.size()*myConstants::constants.f];
+}

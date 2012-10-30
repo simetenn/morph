@@ -30,6 +30,10 @@ void CMPI::initialize_CMPI(int argc, char **argv){
 
 
 CMPI::~CMPI(){
+	//delete[] master_receive_array;
+	//delete[] slave_receive_array;
+	//delete[] result;
+
 	//if (Req_receive != NULL){
 	//delete[] Req_receive;
 	//}
@@ -58,7 +62,7 @@ void CMPI::send_array_master(double* master_send_array, int processor, int lengt
 double* CMPI::receive_array_master(int processor, int& master_length, MPI_Request* Req){
 	MPI_Status Stat;
 	MPI_Request* tmpReq;
-	
+
 	//recieve length of array
 	MPI_Recv(&master_length,1,MPI_INT,processor,processor+2*size,MPI_COMM_WORLD,&Stat);
 
