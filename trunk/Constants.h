@@ -8,7 +8,7 @@ class Constants {
 
 	int ParticleSize, HaloLimit;
 	double b,PhaseDistance,f;
-	string inFile, outFile;
+	string inFile, outFile,haloFile;
 	
 	Constants() {
 		CIniFile IniFile;
@@ -19,6 +19,7 @@ class Constants {
 		HaloLimit = IniFile.getdouble("HaloLimit");
 		inFile = IniFile.getstring("inFile");
 		outFile = IniFile.getstring("outFile");
+		haloFile = IniFile.getstring("haloFile");
 		PhaseDistance = IniFile.getdouble("PhaseDistance");
 		f = IniFile.getdouble("f");
 	}
