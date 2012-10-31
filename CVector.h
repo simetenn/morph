@@ -14,7 +14,6 @@ class CVector_bare{
 };
 
 
-
 class CVector{
  public:
 
@@ -30,7 +29,9 @@ class CVector{
 	void Set(double x,double y,double z);
 	//Get a given element of a vector
 	double& operator[](int element);
-
+	//Assign one value to all elements of a CVector
+	void operator=(double other);
+	
 	//Return x,y and z coordinates of the vector
 	double x();
 	double y();
@@ -41,17 +42,16 @@ class CVector{
 	void print();
 	//Get the nr of dimensions of a vector
 	int getDimensions();
-
-
+	
 	//Add to vectors together
 	CVector operator+(const CVector& other) const;
 	//Add a number to a vector
-	CVector Add(double number) const;
+	CVector operator+(double number) const;
 
 	//Subtract two vectors
 	CVector operator-(const CVector& other) const;
 	//Subtract a number from a vector
-	CVector Subtract(double number) const;
+	CVector operator-(double number) const;
 
 	//Divide a vector by a number
 	CVector operator/(double number) const;
@@ -59,9 +59,12 @@ class CVector{
 	CVector operator/(CVector& inVector) const;
 	//Multiply a vector by a number
 	CVector operator*(double number) const;
-
-
-
+	//Multiply a vector by a vector, returning a new vector
+	CVector operator*(CVector& inVector) const;
+	//Take the square root of all elements in an CVector
+	CVector sqrt() const;
+	//Take the power of each element in the vector
+	CVector pow(double element) const;
 
 	//Calculate the length of a vector
 	double Length() const;

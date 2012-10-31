@@ -64,6 +64,8 @@ class CHalos{
 	int getNrInHalo(int element);
 	//Return a halo
 	CHalo* getHalo(int element);
+	//Return a halo
+	CHalo* operator[](int element);
 	//Returns CParticles* for a given halo
 	CParticles* getParticles(int element);
 	//Returns CParticle* for a given particle
@@ -77,9 +79,14 @@ class CHalos{
 
 	//Load a binary file from a N-body simulation into memory
 	void LoadBin(string Filename);
-	//savesthe positions of each particle together with the halo it belongs to to file
-	void saveP();
+	//Load a text file, 
+	void LoadData(string Filename);
 
+		
+	//save the positions of each particle together with the halo it belongs to to file
+	void saveP();
+	//Calculate halo statistics for each halo
+	void CalculateAllStatistics();
 
 	//Calculating Friend of Friend using recursion, without a grid
 	void FriendOfFriendN2();
@@ -108,8 +115,8 @@ class CHalos{
 
 
 	void FriendOfFriendPhaseSpace();
-	void findNeighborsPhaseSpace(CParticle* inParticle, CHalo* inHalo, double SigmaP, double SigmaV);
-	double PhaseSpaceDistance(CParticle* p1, CParticle* p2, double SigmaP, double SigmaV);
+	void findNeighborsPhaseSpace(CParticle* inParticle, CHalo* inHalo, CVector* SigmaP,CVector*  SigmaV);
+	//double PhaseSpaceDistance(CParticle* p1, CParticle* p2, double SigmaP, double SigmaV);
 
 
 

@@ -62,7 +62,7 @@ class CParticle{
 	//Move the particle one timestep
 	void Move(double dt);
 	//CalculatePhaseSpaceDistance between 2 particles
-	double PhaseSpaceDistance(CParticle* p2, double inSigmaP, double inSigmaV);
+	double PhaseSpaceDistance(CParticle* p2, CVector* inSigmaP, CVector* inSigmaV);
 
 	
 

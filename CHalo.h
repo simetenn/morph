@@ -24,10 +24,19 @@ class CHalo{
 
 	
 	//Return the total mass of the halo
-	double getHaloMass();
+	double getMass();
+	//Get the position of the center of the halo
+	CVector* getMeanP();
+	//Get the velocity of the center of the halo
+	CVector* getMeanV();
+	//Get the standard deviation of the positions in a halo
+	CVector* getSigmaP();
+	//Get the standard deviation of the velocities in a halo
+	CVector* getSigmaV();
 	//Return nr of particles
 	int getNrParticles();
 
+	
 	//Return particle nr #element
 	CParticle* operator[](int element);
 	CParticle* get(int element);
@@ -43,16 +52,23 @@ class CHalo{
 	//Add several particles to the Halo
 	void addParticles(CParticles* inParticles);
 
-	//Calculate the standard deviation of the positions in a halo
-	double SigmaP();
-	//Calculate the standard deviation of the velocities in a halo
-	double SigmaV();
+	//Calculate all the statistics relevant for a halo, such as:
+	//mean P, mean V, sigma P, sigma V and mass
+	void CalculateStatistics();
+	
+	//save the data for a single halo to file
+	void saveHalo();
+		
+	
+	
+
 
 	//Calculate the linking length of a halo
 	double LinkingLength();
 
  protected:
 	CParticles Halo;
-	double HaloMass;//, SigmaP,SigmaV;
+	CVector MeanP,MeanV, SigmaP, SigmaV;
+	double Mass;//, SigmaP,SigmaV;
 	int ParticleSize, NrParticles;
 };

@@ -72,6 +72,13 @@ double& CVector::operator[](int element){
 }
 
 
+void CVector::operator=(double other){
+	Vector[0] = other;
+	Vector[1] = other;
+	Vector[2] = other;
+}
+
+
 //Print out a CVector
 void CVector::print(){
 	cout << "(";
@@ -116,7 +123,7 @@ CVector CVector::operator+(const CVector& other) const{
 
 
 //Add a number to a vector
-CVector CVector::Add(double number) const{
+CVector CVector::operator+(double number) const{
 	CVector resVector;
 	for (int i =0; i< Dimensions;i++) {
 		resVector.Vector[i] = Vector[i] + number;
@@ -136,7 +143,7 @@ CVector CVector::operator-(const CVector& other) const {
 
 
 //Subtract a number from a vector
-CVector CVector::Subtract(double number) const{
+CVector CVector::operator-(double number) const{
 	CVector resVector;
 	for (int i =0; i< Dimensions;i++) {
 		resVector.Vector[i] = Vector[i] - number;
@@ -176,11 +183,39 @@ CVector CVector::operator*(double number) const{
 }
 
 
+//Multiply a vector by a vector, returning a new vector
+CVector CVector::operator*(CVector& inVector) const{
+	CVector resVector;
+	for (int i =0; i< Dimensions;i++) {
+		resVector.Vector[i] = Vector[i]*inVector[i];
+
+	}
+	return resVector;
+}
+
+
+CVector CVector::sqrt() const{
+	CVector resVector;
+	for (int i =0; i< Dimensions;i++) {
+		resVector.Vector[i] = std::sqrt(Vector[i]);
+	}
+	return resVector;
+}
+
+CVector CVector::pow(double element) const{
+	CVector resVector;
+	for (int i =0; i< Dimensions;i++) {
+		resVector.Vector[i] = std::pow(Vector[i],element);
+	}
+	return resVector;
+}
+
 
 //Calculate the length of a vector
 double CVector::Length() const{
-	return sqrt(CVector::Length2());
+	return std::sqrt(CVector::Length2());
 }
+
 
 //Calculate the length^2 of a vector
 double CVector::Length2() const{

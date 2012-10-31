@@ -5,7 +5,11 @@ using namespace std;
 CHalo::CHalo(){
 	ParticleSize = myConstants::constants.ParticleSize;
 	NrParticles = 0;
-	HaloMass = 0;
+	Mass = 0;
+	MeanP.Set(0,0,0);
+	MeanV.Set(0,0,0);
+	SigmaP.Set(0,0,0);
+	SigmaV.Set(0,0,0);
 }
 
 //Create a CHalo from CParticles
@@ -13,7 +17,11 @@ CHalo::CHalo(CParticles* inParticles){
 	ParticleSize = myConstants::constants.ParticleSize;
 	Halo = *inParticles;
 	NrParticles = inParticles->getNrParticles();
-	HaloMass = 0;
+	Mass = 0;
+	MeanP.Set(0,0,0);
+	MeanV.Set(0,0,0);
+	SigmaP.Set(0,0,0);
+	SigmaV.Set(0,0,0);
 }
 
 
@@ -25,7 +33,11 @@ CHalo::CHalo(CArray* inArray){
 	//Halo.set(inArray);
 	Halo = CParticles(inArray);
 	NrParticles = Halo.getNrParticles();
-	HaloMass = 0;
+	Mass = 0;
+	MeanP.Set(0,0,0);
+	MeanV.Set(0,0,0);
+	SigmaP.Set(0,0,0);
+	SigmaV.Set(0,0,0);
 }
 
 
@@ -46,16 +58,42 @@ CArray*	 CHalo::Halo2Array(){
 }
 
 
+//Return the total mass of the halo
+double CHalo::getMass(){
+	return Mass;
+}
+
+
+//Get the position of the center of the halo
+CVector* CHalo::getMeanP(){
+	return &MeanP;
+}
+
+
+//Get the velocity of the center of the halo
+CVector* CHalo::getMeanV(){
+	return &MeanV;
+}
+
+
+//Get the standard deviation of the positions in a halo
+CVector* CHalo::getSigmaP(){
+	return &SigmaP;
+}
+
+
+//Get the standard deviation of the velocities in a halo
+CVector* CHalo::getSigmaV(){
+	return &SigmaV;
+}
+
 
 //Return nr of particles
 int CHalo::getNrParticles(){
 	return NrParticles;
 }
 
-//Return the total mass of the halo
-double CHalo::getHaloMass(){
-	return HaloMass;
-}
+
 
 //Return particle nr #element
 CParticle* CHalo::operator[](int element){
@@ -87,7 +125,7 @@ void CHalo::addParticle(CParticle* inParticle){
 
 //Add a halo to the halo
 void CHalo::addHalo(CHalo* inHalo){
-	HaloMass += inHalo->getHaloMass();
+	//Mass += inHalo->getMass();
 	Halo.addParticles(inHalo->getParticles());
 }
 
@@ -97,49 +135,77 @@ void CHalo::addParticles(CParticles* inParticles){
 	NrParticles+=inParticles->getNrParticles();
 }
 
+//Calculate all the statistics relevant for a halo, such as:
+//mean P, mean V, sigma P, sigma V and mass
+void CHalo::CalculateStatistics(){
+	MeanP = 0;
+	MeanV = 0;
+	Mass = 0;
+	SigmaP = 0;
+	SigmaV = 0;
 
-double CHalo::SigmaP(){
-	double sum = 0;
 	for (int i = 0; i < NrParticles; i++) {
-		sum += Halo[i]->getP().Length();
+		Mass += Halo[i]->getMass();
+		MeanP = MeanP + Halo[i]->getP();
+		MeanV = MeanV + Halo[i]->getV();
 	}
-	return sum/NrParticles;
-}
-
-
-double CHalo::SigmaV(){
-	double sum = 0;
+	MeanP = MeanP/NrParticles;
+	MeanV = MeanV/NrParticles;
+	
 	for (int i = 0; i < NrParticles; i++) {
-		sum += Halo[i]->getV().Length();
+		SigmaP = SigmaP + (Halo[i]->getP() - MeanP).pow(2);
+		SigmaV = SigmaP + (Halo[i]->getV() - MeanV).pow(2);
 	}
-	return sum/NrParticles;
+
+	SigmaP = SigmaP.sqrt()/(NrParticles-1);
+	SigmaV = SigmaV.sqrt()/(NrParticles-1);
 }
 
 
-double CHalo::LinkingLength(){
-	int tmpNrParticles = NrParticles;
-	
-	if (NrParticles > 10000) tmpNrParticles = 10000;
-	vector<double> LinkingLengths (tmpNrParticles);
-	int tmpLinkingLength,prevtmpLinkingLength;
-	double tmpSigmaP = SigmaP();
-	double tmpSigmaV = SigmaV();
-	
-	prevtmpLinkingLength = Halo[0]->PhaseSpaceDistance(Halo[1],tmpSigmaP,tmpSigmaV);
-	for (int i = 0; i < tmpNrParticles; i++) {
-		if (i!=0) {
-			prevtmpLinkingLength = Halo[i]->PhaseSpaceDistance(Halo[0],tmpSigmaP,tmpSigmaV);
-		}
-		for (int j = 1; j < tmpNrParticles; j++) {
-			tmpLinkingLength = Halo[i]->PhaseSpaceDistance(Halo[j],tmpSigmaP,tmpSigmaV);
-			if (i!=j &&  tmpLinkingLength < prevtmpLinkingLength) {
-				prevtmpLinkingLength = tmpLinkingLength;
-			}
-		}
-		LinkingLengths[i] = tmpLinkingLength;
-	}
+/*
+  double CHalo::LinkingLength(){
+  int tmpNrParticles = NrParticles;
 
-	sort(LinkingLengths.begin(),LinkingLengths.end());
-	
-	return LinkingLengths[(int) LinkingLengths.size()*myConstants::constants.f];
+  if (NrParticles > 10000) tmpNrParticles = 10000;
+  vector<double> LinkingLengths (tmpNrParticles);
+  int tmpLinkingLength,prevtmpLinkingLength;
+
+  //prevtmpLinkingLength = Halo[0]->PhaseSpaceDistance(Halo[1],tmpSigmaP,tmpSigmaV);
+  for (int i = 0; i < tmpNrParticles; i++) {
+  if (i!=0) {
+  prevtmpLinkingLength = Halo[i]->PhaseSpaceDistance(Halo[0],tmpSigmaP,tmpSigmaV);
+  }
+  for (int j = 1; j < tmpNrParticles; j++) {
+  //tmpLinkingLength = Halo[i]->PhaseSpaceDistance(Halo[j],tmpSigmaP,tmpSigmaV);
+  if (i!=j &&	 tmpLinkingLength < prevtmpLinkingLength) {
+  prevtmpLinkingLength = tmpLinkingLength;
+  }
+  }
+  LinkingLengths[i] = tmpLinkingLength;
+  }
+
+  sort(LinkingLengths.begin(),LinkingLengths.end());
+
+  return LinkingLengths[(int) LinkingLengths.size()*myConstants::constants.f];
+  }*/
+
+
+
+//save the data for a single halo to file
+void CHalo::saveHalo(){
+	fstream file;
+	double* tmpArray;
+	//string out = myConstants::constants.outFile;
+	file.open("Halo.dat", ios::out);
+
+	//Saves data for each particle to file
+	for (int i = 0;i<NrParticles;i++){
+		tmpArray = Halo[i]->Particle2Array();
+		for (int j = 0; j < ParticleSize; j++) {
+			file << tmpArray[j] << " ";
+		}
+		if (i != NrParticles-1) file << endl;
+	}
+	file.close();
 }
+

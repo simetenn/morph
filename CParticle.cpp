@@ -198,8 +198,8 @@ CVector CParticle::Momentum(){
 }
 
 
-double CParticle::PhaseSpaceDistance(CParticle* p2, double inSigmaP, double inSigmaV){
-	return sqrt((P - p2->getP()).Length2()/(inSigmaP*inSigmaP) +  (V - p2->getV()).Length2()/(inSigmaV*inSigmaV));
+double CParticle::PhaseSpaceDistance(CParticle* p2, CVector* inSigmaP, CVector* inSigmaV){
+	return (P - p2->getP()).Length2()/inSigmaP->Length2() +  (V - p2->getV()).Length2()/inSigmaV->Length2();
 }
 
 
