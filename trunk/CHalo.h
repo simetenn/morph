@@ -36,11 +36,14 @@ class CHalo{
 	//Return nr of particles
 	int getNrParticles();
 
+	void setNrParticles(int element);
 	
 	//Return particle nr #element
 	CParticle* operator[](int element);
 	CParticle* get(int element);
 
+	
+	
 
 	//Get CParticles in the Halo
 	CParticles* getParticles();
@@ -59,16 +62,34 @@ class CHalo{
 	//save the data for a single halo to file
 	void saveHalo();
 		
-	
+	void saveP();
+	void saveHaloP(fstream& fileName, int& HaloID);
+
+	void saveStatX();
+	void saveHaloStatX(fstream& fileName, int& HaloID);
 	
 
-
+	
 	//Calculate the linking length of a halo
 	double LinkingLength();
 
+
+
+	
+	void SplitHalo(int LinkingLength);
+
+	void FriendOfFriendPhaseSpace(int LinkingLength);
+	void findNeighborsPhaseSpace(CParticle* inParticle, CHalo* inHalo, int LinkingLength);
+
+	CParticle* nextParticle();
+	
+	
  protected:
 	CParticles Halo;
 	CVector MeanP,MeanV, SigmaP, SigmaV;
-	double Mass;//, SigmaP,SigmaV;
-	int ParticleSize, NrParticles;
+	double Mass;
+	int ParticleSize, NrParticles, NrSubHalos;
+	CParticle* searchParticle;
+	vector<CHalo*> SubHalos;
+	
 };

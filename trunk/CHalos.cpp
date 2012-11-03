@@ -320,15 +320,20 @@ void CHalos::LoadBin(string Filename){
 	ifstream f(Filename.c_str(), ios::in | ios::binary);
 
 	cout << "---------------------------------" << endl;
-	cout << "Reading file ..." << endl;
+	cout << "Reading file " << Filename << endl;
 
 	unsigned int count = -1;
 
 	//Reading binary file into memory
 	f.read((char *)&count, sizeof(unsigned int));
+	
+	//cout << count << endl;
+	//count = 5000000;
 	particle_save* block = new particle_save[count];
+	//cout << "wersdfsdf" << endl;
+	
 	f.read((char *)block, sizeof(particle_save)*count);
-
+	
 
 	Halos.clear();
 	NrInHalo.clear();
@@ -374,17 +379,17 @@ void CHalos::LoadData(string Filename){
 	Halos.clear();
 	NrInHalo.clear();
 	NrHalos = 1;
-		
+
 	CHalo* tmpHalo = new CHalo();
 	Halos.push_back(tmpHalo);
 	double tmpData [ParticleSize];
 	NrParticles = 0;
-	
+
 	if (file.is_open()){
 		getline(file,line);
 		while (!file.eof()){
 			split(strData, line, is_any_of(" "));
-			
+
 			for (int i = 0; i < ParticleSize; i++){
 				tmpData[i] = atof(strData[i].c_str());
 			}
@@ -563,8 +568,8 @@ void CHalos::FriendOfFriendGrid(){
 	//Initialize the Grid
 	CVector min(-1,-1,-1);
 	CVector max(1,1,1);
-	int Width = 250;
-	Grid.initialize(&min,&max,Width);
+	//int Width = 60;
+	Grid.initialize(&min,&max,myConstants::constants.Width);
 	Grid.Populate(&allParticles);
 
 	cout << "Finished initializing grid" << endl;
@@ -579,6 +584,7 @@ void CHalos::FriendOfFriendGrid(){
 
 	//Using recursion to link all particles belonging to a halo
 	while (true){
+		cout << "creating a new halo" << endl;
 		Particle = findParticle();
 		//cout << Particle << endl;
 		if (Particle == NULL) break;
@@ -590,6 +596,7 @@ void CHalos::FriendOfFriendGrid(){
 			findNeighborsGrid(Particle, tmpHalo);
 
 		}
+		cout << "after neight" << endl;
 	}
 
 	//Only saving halos that has more than HaloLimit particles, updating NrInHalos
@@ -604,7 +611,7 @@ void CHalos::FriendOfFriendGrid(){
 	}
 
 	CalculateAllStatistics();
-	
+
 	cout << "Finished calculating Friend of Friend" << endl;
 	cout << "---------------------------------" << endl;
 }
@@ -732,8 +739,10 @@ void CHalos::FriendOfFriendN3(){
 
 
 
-
+/*
 void CHalos::FriendOfFriendPhaseSpace(){
+	CalculateAllStatistics();
+
 	vector<CHalo*> tmpHalos;
 
 	allParticles = *Halos[0]->getParticles();
@@ -745,7 +754,7 @@ void CHalos::FriendOfFriendPhaseSpace(){
 
 	//SigmaP->print();
 	//SigmaV->print();
-	
+
 	//Create a linked list of all particles
 	Particle->prev=NULL;
 	for (int i=1; i < NrParticles;i++){
@@ -799,7 +808,6 @@ void CHalos::findNeighborsPhaseSpace(CParticle* inParticle, CHalo* inHalo,CVecto
 	for (int i = 0; i<allParticles.getNrParticles();i++){
 		if (allParticles[i]->getFlag()==0){
 			double distance = inParticle->PhaseSpaceDistance(allParticles[i],SigmaP,SigmaV);
-			//cout << distance << " " << myConstants::constants.PhaseDistance<<endl;
 			if (distance < myConstants::constants.PhaseDistance){
 				allParticles[i]->setFlag(1);
 				FriendList.addParticle(allParticles[i]);
@@ -813,15 +821,10 @@ void CHalos::findNeighborsPhaseSpace(CParticle* inParticle, CHalo* inHalo,CVecto
 		findNeighborsPhaseSpace(FriendList[i],inHalo,SigmaP,SigmaV);
 	}
 }
-
-/*double CHalos::PhaseSpaceDistance(CParticle* p1, CParticle* p2, double SigmaP, double SigmaV){
-	return sqrt((p1->getP() - p2->getP()).Length2()/(SigmaP*SigmaP) +  (p1->getV() - p2->getV()).Length2()/(SigmaV*SigmaV));
-	}*/
-
-
+*/
 
 /*
-void CHalos::SplitHalo(int element){
+  void CHalos::SplitHalo(int element){
   vector<CHalo*> tmpHalos;
 
   for (int i = 0; i < NrInHalo[element]; i++){
@@ -829,7 +832,7 @@ void CHalos::SplitHalo(int element){
   }
 
   for (int i = 0; i < NrInHalo[element]; i++){
-	  Halos[element]->get(i)
+  Halos[element]->get(i)
   }
 
   }
@@ -929,7 +932,7 @@ void CHalos::slave(){
 
 		//SlaveHalos.printHalos();
 		//Do something in each slave processor here
-		SlaveHalos.FriendOfFriendPhaseSpace();
+		//SlaveHalos.FriendOfFriendPhaseSpace();
 
 		SlaveHalos.Halos2Array()->send_slave();
 	}
