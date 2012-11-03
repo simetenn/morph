@@ -2,7 +2,7 @@
 #include "../mybody/mybody/source/CHaloFinder.h"
 
 
-CC = mpicxx
+CC = mpic++ #xx
 #CC = g++
 #VPATH = .:/~/Master/mybody/mybody/source
 
