@@ -19,14 +19,20 @@ int main(int argc, char **argv){
 	
 	if (rank == 0) {
 		CHalos h;
-		//h.LoadBin(myConstants::constants.inFile);
-		h.LoadData(myConstants::constants.haloFile);
+		h.LoadBin(myConstants::constants.inFile);
+		//h.LoadData(myConstants::constants.haloFile);
 		//h.printHalos();
-		//h.FriendOfFriendGrid();
 		h.printHalos();
-		h.CalculateAllStatistics();
+		h.FriendOfFriendGrid();
+		h.printHalos();
+		//myConstants::constants.PhaseDistance
+		//h.CalculateAllStatistics();
+		//cout << h.getHalo(0)->LinkingLength() << endl;
+		//h.getHalo(0)->SplitHalo(myConstants::constants.PhaseDistance);
+		//h.getHalo(0)->saveStatX();
+		//h.getHalo(0)->saveP();
 		//h.FriendOfFriendPhaseSpace();
-		h.printHalos();
+		//h.printHalos();
 		h.saveP();
 		//h[6]->saveHalo();
 	}
