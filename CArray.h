@@ -1,6 +1,7 @@
+#include "CMPI.h"
 #include <iostream>
 //#include <vector>
-#include "CMPI.h"
+
 
 class CArray : public CMPI {
  public:
