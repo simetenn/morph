@@ -12,22 +12,23 @@ except:
 particles = [] 
 with open(name, "r") as infile:
     for line in infile:
-        data = []
-        for number in line.split():
-            data.append(float(number))
+        particles.append(line.split())
+        #data = []
+        #for number in line.split():
+        #    data.append(float(number))
             
-        particles.append(p.array(data))
+        #particles.append(p.array(data))
     
 
-particles = p.array(particles)
-particles = particles[::5,:]
+particles = p.array(particles,float)
+#particles = particles[::2,:]
 """
 p.scatter(particles[:,0],particles[:,1], c=particles[:,-1])
 p.show()
 """
 fig = p.figure()
 ax = fig.add_subplot(111, projection='3d')
-ax.scatter(particles[:,0],particles[:,1],particles[:,2], s=0.005,c=particles[:,-1])
+ax.scatter(particles[:,0],particles[:,1],particles[:,2], s=5,c=particles[:,-1],linewidths=0.1)
 ax.set_xlabel('X-axis')
 ax.set_ylabel('Y-axis')
 ax.set_zlabel('Z-axis')

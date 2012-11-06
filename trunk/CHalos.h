@@ -25,7 +25,7 @@ class CHalos{
 
 
 	//Testing routines, for testing purposes only
-	void initializeHalos();
+	//void initializeHalos();
 	//Get data from my own type of input file
 	void getData(string filename);
 
@@ -125,6 +125,7 @@ class CHalos{
 
 
  protected:
+	vector<CParticle> AllParticles;
 	int NrHalos,ParticleSize, NrParticles;
 	double LinkingLength;
 	CParticles allParticles;

@@ -6,11 +6,11 @@ CC = mpic++ #xx
 #CC = g++
 #VPATH = .:/~/Master/mybody/mybody/source
 
-CFlags = -g -Wall -DMPICH_IGNORE_CXX_SEEK -DMPICH_SKIP_MPICXX
+CFlags = -O3 -g -Wall -DMPICH_IGNORE_CXX_SEEK -DMPICH_SKIP_MPICXX
 SOURCES = FoFGroupTest.cpp CArray.cpp CMPI.cpp CVector.cpp CParticle.cpp CParticles.cpp CHalo.cpp CHalos.cpp CUtil.cpp CGrid.cpp #CHaloFinder.cpp CHalo.cpp #CArray.h
 EXECUTABLE = FoFGroupTest
 SOURCEDIR = ~/Master/mybody/mybody
-#OSOURCES = CHalo.cpp CHaloFinder.cpp CHaloList.cpp
+#OSOURClsES = CHalo.cpp CHaloFinder.cpp CHaloList.cpp
 #vpath %.cpp ~/Master/mybody/mybody/sources
 #INCLUDES =-I/sw/include  -I$(SOURCEDIR)  -I$(FITSDIR) -I$(HOME)
 

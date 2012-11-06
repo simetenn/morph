@@ -2,6 +2,25 @@
 #include "Constants.h"
 
 
+/*class LinkedList{
+ public:
+	LinkedList(){
+		next = prev = NULL;
+	}
+	
+	CParticle *next,*prev; 
+
+	void RemoveList{
+		if (next)
+			next->prev = prev;
+
+		if (prev)
+			prev->next = next;
+	}
+	};*/
+
+
+
 class CParticle{
  public:
 
@@ -13,12 +32,23 @@ class CParticle{
 
 	~CParticle();
 
+	void attachParticle(CParticle* p){
+		CParticle* oldNext = nextGrid;
+		nextGrid = p;
+		p->nextGrid =oldNext;
+		if (oldNext != NULL)
+			oldNext->prevGrid = p;
+		p->prevGrid = this;
+	};
 
+	
 	//Gives the next and previous particle in a linked list
-	CParticle* next,*prev;
+	CParticle* next,*prev,*nextGrid,*prevGrid;
 	//Removes the particle from a linked list
 	void RemoveFromList();
-
+	void RemoveFromListGrid();
+	
+	//LinkedList ListIterator, GridIterator;
 
 	//Set the different values a particle has
 	void setHalo(int element);
@@ -88,3 +118,5 @@ class CParticle{
 
 	void Generate_ID();
 };
+
+
