@@ -16,13 +16,13 @@ class CGrid{
 	void Populate(CParticles* inParticles);
 	void addParticle(CParticle* inParticle);
 
-	CParticles* get(int x, int y, int z);
-	CParticles* getPeriodic(int x, int y, int z);
+	CParticle* get(int x, int y, int z);
+	CParticle* getPeriodic(int x, int y, int z);
 
 	void print();
 	
  protected:
-	vector<vector<vector<CParticles > > > Grid;
+	vector<vector<vector<CParticle* > > > Grid;
 	int Width,NrParticles,NrGridBoxes,NrHalos;
 	CVector Min, Max, Delta;
 };

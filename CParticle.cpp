@@ -17,6 +17,8 @@ CParticle::CParticle(){
 	Charge = 0;
 	Generate_ID();
 	HaloID = -1;
+	next = prev = nextGrid = prevGrid = NULL;
+	
 }
 
 
@@ -34,6 +36,8 @@ CParticle::CParticle(double* inArray){
 	P.Set(inArray[3],inArray[4],inArray[5]);
 	V.Set(inArray[6],inArray[7],inArray[8]);
 	A.Set(inArray[9],inArray[10],inArray[11]);
+
+	next = prev = nextGrid = prevGrid = NULL;
 }
 
 
@@ -52,7 +56,13 @@ void CParticle::RemoveFromList(){
 		prev->next = next;
 }
 
+void CParticle::RemoveFromListGrid(){
+	if (nextGrid)
+		nextGrid->prevGrid = prevGrid;
 
+	if (prevGrid)
+		prevGrid->nextGrid = nextGrid;
+}
 
 
 //Set the different values a particle has

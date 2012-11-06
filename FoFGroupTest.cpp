@@ -22,9 +22,10 @@ int main(int argc, char **argv){
 		h.LoadBin(myConstants::constants.inFile);
 		//h.LoadData(myConstants::constants.haloFile);
 		//h.printHalos();
-		h.printHalos();
+		//h.print();
+		//h.printHalos();
 		h.FriendOfFriendGrid();
-		h.printHalos();
+		//h.printHalos();
 		//myConstants::constants.PhaseDistance
 		//h.CalculateAllStatistics();
 		//cout << h.getHalo(0)->LinkingLength() << endl;
