@@ -51,6 +51,10 @@ void CHalo::print(){
 	Halo.print();
 }
 
+void printSubHalos(){
+	
+}
+
 
 //Convert from one halo to an CArray
 CArray*	 CHalo::Halo2Array(){
@@ -164,6 +168,22 @@ void CHalo::CalculateStatistics(){
 	SigmaV = SigmaV.sqrt()/(NrParticles-1);
 }
 
+
+
+void CHalo::printStatistics(){
+	cout << "Mean Position" << endl;
+	MeanP.print();
+	cout << endl;
+	cout << "Standard deviation, Position" << endl;
+	MeanV.print();
+	cout << endl;
+	cout << "Mean Velocity" << endl;
+	SigmaP.print();
+	cout << endl;
+	cout << "Standard deviation, Velocity" << endl;
+	SigmaV.print();
+	cout << endl;
+}
 
 
 double CHalo::LinkingLength(){

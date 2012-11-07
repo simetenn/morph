@@ -78,23 +78,22 @@ void CGrid::addParticle(CParticle* inParticle){
 
 
 CParticle* CGrid::get(int x, int y, int z) {
-	if (x<0) x=0;
-	if (y<0) y=0;
-	if (z<0) z=0;
-	if (x>=Width) x = Width-1;
-	if (y>=Width) y = Width-1;
-	if (z>=Width) z = Width-1;
+
+
+	x = x % Width;
+	y = y % Width;
+	z = z % Width;
+
 
 	return Grid[x][y][z];
 }
 
 CParticle* CGrid::getPeriodic(int x, int y, int z) {
-	if (x<0) x+=Width;
-	if (y<0) y+=Width;
-	if (z<0) z+=Width;
-	if (x>=Width) x-=Width;
-	if (y>=Width) y-=Width;
-	if (z>=Width) z-=Width;
+
+	x = x % Width;
+	y = y % Width;
+	z = z % Width;
+
 
 	return Grid[x][y][z];
 }

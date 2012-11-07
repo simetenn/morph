@@ -300,13 +300,12 @@ void CHalos::print(){
 
 //Print out all halos
 void CHalos::printHalos(){
+	cout << "__________________________________" << endl;
 	for (int i = 0;i < NrHalos; i++){
-		cout << "__________________________________" << endl;
 		cout << "								   " << endl;
 		cout << "Halo nr: " << i << endl;
 		cout << "Nr of particles in halo: " << NrInHalo[i] << endl;
 		cout << "__________________________________" << endl;
-		cout << endl;
 	}
 }
 
@@ -365,6 +364,7 @@ void CHalos::LoadBin(string Filename){
 	NrParticles = count;
 	NrInHalo.push_back(NrParticles);
 	LinkingLength = pow(1./NrParticles,1./3);
+	
 }
 
 
@@ -566,9 +566,12 @@ void CHalos::FriendOfFriendGrid(){
 	//Initialize the Grid
 	CVector min(-1,-1,-1);
 	CVector max(1,1,1);
+	
+	LinkingLength = myConstants::constants.LinkingLength;
+	//int Width = myConstants::constants.Width;
 	int Width = (int) 2./LinkingLength;
 	
-	Grid.initialize(&min,&max,myConstants::constants.Width);
+	Grid.initialize(&min,&max,Width);
 
 	Grid.Populate(Halos[0]->getParticles());
 
@@ -584,9 +587,9 @@ void CHalos::FriendOfFriendGrid(){
 
 	//Using recursion to link all particles belonging to a halo
 	while (true){
-		//cout << "new halo" << endl;
+		cout << "new halo" << endl;
 		Particle = findParticle();
-		//cout << Particle << endl;
+		cout << "Particle" << endl;
 		if (Particle == NULL) break;
 		else {
 			//cout << "Assigning new halo" << endl;
@@ -595,7 +598,7 @@ void CHalos::FriendOfFriendGrid(){
 			//Calls findNeighbors to find the particles within linking distance
 			findNeighborsGrid(Particle, tmpHalo);
 			//cout << tmpHalo->getNrParticles() << endl;
-			//if (tmpHalo->getNrParticles() > 20) cout << tmpHalo->getNrParticles() << endl;
+			if (tmpHalo->getNrParticles() > 20) cout << tmpHalo->getNrParticles() << endl;
 		}
 	}
 
@@ -645,6 +648,8 @@ void CHalos::findNeighborsGrid(CParticle* inParticle, CHalo* inHalo){
 	double distance;
 	//Loops through all particles and finds the ones
 	//within the linking length not assigned to a halo. Then adds them to a temporary halo
+	double L = pow(myConstants::constants.b*LinkingLength,2.0);
+	
 	for (int i=-1;i<=1;i++){
 		for (int j=-1;j<=1;j++) {
 			for (int k=-1;k<=1;k++) {
@@ -656,8 +661,8 @@ void CHalos::findNeighborsGrid(CParticle* inParticle, CHalo* inHalo){
 					//for (int l = 0; l < tmpParticles.getNrParticles();l++){
 					//tmpParticle = tmpParticles.get(l);
 					if (tmpParticle->getFlag() == 0){
-						distance = (inParticle->getP() - tmpParticle->getP()).Length();
-						if (distance < myConstants::constants.b*LinkingLength){
+						distance = (inParticle->getP() - tmpParticle->getP()).Length2();
+						if (distance < L){
 							tmpParticle->setFlag(1);
 							//next = tmpParticle->next;
 							FriendList.addParticle(tmpParticle);
