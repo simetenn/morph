@@ -22,6 +22,15 @@ class CHalo{
 	//Convert from one halo to an CArray
 	CArray* Halo2Array();
 
+
+	void Copy(CHalo& h) {
+	  Halo.Copy(*h.getParticles());
+
+	}
+	void Clear() {
+	  Halo.getParticles()->clear();
+	  NrParticles = 0;
+	}
 	
 	//Return the total mass of the halo
 	double getMass();
