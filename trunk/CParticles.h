@@ -33,6 +33,13 @@ class CParticles{
 	int getNrParticles();
 
 
+	void Copy(CParticles& p) {
+	  Particles= *p.getParticles();
+	  NrParticles = p.getNrParticles();
+	  //	  data_size = p.
+	  flag = p.getFlag();
+	}
+
 	//Return particle nr #element
 	CParticle* operator[](int element);
 	//Return particle nr #element
@@ -57,6 +64,11 @@ class CParticles{
 	//Removes all particles in CParticles from a linked list
 	void RemoveFromList();
 	
+	
+	vector<CParticle*>* getParticles() {
+	  return &Particles;
+	}
+
  protected:
 	vector<CParticle*> Particles;
 	int NrParticles,data_size,ParticleSize,flag;

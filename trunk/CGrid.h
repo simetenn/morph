@@ -20,6 +20,10 @@ class CGrid{
 	CParticle* getPeriodic(int x, int y, int z);
 
 	void print();
+
+	int getWidth() {
+	  return Width;
+	}
 	
  protected:
 	vector<vector<vector<CParticle* > > > Grid;
