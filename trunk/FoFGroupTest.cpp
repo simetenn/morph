@@ -24,18 +24,21 @@ int main(int argc, char **argv){
 		//h.printHalos();
 		//h.print();
 		//h.printHalos();
+		h.printHalos();
+		//h.saveP();
 		h.FriendOfFriendGrid();
-		//h.printHalos();
+		h.printHalos();
 		//myConstants::constants.PhaseDistance
 		//h.CalculateAllStatistics();
+		//h.getHalo(0)->printStatistics();
 		//cout << h.getHalo(0)->LinkingLength() << endl;
 		//h.getHalo(0)->SplitHalo(myConstants::constants.PhaseDistance);
 		//h.getHalo(0)->saveStatX();
 		//h.getHalo(0)->saveP();
 		//h.FriendOfFriendPhaseSpace();
 		//h.printHalos();
-		h.saveP();
-		//h[6]->saveHalo();
+		//h.saveP();
+		//h[65]->saveHalo();
 	}
 	MPI_Finalize();
  

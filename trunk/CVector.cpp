@@ -12,7 +12,7 @@ CVector::CVector(){
 
 
 
-CVector::CVector(double inx, double iny, double inz){
+CVector::CVector(const double& inx, const double& iny, const double& inz){
 	_x = inx;
 	_y = iny;
 	_z = inz;
@@ -45,7 +45,7 @@ CVector::~CVector(){
 
 
 //Set the elements of a vector
-void CVector::Set(double inx,double iny,double inz){
+void CVector::Set(const double& inx, const double& iny,const double& inz){
 	_x=inx;
 	_y=iny;
 	_z=inz;

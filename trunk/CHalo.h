@@ -59,6 +59,9 @@ class CHalo{
 	//mean P, mean V, sigma P, sigma V and mass
 	void CalculateStatistics();
 	
+	//Printing out the statistics for one halo
+	void printStatistics();
+	
 	//save the data for a single halo to file
 	void saveHalo();
 		

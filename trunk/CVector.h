@@ -18,7 +18,7 @@ class CVector{
  public:
 
 	CVector();
-	CVector(double inx, double iny, double inz);
+	CVector(const double& inx, const double& iny,const double& inz);
 	CVector(vector<double> inVector);
  	CVector(const CVector& in_Vector);
 
@@ -26,7 +26,7 @@ class CVector{
 
 
 	//Set the elements of a vector
-	void Set(double inx,double iny,double inz);
+	void Set(const double& inx,const double& iny,const double& inz);
 	//Get a given element of a vector
 	double& operator[](int element);
 	//Assign one value to all elements of a CVector
