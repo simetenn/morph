@@ -59,15 +59,28 @@ double& CVector::operator[](int element){
 	if (element == 2) return _z; 
 }
 
+//Get a given element of a vector
+double& CVector::get(int element){
+	if (element == 0) return _x;
+	if (element == 1) return _y;
+	if (element == 2) return _z; 
+}
 
 void CVector::operator=(double other){
 	_x = _y = _z = other;
 }
 
+//Copy a CVector
+void CVector::operator=(const CVector& inVector){
+	_x=inVector.x();
+	_y=inVector.y();
+	_z=inVector.z();
+}
+
 
 //Print out a CVector
 void CVector::print(){
-	cout << "(" << _x<<","<<_y<<","<<_z<<")";
+	cout << "(" << _x<<","<<_y<<","<<_z<<")" << endl;;
 }
 
 

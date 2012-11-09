@@ -40,7 +40,10 @@ CHalo::CHalo(CArray* inArray){
 	SigmaV.Set(0,0,0);
 }
 
-
+//Create a new CHalo from a CHalo
+CHalo::CHalo(CHalo* inHalo){
+	copy(inHalo);
+}
 
 CHalo::~CHalo(){
 }
@@ -51,8 +54,34 @@ void CHalo::print(){
 	Halo.print();
 }
 
-void printSubHalos(){
-	
+/*void printSubHalos(){
+
+  }*/
+
+//Clear and remove all information from a CHalos object
+void CHalo::clear() {
+	Halo.clear();
+	NrParticles = 0;
+	Mass = 0;
+	//NrSubHalos = 0;
+	MeanP.Set(0,0,0);
+	MeanV.Set(0,0,0);
+	SigmaP.Set(0,0,0);
+	SigmaV.Set(0,0,0);
+	ParticleSize = myConstants::constants.ParticleSize;
+}
+
+//Copy a CHalos object
+void CHalo::copy(CHalo* inHalo) {
+	Halo.copy(*inHalo->getParticles());
+	NrParticles = inHalo->getNrParticles();
+	Mass = inHalo->getMass();
+	//NrSubHalos = 0;
+	MeanP=*inHalo->getMeanP();
+	MeanV=*inHalo->getMeanV();
+	SigmaP=*inHalo->getSigmaP();
+	SigmaV=*inHalo->getSigmaV();
+	ParticleSize = myConstants::constants.ParticleSize;
 }
 
 
@@ -97,6 +126,10 @@ int CHalo::getNrParticles(){
 	return NrParticles;
 }
 
+//return the number of subHalos
+int CHalo::getNrSubHalos(){
+	return SubHalos.size();
+}
 
 
 //Return particle nr #element
@@ -204,6 +237,7 @@ double CHalo::LinkingLength(){
 				prevtmpLinkingLength = tmpLinkingLength;
 			}
 		}
+		//cout << tmpLinkingLength << endl;
 		LinkingLengths[i] = tmpLinkingLength;
 	}
 
@@ -219,16 +253,18 @@ double CHalo::LinkingLength(){
 //save the data for a single halo to file
 void CHalo::saveHalo(){
 	fstream file;
-	double* tmpArray;
+	double* tmpArray;// = double[ParticleSize];
 	//string out = myConstants::constants.outFile;
 	file.open("Halo.dat", ios::out);
-
+	
 	//Saves data for each particle to file
 	for (int i = 0;i<NrParticles;i++){
 		tmpArray = Halo[i]->Particle2Array();
+	
 		for (int j = 0; j < ParticleSize; j++) {
 			file << tmpArray[j] << " ";
 		}
+
 		if (i != NrParticles-1) file << endl;
 	}
 	file.close();
@@ -244,7 +280,7 @@ void CHalo::saveP(){
 	//Saves position data for each particle to file
 	cout << "Saving positional data" << endl;
 	saveHaloP(file,HaloID);
-	for (int i = 0;i < NrSubHalos; i++) {
+	for (int i = 0;i < SubHalos.size(); i++) {
 		SubHalos[i]->saveHaloP(file,HaloID);
 	}
 
@@ -272,7 +308,7 @@ void CHalo::saveStatX(){
 	//Saves position data for each particle to file
 	cout << "Saving statistical data" << endl;
 	saveHaloStatX(file,HaloID);
-	for (int i = 0;i < NrSubHalos; i++) {
+	for (int i = 0;i < SubHalos.size(); i++) {
 		SubHalos[i]->saveHaloStatX(file,HaloID);
 	}
 
@@ -288,14 +324,13 @@ void CHalo::saveHaloStatX(fstream& fileName, int& HaloID){
 
 
 
-
 void CHalo::SplitHalo(int LinkingLength){
 	if (Halo.getNrParticles() < myConstants::constants.HaloLimit) {
 		CalculateStatistics();
 		return;
 	}
 	FriendOfFriendPhaseSpace(LinkingLength);
-	for (int i = 0;i < NrSubHalos; i++) {
+	for (int i = 0;i < SubHalos.size(); i++) {
 		SubHalos[i]->SplitHalo(LinkingLength*0.7);
 	}
 }
@@ -345,7 +380,7 @@ void CHalo::FriendOfFriendPhaseSpace(int LinkingLength){
 			SubHalos.push_back(tmpHalos[i]);
 			//NrInHalo.push_back(tmpHalos[i]->getNrParticles());
 		}
-		NrSubHalos = SubHalos.size();
+		//NrSubHalos = SubHalos.size();
 	}
 }
 

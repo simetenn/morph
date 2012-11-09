@@ -13,6 +13,8 @@ class CHalo{
 	//Creates CHalo from a CArray on the following form:
 	//[ParticleArray 1, ParticleArray 2, ParticleArray 3, ... , ParticleArray N]
 	CHalo(CArray* inArray);
+	//Create a new CHalo from a CHalo
+	CHalo(CHalo* inHalo);
 	~CHalo();
 
 
@@ -22,16 +24,12 @@ class CHalo{
 	//Convert from one halo to an CArray
 	CArray* Halo2Array();
 
-
-	void Copy(CHalo& h) {
-	  Halo.Copy(*h.getParticles());
-
-	}
-	void Clear() {
-	  Halo.getParticles()->clear();
-	  NrParticles = 0;
-	}
-	
+	//Clear and remove all information from a CHalos object
+	void clear();
+	//Copy a CHalos object
+	void copy(CHalo* inHalo);
+		
+		
 	//Return the total mass of the halo
 	double getMass();
 	//Get the position of the center of the halo
@@ -44,7 +42,9 @@ class CHalo{
 	CVector* getSigmaV();
 	//Return nr of particles
 	int getNrParticles();
-
+	//return the number of subHalos
+	int getNrSubHalos();
+	
 	void setNrParticles(int element);
 	
 	//Return particle nr #element
@@ -100,7 +100,7 @@ class CHalo{
 	CParticles Halo;
 	CVector MeanP,MeanV, SigmaP, SigmaV;
 	double Mass;
-	int ParticleSize, NrParticles, NrSubHalos;
+	int ParticleSize, NrParticles;
 	CParticle* searchParticle;
 	vector<CHalo*> SubHalos;
 	
