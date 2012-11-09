@@ -20,7 +20,7 @@ class CVector{
 	CVector();
 	CVector(const double& inx, const double& iny,const double& inz);
 	CVector(vector<double> inVector);
- 	CVector(const CVector& in_Vector);
+ 	CVector(const CVector& inVector);
 
 	~CVector();
 
@@ -29,8 +29,12 @@ class CVector{
 	void Set(const double& inx,const double& iny,const double& inz);
 	//Get a given element of a vector
 	double& operator[](int element);
-	//Assign one value to all elements of a CVector
+	double& get(int element);
+		//Assign one value to all elements of a CVector
 	void operator=(double other);
+	//Copy a CVector
+	void operator=(const CVector& inVector);
+
 	
 	//Return x,y and z coordinates of the vector
 	double x() const;

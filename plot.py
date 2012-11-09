@@ -21,7 +21,7 @@ with open(name, "r") as infile:
     
 
 particles = p.array(particles,float)
-particles = particles[::10,:]
+#particles = particles[::10,:]
 """
 p.scatter(particles[:,0],particles[:,1], c=particles[:,-1])
 p.show()

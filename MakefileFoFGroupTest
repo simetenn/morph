@@ -19,7 +19,7 @@ CFLAGS =  -O3 -D$(TARGET)
 FFLAGS =  $(LIBINCLUDE)  
 
 
-PROJECT = fofgrouptest
+PROJECT = FoFGroupTest
 
 _obj 	=  FoFGroupTest.o CArray.o CMPI.o CVector.o CParticle.o CParticles.o CHalo.o CHalos.o CUtil.o CGrid.o 
 

@@ -107,10 +107,6 @@ class CHalos{
 	//Before calling itself for each particle found this way
 	void findNeighborsGrid(CParticle* inParticle, CHalo* inHalo);
 
-
-	//Do not use this. Way to slow method. It is not tested, but seems to run
-	void FriendOfFriendN3();
-
 	//void SplitHalo(int element);
 
 

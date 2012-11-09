@@ -110,6 +110,11 @@ CParticle* CParticles::get(int element){
 }
 
 
+vector<CParticle*>* CParticles::getParticles() {
+	return &Particles;
+}
+
+
 //Add a particle to CParticles
 void CParticles::addParticle(CParticle* inParticle){
 	NrParticles += 1;
@@ -144,7 +149,7 @@ CArray* CParticles::Particles2Array(){
 
 
 
-//Set the flag 
+//Set the flag
 void CParticles::setFlag(int inFlag){
 	flag = inFlag;
 	for (int i = 0; i < NrParticles; i++) {
@@ -160,9 +165,26 @@ int CParticles::getFlag(){
 }
 
 
-//Removes all particles 
+//Removes all particles in CParticles from a linked list
 void CParticles::RemoveFromList(){
 	for (int i = 0; i < NrParticles; i++){
 		Particles[i]->RemoveFromList();
 	}
+}
+
+
+//Copy a CParticles to a new CParticles object
+void CParticles::copy(CParticles& p) {
+	Particles= *p.getParticles();
+	NrParticles = p.getNrParticles();
+	flag = p.getFlag();
+	ParticleSize = myConstants::constants.ParticleSize;
+}
+
+//Clear and remove all information from CParticles
+void CParticles::clear(){
+	Particles.clear();
+	NrParticles = 0;
+	flag = 1;
+	ParticleSize = myConstants::constants.ParticleSize;
 }

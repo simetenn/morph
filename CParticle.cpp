@@ -54,14 +54,16 @@ void CParticle::RemoveFromList(){
 
 	if (prev)
 		prev->next = next;
+	//next = prev = NULL;
 }
 
 void CParticle::RemoveFromListGrid(){
-	if (nextGrid)
+	if (nextGrid != NULL)
 		nextGrid->prevGrid = prevGrid;
 
-	if (prevGrid)
+	if (prevGrid != NULL)
 		prevGrid->nextGrid = nextGrid;
+	//nextGrid = prevGrid = NULL;
 }
 
 
@@ -177,12 +179,13 @@ double* CParticle::Particle2Array(){
 	tmpArray[0] = HaloID;
 	tmpArray[1] = Mass;
 	tmpArray[2] = Charge;
-
+	
 	for (int i = 0;i<P.getDimensions();i++){
 		tmpArray[i+3] = P[i];
 		tmpArray[i+6] = V[i];
 		tmpArray[i+9] = A[i];
 	}
+
 	return tmpArray;
 }
 
@@ -209,7 +212,7 @@ CVector CParticle::Momentum(){
 
 
 double CParticle::PhaseSpaceDistance(CParticle* p2, CVector* inSigmaP, CVector* inSigmaV){
-	return (P - p2->getP()).Length2()/inSigmaP->Length2() +  (V - p2->getV()).Length2()/inSigmaV->Length2();
+	return sqrt((P - p2->getP()).Length2()/inSigmaP->Length2() +  (V - p2->getV()).Length2()/inSigmaV->Length2());
 }
 
 
