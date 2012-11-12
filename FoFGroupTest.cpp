@@ -22,7 +22,7 @@ int main(int argc, char **argv){
 		//h.LoadBin(myConstants::constants.inFile);
 		h.LoadData(myConstants::constants.haloFile);
 		//h.print();
-		h.printHalos();
+		//h.printHalos();
 		//h.saveP();
 		//h.FriendOfFriendGrid();
 		//h.printHalos();
@@ -32,13 +32,14 @@ int main(int argc, char **argv){
 		h.CalculateAllStatistics();
 		h.getHalo(0)->printStatistics();
 		//cout << h.getHalo(0)->LinkingLength() << endl;
-		h.getHalo(0)->SplitHalo(myConstants::constants.PhaseDistance);
+		h.getHalo(0)->SplitHalo();
 		h.getHalo(0)->saveStatX();
 		h.getHalo(0)->saveP();
+		h.getHalo(0)->printSubHalos();
 		//h.FriendOfFriendPhaseSpace();
 		//h.printHalos();
 		//h.saveP();
-		//h[2]->saveHalo();
+		//h[699]->saveHalo();
 	}
 	MPI_Finalize();
  
