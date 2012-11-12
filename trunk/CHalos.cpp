@@ -567,7 +567,7 @@ void CHalos::FriendOfFriendGrid(){
 	CVector min(-1,-1,-1);
 	CVector max(1,1,1);
 
-	LinkingLength = myConstants::constants.LinkingLength;
+	//LinkingLength = myConstants::constants.LinkingLength;
 	//int Width = myConstants::constants.Width;
 	
 	int Width = (int) 2./LinkingLength;
