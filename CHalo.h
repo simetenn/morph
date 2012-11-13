@@ -26,13 +26,20 @@ class CHalo{
 
 	//Print all halos and subhalos
 	void printSubHalos();
+	//Print information for one subhalo
 	void printSubHalo(int& count);
+
 
 	//Convert from one halo to an CArray
 	CArray* Halo2Array();
 
 	//Clear and remove all information from a CHalos object
 	void clear();
+	//Clear and remove particle information, but keeping halo information
+	void clean();
+	//Clear and remove particle information, but keeping halo information. For all SubHalos
+	void cleanSubHalos();
+
 	//Copy a CHalos object
 	void copy(CHalo* inHalo);
 
@@ -81,11 +88,16 @@ class CHalo{
 	//save the data for a single halo to file
 	void saveHalo();
 
+	//Save position data to file for all subhalos
 	void saveP();
+	//Recursivly goes trough all subhalos and write the position data to file
 	void savePRec(fstream& fileName, int& HaloID);
+	//Saves position data for each particle to file for a single halo
 	void saveHaloP(fstream& fileName, int& HaloID);
 
+	//Save the statistical data in the x direction, for the halo and all subhalos
 	void saveStatX();
+	//Save the statistical data in the x direction, for a single halo
 	void saveHaloStatX(fstream& fileName, int& HaloID);
 
 
@@ -93,14 +105,20 @@ class CHalo{
 	//Calculate the linking length of a halo
 	double LinkingLength();
 
-
-	void SplitHalo();
-
-	void SplitHaloRecursive();
-
-	void FriendOfFriendPhaseSpace();
+	//Splits the halo into subhalos using the friend of friend methode in phase space.
+	//Then calculates the subhalos of the subhalo recursivly untill either the halo limit
+	//is reached or no particles are found beeing linked together. the linking length is
+	//sett to decrease by f for each iteration.
+	void SplitHalo(int Length);
+	//Calculating Friend of Friend using recursion, in phase space.
+	//It must scales as N^2
+	void FriendOfFriendPhaseSpace(int Length);
+	//Flags the given particle and adds it to the given halo.
+	//Then finds the neighboring particles, within the phase space linking length.
+	//Before calling itself for each particle found this way
 	void findNeighborsPhaseSpace(CParticle* inParticle, CHalo* inHalo, int L);
 
+	//Find the next particle to assign to a Halo
 	CParticle* nextParticle();
 
 

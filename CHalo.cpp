@@ -89,6 +89,23 @@ void CHalo::clear() {
 	ParticleSize = myConstants::constants.ParticleSize;
 }
 
+//Clear and remove particle information, but keeping halo information
+void CHalo::clean() {
+	Halo.clear();
+	NrParticles = 0;
+	//NrSubHalos = 0;
+	ParticleSize = myConstants::constants.ParticleSize;
+}
+
+//Clear and remove particle information, but keeping halo information. For all SubHalos
+void CHalo::cleanSubHalos(){
+	clean();
+	for (int i = 0;i < SubHalos.size(); i++) {
+		SubHalos[i]->cleanSubHalos();
+	}
+}
+
+
 //Copy a CHalos object
 void CHalo::copy(CHalo* inHalo) {
 	Halo.copy(*inHalo->getParticles());
@@ -251,7 +268,7 @@ double CHalo::LinkingLength(){
 			prevtmpLinkingLength = tmpLinkingLength;
 		}
 	}
-	
+
 	LinkingLengths[0] = tmpLinkingLength;
 
 	for (int i = 1; i < tmpNrParticles; i++) {
@@ -267,9 +284,6 @@ double CHalo::LinkingLength(){
 	}
 
 	sort(LinkingLengths.begin(),LinkingLengths.end());
-	cout << LinkingLengths[3000] << endl;
-	cout << LinkingLengths[7000] << endl;
-	cout << LinkingLengths[0] << endl;
 	return LinkingLengths[(int) LinkingLengths.size()*myConstants::constants.f];
 }
 
@@ -296,6 +310,9 @@ void CHalo::saveHalo(){
 }
 
 
+
+
+//Save position data to file for all subhalos
 void CHalo::saveP(){
 	fstream file;
 	int HaloID = 0;
@@ -308,14 +325,16 @@ void CHalo::saveP(){
 	file.close();
 }
 
+//Recursivly goes trough all subhalos and write the position data to file
 void CHalo::savePRec(fstream& fileName, int& HaloID){
-	//Saves position data for each particle to file
 	saveHaloP(fileName,HaloID);
 	for (int i = 0;i < SubHalos.size(); i++) {
 		SubHalos[i]->savePRec(fileName,HaloID);
 	}
 }
 
+
+//Saves position data for each particle to file for a single halo
 void CHalo::saveHaloP(fstream& fileName, int& HaloID){
 	CVector tmpP;
 
@@ -328,6 +347,8 @@ void CHalo::saveHaloP(fstream& fileName, int& HaloID){
 
 
 
+
+//Save the statistical data in the x direction, for the halo and all subhalos
 void CHalo::saveStatX(){
 	fstream file;
 	int HaloID = 0;
@@ -344,6 +365,7 @@ void CHalo::saveStatX(){
 	file.close();
 }
 
+//Save the statistical data in the x direction, for a single halo
 void CHalo::saveHaloStatX(fstream& fileName, int& HaloID){
 	CVector tmpP;
 
@@ -351,38 +373,38 @@ void CHalo::saveHaloStatX(fstream& fileName, int& HaloID){
 	HaloID++;
 }
 
-void CHalo::SplitHalo(){
-	SubHalos.clear();
-	SplitHaloRecursive();
-}
 
-void CHalo::SplitHaloRecursive(){
-	cout << "wkuefksjf" << endl;
+//Splits the halo into subhalos using the friend of friend methode in phase space.
+//Then calculates the subhalos of the subhalo recursivly untill either the halo limit
+//is reached or no particles are found beeing linked together. the linking length is
+//sett to decrease by f for each iteration.
+void CHalo::SplitHalo(int Length){
 	if (Halo.getNrParticles() < myConstants::constants.HaloLimit) {
-		//CalculateStatistics();
 		cout << "get here??" << endl;
 		return;
 	}
-	FriendOfFriendPhaseSpace();
+
+	FriendOfFriendPhaseSpace(Length);
+	cout << "If this is zero, then the recursion ends " << SubHalos.size() << endl;
 	for (int i = 0;i < SubHalos.size(); i++) {
-		cout << "In recursive split " << i << endl;
-		SubHalos[i]->SplitHaloRecursive();
+		SubHalos[i]->SplitHalo(Length*myConstants::constants.f);
 	}
 }
 
 
-
-void CHalo::FriendOfFriendPhaseSpace(){
+//Calculating Friend of Friend using recursion, in phase space.
+//It must scales as N^2
+void CHalo::FriendOfFriendPhaseSpace(int Length){
 	CalculateStatistics();
 
 	CHalo tmpHalo;
 	vector<CHalo*> tmpHalos;
-	
-	
-	searchParticle = Halo[0];//Halos[0]->get(0);
+
+
+	searchParticle = Halo[0];
 	CParticle* Particle = searchParticle;
 	SubHalos.clear();
-	cout << NrParticles << endl;
+
 	//Create a linked list of all particles
 	Particle->prev=NULL;
 	for (int i=1; i < NrParticles;i++){
@@ -393,9 +415,10 @@ void CHalo::FriendOfFriendPhaseSpace(){
 	}
 	Particle->setFlag(0);
 	Particle->next = NULL;
-	double Length = LinkingLength()*myConstants::constants.b;
-;
- cout << "Linking Length " << Length << endl;
+	//double Length = LinkingLength()*myConstants::constants.b;
+
+	double L = Length*myConstants::constants.b;
+	//cout << "Linking Length " << Length << endl;
 	//Using recursion to link all particles belonging to a halo
 	while (true){
 		Particle = nextParticle();
@@ -407,10 +430,10 @@ void CHalo::FriendOfFriendPhaseSpace(){
 
 			tmpHalo.clear();
 			//Calls findNeighbors to find the particles within linking distance
-			findNeighborsPhaseSpace(Particle, &tmpHalo, Length);
-			
+			findNeighborsPhaseSpace(Particle, &tmpHalo, L);
+
 			if (tmpHalo.getNrParticles() > myConstants::constants.HaloLimit){
-				cout << "saving halo with " << tmpHalo.getNrParticles() << endl;
+				cout << "Saving halo with " << tmpHalo.getNrParticles() << endl;
 				SubHalos.push_back(new CHalo(&tmpHalo));
 			}
 		}
@@ -419,7 +442,7 @@ void CHalo::FriendOfFriendPhaseSpace(){
 
 
 //Flags the given particle and adds it to the given halo.
-//Then finds the neighboring particles, within the linking length.
+//Then finds the neighboring particles, within the phase space linking length.
 //Before calling itself for each particle found this way
 void CHalo::findNeighborsPhaseSpace(CParticle* inParticle, CHalo* inHalo, int L){
 	inParticle->setFlag(1);
@@ -449,6 +472,7 @@ void CHalo::findNeighborsPhaseSpace(CParticle* inParticle, CHalo* inHalo, int L)
 }
 
 
+//Find the next particle to assign to a Halo
 CParticle* CHalo::nextParticle(){
 	while (true){
 		if (searchParticle->getFlag() == 0)

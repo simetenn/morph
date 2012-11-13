@@ -21,14 +21,17 @@ with open(name, "r") as infile:
     
 
 particles = p.array(particles,float)
-#particles = particles[::5,:]
+#particles = particles[::10,:]
 """
 p.scatter(particles[:,0],particles[:,1], c=particles[:,-1])
 p.show()
 """
+
+index = p.where(particles[:,-1] == 0)
+
 fig = p.figure()
 ax = fig.add_subplot(111, projection='3d')
-ax.scatter(particles[:,0],particles[:,1],particles[:,2], s=1,c=particles[:,-1],linewidths=0.1)
+ax.scatter(particles[index[0],0],particles[index[0],1],particles[index[0],2], s=1,c=particles[index[0],-1],linewidths=0.1)
 ax.set_xlabel('X-axis')
 ax.set_ylabel('Y-axis')
 ax.set_zlabel('Z-axis')
