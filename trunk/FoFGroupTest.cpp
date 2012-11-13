@@ -19,26 +19,26 @@ int main(int argc, char **argv){
 	
 	if (rank == 0) {
 		CHalos h;
-		//h.LoadBin(myConstants::constants.inFile);
-		h.LoadData(myConstants::constants.haloFile);
+		h.LoadBin(myConstants::constants.inFile);
+		//h.LoadData(myConstants::constants.haloFile);
 		//h.print();
 		//h.printHalos();
 		//h.saveP();
-		//h.FriendOfFriendGrid();
+		h.FriendOfFriendGrid();
 		//h.printHalos();
 		//cout << h.getNrHalos() << endl;
 		//h.print();
 		//myConstants::constants.PhaseDistance
 		h.CalculateAllStatistics();
-		h.getHalo(0)->printStatistics();
+		//h.getHalo(0)->printStatistics();
 		//cout << h.getHalo(0)->LinkingLength() << endl;
-		h.getHalo(0)->SplitHalo();
-		h.getHalo(0)->saveStatX();
-		h.getHalo(0)->saveP();
-		h.getHalo(0)->printSubHalos();
+		//h.getHalo(0)->SplitHalo(myConstants::constants.PhaseDistance);
+		//h.getHalo(0)->saveStatX();
+		//h.getHalo(0)->saveP();
+		//h.getHalo(0)->printSubHalos();
 		//h.FriendOfFriendPhaseSpace();
 		//h.printHalos();
-		//h.saveP();
+		h.saveP();
 		//h[699]->saveHalo();
 	}
 	MPI_Finalize();
