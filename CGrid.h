@@ -16,7 +16,9 @@ class CGrid{
 	void Populate(CParticles* inParticles);
 	void addParticle(CParticle* inParticle);
 
-	void removeParticle(CParticle* inParticle);	
+	void removeParticle(CParticle* inParticle);
+	void eraseParticleIf(CParticle* inParticle);
+	//void eraseParticleIf(list<CParticle*>::iterator it);
 	void eraseParticle(list<CParticle*>::iterator it);
 	
 	list<CParticle*> get(int x, int y, int z);
@@ -30,7 +32,6 @@ class CGrid{
 	list<CParticle*>::iterator getEnd(int inx, int iny, int inz);
 	//list<CParticle*>::iterator getEnd();
 
-	
  protected:
 	vector<vector<vector< list<CParticle*> > > > Grid;
 	int Width,NrParticles,NrGridBoxes,NrHalos;

@@ -29,7 +29,7 @@ int main(int argc, char **argv){
 		//cout << h.getNrHalos() << endl;
 		//h.print();
 		//myConstants::constants.PhaseDistance
-		h.CalculateAllStatistics();
+		//h.CalculateAllStatistics();
 		//h.getHalo(0)->printStatistics();
 		//cout << h.getHalo(0)->LinkingLength() << endl;
 		//h.getHalo(0)->SplitHalo(myConstants::constants.PhaseDistance);
@@ -37,7 +37,7 @@ int main(int argc, char **argv){
 		//h.getHalo(0)->saveP();
 		//h.getHalo(0)->printSubHalos();
 		//h.FriendOfFriendPhaseSpace();
-		//h.printHalos();
+		h.printHalos();
 		h.saveP();
 		//h[699]->saveHalo();
 	}
