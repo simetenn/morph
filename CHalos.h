@@ -9,6 +9,11 @@ struct particle_save {
 	unsigned int halo;
 };
 
+bool inList(list<CParticle*>::iterator begin,list<CParticle*>::iterator end,list<CParticle*>::iterator it){
+	if (result find(begin, end, it) != end) return true;
+	else return false;
+}
+
 //bool HaloSortFunc(CHalo a, CHalo b){
 //	return (a.getNrParticles() < b.getNrParticles());
 //};
@@ -107,7 +112,7 @@ class CHalos{
 	//Before calling itself for each particle found this way
 	void findNeighborsGrid(CParticle* inParticle, CHalo* inHalo);
 
-	//Not used in this class, moved to Halo to be able to sort one halo into subhalos
+	//Not used in this class, moved to Halo to be able to find subhalos
 	//void SplitHalo(int element);
 	//void FriendOfFriendPhaseSpace();
 	//void findNeighborsPhaseSpace(CParticle* inParticle, CHalo* inHalo, CVector* SigmaP,CVector*  SigmaV);
@@ -123,7 +128,7 @@ class CHalos{
 	vector<CParticle> AllParticles;
 	int NrHalos,ParticleSize, NrParticles;
 	double LinkingLength;
-	CParticles allParticles;
+	list<CParticle*> allParticles;
 	CParticle* searchParticle;
 	CGrid Grid;
 
