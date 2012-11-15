@@ -31,7 +31,7 @@ void CGrid::initialize(CVector* inMin, CVector* inMax, int inWidth){
 		for (int j = 0;j < Width;j++){
 			Grid[i][j].resize(Width);
 			for (int k = 0;k<Width;k++){
-				Grid[i][j][k] = NULL;
+				Grid[i][j][k].clear();
 			}
 		}
 	}
@@ -57,6 +57,11 @@ CVector CGrid::getPosition(CParticle* inParticle){
 }
 
 
+int CGrid::getWidth() {
+	  return Width;
+}
+
+
 void CGrid::addParticle(CParticle* inParticle){
 	CVector tmpPosition = getPosition(inParticle);
 
@@ -66,18 +71,29 @@ void CGrid::addParticle(CParticle* inParticle){
 	//cout << p << endl;
 	//p->print();//->addParticle(inParticle);
 	inParticle->setFlag(0);
-	if (Grid[tmpPosition.x()][tmpPosition.y()][tmpPosition.z()] == NULL){
+	Grid[tmpPosition.x()][tmpPosition.y()][tmpPosition.z()].push_back(inParticle);
+	/*if (Grid[tmpPosition.x()][tmpPosition.y()][tmpPosition.z()] == NULL){
 		Grid[tmpPosition.x()][tmpPosition.y()][tmpPosition.z()] = inParticle;
 	}
 	else{
-		Grid[tmpPosition.x()][tmpPosition.y()][tmpPosition.z()]->attachParticle(inParticle);
-	}
+		Grid[tmpPosition.x()][tmpPosition.y()][tmpPosition.z()]->push_back(inParticle);
+		}*/
 	//cout << "there" << endl;
 	//tmpPosition.print();
 }
 
+void CGrid::removeParticle(CParticle* inParticle){
+	CVector tmpPosition = getPosition(inParticle);
+	Grid[tmpPosition.x()][tmpPosition.y()][tmpPosition.z()].remove(inParticle);
+}
 
-CParticle* CGrid::get(int x, int y, int z) {
+void CGrid::eraseParticle(list<CParticle*>::iterator it){
+	CVector tmpPosition = getPosition(*it);
+	Grid[tmpPosition.x()][tmpPosition.y()][tmpPosition.z()].erase(it);
+}
+
+
+list<CParticle*> CGrid::get(int x, int y, int z) {
 
 
 	x = x % Width;
@@ -88,7 +104,7 @@ CParticle* CGrid::get(int x, int y, int z) {
 	return Grid[x][y][z];
 }
 
-CParticle* CGrid::getPeriodic(int x, int y, int z) {
+list<CParticle*> CGrid::getPeriodic(int x, int y, int z) {
 
 	x = x % Width;
 	y = y % Width;
@@ -97,6 +113,19 @@ CParticle* CGrid::getPeriodic(int x, int y, int z) {
 
 	return Grid[x][y][z];
 }
+
+
+list<CParticle*>::iterator CGrid::getBegin(int inx, int iny, int inz){
+	return Grid[inx][iny][inz].begin();
+}
+
+list<CParticle*>::iterator CGrid::getEnd(int inx, int iny, int inz){
+	return Grid[inx][iny][inz].end();
+}
+
+
+
+
 
 /*void CGrid::print(){
 	for (int i = 0; i < Width; i++){
