@@ -9,10 +9,7 @@ struct particle_save {
 	unsigned int halo;
 };
 
-bool inList(list<CParticle*>::iterator begin,list<CParticle*>::iterator end,list<CParticle*>::iterator it){
-	if (result find(begin, end, it) != end) return true;
-	else return false;
-}
+
 
 //bool HaloSortFunc(CHalo a, CHalo b){
 //	return (a.getNrParticles() < b.getNrParticles());
@@ -118,6 +115,7 @@ class CHalos{
 	//void findNeighborsPhaseSpace(CParticle* inParticle, CHalo* inHalo, CVector* SigmaP,CVector*  SigmaV);
 	//double PhaseSpaceDistance(CParticle* p1, CParticle* p2, double SigmaP, double SigmaV);
 
+	bool inList(list<CParticle*>::iterator begin, list<CParticle*>::iterator end, list<CParticle*>::iterator it);
 
 
 	CHalos* master();

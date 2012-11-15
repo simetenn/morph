@@ -30,9 +30,9 @@ void CGrid::initialize(CVector* inMin, CVector* inMax, int inWidth){
 		Grid[i].resize(Width);
 		for (int j = 0;j < Width;j++){
 			Grid[i][j].resize(Width);
-			for (int k = 0;k<Width;k++){
-				Grid[i][j][k].clear();
-			}
+			//for (int k = 0;k<Width;k++){
+			//	Grid[i][j][k].clear();
+			//}
 		}
 	}
 }
@@ -87,6 +87,32 @@ void CGrid::removeParticle(CParticle* inParticle){
 	Grid[tmpPosition.x()][tmpPosition.y()][tmpPosition.z()].remove(inParticle);
 }
 
+void CGrid::eraseParticleIf(CParticle* inParticle){
+	CVector tmpPosition = getPosition(inParticle);
+	list<CParticle*> tmpList= Grid[tmpPosition.x()][tmpPosition.y()][tmpPosition.z()];
+
+	for (list<CParticle*>::iterator it = tmpList.begin(); it!=tmpList.end(); it++) {
+		if (inParticle == *it ){
+			//cout << "erasing particle" << endl;
+			Grid[tmpPosition.x()][tmpPosition.y()][tmpPosition.z()].erase(it);
+			return;
+		}
+	}
+}
+
+
+/*void CGrid::eraseParticleIf(list<CParticle*>::iterator it){
+	CVector tmpPosition = getPosition(*it);
+	list<CParticle*> tmpList= Grid[tmpPosition.x()][tmpPosition.y()][tmpPosition.z()];
+
+	for (list<CParticle*>::iterator ittest = tmpList.begin(); ittest!=tmpList.end(); ittest++) {
+		if (it == ittest ){
+			Grid[tmpPosition.x()][tmpPosition.y()][tmpPosition.z()].erase(it);
+			return;
+		}
+	}
+	}*/
+
 void CGrid::eraseParticle(list<CParticle*>::iterator it){
 	CVector tmpPosition = getPosition(*it);
 	Grid[tmpPosition.x()][tmpPosition.y()][tmpPosition.z()].erase(it);
@@ -122,9 +148,6 @@ list<CParticle*>::iterator CGrid::getBegin(int inx, int iny, int inz){
 list<CParticle*>::iterator CGrid::getEnd(int inx, int iny, int inz){
 	return Grid[inx][iny][inz].end();
 }
-
-
-
 
 
 /*void CGrid::print(){
