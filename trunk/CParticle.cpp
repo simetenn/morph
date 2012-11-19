@@ -49,21 +49,25 @@ CParticle::~CParticle(){
 
 //Removes the particle from a linked list
 void CParticle::RemoveFromList(){
-	if (next)
+	if (next != NULL){
 		next->prev = prev;
-
-	if (prev)
+	}
+	if (prev != NULL){
 		prev->next = next;
-	//next = prev = NULL;
+		next =  NULL;
+	}
+	prev =  NULL;
 }
 
 void CParticle::RemoveFromListGrid(){
-	if (nextGrid != NULL)
+	if (nextGrid != NULL){
 		nextGrid->prevGrid = prevGrid;
-
-	if (prevGrid != NULL)
+	}
+	if (prevGrid != NULL){
 		prevGrid->nextGrid = nextGrid;
-	//nextGrid = prevGrid = NULL;
+		nextGrid =  NULL;
+	}
+	prevGrid =  NULL;
 }
 
 
