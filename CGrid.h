@@ -16,24 +16,17 @@ class CGrid{
 	void Populate(CParticles* inParticles);
 	void addParticle(CParticle* inParticle);
 
-	void removeParticle(CParticle* inParticle);
-	void eraseParticleIf(CParticle* inParticle);
-	//void eraseParticleIf(list<CParticle*>::iterator it);
-	void eraseParticle(list<CParticle*>::iterator it);
-	
-	list<CParticle*> get(int x, int y, int z);
-	list<CParticle*> getPeriodic(int x, int y, int z);
+	CParticle* get(int x, int y, int z);
+	CParticle* getPeriodic(int x, int y, int z);
 
 	void print();
 
-	int getWidth();
-
-	list<CParticle*>::iterator getBegin(int inx, int iny, int inz);
-	list<CParticle*>::iterator getEnd(int inx, int iny, int inz);
-	//list<CParticle*>::iterator getEnd();
-
+	int getWidth() {
+	  return Width;
+	}
+	
  protected:
-	vector<vector<vector< list<CParticle*> > > > Grid;
+	vector<vector<vector<CParticle* > > > Grid;
 	int Width,NrParticles,NrGridBoxes,NrHalos;
 	CVector Min, Max, Delta;
 };

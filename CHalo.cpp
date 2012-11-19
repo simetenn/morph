@@ -385,6 +385,7 @@ void CHalo::SplitHalo(int Length){
 	}
 
 	FriendOfFriendPhaseSpace(Length);
+	clean();
 	cout << "If this is zero, then the recursion ends " << SubHalos.size() << endl;
 	for (int i = 0;i < SubHalos.size(); i++) {
 		SubHalos[i]->SplitHalo(Length*myConstants::constants.f);
@@ -430,9 +431,11 @@ void CHalo::FriendOfFriendPhaseSpace(int Length){
 
 			tmpHalo.clear();
 			//Calls findNeighbors to find the particles within linking distance
+			Particle->setFlag(1);
+			Particle->RemoveFromList();
 			findNeighborsPhaseSpace(Particle, &tmpHalo, L);
 
-			if (tmpHalo.getNrParticles() > myConstants::constants.HaloLimit){
+			if (tmpHalo.getNrParticles() > myConstants::constants.HaloLimit && tmpHalo.getNrParticles() != NrParticles){
 				cout << "Saving halo with " << tmpHalo.getNrParticles() << endl;
 				SubHalos.push_back(new CHalo(&tmpHalo));
 			}
@@ -445,8 +448,6 @@ void CHalo::FriendOfFriendPhaseSpace(int Length){
 //Then finds the neighboring particles, within the phase space linking length.
 //Before calling itself for each particle found this way
 void CHalo::findNeighborsPhaseSpace(CParticle* inParticle, CHalo* inHalo, int L){
-	inParticle->setFlag(1);
-	inParticle->RemoveFromList();
 	inHalo->addParticle(inParticle);
 
 	CHalo FriendList;
