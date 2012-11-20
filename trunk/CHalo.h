@@ -59,13 +59,14 @@ class CHalo{
 	//return the number of subHalos
 	int getNrSubHalos();
 
+
 	void setNrParticles(int element);
 
 	//Return particle nr #element
 	CParticle* operator[](int element);
 	CParticle* get(int element);
 
-
+	double PhaseSpaceDistanceHalo(CParticle* inParticle);
 
 
 	//Get CParticles in the Halo
@@ -101,6 +102,7 @@ class CHalo{
 	void saveHaloStatX(fstream& fileName, int& HaloID);
 
 
+	
 
 	//Calculate the linking length of a halo
 	double LinkingLength();
@@ -122,6 +124,11 @@ class CHalo{
 	CParticle* nextParticle();
 
 
+	void assignParticles(CParticles* allParticles);
+	void findHalo(CParticle* inParticle,CHalo* inHalo);
+	void createSubHalos();
+	
+	
  protected:
 	CParticles Halo;
 	CVector MeanP,MeanV, SigmaP, SigmaV;

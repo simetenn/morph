@@ -374,23 +374,29 @@ void CHalo::saveHaloStatX(fstream& fileName, int& HaloID){
 }
 
 
+
+double CHalo::PhaseSpaceDistanceHalo(CParticle* inParticle){
+	return sqrt((inParticle->getP() - MeanP).Length2()/SigmaP.Length2() +  (inParticle->getV() - MeanV).Length2()/SigmaV.Length2());
+}
+
+
 //Splits the halo into subhalos using the friend of friend methode in phase space.
-//Then calculates the subhalos of the subhalo recursivly untill either the halo limit
-//is reached or no particles are found beeing linked together. the linking length is
+//Then calculates the subhalos of the subhalo recursivly until either the halo limit
+//is reached or no particles are found being linked together. the linking length is
 //sett to decrease by f for each iteration.
 void CHalo::SplitHalo(int Length){
 	if (Halo.getNrParticles() < myConstants::constants.HaloLimit) {
-		cout << "get here??" << endl;
 		return;
 	}
 
 	FriendOfFriendPhaseSpace(Length);
 	clean();
-	cout << "If this is zero, then the recursion ends " << SubHalos.size() << endl;
 	for (int i = 0;i < SubHalos.size(); i++) {
 		SubHalos[i]->SplitHalo(Length*myConstants::constants.f);
 	}
 }
+
+
 
 
 //Calculating Friend of Friend using recursion, in phase space.
@@ -487,4 +493,75 @@ CParticle* CHalo::nextParticle(){
 	}
 }
 
+
+void CHalo::assignParticles(CParticles* allParticles){
+	/*searchParticle = allParticles->get(0);
+	CParticle* Particle = searchParticle;
+
+	//Create a linked list of all particles
+	Particle->prev=NULL;
+	for (int i=1; i < allParticles->getNrParticles();i++){
+		Particle->setFlag(0);
+		Particle->next = allParticles->get(i);;
+		Particle->next->prev = Particle;
+		Particle = Particle->next;
+	}
+	Particle->setFlag(0);
+	Particle->next = NULL;
+
+
+
+
+	while (true){
+
+		Particle = nextParticle();
+		if (Particle == NULL) break;
+		else {
+			findHalo(Particle,);
+		}
+		}*/
+	for (int i = 0; i < allParticles->getNrParticles(); i++) {
+		findHalo(allParticles->get(i),this);
+	}
+}
+
+void CHalo::findHalo(CParticle* inParticle, CHalo* inHalo){
+
+	double DistanceArray[inHalo->getNrSubHalos()];
+	int index;
+	double distance;
+
+	distance = inHalo->PhaseSpaceDistanceHalo(inParticle);
+	cout << "Main Halo " << distance << endl;
+	for (int i = 0;i < inHalo->getNrSubHalos(); i++) {
+		DistanceArray[i] = SubHalos[i]->PhaseSpaceDistanceHalo(inParticle);
+		cout << "subHalo " << DistanceArray[i] << endl;
+	}
+	index = 0;
+	for (int i = 0; i < inHalo->getNrSubHalos(); i++) {
+		if (DistanceArray[i] <= distance) {
+			index = i+1;
+			distance = DistanceArray[i];
+		}
+	}
+	if (index == 0){
+		addParticle(inParticle);
+	}
+	else {
+		findHalo(inParticle, SubHalos[index-1]);
+	}
+}
+
+void CHalo::createSubHalos(){
+
+	CParticles allParticles = Halo;
+
+	SplitHalo(myConstants::constants.PhaseDistance);
+	//saveStatX();
+	//saveP();
+	printSubHalos();
+	assignParticles(&allParticles);
+	printSubHalos();
+	
+}
 

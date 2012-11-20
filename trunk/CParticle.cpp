@@ -220,6 +220,8 @@ double CParticle::PhaseSpaceDistance(CParticle* p2, CVector* inSigmaP, CVector* 
 }
 
 
+
+
 //Print out all the information contained in one particle
 void CParticle::print(){
 	cout << "------------------------------------" << endl;

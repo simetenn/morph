@@ -94,6 +94,8 @@ class CParticle{
 	void Move(double dt);
 	//CalculatePhaseSpaceDistance between 2 particles
 	double PhaseSpaceDistance(CParticle* p2, CVector* inSigmaP, CVector* inSigmaV);
+	//CalculatePhaseSpaceDistance between a particle and a Halo
+	//double PhaseSpaceDistanceHalo(CHalo* inHalo);
 
 	
 
