@@ -25,11 +25,11 @@ int main(int argc, char **argv){
 		//h.printHalos();
 		//h.saveP();
 		//h.FriendOfFriendGrid();
-		//h.printHalos();
+		h.printHalos();
 		//cout << h.getNrHalos() << endl;
 		//h.print();
 		//myConstants::constants.PhaseDistance
-		h.CalculateAllStatistics();
+		//h.CalculateAllStatistics();
 		//h.getHalo(0)->printStatistics();
 		//cout << h.getHalo(0)->LinkingLength() << endl;
 		h.getHalo(0)->createSubHalos();
