@@ -32,10 +32,11 @@ int main(int argc, char **argv){
 		h.CalculateAllStatistics();
 		//h.getHalo(0)->printStatistics();
 		//cout << h.getHalo(0)->LinkingLength() << endl;
-		h.getHalo(0)->SplitHalo(myConstants::constants.PhaseDistance);
-		h.getHalo(0)->saveStatX();
-		h.getHalo(0)->saveP();
-		h.getHalo(0)->printSubHalos();
+		h.getHalo(0)->createSubHalos();
+		//h.getHalo(0)->SplitHalo(myConstants::constants.PhaseDistance);
+		//h.getHalo(0)->saveStatX();
+		//h.getHalo(0)->saveP();
+		//h.getHalo(0)->printSubHalos();
 		//h.FriendOfFriendPhaseSpace();
 		//h.printHalos();
 		//h.saveP();
