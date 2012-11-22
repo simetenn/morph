@@ -25,7 +25,7 @@ int main(int argc, char **argv){
 		//h.printHalos();
 		//h.saveP();
 		//h.FriendOfFriendGrid();
-		h.printHalos();
+		//h.printHalos();
 		//cout << h.getNrHalos() << endl;
 		//h.print();
 		//myConstants::constants.PhaseDistance
@@ -40,7 +40,12 @@ int main(int argc, char **argv){
 		//h.FriendOfFriendPhaseSpace();
 		//h.printHalos();
 		//h.saveP();
+		//h.saveSize();
+		//h[283]->saveHalo();
 		//h[699]->saveHalo();
+
+		//Large halos
+		//610,590,351,283
 	}
 	MPI_Finalize();
  

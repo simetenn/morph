@@ -59,6 +59,10 @@ void CHalo::printHalo(int& count){
 	cout << "								   " << endl;
 	cout << "Halo nr: " << count << endl;
 	cout << "Nr of particles in halo: " << NrParticles << endl;
+	cout << "Position of halo: ";
+	MeanP.print();
+	cout << "Velocity of halo: ";
+	MeanV.print();
 	cout << "__________________________________" << endl;
 	count++;
 
@@ -71,6 +75,7 @@ void CHalo::printSubHalos(){
 
 void CHalo::printSubHalo(int& count){
 	printHalo(count);
+	
 	for (int i = 0; i < SubHalos.size(); i++) {
 		SubHalos[i]->printSubHalo(count);
 	}
@@ -256,14 +261,19 @@ void CHalo::printStatistics(){
 
 double CHalo::LinkingLength(){
 	int tmpNrParticles = NrParticles;
+	double delta = 1;
+	if (NrParticles > 10000) {
+		delta = NrParticles/10000;
+		tmpNrParticles = 10000;
+	}
+	
 
-	if (NrParticles > 10000) tmpNrParticles = 10000;
 	vector<double> LinkingLengths (tmpNrParticles);
 	int tmpLinkingLength,prevtmpLinkingLength;
 
 	prevtmpLinkingLength = Halo[0]->PhaseSpaceDistance(Halo[1],&SigmaP,&SigmaV);
-	for (int j = 1; j < tmpNrParticles; j++) {
-		tmpLinkingLength = Halo[0]->PhaseSpaceDistance(Halo[j],&SigmaP,&SigmaV);
+	for (double j = delta; j < tmpNrParticles; j+=delta) {
+		tmpLinkingLength = Halo[0]->PhaseSpaceDistance(Halo[(int)j],&SigmaP,&SigmaV);
 		if (tmpLinkingLength < prevtmpLinkingLength) {
 			prevtmpLinkingLength = tmpLinkingLength;
 		}
@@ -347,7 +357,6 @@ void CHalo::saveHaloP(fstream& fileName, int& HaloID){
 
 
 
-
 //Save the statistical data in the x direction, for the halo and all subhalos
 void CHalo::saveStatX(){
 	fstream file;
@@ -375,8 +384,18 @@ void CHalo::saveHaloStatX(fstream& fileName, int& HaloID){
 
 
 
-double CHalo::PhaseSpaceDistanceHalo(CParticle* inParticle){
-	return sqrt((inParticle->getP() - MeanP).Length2()/SigmaP.Length2() +  (inParticle->getV() - MeanV).Length2()/SigmaV.Length2());
+double CHalo::PhaseSpaceDistanceHalo(CParticle* inParticle, CVector* inSigmaP, CVector* inSigmaV){
+	/*MeanV.print();
+	MeanP.print();
+	cout << inSigmaV->Length2() << endl;
+	cout << SigmaV.Length2() << endl;
+	
+	cout << inSigmaP->Length2() << endl;
+	cout << SigmaP.Length2() << endl;
+	cout << sqrt((inParticle->getP() - MeanP).Length2()/inSigmaP->Length2() +  (inParticle->getV() - MeanV).Length2()/inSigmaV->Length2()) << endl;
+	cout << sqrt((inParticle->getP() - MeanP).Length2()/SigmaP.Length2() +  (inParticle->getV() - MeanV).Length2()/SigmaV.Length2()) << endl;*/
+	//return sqrt((inParticle->getP() - MeanP).Length2()/SigmaP.Length2() +  (inParticle->getV() - MeanV).Length2()/SigmaV.Length2());
+	return sqrt((inParticle->getP() - MeanP).Length2()/inSigmaP->Length2() +  (inParticle->getV() - MeanV).Length2()/inSigmaV->Length2());
 }
 
 
@@ -527,27 +546,37 @@ void CHalo::assignParticles(CParticles* allParticles){
 
 void CHalo::findHalo(CParticle* inParticle, CHalo* inHalo){
 
+	cout << "in Find Halo" << endl;
+	
 	double DistanceArray[inHalo->getNrSubHalos()];
-	int index;
+	int index = 0;
 	double distance;
-
-	distance = inHalo->PhaseSpaceDistanceHalo(inParticle);
+	CVector* tmpSigmaP = inHalo->getSigmaP();
+	CVector* tmpSigmaV = inHalo->getSigmaV();
+	inHalo->getMeanP()->print();
+	SubHalos[0]->getMeanP()->print();
+	//SubHalos[0]->SubHalos[0]->getMeanP()->print();
+	//exit(1);
+	distance = inHalo->PhaseSpaceDistanceHalo(inParticle,tmpSigmaP,tmpSigmaV);
 	cout << "Main Halo " << distance << endl;
 	for (int i = 0;i < inHalo->getNrSubHalos(); i++) {
-		DistanceArray[i] = SubHalos[i]->PhaseSpaceDistanceHalo(inParticle);
+		DistanceArray[i] = inHalo->SubHalos[i]->PhaseSpaceDistanceHalo(inParticle,tmpSigmaP,tmpSigmaV);
 		cout << "subHalo " << DistanceArray[i] << endl;
 	}
-	index = 0;
+	
 	for (int i = 0; i < inHalo->getNrSubHalos(); i++) {
-		if (DistanceArray[i] <= distance) {
+		if (DistanceArray[i] < distance) {
 			index = i+1;
 			distance = DistanceArray[i];
 		}
 	}
+
+	cout << index << endl;
 	if (index == 0){
-		addParticle(inParticle);
+		inHalo->addParticle(inParticle);
 	}
 	else {
+		cout << "In the subhalo" << endl;
 		findHalo(inParticle, SubHalos[index-1]);
 	}
 }
@@ -558,10 +587,10 @@ void CHalo::createSubHalos(){
 
 	SplitHalo(myConstants::constants.PhaseDistance);
 	//saveStatX();
-	//saveP();
 	printSubHalos();
 	assignParticles(&allParticles);
 	printSubHalos();
-	
+	saveP();
+
 }
 
