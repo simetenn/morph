@@ -112,10 +112,10 @@ class CHalo{
 	//Then calculates the subhalos of the subhalo recursivly untill either the halo limit
 	//is reached or no particles are found beeing linked together. the linking length is
 	//sett to decrease by f for each iteration.
-	void SplitHalo(int Length);
+	void SplitHalo();
 	//Calculating Friend of Friend using recursion, in phase space.
 	//It must scales as N^2
-	void FriendOfFriendPhaseSpace(int Length);
+	void FriendOfFriendPhaseSpace();
 	//Flags the given particle and adds it to the given halo.
 	//Then finds the neighboring particles, within the phase space linking length.
 	//Before calling itself for each particle found this way
@@ -129,13 +129,13 @@ class CHalo{
 	void findHalo(CParticle* inParticle,CHalo* inHalo);
 	void createSubHalos();
 	
-	
+	//vector<CHalo*> SubHalos;
  protected:
 	CParticles Halo;
 	CVector MeanP,MeanV, SigmaP, SigmaV;
 	double Mass;
 	int ParticleSize, NrParticles;
 	CParticle* searchParticle;
-	vector<CHalo*> SubHalos;
+	//vector<CHalo*> SubHalos;
 
 };
