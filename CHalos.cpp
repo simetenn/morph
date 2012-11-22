@@ -424,6 +424,22 @@ void CHalos::saveP(){
 }
 
 
+//Calculate halo statistics for each halo
+void CHalos::saveSize(){
+	fstream file;
+	CVector tmpP;
+	//string out = myConstants::constants.outFile;
+	file.open("size.dat", ios::out);
+
+	//Saves position data for each particle to file
+	for (int i = 0;i < NrHalos; i++){
+		file << NrInHalo[i] << endl;
+	}
+	file.close();
+}
+
+
+
 void CHalos::CalculateAllStatistics(){
 	for (int i = 0; i < NrHalos; i++) {
 		Halos[i]->CalculateStatistics();

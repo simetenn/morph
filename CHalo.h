@@ -66,7 +66,7 @@ class CHalo{
 	CParticle* operator[](int element);
 	CParticle* get(int element);
 
-	double PhaseSpaceDistanceHalo(CParticle* inParticle);
+	double PhaseSpaceDistanceHalo(CParticle* inParticle, CVector* inSigmaP, CVector* inSigmaV);
 
 
 	//Get CParticles in the Halo
@@ -95,7 +95,8 @@ class CHalo{
 	void savePRec(fstream& fileName, int& HaloID);
 	//Saves position data for each particle to file for a single halo
 	void saveHaloP(fstream& fileName, int& HaloID);
-
+	
+	
 	//Save the statistical data in the x direction, for the halo and all subhalos
 	void saveStatX();
 	//Save the statistical data in the x direction, for a single halo

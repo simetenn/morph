@@ -85,6 +85,8 @@ class CHalos{
 		
 	//save the positions of each particle together with the halo it belongs to to file
 	void saveP();
+	void saveSize();
+
 	//Calculate halo statistics for each halo
 	void CalculateAllStatistics();
 
