@@ -27,7 +27,7 @@ p.scatter(particles[:,0],particles[:,1], c=particles[:,-1])
 p.show()
 """
 
-index = p.where(particles[:,-1] >= 0)
+index = p.where(particles[:,-1] >= 1)
 
 fig = p.figure()
 ax = fig.add_subplot(111, projection='3d')
