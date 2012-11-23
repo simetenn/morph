@@ -75,10 +75,14 @@ void CHalo::printSubHalos(){
 
 void CHalo::printSubHalo(int& count){
 	printHalo(count);
+
+	for (list<CHalo*>::iterator it = SubHalos.begin(); it != SubHalos.end(); it++) {
+		(*it)->printSubHalo(count);
+	} 
 	
-	for (int i = 0; i < SubHalos.size(); i++) {
-		SubHalos[i]->printSubHalo(count);
-	}
+	//for (int i = 0; i < SubHalos.size(); i++) {
+	//	SubHalos[i]->printSubHalo(count);
+	//}
 }
 
 //Clear and remove all information from a CHalos object
@@ -105,9 +109,12 @@ void CHalo::clean() {
 //Clear and remove particle information, but keeping halo information. For all SubHalos
 void CHalo::cleanSubHalos(){
 	clean();
-	for (int i = 0;i < SubHalos.size(); i++) {
-		SubHalos[i]->cleanSubHalos();
+	for (list<CHalo*>::iterator it = SubHalos.begin(); it != SubHalos.end(); it++) {
+		(*it)->cleanSubHalos();
 	}
+	//for (int i = 0;i < SubHalos.size(); i++) {
+	//	SubHalos[i]->cleanSubHalos();
+	//}
 }
 
 
@@ -167,10 +174,21 @@ int CHalo::getNrParticles(){
 }
 
 //return the number of subHalos
-int CHalo::getNrSubHalos(){
-	return SubHalos.size();
+//int CHalo::getNrSubHalos(){
+//	return SubHalos.size();
+//}
+
+list<CHalo*> CHalo::getSubHalos(){
+	return SubHalos;
 }
 
+list<CHalo*>::iterator CHalo::begin(){
+	return SubHalos.begin();
+}
+
+list<CHalo*>::iterator CHalo::end(){
+	return SubHalos.end();
+}
 
 //Return particle nr #element
 CParticle* CHalo::operator[](int element){
@@ -241,16 +259,6 @@ void CHalo::CalculateStatistics(){
 	SigmaV = SigmaV.sqrt()/(NrParticles-1);
 }
 
-//Calculate all the statistics relevant for all subhalos
-void CHalo::CalculateAllStatistics(){
-	CalculateStatistics();
-
-	for (int i = 0;i < SubHalos.size(); i++) {
-		SubHalos[i]->CalculateAllStatistics();
-	}
-}
-
-
 
 
 void CHalo::printStatistics(){
@@ -272,12 +280,12 @@ void CHalo::printStatistics(){
 double CHalo::LinkingLength(){
 	int tmpNrParticles = NrParticles;
 	double delta = 1;
-	
-	if (NrParticles > myConstants::constants.NrLinking) {
-		delta = NrParticles/(double)myConstants::constants.NrLinking;
-		tmpNrParticles = myConstants::constants.NrLinking;
+	if (NrParticles > 10000) {
+		delta = NrParticles/10000;
+		tmpNrParticles = 10000;
 	}
 	
+
 	vector<double> LinkingLengths (tmpNrParticles);
 	int tmpLinkingLength,prevtmpLinkingLength;
 
@@ -352,8 +360,12 @@ void CHalo::saveP(){
 //Recursivly goes trough all subhalos and write the position data to file
 void CHalo::savePRec(fstream& fileName, int& HaloID){
 	saveHaloP(fileName,HaloID);
-	for (int i = 0;i < SubHalos.size(); i++) {
-		SubHalos[i]->savePRec(fileName,HaloID);
+	//for (int i = 0;i < SubHalos.size(); i++) {
+	//	SubHalos[i]->savePRec(fileName,HaloID);
+	//}
+
+	for (list<CHalo*>::iterator it = SubHalos.begin(); it != SubHalos.end(); it++) {
+		(*it)->savePRec(fileName,HaloID);
 	}
 }
 
@@ -381,9 +393,13 @@ void CHalo::saveStatX(){
 	//Saves position data for each particle to file
 	cout << "Saving statistical data" << endl;
 	saveHaloStatX(file,HaloID);
-	for (int i = 0;i < SubHalos.size(); i++) {
-		SubHalos[i]->saveHaloStatX(file,HaloID);
-	}
+	for (list<CHalo*>::iterator it = SubHalos.begin(); it != SubHalos.end(); it++) {
+		(*it)->saveHaloStatX(file,HaloID);
+	}	
+
+	//for (int i = 0;i < SubHalos.size(); i++) {
+	//	SubHalos[i]->saveHaloStatX(file,HaloID);
+	//}
 
 	file.close();
 }
@@ -399,7 +415,16 @@ void CHalo::saveHaloStatX(fstream& fileName, int& HaloID){
 
 
 double CHalo::PhaseSpaceDistanceHalo(CParticle* inParticle, CVector* inSigmaP, CVector* inSigmaV){
-	double rvir2 = pow((Mass/(16./3.*atan(1)*myConstants::constants.rhovir)),2./3.);
+	/*MeanV.print();
+	MeanP.print();
+	cout << inSigmaV->Length2() << endl;
+	cout << SigmaV.Length2() << endl;
+	
+	cout << inSigmaP->Length2() << endl;
+	cout << SigmaP.Length2() << endl;
+	cout << sqrt((inParticle->getP() - MeanP).Length2()/inSigmaP->Length2() +  (inParticle->getV() - MeanV).Length2()/inSigmaV->Length2()) << endl;
+	cout << sqrt((inParticle->getP() - MeanP).Length2()/SigmaP.Length2() +  (inParticle->getV() - MeanV).Length2()/SigmaV.Length2()) << endl;*/
+	//return sqrt((inParticle->getP() - MeanP).Length2()/SigmaP.Length2() +  (inParticle->getV() - MeanV).Length2()/SigmaV.Length2());
 	return sqrt((inParticle->getP() - MeanP).Length2()/inSigmaP->Length2() +  (inParticle->getV() - MeanV).Length2()/inSigmaV->Length2());
 }
 
@@ -417,8 +442,11 @@ void CHalo::SplitHalo(){
 	FriendOfFriendPhaseSpace();
 	clean();
 	//cout << SubHalos.size() << endl;
-	for (int i = 0;i < SubHalos.size(); i++) {
-		SubHalos[i]->SplitHalo();
+	//for (int i = 0;i < SubHalos.size(); i++) {
+	//	SubHalos[i]->SplitHalo();
+	//}
+	for (list<CHalo*>::iterator it = SubHalos.begin(); it != SubHalos.end(); it++) {
+		(*it)->SplitHalo();
 	}
 }
 
@@ -467,7 +495,7 @@ void CHalo::FriendOfFriendPhaseSpace(){
 			Particle->RemoveFromList();
 			findNeighborsPhaseSpace(Particle, &tmpHalo, L);
 			//cout << tmpHalo.getNrParticles() << endl;
-			if (tmpHalo.getNrParticles() > myConstants::constants.HaloLimit && tmpHalo.getNrParticles() != NrParticles){
+			if (tmpHalo.getNrParticles() > myConstants::constants.HaloLimit){
 				cout << "Saving halo with " << tmpHalo.getNrParticles() << endl;
 				SubHalos.push_back(new CHalo(&tmpHalo));
 			}
@@ -524,81 +552,51 @@ void CHalo::assignParticles(CParticles* allParticles){
 	for (int i = 0; i < allParticles->getNrParticles(); i++) {
 		findHalo(allParticles->get(i),this);
 	}
-	CalculateAllStatistics();
 }
 
-void CHalo::findHalo(CParticle* inParticle, CHalo* inHalo){
 
+void CHalo::findHalo(CParticle* inParticle, CHalo* inHalo){
+	
 	//cout << "in Find Halo" << endl;
 	
-	double DistanceArray[inHalo->getNrSubHalos()];
-	int index = 0;
-	double distance;
+	//double DistanceArray[inHalo->getNrSubHalos()];
+	int flag = 0;
+	double distance, prevDistance;
+	CHalo* minHalo;
 	CVector* tmpSigmaP = inHalo->getSigmaP();
 	CVector* tmpSigmaV = inHalo->getSigmaV();
 	//inHalo->getMeanP()->print();
 	//SubHalos[0]->getMeanP()->print();
 	//SubHalos[0]->SubHalos[0]->getMeanP()->print();
 	//exit(1);
-	distance = inHalo->PhaseSpaceDistanceHalo(inParticle,tmpSigmaP,tmpSigmaV);
-	//cout << "Main Halo " << distance << endl;
-	for (int i = 0;i < inHalo->getNrSubHalos(); i++) {
-		DistanceArray[i] = inHalo->SubHalos[i]->PhaseSpaceDistanceHalo(inParticle,tmpSigmaP,tmpSigmaV);
+	prevDistance = inHalo->PhaseSpaceDistanceHalo(inParticle,tmpSigmaP,tmpSigmaV);
+	//for (int i = 0;i < inHalo->getNrSubHalos(); i++) {
+	//	DistanceArray[i] = inHalo->SubHalos[i]->PhaseSpaceDistanceHalo(inParticle,tmpSigmaP,tmpSigmaV);
 		//cout << "subHalo " << DistanceArray[i] << endl;
-	}
-	
-	for (int i = 0; i < inHalo->getNrSubHalos(); i++) {
-		if (DistanceArray[i] < distance) {
-			index = i+1;
-			distance = DistanceArray[i];
+	//}
+	for (list<CHalo*>::iterator it = inHalo->begin(); it != inHalo->end(); it++) {
+		distance = (*it)->PhaseSpaceDistanceHalo(inParticle,tmpSigmaP,tmpSigmaV);
+		if (distance < prevDistance) {
+			flag = 1;
+			prevDistance = distance;
+			minHalo = *it;
 		}
 	}
-
-	//cout << index << endl;
-	if (index == 0){
+	//cout << flag << endl;
+	//it++;
+	if (flag == 0){
 		inHalo->addParticle(inParticle);
 	}
 	else {
 		//cout << "In the subhalo" << endl;
-		findHalo(inParticle, SubHalos[index-1]);
+		findHalo(inParticle, minHalo);
 	}
 }
-
-
-
-
-
-void CHalo::mergeStatistical(){
-	int flag = 0;
-	CHalo* mergeHalo = NULL;
-	while (flag == 0){
-		mergeStatisticalRec(this, flag){
-	}
-}
-
-
-void CHalo::mergeStatisticalRec(CHalo* prevHalo, int flag){
-	for (int i = 0;i < SubHalos.size(); i++) {
-		SubHalos[i]->mergeStatistical(this);
-	}
-	
-	if (sqrt(NrParticles*(((MeanP-mergeHalo->getMeanP())/SigmaP).length2() + ((MeanV-mergeHalo->getMeanV())/SigmaV).length2())) < 10*sqrt(2)){
-		flag = 1;
-		
-		return;
-	}
-}
-
-
-
-
-
-
-
 
 void CHalo::createSubHalos(){
 
 	CParticles allParticles = Halo;
+
 
 	SplitHalo();
 	//saveStatX();
@@ -608,6 +606,4 @@ void CHalo::createSubHalos(){
 	saveP();
 
 }
-
-
 
