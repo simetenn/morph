@@ -75,10 +75,14 @@ void CHalo::printSubHalos(){
 
 void CHalo::printSubHalo(int& count){
 	printHalo(count);
+
+	for (list<CHalo*>::iterator it = SubHalos.begin(); it != SubHalos.end(); it++) {
+		(*it)->printSubHalo(count);
+	} 
 	
-	for (int i = 0; i < SubHalos.size(); i++) {
-		SubHalos[i]->printSubHalo(count);
-	}
+	//for (int i = 0; i < SubHalos.size(); i++) {
+	//	SubHalos[i]->printSubHalo(count);
+	//}
 }
 
 //Clear and remove all information from a CHalos object
@@ -105,9 +109,12 @@ void CHalo::clean() {
 //Clear and remove particle information, but keeping halo information. For all SubHalos
 void CHalo::cleanSubHalos(){
 	clean();
-	for (int i = 0;i < SubHalos.size(); i++) {
-		SubHalos[i]->cleanSubHalos();
+	for (list<CHalo*>::iterator it = SubHalos.begin(); it != SubHalos.end(); it++) {
+		(*it)->cleanSubHalos();
 	}
+	//for (int i = 0;i < SubHalos.size(); i++) {
+	//	SubHalos[i]->cleanSubHalos();
+	//}
 }
 
 
@@ -167,10 +174,13 @@ int CHalo::getNrParticles(){
 }
 
 //return the number of subHalos
-int CHalo::getNrSubHalos(){
-	return SubHalos.size();
-}
+//int CHalo::getNrSubHalos(){
+//	return SubHalos.size();
+//}
 
+list<CHalo*> CHalo::getSubHalos(){
+	return SubHalos;
+}
 
 //Return particle nr #element
 CParticle* CHalo::operator[](int element){
@@ -342,8 +352,12 @@ void CHalo::saveP(){
 //Recursivly goes trough all subhalos and write the position data to file
 void CHalo::savePRec(fstream& fileName, int& HaloID){
 	saveHaloP(fileName,HaloID);
-	for (int i = 0;i < SubHalos.size(); i++) {
-		SubHalos[i]->savePRec(fileName,HaloID);
+	//for (int i = 0;i < SubHalos.size(); i++) {
+	//	SubHalos[i]->savePRec(fileName,HaloID);
+	//}
+
+	for (list<CHalo*>::iterator it = SubHalos.begin(); it != SubHalos.end(); it++) {
+		(*it)->savePRec(fileName,HaloID);
 	}
 }
 
@@ -371,9 +385,13 @@ void CHalo::saveStatX(){
 	//Saves position data for each particle to file
 	cout << "Saving statistical data" << endl;
 	saveHaloStatX(file,HaloID);
-	for (int i = 0;i < SubHalos.size(); i++) {
-		SubHalos[i]->saveHaloStatX(file,HaloID);
-	}
+	for (list<CHalo*>::iterator it = SubHalos.begin(); it != SubHalos.end(); it++) {
+		(*it)->saveHaloStatX(file,HaloID);
+	}	
+
+	//for (int i = 0;i < SubHalos.size(); i++) {
+	//	SubHalos[i]->saveHaloStatX(file,HaloID);
+	//}
 
 	file.close();
 }
@@ -416,8 +434,11 @@ void CHalo::SplitHalo(){
 	FriendOfFriendPhaseSpace();
 	clean();
 	//cout << SubHalos.size() << endl;
-	for (int i = 0;i < SubHalos.size(); i++) {
-		SubHalos[i]->SplitHalo();
+	//for (int i = 0;i < SubHalos.size(); i++) {
+	//	SubHalos[i]->SplitHalo();
+	//}
+	for (list<CHalo*>::iterator it = SubHalos.begin(); it != SubHalos.end(); it++) {
+		(*it)->SplitHalo();
 	}
 }
 
@@ -520,70 +541,49 @@ CParticle* CHalo::nextParticle(){
 
 
 void CHalo::assignParticles(CParticles* allParticles){
-	/*searchParticle = allParticles->get(0);
-	CParticle* Particle = searchParticle;
-
-	//Create a linked list of all particles
-	Particle->prev=NULL;
-	for (int i=1; i < allParticles->getNrParticles();i++){
-		Particle->setFlag(0);
-		Particle->next = allParticles->get(i);;
-		Particle->next->prev = Particle;
-		Particle = Particle->next;
-	}
-	Particle->setFlag(0);
-	Particle->next = NULL;
-
-
-
-
-	while (true){
-
-		Particle = nextParticle();
-		if (Particle == NULL) break;
-		else {
-			findHalo(Particle,);
-		}
-		}*/
 	for (int i = 0; i < allParticles->getNrParticles(); i++) {
 		findHalo(allParticles->get(i),this);
 	}
 }
 
-void CHalo::findHalo(CParticle* inParticle, CHalo* inHalo){
 
-	//cout << "in Find Halo" << endl;
+void CHalo::findHalo(CParticle* inParticle, CHalo* inHalo){
 	
-	double DistanceArray[inHalo->getNrSubHalos()];
-	int index = 0;
-	double distance;
+	cout << "in Find Halo" << endl;
+	
+	//double DistanceArray[inHalo->getNrSubHalos()];
+	int flag = 0;
+	double distance, prevDistance;
+	CHalo* minHalo;
 	CVector* tmpSigmaP = inHalo->getSigmaP();
 	CVector* tmpSigmaV = inHalo->getSigmaV();
 	//inHalo->getMeanP()->print();
 	//SubHalos[0]->getMeanP()->print();
 	//SubHalos[0]->SubHalos[0]->getMeanP()->print();
 	//exit(1);
-	distance = inHalo->PhaseSpaceDistanceHalo(inParticle,tmpSigmaP,tmpSigmaV);
-	//cout << "Main Halo " << distance << endl;
-	for (int i = 0;i < inHalo->getNrSubHalos(); i++) {
-		DistanceArray[i] = inHalo->SubHalos[i]->PhaseSpaceDistanceHalo(inParticle,tmpSigmaP,tmpSigmaV);
+	prevDistance = inHalo->PhaseSpaceDistanceHalo(inParticle,tmpSigmaP,tmpSigmaV);
+	cout << "Main Halo " << prevDistance << endl;
+	//for (int i = 0;i < inHalo->getNrSubHalos(); i++) {
+	//	DistanceArray[i] = inHalo->SubHalos[i]->PhaseSpaceDistanceHalo(inParticle,tmpSigmaP,tmpSigmaV);
 		//cout << "subHalo " << DistanceArray[i] << endl;
+	//}
+	for (list<CHalo*>::iterator it = inHalo->getSubHalos().begin(); it != inHalo->getSubHalos().end(); it++) {
+		cout << "inHalo" << endl;
+		//distance = (*it)->PhaseSpaceDistanceHalo(inParticle,tmpSigmaP,tmpSigmaV);
+		//if (distance < prevDistance) {
+		//	flag = 1;
+		//	prevDistance = distance;
+		//	minHalo = *it;
+		//}
 	}
-	
-	for (int i = 0; i < inHalo->getNrSubHalos(); i++) {
-		if (DistanceArray[i] < distance) {
-			index = i+1;
-			distance = DistanceArray[i];
-		}
-	}
-
-	//cout << index << endl;
-	if (index == 0){
+	//cout << flag << endl;
+	//it++;
+	if (flag == 0){
 		inHalo->addParticle(inParticle);
 	}
 	else {
 		//cout << "In the subhalo" << endl;
-		findHalo(inParticle, SubHalos[index-1]);
+		findHalo(inParticle, minHalo);
 	}
 }
 
