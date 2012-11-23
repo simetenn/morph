@@ -57,10 +57,8 @@ class CHalo{
 	//Return nr of particles
 	int getNrParticles();
 	//return the number of subHalos
-	//int getNrSubHalos();
+	int getNrSubHalos();
 
-	list<CHalo*> getSubHalos();
-	
 
 	void setNrParticles(int element);
 
@@ -84,7 +82,8 @@ class CHalo{
 	//Calculate all the statistics relevant for a halo, such as:
 	//mean P, mean V, sigma P, sigma V and mass
 	void CalculateStatistics();
-
+	void CalculateAllStatistics();
+	
 	//Printing out the statistics for one halo
 	void printStatistics();
 
@@ -104,7 +103,7 @@ class CHalo{
 	//Save the statistical data in the x direction, for a single halo
 	void saveHaloStatX(fstream& fileName, int& HaloID);
 
-	
+
 	
 
 	//Calculate the linking length of a halo
@@ -126,18 +125,19 @@ class CHalo{
 	//Find the next particle to assign to a Halo
 	CParticle* nextParticle();
 
-	
+
 	void assignParticles(CParticles* allParticles);
 	void findHalo(CParticle* inParticle,CHalo* inHalo);
+	void mergeStatistical();
 	void createSubHalos();
+
 	
-	//vector<CHalo*> SubHalos;
  protected:
 	CParticles Halo;
 	CVector MeanP,MeanV, SigmaP, SigmaV;
 	double Mass;
 	int ParticleSize, NrParticles;
 	CParticle* searchParticle;
-	//vector<CHalo*> SubHalos;
-	list<CHalo*> SubHalos;
+	vector<CHalo*> SubHalos;
+
 };
