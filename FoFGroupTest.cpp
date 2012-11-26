@@ -25,7 +25,7 @@ int main(int argc, char **argv){
 		//h.printHalos();
 		//h.saveP();
 		//h.FriendOfFriendGrid();
-		//h.printHalos();
+		h.printHalos();
 		//cout << h.getNrHalos() << endl;
 		//h.print();
 		//myConstants::constants.PhaseDistance
@@ -33,10 +33,12 @@ int main(int argc, char **argv){
 		//h.getHalo(0)->printStatistics();
 		//cout << h.getHalo(0)->LinkingLength() << endl;
 		h.getHalo(0)->createSubHalos();
+		cout << h.getHalo(0)->getTotalNrParticles() << endl;
 		//h.getHalo(0)->SplitHalo(myConstants::constants.PhaseDistance);
 		//h.getHalo(0)->saveStatX();
 		//h.getHalo(0)->saveP();
 		//h.getHalo(0)->printSubHalos();
+		//h.SplitHalos();
 		//h.FriendOfFriendPhaseSpace();
 		//h.printHalos();
 		//h.saveP();

@@ -58,7 +58,10 @@ class CHalo{
 	int getNrParticles();
 	//return the number of subHalos
 	//int getNrSubHalos();
+	int getTotalNrParticles();
+	void getTotalNrParticlesRec(int& TotalNrParticles);
 
+	
 	list<CHalo*> getSubHalos();
 	list<CHalo*>::iterator begin();
 	list<CHalo*>::iterator end();
@@ -86,6 +89,9 @@ class CHalo{
 	//mean P, mean V, sigma P, sigma V and mass
 	void CalculateStatistics();
 
+	//Calculate all the statistics relevant for all subhalos
+	void CalculateAllStatistics();
+
 	//Printing out the statistics for one halo
 	void printStatistics();
 
@@ -98,15 +104,15 @@ class CHalo{
 	void savePRec(fstream& fileName, int& HaloID);
 	//Saves position data for each particle to file for a single halo
 	void saveHaloP(fstream& fileName, int& HaloID);
-	
-	
+
+
 	//Save the statistical data in the x direction, for the halo and all subhalos
 	void saveStatX();
 	//Save the statistical data in the x direction, for a single halo
 	void saveHaloStatX(fstream& fileName, int& HaloID);
 
-	
-	
+
+
 
 	//Calculate the linking length of a halo
 	double LinkingLength();
@@ -127,12 +133,13 @@ class CHalo{
 	//Find the next particle to assign to a Halo
 	CParticle* nextParticle();
 
-	
+
 	void assignParticles(CParticles* allParticles);
 	void findHalo(CParticle* inParticle,CHalo* inHalo);
-	void mergeStatisticalRec(CHalo* mergeHalo, int flag);
+	void mergeStatistical();
+	void mergeStatisticalRec(CHalo* mergeHalo, int &flag);
 	void createSubHalos();
-	
+
 	//vector<CHalo*> SubHalos;
  protected:
 	CParticles Halo;
