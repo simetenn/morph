@@ -115,7 +115,8 @@ class CHalos{
 	//void findNeighborsPhaseSpace(CParticle* inParticle, CHalo* inHalo, CVector* SigmaP,CVector*  SigmaV);
 	//double PhaseSpaceDistance(CParticle* p1, CParticle* p2, double SigmaP, double SigmaV);
 
-
+	void SplitHalos();
+	
 
 	CHalos* master();
 	void slave();

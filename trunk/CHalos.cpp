@@ -585,7 +585,7 @@ void CHalos::FriendOfFriendGrid(){
 
 	LinkingLength = myConstants::constants.LinkingLength;
 	//int Width = myConstants::constants.Width;
-	
+
 	int Width = (int) 2./LinkingLength;
 	//int Width = 150;
 
@@ -609,7 +609,7 @@ void CHalos::FriendOfFriendGrid(){
 	NrInHalo.clear();
 
 	int count = 0;
-	
+
 	while (true){
 		Particle = findParticle();
 		if (Particle == NULL) break;
@@ -623,7 +623,7 @@ void CHalos::FriendOfFriendGrid(){
 			Particle->setFlag(1);
 			findNeighborsGrid(Particle, &tmpHalo);
 			//cout << tmpHalo->getNrParticles() << endl;
-			
+
 			//Only saving halos that has more than HaloLimit particles, updating NrInHalos
 			count += tmpHalo.getNrParticles();
 			if (tmpHalo.getNrParticles() > myConstants::constants.HaloLimit) {
@@ -634,7 +634,7 @@ void CHalos::FriendOfFriendGrid(){
 	}
 	NrHalos = Halos.size();
 
-	
+
 	cout << "Have all particles survived?: "<< count << endl;
 
 
@@ -659,7 +659,7 @@ void CHalos::FriendOfFriendGrid(){
 void CHalos::findNeighborsGrid(CParticle* inParticle, CHalo* inHalo){
 	inHalo->addParticle(inParticle);
 	inParticle->RemoveFromList();
-	
+
 	CVector Position = Grid.getPosition(inParticle);
 	CHalo FriendList;
 	CParticle* tmpParticle;
@@ -790,20 +790,15 @@ void CHalos::findNeighborsGrid(CParticle* inParticle, CHalo* inHalo){
   }
 */
 
-/*
-  void CHalos::SplitHalo(int element){
-  vector<CHalo*> tmpHalos;
 
-  for (int i = 0; i < NrInHalo[element]; i++){
-  Halos[element]->get(i)->setFlag(0);
-  }
-
-  for (int i = 0; i < NrInHalo[element]; i++){
-  Halos[element]->get(i)
-  }
-
-  }
-*/
+void CHalos::SplitHalos(){
+	for (int i = 0; i < NrHalos; i++) {
+		cout << "-------------------------------------------------" << endl;
+		cout << i << endl;
+		cout << "-------------------------------------------------" << endl;
+		Halos[i]->createSubHalos();
+	}
+}
 
 
 
