@@ -24,7 +24,6 @@ CHalo::CHalo(CParticles* inParticles){
 	SigmaV.Set(0,0,0);
 }
 
-
 //Creates CParticles from a CArray on the following form:
 //[ParticleArray 1, ParticleArray 2, ParticleArray 3, ... , ParticleArray N]
 CHalo::CHalo(CArray* inArray){
@@ -632,7 +631,7 @@ void CHalo::mergeStatisticalRec(CHalo* prevHalo, int &flag){
 		double tmp2= ((MeanV - *((*it)->getMeanV()))/SigmaV).Length2();
 		//if (this != (*it) && (sqrt(NrParticles*(((MeanP - *((*it)->getMeanP()))/SigmaP).Length2() + (MeanV - *((*it)->getMeanV()))/SigmaV).Length2()) < 10*sqrt(2))){
 		//cout << sqrt(NrParticles*(tmp1 + tmp2)) << endl;
-		if (this != (*it) && sqrt(NrParticles*(tmp1 + tmp2)) < 10*sqrt(2)){
+		if (this != (*it) && NrParticles*(tmp1 + tmp2) < 200{
 			cout << "in thing"<<endl;
 			SubHalos.erase(it);
 			addHalo(*it);
