@@ -5,7 +5,7 @@ VPATH	= .
 
 TARGET = OS_X
 # Home directory of the acw program
-HOME=/Users/nicolaasgroeneboom/work/code/mac/particles
+#HOME=/Users/nicolaasgroeneboom/work/code/mac/particles
 
 SOURCEDIR = .
 
