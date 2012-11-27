@@ -35,7 +35,7 @@ class CHalo{
 	CArray* Halo2Array();
 	//Convert all subhalos to an CArray
 	CArray* SubHalos2Array();
-	void SubHalos2ArrayRec(CArray* inArray);
+	void SubHalos2ArrayRec(CArray* inArray,CArray* sizeArray);
 
 	
 	

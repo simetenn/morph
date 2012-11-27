@@ -139,7 +139,7 @@ void CHalos::HaloSort(){
 CArray*	 CHalos::Halos2Array(){
 	//rewrite this when time, but seems to work atm
 
-	double* Array = new double [ParticleSize*NrParticles+NrHalos+1]; // Memory leak
+	double* Array = new double [ParticleSize*NrParticles+NrHalos+1+myConstants::constants.HaloSize*NrHa]; // Memory leak
 	int particle_count = 1+NrHalos;
 	double* tmpArray;
 	Array[0] = NrHalos;
@@ -155,6 +155,10 @@ CArray*	 CHalos::Halos2Array(){
 		}
 	}
 
+	
+
+
+	
 	return new CArray(ParticleSize*NrParticles+NrHalos+1,Array); //Memory leak
 }
 
