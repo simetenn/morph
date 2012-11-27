@@ -26,13 +26,19 @@ class CHalo{
 
 	//Print all halos and subhalos
 	void printSubHalos();
+	void printSubHalosRec(CArray* inArray);
 	//Print information for one subhalo
 	void printSubHalo(int& count);
 
 
 	//Convert from one halo to an CArray
 	CArray* Halo2Array();
+	//Convert all subhalos to an CArray
+	CArray* SubHalos2Array();
+	void SubHalos2ArrayRec(CArray* inArray);
 
+	
+	
 	//Clear and remove all information from a CHalos object
 	void clear();
 	//Clear and remove particle information, but keeping halo information

@@ -17,6 +17,9 @@ class CArray : public CMPI {
 
 	//Create a CArray from an array
 	CArray(int in_length, double* in_array);
+	//create a CArray from a CArray
+	CArray(CArray* inCArray);
+
 	~CArray();
 
 	//Creates an array, [start, end] with in_length elements
@@ -39,7 +42,7 @@ class CArray : public CMPI {
 	CArray operator+(double number);
 	//Add two CArrays
 	CArray* operator+(CArray* inArray);
-
+	CArray* add(CArray* inArray);
 
 	//Add an element to CArray at the end
 	void push_back(double in_value);
@@ -57,7 +60,7 @@ class CArray : public CMPI {
 	//Recieve a CArray from the master in a slave
 	void recieve_slave();
 
-	
+
 	//Return the pointer to the array in CArray
 	double* CArray2array();
 

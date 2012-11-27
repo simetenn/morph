@@ -23,16 +23,21 @@ CHalos::CHalos(CArray* inArray){
 	NrParticles = (inArray->len()-1-NrHalos)/ParticleSize;
 	for (int i = 0; i < NrHalos; i++){
 		NrInHalo.push_back(inArray->get(1+i));
-		double tmpArray[NrInHalo[i]*ParticleSize];
+		double tmpArray[NrInHalo[i]*ParticleSize + myConstants::constants.HaloSize];
 
+		for (int l = 0; l < myConstants::constants.HaloSize; l++) {
+			tmpArray[l] = inArray->get(particle_count);
+			particle_count++;
+		}
+		
 		for (int j = 0; j < NrInHalo[i];j++){
 			for (int k = 0; k < ParticleSize;k++){
-				tmpArray[j*ParticleSize+k] = inArray->get(particle_count);
+				tmpArray[j*ParticleSize+k+myConstants::constants.HaloSize] = inArray->get(particle_count);
 				particle_count++;
 			}
 		}
 
-		CArray* tmpCArray = new CArray(NrInHalo[i]*ParticleSize, tmpArray);
+		CArray* tmpCArray = new CArray(NrInHalo[i]*ParticleSize + myConstants::constants.ParticleSize, tmpArray);
 		CHalo* tmpHalo = new CHalo(tmpCArray); // <- Memory leak
 		Halos.push_back(tmpHalo);
 	}
@@ -183,7 +188,12 @@ void CHalos::addHalos(CArray* inArray){
 		NrInHalo.push_back(inArray->get(1+i));
 		tmpNrInHalo.push_back(inArray->get(1+i));
 
-		double tmpArray[tmpNrInHalo[i]*ParticleSize];
+		double tmpArray[NrInHalo[i]*ParticleSize + myConstants::constants.HaloSize];
+
+		for (int l = 0; l < myConstants::constants.HaloSize; l++) {
+			tmpArray[l] = inArray->get(particle_count);
+			particle_count++;
+		}
 		for (int j = 0; j < tmpNrInHalo[i];j++){
 			for (int k = 0; k < ParticleSize;k++){
 				tmpArray[j*ParticleSize+k] = inArray->get(particle_count);
@@ -191,7 +201,7 @@ void CHalos::addHalos(CArray* inArray){
 			}
 		}
 
-		CArray* tmpCArray = new CArray(tmpNrInHalo[i]*ParticleSize, tmpArray);
+		CArray* tmpCArray = new CArray(tmpNrInHalo[i]*ParticleSize + myConstants::constants.HaloSize, tmpArray);
 		CHalo* tmpHalo = new CHalo(tmpCArray); // <- Memory leak
 		Halos.push_back(tmpHalo);
 	}
@@ -892,6 +902,7 @@ void CHalos::slave(){
 		//cout << "Slave " << rank << " recieved halo" << endl;
 		CHalos SlaveHalos (&HalosArray);
 
+		//SlaveHalos.print
 		//SlaveHalos.printHalos();
 		//Do something in each slave processor here
 		//SlaveHalos.FriendOfFriendPhaseSpace();
