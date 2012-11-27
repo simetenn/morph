@@ -168,6 +168,19 @@ CArray* CArray::operator+(CArray* inArray){
 }
 
 
+//Add two CArrays
+CArray* CArray::add(CArray* inArray){
+	double tmp[length+inArray->length];
+	for (int i =0; i< length;i++) {
+		tmp[i] = array[i];
+	}
+	for (int j =0; j< length;j++) {
+		tmp[length + j] = inArray->get(j);
+	}
+	return new CArray(length+inArray->length,tmp); //<- memory leak
+}
+
+
 //Add an element to CArray at the end
 void CArray::push_back(double in_value){
 	double oldArray [length];

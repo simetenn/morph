@@ -29,14 +29,19 @@ CHalo::CHalo(CParticles* inParticles){
 CHalo::CHalo(CArray* inArray){
 	ParticleSize = myConstants::constants.ParticleSize;
 
-	//Halo.set(inArray);
+	NrParticles = inArray->get(0);
+	Mass = inArray->get(1);
+	MeanP.Set(inArray->get(2),inArray->get(3),inArray->get(4)); 
+	MeanV.Set(inArray->get(5),inArray->get(6),inArray->get(7));
+	SigmaP.Set(inArray->get(8),inArray->get(9),inArray->get(10));
+	SigmaV.Set(inArray->get(11),inArray->get(12),inArray->get(13));
+
+	double tmpArray [NrParticles*ParticleSize];
+	for (int i = 0; i < NrParticles*ParticleSize; i++) {
+		tmpArray[i] = inArray->get(i + myConstants::constants.HaloSize);
+	}
+	
 	Halo = CParticles(inArray);
-	NrParticles = Halo.getNrParticles();
-	Mass = 0;
-	MeanP.Set(0,0,0);
-	MeanV.Set(0,0,0);
-	SigmaP.Set(0,0,0);
-	SigmaV.Set(0,0,0);
 }
 
 //Create a new CHalo from a CHalo
@@ -133,7 +138,40 @@ void CHalo::copy(CHalo* inHalo) {
 
 //Convert from one halo to an CArray
 CArray*	 CHalo::Halo2Array(){
-	return Halo.Particles2Array();
+	CArray tmpArray(Halo.Particles2Array()); // Memory leak
+	double* Array = new double [tmpArray.len() + myConstants::constants.HaloSize]; // Memory leak
+
+	Array[0] = NrParticles;
+	Array[1] = Mass;
+	for (int i = 0; i < MeanP.getDimensions(); i++) {
+		Array[2+i] = MeanP[i];
+		Array[5+i] = MeanV[i];
+		Array[8+i] = SigmaP[i];
+		Array[11+i] = SigmaV[i];
+	}
+	
+	for (int i = 0; i < tmpArray.len(); i++) {
+		Array[i + myConstants::constants.HaloSize] = tmpArray[i];
+	}
+	
+	//Delete tmparray here in some way.
+	
+	return new CArray(tmpArray.len()+myConstants::constants.HaloSize,Array);
+}
+
+
+CArray* CHalo::SubHalos2Array(){
+	//CArray* tmpArray = new CArray (Halo.Particles2Array());
+	//SubHalos2ArrayRec(tmpArray);
+	//return tmpArray;
+}
+
+
+void CHalo::SubHalos2ArrayRec(CArray* inArray){
+	//inArray = inArray->add(Halo.Particles2Array());
+	//for (list<CHalo*>::iterator it = SubHalos.begin(); it != SubHalos.end(); it++) {
+		//(*it)->SubHalos2ArrayRec(inArray);
+	//}
 }
 
 
@@ -245,7 +283,7 @@ void CHalo::addHalo(CHalo* inHalo){
 		SubHalos.push_back(*it);
 	}
 //This might be slow
-CalculateStatistics();
+	CalculateStatistics();
 }
 
 //Add several particles to the Halo
@@ -631,7 +669,7 @@ void CHalo::mergeStatisticalRec(CHalo* prevHalo, int &flag){
 		double tmp2= ((MeanV - *((*it)->getMeanV()))/SigmaV).Length2();
 		//if (this != (*it) && (sqrt(NrParticles*(((MeanP - *((*it)->getMeanP()))/SigmaP).Length2() + (MeanV - *((*it)->getMeanV()))/SigmaV).Length2()) < 10*sqrt(2))){
 		//cout << sqrt(NrParticles*(tmp1 + tmp2)) << endl;
-		if (this != (*it) && NrParticles*(tmp1 + tmp2) < 200{
+		if (this != (*it) && NrParticles*(tmp1 + tmp2) < 200) {
 			cout << "in thing"<<endl;
 			SubHalos.erase(it);
 			addHalo(*it);
