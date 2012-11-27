@@ -44,6 +44,12 @@ CArray::CArray(int in_length, double* in_array){
 	CMPI();
 }
 
+CArray::CArray(CArray* inCArray){
+	length = inCArray->len();
+	array = inCArray->CArray2array();
+	CMPI();
+}
+
 
 CArray::~CArray(){
 	if (array != NULL){

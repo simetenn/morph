@@ -36,12 +36,13 @@ CHalo::CHalo(CArray* inArray){
 	SigmaP.Set(inArray->get(8),inArray->get(9),inArray->get(10));
 	SigmaV.Set(inArray->get(11),inArray->get(12),inArray->get(13));
 
-	double tmpArray [NrParticles*ParticleSize];
+	int tmp = NrParticles*ParticleSize;
+	CArray* tmpArray = new CArray (tmp);
 	for (int i = 0; i < NrParticles*ParticleSize; i++) {
-		tmpArray[i] = inArray->get(i + myConstants::constants.HaloSize);
+		tmpArray->set(i, inArray->get(i + myConstants::constants.HaloSize));
 	}
 	
-	Halo = CParticles(inArray);
+	Halo = CParticles(tmpArray);
 }
 
 //Create a new CHalo from a CHalo
@@ -149,29 +150,42 @@ CArray*	 CHalo::Halo2Array(){
 		Array[8+i] = SigmaP[i];
 		Array[11+i] = SigmaV[i];
 	}
-	
+
 	for (int i = 0; i < tmpArray.len(); i++) {
 		Array[i + myConstants::constants.HaloSize] = tmpArray[i];
+		//cout << Array[i + myConstants::constants.HaloSize] << endl;
 	}
+
+	//cout << Array[i + myConstants::constants.HaloSize] << endl;
 	
+	//tmpArray.print();
 	//Delete tmparray here in some way.
-	
-	return new CArray(tmpArray.len()+myConstants::constants.HaloSize,Array);
+	//CArray tmp (tmpArray.len()+myConstants::constants.HaloSize, Array);
+	//tmp.print();
+	return new CArray(tmpArray.len()+myConstants::constants.HaloSize, Array);
 }
 
 
 CArray* CHalo::SubHalos2Array(){
-	//CArray* tmpArray = new CArray (Halo.Particles2Array());
-	//SubHalos2ArrayRec(tmpArray);
-	//return tmpArray;
+	
+	CArray* Array = new CArray (Halo.Particles2Array());
+	CArray* sizeArray = new CArray (); // Memory leak
+	SubHalos2ArrayRec(Array,sizeArray);
+	
+	Array = sizeArray->add(Array);
+	Array->front(getTotalNrParticles());
+	
+	return Array;
 }
 
 
-void CHalo::SubHalos2ArrayRec(CArray* inArray){
-	//inArray = inArray->add(Halo.Particles2Array());
-	//for (list<CHalo*>::iterator it = SubHalos.begin(); it != SubHalos.end(); it++) {
-		//(*it)->SubHalos2ArrayRec(inArray);
-	//}
+void CHalo::SubHalos2ArrayRec(CArray* inArray, CArray* sizeArray){
+	inArray = inArray->add(Halo.Particles2Array());
+	sizeArray->push_back(NrParticles);
+	
+	for (list<CHalo*>::iterator it = SubHalos.begin(); it != SubHalos.end(); it++) {
+		(*it)->SubHalos2ArrayRec(inArray,sizeArray);
+	}
 }
 
 

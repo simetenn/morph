@@ -50,15 +50,19 @@ int main(int argc, char **argv){
 		//Large halos
 		//610,590,351,283
 		MPI_Request Req;
-		CArray* Array= h.getHalo(0)->Halo2Array();
+		MPI_Status Stat;
+		
+		
+		CArray* Array = h.getHalo(0)->Halo2Array();
 		Array->front(h.getHalo(0)->getNrParticles());
 		Array->front(1);
 		Array->send(1);
-		a2->recieve(1,&Req);
-		a2->print();
-		Array->print();
-		h2->addHalos(a2);
-		
+		//a2->recieve(1,&Req);
+		//MPI_Wait (&Req, &Stat);
+		//a2->print();
+		//Array->print();
+		//h2->addHalos(a2);
+		//h2->printHalos();
 		MPI_Barrier(MPI_COMM_WORLD);
 		MPI_Finalize();
 		
@@ -68,14 +72,14 @@ int main(int argc, char **argv){
 
 		CArray HalosArray;
 		HalosArray.recieve_slave();
-		
-		CHalos SlaveHalos (&HalosArray);
+		//CHalos SlaveHalos (&HalosArray);
 
-		SlaveHalos.printHalos();
+		//SlaveHalos.printHalos();
+		//SlaveHalos.print();
 		//Do something in each slave processor here
 		//SlaveHalos.FriendOfFriendPhaseSpace();
-
-		SlaveHalos.Halos2Array()->send_slave();
+		//SlaveHalos.getHalo(0)->Halo2Array();//->print();
+		//SlaveHalos.getHalo(0)->Halo2Array()->send_slave();
 
 		
 		MPI_Barrier(MPI_COMM_WORLD);
