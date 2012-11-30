@@ -42,7 +42,8 @@ class CArray : public CMPI {
 	CArray operator+(double number);
 	//Add two CArrays
 	CArray* operator+(CArray* inArray);
-	CArray* add(CArray* inArray);
+	//CArray* add(CArray* inArray);
+	void add(CArray* inArray);
 
 	//Add an element to CArray at the end
 	void push_back(double in_value);

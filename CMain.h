@@ -2,7 +2,6 @@
 
 #include "CHalos.h"
 
-
 class CMain {
  public:
 	//static Constants constants;

@@ -31,17 +31,18 @@ CHalo::CHalo(CArray* inArray){
 
 	NrParticles = inArray->get(0);
 	Mass = inArray->get(1);
-	MeanP.Set(inArray->get(2),inArray->get(3),inArray->get(4)); 
+	MeanP.Set(inArray->get(2),inArray->get(3),inArray->get(4));
 	MeanV.Set(inArray->get(5),inArray->get(6),inArray->get(7));
 	SigmaP.Set(inArray->get(8),inArray->get(9),inArray->get(10));
 	SigmaV.Set(inArray->get(11),inArray->get(12),inArray->get(13));
 
+
 	int tmp = NrParticles*ParticleSize;
 	CArray* tmpArray = new CArray (tmp);
-	for (int i = 0; i < NrParticles*ParticleSize; i++) {
+	for (int i = 0; i < tmp; i++) {
 		tmpArray->set(i, inArray->get(i + myConstants::constants.HaloSize));
 	}
-	
+
 	Halo = CParticles(tmpArray);
 }
 
@@ -157,7 +158,7 @@ CArray*	 CHalo::Halo2Array(){
 	}
 
 	//cout << Array[i + myConstants::constants.HaloSize] << endl;
-	
+
 	//tmpArray.print();
 	//Delete tmparray here in some way.
 	//CArray tmp (tmpArray.len()+myConstants::constants.HaloSize, Array);
@@ -167,25 +168,45 @@ CArray*	 CHalo::Halo2Array(){
 
 
 CArray* CHalo::SubHalos2Array(){
-	
-	CArray* Array = new CArray (Halo.Particles2Array());
+
+	CArray* Array = new CArray ();
 	CArray* sizeArray = new CArray (); // Memory leak
+	//sizeArray->push_back(NrParticles);
+	//Array = Array->add(sizeArray);
+	//Array->print();
 	SubHalos2ArrayRec(Array,sizeArray);
-	
-	Array = sizeArray->add(Array);
-	Array->front(getTotalNrParticles());
-	
-	return Array;
+	//Array->print();
+	//Array = Array->add(sizeArray);
+	//for (list<CHalo*>::iterator it = SubHalos.begin(); it != SubHalos.end(); it++) {
+	//(*it)->SubHalos2ArrayRec(inArray,sizeArray);
+	//}
+	sizeArray->front(sizeArray->len());
+	sizeArray->add(Array);
+	//Array->front(getTotalNrParticles());
+	return sizeArray;
 }
 
 
 void CHalo::SubHalos2ArrayRec(CArray* inArray, CArray* sizeArray){
-	inArray = inArray->add(Halo.Particles2Array());
+	//Halo2Array()->print();
+	inArray->add(Halo2Array());
+	//CArray* tmpArray = inArray->add(Halo2Array());
 	sizeArray->push_back(NrParticles);
-	
+
 	for (list<CHalo*>::iterator it = SubHalos.begin(); it != SubHalos.end(); it++) {
 		(*it)->SubHalos2ArrayRec(inArray,sizeArray);
 	}
+
+	//cout << "asd "<< size << endl;
+	//inArray->front(size);
+	//inArray->print();
+	//sizeArray->print();
+	//inArray = sizeArray->add(inArray);
+	//CArray* finalArray = sizeArray->add(tmpArray);
+	//finalArray->front(size);
+	//finalArray->print();
+	//return finalArray;
+	//return inArray;
 }
 
 
@@ -258,6 +279,17 @@ list<CHalo*>::iterator CHalo::end(){
 	return SubHalos.end();
 }
 
+
+void CHalo::attachSubHalo(CHalo* inHalo){
+	SubHalos.push_back(inHalo);
+	cout << "finished attaching" << endl;
+}
+
+void CHalo::removeSubHalo(CHalo* inHalo){
+	SubHalos.remove(inHalo);
+	cout << "finished removing" << endl;
+}
+
 //Return particle nr #element
 CParticle* CHalo::operator[](int element){
 	return Halo[element];
@@ -296,7 +328,7 @@ void CHalo::addHalo(CHalo* inHalo){
 	for (list<CHalo*>::iterator it = inHalo->begin(); it != inHalo->end(); it++) {
 		SubHalos.push_back(*it);
 	}
-//This might be slow
+	//This might be slow
 	CalculateStatistics();
 }
 
@@ -314,22 +346,23 @@ void CHalo::CalculateStatistics(){
 	Mass = 0;
 	SigmaP = 0;
 	SigmaV = 0;
+	if(NrParticles != 0){
+		for (int i = 0; i < NrParticles; i++) {
+			Mass += Halo[i]->getMass();
+			MeanP = MeanP + Halo[i]->getP();
+			MeanV = MeanV + Halo[i]->getV();
+		}
+		MeanP = MeanP/NrParticles;
+		MeanV = MeanV/NrParticles;
 
-	for (int i = 0; i < NrParticles; i++) {
-		Mass += Halo[i]->getMass();
-		MeanP = MeanP + Halo[i]->getP();
-		MeanV = MeanV + Halo[i]->getV();
+		for (int i = 0; i < NrParticles; i++) {
+			SigmaP = SigmaP + (Halo[i]->getP() - MeanP).pow(2);
+			SigmaV = SigmaP + (Halo[i]->getV() - MeanV).pow(2);
+		}
+
+		SigmaP = SigmaP.sqrt()/(NrParticles-1);
+		SigmaV = SigmaV.sqrt()/(NrParticles-1);
 	}
-	MeanP = MeanP/NrParticles;
-	MeanV = MeanV/NrParticles;
-
-	for (int i = 0; i < NrParticles; i++) {
-		SigmaP = SigmaP + (Halo[i]->getP() - MeanP).pow(2);
-		SigmaV = SigmaP + (Halo[i]->getV() - MeanV).pow(2);
-	}
-
-	SigmaP = SigmaP.sqrt()/(NrParticles-1);
-	SigmaV = SigmaV.sqrt()/(NrParticles-1);
 }
 
 //Calculate all the statistics relevant for all subhalos
@@ -624,6 +657,17 @@ void CHalo::assignParticles(CParticles* allParticles){
 		findHalo(allParticles->get(i),this);
 	}
 	CalculateAllStatistics();
+
+	/*if (NrParticles < myConstants::constants.HaloLimit){
+		cout << "attaching subhalos" << endl;
+		for (list<CHalo*>::iterator it = SubHalos.begin(); it != SubHalos.end(); it++) {
+			attachSubHalo(*it);
+		}
+	}
+	
+	for (list<CHalo*>::iterator it = SubHalos.begin(); it != SubHalos.end(); it++) {
+		(*it)->removeEmptyHalos(this);
+		}*/
 }
 
 
@@ -666,6 +710,29 @@ void CHalo::findHalo(CParticle* inParticle, CHalo* inHalo){
 }
 
 
+
+//Remove empty halos
+void CHalo::removeEmptyHalos(CHalo* prevHalo){
+	cout << "In remove emtpy halos " << endl;
+	if (NrParticles < myConstants::constants.HaloLimit){
+		cout <<"removing halo"<<endl;
+		prevHalo->removeSubHalo(this);
+		cout << "attaching subhalos" << endl;
+		for (list<CHalo*>::iterator it = SubHalos.begin(); it != SubHalos.end(); it++) {
+			prevHalo->attachSubHalo(*it);
+		}
+		cout << "clearing up" << endl;
+		//clear();
+	}
+	
+	cout << "iterating for all subhalos" << endl;
+	for (list<CHalo*>::iterator it = SubHalos.begin(); it != SubHalos.end(); it++) {
+		(*it)->removeEmptyHalos(this);
+	}
+}
+
+
+
 void CHalo::mergeStatistical(){
 	int flag = 0;
 	while (flag == 0){
@@ -684,7 +751,7 @@ void CHalo::mergeStatisticalRec(CHalo* prevHalo, int &flag){
 		//if (this != (*it) && (sqrt(NrParticles*(((MeanP - *((*it)->getMeanP()))/SigmaP).Length2() + (MeanV - *((*it)->getMeanV()))/SigmaV).Length2()) < 10*sqrt(2))){
 		//cout << sqrt(NrParticles*(tmp1 + tmp2)) << endl;
 		if (this != (*it) && NrParticles*(tmp1 + tmp2) < 200) {
-			cout << "in thing"<<endl;
+			cout << "Merging two halos"<<endl;
 			SubHalos.erase(it);
 			addHalo(*it);
 			flag = 0;
@@ -705,7 +772,7 @@ void CHalo::createSubHalos(){
 	assignParticles(&allParticles);
 	//printSubHalos();
 	mergeStatistical();
-	printSubHalos();
+	//printSubHalos();
 	//saveP();
 
 }

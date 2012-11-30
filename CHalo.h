@@ -71,6 +71,8 @@ class CHalo{
 	list<CHalo*> getSubHalos();
 	list<CHalo*>::iterator begin();
 	list<CHalo*>::iterator end();
+	void attachSubHalo(CHalo* inHalo);
+	void removeSubHalo(CHalo* inHalo);
 
 	void setNrParticles(int element);
 
@@ -142,6 +144,10 @@ class CHalo{
 
 	void assignParticles(CParticles* allParticles);
 	void findHalo(CParticle* inParticle,CHalo* inHalo);
+	
+	//Remove empty halos
+	void removeEmptyHalos(CHalo* prevHalo);
+	
 	void mergeStatistical();
 	void mergeStatisticalRec(CHalo* mergeHalo, int &flag);
 	void createSubHalos();

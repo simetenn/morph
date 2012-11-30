@@ -75,7 +75,7 @@ void CArray::linspace(double start, double end, int in_length){
 
 //Print CArray line by line
 void CArray::print(){
-	for (int i = 0; i < length; i++) {
+	for (int i = 0; i < 200; i++) {
 		cout<< array[i] << endl;
 	}
 }
@@ -163,27 +163,49 @@ CArray CArray::operator+(double number){
 
 //Add two CArrays
 CArray* CArray::operator+(CArray* inArray){
-	double tmp[length+inArray->length];
+	double tmp[length+inArray->len()];
 	for (int i =0; i< length;i++) {
 		tmp[i] = array[i];
 	}
-	for (int j =0; j< length;j++) {
+	for (int j =0; j< inArray->len();j++) {
 		tmp[length + j] = inArray->get(j);
 	}
-	return new CArray(length+inArray->length,tmp); //<- memory leak
+	return new CArray(length+inArray->len(),tmp); //<- memory leak
 }
 
-
+//Something is wrong with this method
 //Add two CArrays
-CArray* CArray::add(CArray* inArray){
-	double tmp[length+inArray->length];
+/*CArray* CArray::add(CArray* inArray){
+	double tmp[length+inArray->len()];
 	for (int i =0; i< length;i++) {
 		tmp[i] = array[i];
 	}
-	for (int j =0; j< length;j++) {
+	for (int j =0; j< inArray->len();j++) {
 		tmp[length + j] = inArray->get(j);
 	}
-	return new CArray(length+inArray->length,tmp); //<- memory leak
+	
+	return new CArray(length+inArray->len(),tmp); //<- memory leak
+	}*/
+
+void CArray::add(CArray* inArray){
+	double oldArray [length];
+	int oldlength = length;
+	
+	for (int i = 0;i<length;i++){
+		oldArray[i] = array[i];
+	}
+
+	length += inArray->len();
+	delete[] array;
+	array = new double [length];
+
+	for (int i = 0;i<oldlength;i++){
+		array[i] = oldArray[i];
+	}
+	
+	for (int j =0; j< inArray->len();j++) {
+		array[oldlength + j] = inArray->get(j);
+	}
 }
 
 
@@ -210,21 +232,18 @@ void CArray::push_back(double in_value){
 //Add an element to CArray in the front
 void CArray::front(double in_value){
 	double oldArray [length];
-
 	for (int i = 0;i<length;i++){
 		oldArray[i] = array[i];
 	}
 
 	length += 1;
 	delete[] array;
-
 	array = new double [length];
 
 	array[0] = in_value;
 	for (int i = 0;i<length-1;i++){
 		array[i+1] = oldArray[i];
 	}
-
 }
 
 
