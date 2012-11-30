@@ -1,52 +1,42 @@
-#include "../mybody/mybody/source/CHalo.h"
-#include "../mybody/mybody/source/CHaloFinder.h"
+VPATH	= .
 
 
-CC = mpic++
-#CC = g++
-#VPATH = .:/~/Master/mybody/mybody/source
+# target might be WINDOWS, OS_X or LINUX
 
-CFlags = -g -Wall
-SOURCES = main.cpp CArray.cpp CMPI.cpp CVector.cpp CParticle.cpp CParticles.cpp CHalo.cpp CHalos.cpp CMain.cpp CUtil.cpp CGrid.cpp #CHaloFinder.cpp CHalo.cpp #CArray.h
-EXECUTABLE = main
-SOURCEDIR = ~/Master/mybody/mybody
-#OSOURCES = CHalo.cpp CHaloFinder.cpp CHaloList.cpp
-#vpath %.cpp ~/Master/mybody/mybody/sources
-#INCLUDES =-I/sw/include  -I$(SOURCEDIR)  -I$(FITSDIR) -I$(HOME)
+TARGET = OS_X
+# Home directory of the acw program
+#HOME=/Users/nicolaasgroeneboom/work/code/mac/particles
 
-#. PHONY : all
-#. PHONY : clean
+SOURCEDIR = .
 
-all:
-	$(CC) -o $(EXECUTABLE) $(CFLAGS) $(SOURCES)
-
-main:
-	$(CC) -o $(EXECUTABLE) $(CFLAGS) main.cpp
-
-CArray.o:
-	$(CC) -c $(CFLAGS) CArray.cpp
-
-CMPI.o:
-	$(CC) -c $(CFLAGS) CMPI.cpp
-
-CVector.o:
-	$(CC) -c $(CFLAGS) CVector.cpp
-
-CParticle.o:
-	$(CC) -c $(CFLAGS) CParticle.cpp
-
-CParticles.o:
-	$(CC) -c $(CFLAGS) CParticles.cpp
-
-CHalo.o:
-	$(CC) -c $(CFLAGS) CHalo.cpp
-
-CHalos.o:
-	$(CC) -c $(CFLAGS) CHalos.cpp
-
-CGrid.o:
-	$(CC) -c $(CFLAGS) CGrid.cpp
+INCLUDES =-I/sw/include  -I$(SOURCEDIR)  
+# library dir
 
 
-clean:
-	rm -f *.o $(EXECUTABLE)
+# compiler specific flags
+CFLAGS =  -O3 -D$(TARGET) 
+
+FFLAGS =  $(LIBINCLUDE)  
+
+
+PROJECT = main
+
+_obj 	=  main.o CMain.o CArray.o CMPI.o CVector.o CParticle.o CParticles.o CHalo.o CHalos.o CUtil.o CGrid.o 
+
+obj = $(patsubst %,$(SOURCEDIR)/%,$(_obj))
+
+CC 	= mpic++ 
+
+default: $(PROJECT)
+
+$(PROJECT):  $(obj) 
+	$(CC)  -L$(LIBDIR)  $(INCLUDES) -o $(PROJECT) $(obj) $(FFLAGS)  
+
+%.o: %.cpp
+	$(CC) -c -o $@ $^ $(INCLUDES) $(CFLAGS)   
+
+
+clean:	
+	rm *.o  main	
+
+
