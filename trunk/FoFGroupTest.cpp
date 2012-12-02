@@ -27,7 +27,7 @@ int main(int argc, char **argv){
 		//h.printHalos();
 		//h.saveP();
 		//h.FriendOfFriendGrid();
-		//h.printHalos();
+		h.printHalos();
 		//h.print();
 		//myConstants::constants.PhaseDistance
 		h.CalculateAllStatistics();
@@ -63,14 +63,14 @@ int main(int argc, char **argv){
 		Array->send(1);
 		a2->recieve(1,&Req);
 		MPI_Wait (&Req, &Stat);
-		//a2->print();
+		a2->print();
 		//Array->print();
 		//a2->front(10038);
 		//a2->front(1);
 		
 		h2->addHalos(a2);
-		h2->printHalos();
-		h2->saveP();
+		//h2->printHalos();
+		//h2->saveP();
 		MPI_Barrier(MPI_COMM_WORLD);
 		MPI_Finalize();
 		
@@ -82,12 +82,12 @@ int main(int argc, char **argv){
 		HalosArray.recieve_slave();
 		CHalos SlaveHalos (&HalosArray);
 
-		SlaveHalos.printHalos();
+		//SlaveHalos.printHalos();
 		//SlaveHalos.print();
 		//Do something in each slave processor here
 		//SlaveHalos.FriendOfFriendPhaseSpace();
 		SlaveHalos.SplitHalos();
-		SlaveHalos.printHalos();
+		//SlaveHalos.printHalos();
 		SlaveHalos.getHalo(0)->SubHalos2Array()->send_slave();
 		//tmp->front(1);
 		//tmp->print();
