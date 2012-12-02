@@ -281,7 +281,7 @@ list<CHalo*>::iterator CHalo::end(){
 
 
 void CHalo::attachSubHalo(CHalo* inHalo){
-	SubHalos.push_back(inHalo);
+	SubHalos.push_front(inHalo);
 	cout << "finished attaching" << endl;
 }
 
@@ -656,18 +656,21 @@ void CHalo::assignParticles(CParticles* allParticles){
 	for (int i = 0; i < allParticles->getNrParticles(); i++) {
 		findHalo(allParticles->get(i),this);
 	}
-	CalculateAllStatistics();
 
+	
 	/*if (NrParticles < myConstants::constants.HaloLimit){
 		cout << "attaching subhalos" << endl;
 		for (list<CHalo*>::iterator it = SubHalos.begin(); it != SubHalos.end(); it++) {
 			attachSubHalo(*it);
 		}
-	}
-	
-	for (list<CHalo*>::iterator it = SubHalos.begin(); it != SubHalos.end(); it++) {
-		(*it)->removeEmptyHalos(this);
 		}*/
+
+	/*int flag = 0;
+	for (list<CHalo*>::iterator it = SubHalos.begin(); it != SubHalos.end(); it++) {
+		(*it)->removeEmptyHalos(this, flag);
+		}*/
+
+	CalculateAllStatistics();
 }
 
 
@@ -712,23 +715,38 @@ void CHalo::findHalo(CParticle* inParticle, CHalo* inHalo){
 
 
 //Remove empty halos
-void CHalo::removeEmptyHalos(CHalo* prevHalo){
+void CHalo::removeEmptyHalos(CHalo* prevHalo, int&flag){
+	cout << "iterating for all subhalos" << endl;
+	for (list<CHalo*>::iterator it = SubHalos.begin(); it != SubHalos.end(); it++) {
+		
+		cout << "iterating" << endl;
+		(*it)->removeEmptyHalos(this, flag);
+		cout << "flag: " << flag << endl;
+		if (flag == 1){
+			cout << "REMOVE THIS HALO" << endl;
+			//SubHalos.erase(it);
+			//SubHalos.remove(*it);
+		}
+	}
+	
 	cout << "In remove emtpy halos " << endl;
 	if (NrParticles < myConstants::constants.HaloLimit){
+		cout << "attaching subhalos" << endl;
 		cout <<"removing halo"<<endl;
 		prevHalo->removeSubHalo(this);
-		cout << "attaching subhalos" << endl;
+		
 		for (list<CHalo*>::iterator it = SubHalos.begin(); it != SubHalos.end(); it++) {
 			prevHalo->attachSubHalo(*it);
 		}
+		flag = 1;
+		//cout <<"removing halo"<<endl;
+		//prevHalo->removeSubHalo(this);
 		cout << "clearing up" << endl;
 		//clear();
 	}
-	
-	cout << "iterating for all subhalos" << endl;
-	for (list<CHalo*>::iterator it = SubHalos.begin(); it != SubHalos.end(); it++) {
-		(*it)->removeEmptyHalos(this);
-	}
+
+
+
 }
 
 
@@ -748,8 +766,7 @@ void CHalo::mergeStatisticalRec(CHalo* prevHalo, int &flag){
 	for (list<CHalo*>::iterator it = prevHalo->begin(); it != prevHalo->end(); it++) {
 		double tmp1= ((MeanP - *((*it)->getMeanP()))/SigmaP).Length2();
 		double tmp2= ((MeanV - *((*it)->getMeanV()))/SigmaV).Length2();
-		//if (this != (*it) && (sqrt(NrParticles*(((MeanP - *((*it)->getMeanP()))/SigmaP).Length2() + (MeanV - *((*it)->getMeanV()))/SigmaV).Length2()) < 10*sqrt(2))){
-		//cout << sqrt(NrParticles*(tmp1 + tmp2)) << endl;
+
 		if (this != (*it) && NrParticles*(tmp1 + tmp2) < 200) {
 			cout << "Merging two halos"<<endl;
 			SubHalos.erase(it);

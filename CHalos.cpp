@@ -193,33 +193,35 @@ void CHalos::addHalos(CArray* inArray){
 	for (int i = 0; i < newNrHalos; i++){
 		cout << "adding halo: " << i << endl; 
 		NrInHalo.push_back(inArray->get(1+i));
-		cout << "1"<< endl;
+		//cout << "1"<< endl;
 		tmpNrInHalo.push_back(inArray->get(1+i));
-		cout << "2"<< endl;
+		//cout << "2"<< endl;
 		double tmpArray[NrInHalo[i]*ParticleSize + myConstants::constants.HaloSize];
-		cout << "3"<< endl;
+		//cout << "3"<< endl;
 		for (int l = 0; l < myConstants::constants.HaloSize; l++) {
-			cout << "4"<< endl;
+			//cout << "4"<< endl;
 			tmpArray[l] = inArray->get(particle_count);
 			//cout << inArray->get(particle_count) << endl;
 			particle_count++;
 		}
-		cout << "5"<< endl;
+		
+		cout << "nr in Halo: " << tmpNrInHalo[i] << endl;
+		//cout << "5"<< endl;
 		for (int j = 0; j < tmpNrInHalo[i];j++){
 			for (int k = 0; k < ParticleSize;k++){
-				cout << "6"<< endl;
+				//cout << "6"<< endl;
 				tmpArray[j*ParticleSize + k + myConstants::constants.HaloSize] = inArray->get(particle_count);
 				particle_count++;
 			}
 		}
-		cout << "7"<< endl;
+		//cout << "7"<< endl;
 		CArray* tmpCArray = new CArray(tmpNrInHalo[i]*ParticleSize + myConstants::constants.HaloSize, tmpArray);
-		cout << "8"<< endl;
+		//cout << "8"<< endl;
 		//tmpCArray->print();
 		//cout << "        particle count            "<<particle_count << endl;
-		cout << "9"<< endl;
+		//cout << "9"<< endl;
 		CHalo* tmpHalo = new CHalo(tmpCArray); // <- Memory leak
-		cout << "10"<< endl;
+		//cout << "10"<< endl;
 		//cout << "test" << endl;
 		Halos.push_back(tmpHalo);
 	}
@@ -776,9 +778,6 @@ CHalos* CHalos::master(){
 	vector<CArray*> Array (size-1);
 	CParticle tmpParticle;
 	
-	CArray* tmpArray = new CArray(); 
-	MPI_Request tmpReq;
-
 	//Initialize, sending one halo to each processor
 	for (int p = 1; p < size; p++){
 		cout << "Initializing for halo nr: " << p-1 << endl;
@@ -791,6 +790,7 @@ CHalos* CHalos::master(){
 		MPI.End(p,0);
 		Array[p-1]->send(p);
 		Array[p-1]->recieve(p,&Req[p-1]);
+		//tmpArray->recieve(1,&tmpReq);
 		count++;
 	}
 
@@ -803,8 +803,11 @@ CHalos* CHalos::master(){
 		cout << "Calculating for halo nr: " << count << endl;
 		//Listening for a processor to finish
 		processor = MPI.listener(Req);
+		//MPI_Wait (&tmpReq, &Stat);
+
 		cout << "Recieved array from processor: " << processor << endl;
 		Array[processor-1]->print();
+		//FinalHalos->addHalos(tmpArray);
 		FinalHalos->addHalos(Array[processor-1]);
 		cout << "added halo to finalhalos" << endl;
 		Array[processor-1] =  Halos[count]->Halo2Array();
@@ -861,8 +864,9 @@ void CHalos::slave(){
 		//SlaveHalos.print
 		SlaveHalos.printHalos();
 		//Do something in each slave processor here
-		SlaveHalos[0]->createSubHalos();//FriendOfFriendPhaseSpace();
+		SlaveHalos.SplitHalos();//FriendOfFriendPhaseSpace();
 		//SlaveHalos.printHalos();
+		SlaveHalos.getHalo(0)->printSubHalos();
 		SlaveHalos.getHalo(0)->SubHalos2Array()->send_slave();
 		//SlaveHalos.Halos2Array()->send_slave();
 	}

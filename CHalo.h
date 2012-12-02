@@ -146,7 +146,7 @@ class CHalo{
 	void findHalo(CParticle* inParticle,CHalo* inHalo);
 	
 	//Remove empty halos
-	void removeEmptyHalos(CHalo* prevHalo);
+	void removeEmptyHalos(CHalo* prevHalo, int& flag);
 	
 	void mergeStatistical();
 	void mergeStatisticalRec(CHalo* mergeHalo, int &flag);
