@@ -63,7 +63,7 @@ class CHalo{
 	//Return nr of particles
 	int getNrParticles();
 	//return the number of subHalos
-	//int getNrSubHalos();
+	int getNrSubHalos();
 	int getTotalNrParticles();
 	void getTotalNrParticlesRec(int& TotalNrParticles);
 

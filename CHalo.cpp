@@ -282,12 +282,12 @@ list<CHalo*>::iterator CHalo::end(){
 
 void CHalo::attachSubHalo(CHalo* inHalo){
 	SubHalos.push_front(inHalo);
-	cout << "finished attaching" << endl;
+	//cout << "finished attaching" << endl;
 }
 
 void CHalo::removeSubHalo(CHalo* inHalo){
 	SubHalos.remove(inHalo);
-	cout << "finished removing" << endl;
+	//cout << "finished removing" << endl;
 }
 
 //Return particle nr #element
@@ -304,6 +304,10 @@ CParticle* CHalo::get(int element){
 //Return CParticles
 CParticles* CHalo::getParticles(){
 	return &Halo;
+}
+
+int CHalo::getNrSubHalos(){
+	return SubHalos.size();
 }
 
 
@@ -600,7 +604,7 @@ void CHalo::FriendOfFriendPhaseSpace(){
 			findNeighborsPhaseSpace(Particle, &tmpHalo, L);
 			//cout << tmpHalo.getNrParticles() << endl;
 			if (tmpHalo.getNrParticles() > myConstants::constants.HaloLimit && tmpHalo.getNrParticles() != NrParticles){
-				cout << "Saving halo with " << tmpHalo.getNrParticles() << endl;
+				//cout << "Saving halo with " << tmpHalo.getNrParticles() << endl;
 				SubHalos.push_back(new CHalo(&tmpHalo));
 			}
 		}
@@ -657,18 +661,29 @@ void CHalo::assignParticles(CParticles* allParticles){
 		findHalo(allParticles->get(i),this);
 	}
 
-	
+	//myConstants::constants.HaloLimit
 	/*if (NrParticles < myConstants::constants.HaloLimit){
-		cout << "attaching subhalos" << endl;
-		for (list<CHalo*>::iterator it = SubHalos.begin(); it != SubHalos.end(); it++) {
-			attachSubHalo(*it);
-		}
-		}*/
+	  cout << "attaching subhalos" << endl;
+	  for (list<CHalo*>::iterator it = SubHalos.begin(); it != SubHalos.end(); it++) {
+	  attachSubHalo(*it);
+	  }
+	  }*/
 
-	/*int flag = 0;
-	for (list<CHalo*>::iterator it = SubHalos.begin(); it != SubHalos.end(); it++) {
+	int flag = 0;
+	for (list<CHalo*>::iterator it = SubHalos.begin(); it != SubHalos.end();) {
+		//cout << "current iterator 1 " << *it << endl;
+		//if (++it == SubHalos.end()) cout << "is end 1" << endl;
+		//it--;
+		list<CHalo*>::iterator itKeep = it;
+		itKeep++;
 		(*it)->removeEmptyHalos(this, flag);
-		}*/
+		it = itKeep;
+		//cout << "current iterator 2 " << *it << endl;
+		//if (++it == SubHalos.end()) cout << "is end 2 " << endl;
+		//it--;
+	}
+	//cout << "after removing" << endl;
+
 
 	CalculateAllStatistics();
 }
@@ -716,37 +731,37 @@ void CHalo::findHalo(CParticle* inParticle, CHalo* inHalo){
 
 //Remove empty halos
 void CHalo::removeEmptyHalos(CHalo* prevHalo, int&flag){
-	cout << "iterating for all subhalos" << endl;
+	//cout << "iterating for all subhalos" << endl;
 	for (list<CHalo*>::iterator it = SubHalos.begin(); it != SubHalos.end(); it++) {
-		
-		cout << "iterating" << endl;
+
+		//cout << "iterating" << endl;
 		(*it)->removeEmptyHalos(this, flag);
-		cout << "flag: " << flag << endl;
-		if (flag == 1){
+		//cout << "flag: " << flag << endl;
+		/*if (flag == 1){
 			cout << "REMOVE THIS HALO" << endl;
 			//SubHalos.erase(it);
 			//SubHalos.remove(*it);
-		}
+			}*/
 	}
-	
-	cout << "In remove emtpy halos " << endl;
+
+	//cout << "In remove emtpy halos " << endl;
+	//myConstants::constants.HaloLimit
 	if (NrParticles < myConstants::constants.HaloLimit){
-		cout << "attaching subhalos" << endl;
-		cout <<"removing halo"<<endl;
-		prevHalo->removeSubHalo(this);
-		
+		//cout << "attaching subhalos" << endl;
+		//cout <<"removing halo"<<endl;
+		//prevHalo->removeSubHalo(this);
+
 		for (list<CHalo*>::iterator it = SubHalos.begin(); it != SubHalos.end(); it++) {
 			prevHalo->attachSubHalo(*it);
 		}
-		flag = 1;
+		//flag = 1;
 		//cout <<"removing halo"<<endl;
-		//prevHalo->removeSubHalo(this);
-		cout << "clearing up" << endl;
+		cout << prevHalo->getNrSubHalos() << endl;
+		prevHalo->removeSubHalo(this);
+		//cout << "clearing up" << prevHalo->getNrSubHalos() << endl;
 		//clear();
 	}
-
-
-
+	//cout << "all done" << endl;
 }
 
 
@@ -787,8 +802,9 @@ void CHalo::createSubHalos(){
 	//saveStatX();
 	//printSubHalos();
 	assignParticles(&allParticles);
+	//cout << "after assigning " << endl;
 	//printSubHalos();
-	mergeStatistical();
+	//mergeStatistical();
 	//printSubHalos();
 	//saveP();
 

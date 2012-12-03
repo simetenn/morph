@@ -27,7 +27,7 @@ int main(int argc, char **argv){
 		//h.printHalos();
 		//h.saveP();
 		//h.FriendOfFriendGrid();
-		h.printHalos();
+		//h.printHalos();
 		//h.print();
 		//myConstants::constants.PhaseDistance
 		h.CalculateAllStatistics();
@@ -47,10 +47,13 @@ int main(int argc, char **argv){
 
 		//h[2]->saveHalo();
 		//exit(1);
-		//h[699]->saveHalo();()
+		//h[699]->saveHalo();
+		//exit(1);
 		//Large halos
 		//610,590,351,283
-		MPI_Request Req;
+
+
+		/*MPI_Request Req;
 		MPI_Status Stat;
 		
 		//cout << h.getHalo(0)->getNrParticles() << endl;
@@ -72,29 +75,29 @@ int main(int argc, char **argv){
 		//h2->printHalos();
 		//h2->saveP();
 		MPI_Barrier(MPI_COMM_WORLD);
-		MPI_Finalize();
+		MPI_Finalize();*/
 		
 	}
 	
-	else {
+	/*else {
 
 		CArray HalosArray;
 		HalosArray.recieve_slave();
 		CHalos SlaveHalos (&HalosArray);
 
-		//SlaveHalos.printHalos();
+		SlaveHalos.printHalos();
 		//SlaveHalos.print();
 		//Do something in each slave processor here
 		//SlaveHalos.FriendOfFriendPhaseSpace();
 		SlaveHalos.SplitHalos();
-		//SlaveHalos.printHalos();
+		SlaveHalos.getHalo(0)->printSubHalos();
 		SlaveHalos.getHalo(0)->SubHalos2Array()->send_slave();
 		//tmp->front(1);
 		//tmp->print();
 		
 		MPI_Barrier(MPI_COMM_WORLD);
 		MPI_Finalize();
-	}
+		}*/
 	//MPI_Finalize();
 
 	
