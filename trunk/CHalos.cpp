@@ -185,18 +185,25 @@ void CHalos::addHalos(CArray* inArray){
 	int newNrHalos = inArray->get(0);
 	NrHalos += newNrHalos;
 	vector<int> tmpNrInHalo;
-	int newNrParticles = (inArray->len()-1-NrHalos-myConstants::constants.HaloSize*NrHalos)/ParticleSize;
-	NrParticles += newNrParticles;
+	//cout << "Modulo of inarray length to particleSize" <<(inArray->len()-1-newNrHalos-myConstants::constants.HaloSize*newNrHalos) % ParticleSize << endl;
+	//cout << "length: " << inArray->len() << endl;
+	//cout << "nr of halos: " << newNrHalos << endl;
+	//cout << "Halo size: " <<myConstants::constants.HaloSize << endl;
+	int newNrParticles = (inArray->len()-1-newNrHalos-myConstants::constants.HaloSize*newNrHalos)/ParticleSize;
 
+	//
+	
+	NrParticles += newNrParticles;
+	
 	int particle_count = 1+newNrHalos;
-	cout << "in addHalos" << endl;
+	//cout << "in addHalos" << endl;
 	for (int i = 0; i < newNrHalos; i++){
-		cout << "adding halo: " << i << endl; 
+		//cout << "adding halo: " << i << endl; 
 		NrInHalo.push_back(inArray->get(1+i));
 		//cout << "1"<< endl;
 		tmpNrInHalo.push_back(inArray->get(1+i));
 		//cout << "2"<< endl;
-		double tmpArray[NrInHalo[i]*ParticleSize + myConstants::constants.HaloSize];
+		double tmpArray[tmpNrInHalo[i]*ParticleSize + myConstants::constants.HaloSize];
 		//cout << "3"<< endl;
 		for (int l = 0; l < myConstants::constants.HaloSize; l++) {
 			//cout << "4"<< endl;
@@ -205,7 +212,7 @@ void CHalos::addHalos(CArray* inArray){
 			particle_count++;
 		}
 		
-		cout << "nr in Halo: " << tmpNrInHalo[i] << endl;
+		//cout << "nr in Halo: " << tmpNrInHalo[i] << endl;
 		//cout << "5"<< endl;
 		for (int j = 0; j < tmpNrInHalo[i];j++){
 			for (int k = 0; k < ParticleSize;k++){
@@ -754,10 +761,10 @@ void CHalos::findNeighborsGrid(CParticle* inParticle, CHalo* inHalo){
 
 void CHalos::SplitHalos(){
 	for (int i = 0; i < NrHalos; i++) {
-		cout << "-------------------------------------------------" << endl;
-		cout << "Splitting halo in phase space" << endl;
+		//cout << "-------------------------------------------------" << endl;
+		//cout << "Splitting halo in phase space" << endl;
 		//cout << "Splitting halo: " << i << endl;
-		cout << "-------------------------------------------------" << endl;
+		//cout << "-------------------------------------------------" << endl;
 		Halos[i]->createSubHalos();
 	}
 }
@@ -770,7 +777,7 @@ void CHalos::SplitHalos(){
 //Master process
 CHalos* CHalos::master(){
 	CMPI MPI;
-	int count = 0;
+	int count = 4;
 	int processor;
 	int size = MPI.getSize();
 	CHalos* FinalHalos = new CHalos();
@@ -805,13 +812,13 @@ CHalos* CHalos::master(){
 		processor = MPI.listener(Req);
 		//MPI_Wait (&tmpReq, &Stat);
 
-		cout << "Recieved array from processor: " << processor << endl;
-		Array[processor-1]->print();
+		//cout << "Recieved array from processor: " << processor << endl;
+		//Array[processor-1]->print();
 		//FinalHalos->addHalos(tmpArray);
 		FinalHalos->addHalos(Array[processor-1]);
-		cout << "added halo to finalhalos" << endl;
+		//cout << "added halo to finalhalos" << endl;
 		Array[processor-1] =  Halos[count]->Halo2Array();
-		cout << "Converted halo to array to send it" << endl;
+		//cout << "Converted halo to array to send it" << endl;
 		MPI.End(processor,0);
 
 		//Add how many particles in halo to be sent
@@ -821,7 +828,7 @@ CHalos* CHalos::master(){
 
 		//Send the array and start listening for the response
 		Array[processor-1]->send(processor);
-		cout << "sending array to slave" << endl;
+		//cout << "sending array to slave" << endl;
 		Array[processor-1]->recieve(processor,&Req[processor-1]);
 		count++;
 
@@ -862,11 +869,11 @@ void CHalos::slave(){
 		CHalos SlaveHalos (&HalosArray);
 
 		//SlaveHalos.print
-		SlaveHalos.printHalos();
+		//SlaveHalos.printHalos();
 		//Do something in each slave processor here
 		SlaveHalos.SplitHalos();//FriendOfFriendPhaseSpace();
 		//SlaveHalos.printHalos();
-		SlaveHalos.getHalo(0)->printSubHalos();
+		//SlaveHalos.getHalo(0)->printSubHalos();
 		SlaveHalos.getHalo(0)->SubHalos2Array()->send_slave();
 		//SlaveHalos.Halos2Array()->send_slave();
 	}
