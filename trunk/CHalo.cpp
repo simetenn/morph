@@ -661,6 +661,7 @@ void CHalo::assignParticles(CParticles* allParticles){
 		findHalo(allParticles->get(i),this);
 	}
 
+	//return;
 	//myConstants::constants.HaloLimit
 	/*if (NrParticles < myConstants::constants.HaloLimit){
 	  cout << "attaching subhalos" << endl;
@@ -732,10 +733,14 @@ void CHalo::findHalo(CParticle* inParticle, CHalo* inHalo){
 //Remove empty halos
 void CHalo::removeEmptyHalos(CHalo* prevHalo, int&flag){
 	//cout << "iterating for all subhalos" << endl;
-	for (list<CHalo*>::iterator it = SubHalos.begin(); it != SubHalos.end(); it++) {
+	for (list<CHalo*>::iterator it = SubHalos.begin(); it != SubHalos.end();) {
 
 		//cout << "iterating" << endl;
+		list<CHalo*>::iterator itKeep = it;
+		itKeep++;
 		(*it)->removeEmptyHalos(this, flag);
+		it = itKeep;
+		//(*it)->removeEmptyHalos(this, flag);
 		//cout << "flag: " << flag << endl;
 		/*if (flag == 1){
 			cout << "REMOVE THIS HALO" << endl;
@@ -756,8 +761,9 @@ void CHalo::removeEmptyHalos(CHalo* prevHalo, int&flag){
 		}
 		//flag = 1;
 		//cout <<"removing halo"<<endl;
-		cout << prevHalo->getNrSubHalos() << endl;
+		cout << "Nr of subhalos " << prevHalo->getNrSubHalos() << endl;
 		prevHalo->removeSubHalo(this);
+		cout << "Done!" << endl;
 		//cout << "clearing up" << prevHalo->getNrSubHalos() << endl;
 		//clear();
 	}
