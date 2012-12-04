@@ -21,15 +21,15 @@ int main(int argc, char **argv){
 		CHalos h;
 		CHalos* h2 = new CHalos();
 		CArray* a2 = new CArray();
-		//h.LoadBin(myConstants::constants.inFile);
-		h.LoadData(myConstants::constants.haloFile);
+		h.LoadBin(myConstants::constants.inFile);
+		//h.LoadData(myConstants::constants.haloFile);
 		//h.print();
 		//h.printHalos();
 		//h.saveP();
 		//h.FriendOfFriendGrid();
 		//h.printHalos();
 		//h.print();
-		//h.save();
+		h.save();
 		//Constants::constants.PhaseDistance
 		//h.CalculateAllStatistics();
 		//h.getHalo(0)->printStatistics();
@@ -54,7 +54,7 @@ int main(int argc, char **argv){
 		//610,590,351,283
 
 
-		MPI_Request Req;
+		/*MPI_Request Req;
 		MPI_Status Stat;
 		
 		//cout << h.getHalo(0)->getNrParticles() << endl;
@@ -76,11 +76,11 @@ int main(int argc, char **argv){
 		//h2->printHalos();
 		//h2->saveP();
 		MPI_Barrier(MPI_COMM_WORLD);
-		MPI_Finalize();
+		MPI_Finalize();*/
 		
 	}
 	
-	else {
+	/*else {
 
 		CArray HalosArray;
 		HalosArray.recieve_slave();
@@ -98,8 +98,8 @@ int main(int argc, char **argv){
 		
 		MPI_Barrier(MPI_COMM_WORLD);
 		MPI_Finalize();
-		}
-	//MPI_Finalize();
+		}*/
+	MPI_Finalize();
 
 	
 	
