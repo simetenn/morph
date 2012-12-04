@@ -814,7 +814,7 @@ void CHalos::SplitHalos(){
 //Master process
 CHalos* CHalos::master(){
 	CMPI MPI;
-	int count = 4;
+	int count = 0;
 	int processor;
 	int size = MPI.getSize();
 	CHalos* FinalHalos = new CHalos();
@@ -832,7 +832,10 @@ CHalos* CHalos::master(){
 		Array[p-1]->front(NrInHalo[count]);
 		Array[p-1]->front(1);
 		MPI.End(p,0);
+		//Array[p-1]->print();
+		cout << "Sent to slave nr "<< p << ": "<< Array[p-1]->get(1) <<endl;
 		Array[p-1]->send(p);
+		//cout << "send array, master" << endl;
 		Array[p-1]->recieve(p,&Req[p-1]);
 		//tmpArray->recieve(1,&tmpReq);
 		count++;
@@ -847,6 +850,7 @@ CHalos* CHalos::master(){
 		cout << "Calculating for halo nr: " << count << endl;
 		//Listening for a processor to finish
 		processor = MPI.listener(Req);
+		cout << "Recieved in master from "<< processor <<": " << Array[processor-1]->get(1) <<endl;
 		//MPI_Wait (&tmpReq, &Stat);
 
 		//cout << "Recieved array from processor: " << processor << endl;
@@ -857,12 +861,13 @@ CHalos* CHalos::master(){
 		Array[processor-1] =  Halos[count]->Halo2Array();
 		//cout << "Converted halo to array to send it" << endl;
 		MPI.End(processor,0);
-
+		
 		//Add how many particles in halo to be sent
 		//and that it only is one halo to the CArray
 		Array[processor-1]->front(NrInHalo[count]);
 		Array[processor-1]->front(1);
-
+		cout << "Sent to slave nr "<< processor << ": "<< Array[processor-1]->get(1) <<endl;
+		//cout << Array[processor-1]->get(1) <<endl;
 		//Send the array and start listening for the response
 		Array[processor-1]->send(processor);
 		//cout << "sending array to slave" << endl;
@@ -873,7 +878,7 @@ CHalos* CHalos::master(){
 	//Waiting for all processors to finish their last task
 	MPI.WaitAll(Req);
 
-	for (int i = 0; i <= MPI.getRank();i++){
+	for (int i = 0; i < size-1;i++){
 		FinalHalos->addHalos(Array[i]);
 	}
 
@@ -899,9 +904,11 @@ void CHalos::slave(){
 	CParticle tmpParticle;
 
 	while (true) {
-		if (MPI.ifEnd() == 1) break;
+	  if (MPI.ifEnd() == 1) break;
 		HalosArray.recieve_slave();
-
+		//cout << "recieved array, slave" << endl;
+		cout <<"Recieved in slave nr " << rank <<": " << HalosArray.get(1) << endl;
+		//HalosArray.print();
 		//cout << "Slave " << rank << " recieved halo" << endl;
 		CHalos SlaveHalos (&HalosArray);
 

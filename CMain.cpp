@@ -12,14 +12,15 @@ void CMain::master() {
 	//a.print();
 	//a.initialize_Halos();
 	//m.FriendOfFriendN2();
-	m.printHalos();
+	//m.printHalos();
 	m.FriendOfFriendGrid();
 	m.printHalos();
+	m.master()->printHalos();
 	//m.saveP();
-	n = *m.master();
-	n.printHalos();
+	//n = *m.master();
+	//n.printHalos();
 	//n.print();
-	n.saveP();
+	//n.saveP();
 	//m.printHalos();
 }
 
