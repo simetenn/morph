@@ -82,7 +82,7 @@ class CHalos{
 	//Load a text file, 
 	void LoadData(string Filename);
 
-		
+	void save();
 	//save the positions of each particle together with the halo it belongs to to file
 	void saveP();
 	void saveSize();

@@ -24,14 +24,14 @@ CHalos::CHalos(CArray* inArray){
 
 	for (int i = 0; i < NrHalos; i++){
 		NrInHalo.push_back(inArray->get(1+i));
-		
+
 		double tmpArray[NrInHalo[i]*ParticleSize + myConstants::constants.HaloSize];
-		
+
 		for (int l = 0; l < myConstants::constants.HaloSize; l++){
 			tmpArray[l] = inArray->get(particle_count);
 			particle_count++;
 		}
-		
+
 		for (int j = 0; j < NrInHalo[i];j++){
 			for (int k = 0; k < ParticleSize;k++){
 				tmpArray[j*ParticleSize+k+myConstants::constants.HaloSize] = inArray->get(particle_count);
@@ -39,7 +39,7 @@ CHalos::CHalos(CArray* inArray){
 			}
 		}
 		CArray* tmpCArray = new CArray(NrInHalo[i]*ParticleSize + myConstants::constants.HaloSize, tmpArray);
-		
+
 		CHalo* tmpHalo = new CHalo(tmpCArray); // <- Memory leak
 		Halos.push_back(tmpHalo);
 	}
@@ -157,10 +157,10 @@ CArray*	 CHalos::Halos2Array(){
 		}
 	}
 
-	
 
 
-	
+
+
 	return new CArray(ParticleSize*NrParticles+NrHalos+1,Array); //Memory leak
 }
 
@@ -192,13 +192,13 @@ void CHalos::addHalos(CArray* inArray){
 	int newNrParticles = (inArray->len()-1-newNrHalos-myConstants::constants.HaloSize*newNrHalos)/ParticleSize;
 
 	//
-	
+
 	NrParticles += newNrParticles;
-	
+
 	int particle_count = 1+newNrHalos;
 	//cout << "in addHalos" << endl;
 	for (int i = 0; i < newNrHalos; i++){
-		//cout << "adding halo: " << i << endl; 
+		//cout << "adding halo: " << i << endl;
 		NrInHalo.push_back(inArray->get(1+i));
 		//cout << "1"<< endl;
 		tmpNrInHalo.push_back(inArray->get(1+i));
@@ -211,7 +211,7 @@ void CHalos::addHalos(CArray* inArray){
 			//cout << inArray->get(particle_count) << endl;
 			particle_count++;
 		}
-		
+
 		//cout << "nr in Halo: " << tmpNrInHalo[i] << endl;
 		//cout << "5"<< endl;
 		for (int j = 0; j < tmpNrInHalo[i];j++){
@@ -225,7 +225,7 @@ void CHalos::addHalos(CArray* inArray){
 		CArray* tmpCArray = new CArray(tmpNrInHalo[i]*ParticleSize + myConstants::constants.HaloSize, tmpArray);
 		//cout << "8"<< endl;
 		//tmpCArray->print();
-		//cout << "        particle count            "<<particle_count << endl;
+		//cout << "		   particle count			 "<<particle_count << endl;
 		//cout << "9"<< endl;
 		CHalo* tmpHalo = new CHalo(tmpCArray); // <- Memory leak
 		//cout << "10"<< endl;
@@ -427,11 +427,11 @@ void CHalos::LoadData(string Filename){
 	if (file.is_open()){
 		getline(file,line);
 		split(strData, line, is_any_of(" "));
-		
+
 		for (int i = 0; i < ParticleSize; i++){
 			tmpData[i] = atof(strData[i].c_str());
 		}
-		
+
 		tmpHalo->addParticle(new CParticle(tmpData));
 		NrParticles++;
 
@@ -445,12 +445,49 @@ void CHalos::LoadData(string Filename){
 			tmpHalo->addParticle(new CParticle(tmpData));
 			NrParticles++;
 			getline(file,line);
-			
+
 		}
 		file.close();
 	}
 	else cout << "Unable to open file" << endl;
 	NrInHalo.push_back(NrParticles);
+}
+
+
+
+void CHalos::save(){
+	fstream file;
+	double* tmpArray;// = double[ParticleSize];
+	//string out = myConstants::constants.outFile;
+	file.open("data.dat", ios::out);
+
+	cout << "---------------------------------" << endl;
+	cout << "Saving "<< myConstants::constants.NrParticles2File <<" particles to file" << endl;
+	cout << "." << endl;
+	cout << ".." << endl;
+	cout << "..." << endl;
+
+
+	
+	double delta = NrParticles/(double)myConstants::constants.NrParticles2File;
+	int	tmpNrParticles = myConstants::constants.NrParticles2File;
+
+	//Saves data for each particle to file
+	for (double i = 0;i<NrParticles;i+=delta){
+		//cout << (int) i << endl;
+		tmpArray = Halos[0]->get((int)i)->Particle2Array();
+
+		for (int j = 0; j < ParticleSize; j++) {
+			file << tmpArray[j] << " ";
+		}
+
+		if (i != NrParticles-1) file << endl;
+	}
+	file.close();
+	//cout << delta << endl;
+	cout << "Finished saving to file" << endl;
+		
+		
 }
 
 
@@ -784,7 +821,7 @@ CHalos* CHalos::master(){
 	MPI_Request Req [size-1];
 	vector<CArray*> Array (size-1);
 	CParticle tmpParticle;
-	
+
 	//Initialize, sending one halo to each processor
 	for (int p = 1; p < size; p++){
 		cout << "Initializing for halo nr: " << p-1 << endl;

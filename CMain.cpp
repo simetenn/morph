@@ -8,16 +8,17 @@ void CMain::master() {
 	//a.get_Data ("particles.dat");
 	
 	m.LoadBin(myConstants::constants.inFile);
+	//m.LoadData(myConstants::constants.DataFile);
 	//a.print();
 	//a.initialize_Halos();
 	//m.FriendOfFriendN2();
-	//m.printHalos();
+	m.printHalos();
 	m.FriendOfFriendGrid();
-	//m.printHalos();
+	m.printHalos();
 	//m.saveP();
 	n = *m.master();
-	//n.printHalos();
-	n.print();
+	n.printHalos();
+	//n.print();
 	n.saveP();
 	//m.printHalos();
 }
