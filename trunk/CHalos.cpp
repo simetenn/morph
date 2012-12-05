@@ -889,7 +889,6 @@ CHalos* CHalos::master(){
 		//Array[processor-1]->print();
 		//FinalHalos->addHalos(tmpArray);
 		
-		cout << "What si the length of this array: " << Array[processor-1]->len() <<endl;
 		FinalHalos->addHalos(Array[processor-1]);
 		//cout << "added halo to finalhalos" << endl;
 		Array[processor-1] =  Halos[count]->Halo2Array();
@@ -914,6 +913,9 @@ CHalos* CHalos::master(){
 	MPI.WaitAll(Req);
 	cout << "waiting finished" << endl;
 	for (int i = 0; i < size-1;i++){
+		//processor = MPI.listener(Req);
+		//FinalHalos->addHalos(Array[processor]);
+		//cout << "finished for" << endl; 
 		FinalHalos->addHalos(Array[i]);
 	}
 
