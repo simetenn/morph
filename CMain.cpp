@@ -19,7 +19,7 @@ void CMain::master() {
 	//m.saveP();
 	n = *m.master();
 	n.printHalos();
-	n.SaveSize();
+	n.saveSize();
 	//n.print();
 	//n.saveP();
 	//m.printHalos();

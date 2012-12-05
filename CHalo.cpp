@@ -761,9 +761,9 @@ void CHalo::removeEmptyHalos(CHalo* prevHalo, int&flag){
 		}
 		//flag = 1;
 		//cout <<"removing halo"<<endl;
-		cout << "Nr of subhalos " << prevHalo->getNrSubHalos() << endl;
+		//cout << "Nr of subhalos " << prevHalo->getNrSubHalos() << endl;
 		prevHalo->removeSubHalo(this);
-		cout << "Done!" << endl;
+		//cout << "Done!" << endl;
 		//cout << "clearing up" << prevHalo->getNrSubHalos() << endl;
 		//clear();
 	}

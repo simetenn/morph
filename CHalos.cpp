@@ -535,7 +535,7 @@ void CHalos::saveSize(){
 	CVector tmpP;
 	//string out = myConstants::constants.outFile;
 	file.open("size.dat", ios::out);
-	vector<double> tmpNrInHalo = NrInHalo; 
+	vector<int> tmpNrInHalo = NrInHalo; 
 	sort(tmpNrInHalo.begin(),tmpNrInHalo.end());
 	//Saves position data for each particle to file
 	for (int i = 0;i < NrHalos; i++){
@@ -896,8 +896,9 @@ CHalos* CHalos::master(){
 
 	}
 	//Waiting for all processors to finish their last task
+	cout << "Waiting for the rest of the processors to finish" << endl;
 	MPI.WaitAll(Req);
-
+	cout << "waiting finished" << endl;
 	for (int i = 0; i < size-1;i++){
 		FinalHalos->addHalos(Array[i]);
 	}
@@ -937,7 +938,7 @@ void CHalos::slave(){
 		//SlaveHalos.print
 		//SlaveHalos.printHalos();
 		//Do something in each slave processor here
-		SlaveHalos.SplitHalos();//FriendOfFriendPhaseSpace();
+		//SlaveHalos.SplitHalos();//FriendOfFriendPhaseSpace();
 		//SlaveHalos.printHalos();
 		//SlaveHalos.getHalo(0)->printSubHalos();
 		SlaveHalos.getHalo(0)->SubHalos2Array()->send_slave_modified(tmpLength);
