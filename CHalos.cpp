@@ -910,12 +910,12 @@ CHalos* CHalos::master(){
 	}
 	//Waiting for all processors to finish their last task
 	cout << "Waiting for the rest of the processors to finish" << endl;
-	//MPI.WaitAll(Req);
+	MPI.WaitAll(Req);
 	
 	for (int i = 0; i < size-1;i++){
-		processor = MPI.listener(Req);
-		FinalHalos->addHalos(Array[processor]);
-		cout << "finished for" << endl; 
+		//processor = MPI.listener(Req);
+		//FinalHalos->addHalos(Array[processor]);
+		//cout << "finished for" << endl; 
 		FinalHalos->addHalos(Array[i]);
 	}
 	cout << "waiting finished" << endl;
