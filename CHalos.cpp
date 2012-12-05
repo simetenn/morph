@@ -535,10 +535,11 @@ void CHalos::saveSize(){
 	CVector tmpP;
 	//string out = myConstants::constants.outFile;
 	file.open("size.dat", ios::out);
-
+	vector<double> tmpNrInHalo = NrInHalo; 
+	sort(tmpNrInHalo.begin(),tmpNrInHalo.end());
 	//Saves position data for each particle to file
 	for (int i = 0;i < NrHalos; i++){
-		file << NrInHalo[i] << endl;
+		file << tmpNrInHalo[i] << endl;
 	}
 	file.close();
 }
@@ -722,7 +723,7 @@ void CHalos::FriendOfFriendGrid(){
 			//cout << "Assigning new halo" << endl;
 			//CHalo* tmpHalo = new CHalo();
 			//tmpHalos.push_back(tmpHalo);
-			//Calls findNeighbors to find the particles within linking distance
+			//Calls findNeighbors to find the particles within linkingsort(LinkingLengths.begin(),LinkingLengths.end()); distance
 			tmpHalo.clear();
 			Particle->RemoveFromListGrid();
 			Particle->setFlag(1);
