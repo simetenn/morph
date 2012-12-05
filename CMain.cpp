@@ -18,10 +18,11 @@ void CMain::master() {
 	//n = *m.master();//->printHalos();
 	//m.saveP();
 	n = *m.master();
+	n.HalosSort();
 	n.printHalos();
 	n.saveSize();
 	//n.print();
-	//n.saveP();
+	n.saveP();
 	//m.printHalos();
 }
 
