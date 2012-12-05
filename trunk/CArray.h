@@ -58,6 +58,8 @@ class CArray : public CMPI {
 
 	//Send a CArray from a slave processor to the master process
 	void send_slave();
+	void send_slave_modified(int inLength);
+
 	//Recieve a CArray from the master in a slave
 	void recieve_slave();
 

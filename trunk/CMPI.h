@@ -2,8 +2,11 @@
 #undef SEEK_END
 #undef SEEK_CUR
 
+#pragma once
+
 #include <mpi.h>
 #include <vector>
+#include "Constants.h"
 
 class CMPI {
  public:

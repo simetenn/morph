@@ -1,6 +1,9 @@
+//#pragma once
+
 #include "CArray.h"
 #include <iostream>
 #include <stdlib.h>
+
 
 using namespace std;
 
@@ -267,6 +270,18 @@ void CArray::send_slave(){
 	CMPI::send_array_slave(array, length);
 }
 
+void CArray::send_slave_modified(int inLength){
+	//cout << "slave "<< inLength << endl;
+	inLength = inLength+(1+myConstants::constants.HaloSize)*myConstants::constants.MaxHalos;
+
+	//cout << "slave "<< inLength << endl;
+	double* tmpArray = new double [inLength];
+
+	for (int i = 0; i < length; i++) {
+		tmpArray[i] = array[i];
+	}
+	CMPI::send_array_slave(tmpArray, inLength);
+}
 
 //Recieve a CArray from the master in a slave 
 void CArray::recieve_slave(){

@@ -6,7 +6,7 @@
 class Constants {
  public:
 
-	int ParticleSize, HaloLimit,Width,NrLinking, HaloSize,NrParticles2File;
+	int ParticleSize, HaloLimit,Width,NrLinking, HaloSize,NrParticles2File, MaxHalos;
 	double b,PhaseDistance,f,LinkingLength,rhovir;
 	string inFile, outFile,haloFile, DataFile;
 	
@@ -29,6 +29,7 @@ class Constants {
 		HaloSize = IniFile.getdouble("HaloSize");
 		NrParticles2File = IniFile.getdouble("NrParticles2File");
 		DataFile = IniFile.getstring("DataFile");
+		MaxHalos = IniFile.getdouble("MaxHalos");
 	}
 };
 
