@@ -9,9 +9,7 @@ struct particle_save {
 	unsigned int halo;
 };
 
-//bool HaloSortFunc(CHalo a, CHalo b){
-//	return (a.getNrParticles() < b.getNrParticles());
-//};
+
 
 class CHalos{
  public:
@@ -33,7 +31,7 @@ class CHalos{
 	//Sort halos by size, not existing yet
 	void HaloSort();
 
-	//bool HaloSortFunc(CHalo a,CHalo b);
+	
 
 
 

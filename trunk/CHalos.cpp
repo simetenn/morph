@@ -2,6 +2,16 @@
 
 using namespace std;
 
+
+bool HaloSortFunc(CHalo* a, CHalo* b){
+	return a->getNrParticles() > b->getNrParticles();
+}
+
+bool NrInHaloSortFunc(int a, int b){
+	return a > b;
+}
+
+
 //Constructor, creates empty CHalos
 CHalos::CHalos(){
 	ParticleSize = myConstants::constants.ParticleSize;
@@ -132,8 +142,10 @@ void CHalos::getData(string filename){
 
 //Sort halos by size, not existing yet
 void CHalos::HaloSort(){
-	//sort(Halos.begin(),Halos.end(),&HaloSortFunc);
+	sort(Halos.begin(),Halos.end(),&HaloSortFunc);
+	sort(NrInHalo.begin(),NrInHalo.end(),&NrInHaloSortFunc);
 }
+
 
 
 
@@ -535,11 +547,11 @@ void CHalos::saveSize(){
 	CVector tmpP;
 	//string out = myConstants::constants.outFile;
 	file.open("size.dat", ios::out);
-	vector<int> tmpNrInHalo = NrInHalo; 
-	sort(tmpNrInHalo.begin(),tmpNrInHalo.end());
+	//vector<int> tmpNrInHalo = NrInHalo; 
+	//sort(tmpNrInHalo.begin(),tmpNrInHalo.end());
 	//Saves position data for each particle to file
 	for (int i = 0;i < NrHalos; i++){
-		file << tmpNrInHalo[i] << endl;
+		file << NrInHalo[i] << endl;
 	}
 	file.close();
 }
@@ -757,6 +769,8 @@ void CHalos::FriendOfFriendGrid(){
 	cout << "Finished calculating Halo statistics" << endl;
 	cout << "---------------------------------" << endl;
 
+	HaloSort();
+	
 }
 
 //Flags the given particle and adds it to the given halo.
