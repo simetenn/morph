@@ -179,6 +179,8 @@ void CHalos::addHalo(CHalo* inHalo){
 
 //Add halos to the existing ones
 void CHalos::addHalos(CArray* inArray){
+	//inArray->print();
+	//exit(1);
 	int oldNrHalos = NrHalos;
 	int oldNrParticles = NrParticles;
 
@@ -189,7 +191,13 @@ void CHalos::addHalos(CArray* inArray){
 	//cout << "length: " << inArray->len() << endl;
 	//cout << "nr of halos: " << newNrHalos << endl;
 	//cout << "Halo size: " <<myConstants::constants.HaloSize << endl;
-	int newNrParticles = (inArray->len()-1-newNrHalos-myConstants::constants.HaloSize*newNrHalos)/ParticleSize;
+	int newNrParticles = 0;
+	for (int i = 1; i <= newNrHalos; i++) {
+		newNrParticles += inArray->get(i);
+	}
+
+	cout << "new nr of particles: " << newNrParticles << endl;
+	//int newNrParticles = (inArray->len()-1-newNrHalos-myConstants::constants.HaloSize*newNrHalos)/ParticleSize;
 
 	//
 
@@ -205,6 +213,7 @@ void CHalos::addHalos(CArray* inArray){
 		//cout << "2"<< endl;
 		double tmpArray[tmpNrInHalo[i]*ParticleSize + myConstants::constants.HaloSize];
 		//cout << "3"<< endl;
+
 		for (int l = 0; l < myConstants::constants.HaloSize; l++) {
 			//cout << "4"<< endl;
 			tmpArray[l] = inArray->get(particle_count);
@@ -212,12 +221,19 @@ void CHalos::addHalos(CArray* inArray){
 			particle_count++;
 		}
 
+		//cout << "before possible crash" << endl;
+		//cout << inArray->get(24134) << endl;
+		//cout << inArray->get(24135) << endl;
+		//cout << inArray->get(24136) << endl;
+		//cout << "after possible crash" << endl;
 		//cout << "nr in Halo: " << tmpNrInHalo[i] << endl;
 		//cout << "5"<< endl;
 		for (int j = 0; j < tmpNrInHalo[i];j++){
 			for (int k = 0; k < ParticleSize;k++){
 				//cout << "6"<< endl;
 				tmpArray[j*ParticleSize + k + myConstants::constants.HaloSize] = inArray->get(particle_count);
+				//cout << particle_count << endl;
+				//cout << inArray->get(particle_count) << endl;
 				particle_count++;
 			}
 		}
@@ -228,10 +244,11 @@ void CHalos::addHalos(CArray* inArray){
 		//cout << "		   particle count			 "<<particle_count << endl;
 		//cout << "9"<< endl;
 		CHalo* tmpHalo = new CHalo(tmpCArray); // <- Memory leak
-		//cout << "10"<< endl;
+		//cout << "9"<< endl;
 		//cout << "test" << endl;
 		Halos.push_back(tmpHalo);
 	}
+	cout << "finished with adding halos" << endl;
 }
 
 
@@ -856,6 +873,8 @@ CHalos* CHalos::master(){
 		//cout << "Recieved array from processor: " << processor << endl;
 		//Array[processor-1]->print();
 		//FinalHalos->addHalos(tmpArray);
+		
+		cout << "What si the length of this array: " << Array[processor-1]->len() <<endl;
 		FinalHalos->addHalos(Array[processor-1]);
 		//cout << "added halo to finalhalos" << endl;
 		Array[processor-1] =  Halos[count]->Halo2Array();
@@ -906,6 +925,8 @@ void CHalos::slave(){
 	while (true) {
 	  if (MPI.ifEnd() == 1) break;
 		HalosArray.recieve_slave();
+		int tmpLength = HalosArray.len();
+		//cout << tmpLength << endl;
 		//cout << "recieved array, slave" << endl;
 		cout <<"Recieved in slave nr " << rank <<": " << HalosArray.get(1) << endl;
 		//HalosArray.print();
@@ -918,7 +939,7 @@ void CHalos::slave(){
 		SlaveHalos.SplitHalos();//FriendOfFriendPhaseSpace();
 		//SlaveHalos.printHalos();
 		//SlaveHalos.getHalo(0)->printSubHalos();
-		SlaveHalos.getHalo(0)->SubHalos2Array()->send_slave();
+		SlaveHalos.getHalo(0)->SubHalos2Array()->send_slave_modified(tmpLength);
 		//SlaveHalos.Halos2Array()->send_slave();
 	}
 }

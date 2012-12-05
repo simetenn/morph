@@ -1,3 +1,5 @@
+#pragma once
+
 #include "CVector.h"
 #include "Constants.h"
 
