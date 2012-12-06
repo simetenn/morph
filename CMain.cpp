@@ -18,7 +18,7 @@ void CMain::master() {
 	//n = *m.master();//->printHalos();
 	//m.saveP();
 	n = *m.master();
-	n.HalosSort();
+	n.HaloSort();
 	n.printHalos();
 	n.saveSize();
 	//n.print();
