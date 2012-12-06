@@ -6,7 +6,7 @@ TARGET = LINUX #OS_X
 # Home directory of the acw program
 #HOME = /home/simen/Master/mybody-mpi/source
 
-SOURCEDIR = /home/simen/Master/mybody-mpi/source
+SOURCEDIR = .#/home/simen/Master/mybody-mpi/source
 
 INCLUDES =-I/sw/include  -I$(SOURCEDIR)  
 # library dir
