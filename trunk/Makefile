@@ -1,13 +1,12 @@
 VPATH	= .
 
-
 # target might be WINDOWS, OS_X or LINUX
 
-TARGET = OS_X
+TARGET = LINUX #OS_X
 # Home directory of the acw program
-#HOME=/Users/nicolaasgroeneboom/work/code/mac/particles
+#HOME = /home/simen/Master/mybody-mpi/source
 
-SOURCEDIR = .
+SOURCEDIR = /home/simen/Master/mybody-mpi/source
 
 INCLUDES =-I/sw/include  -I$(SOURCEDIR)  
 # library dir
@@ -25,7 +24,7 @@ _obj 	=  main.o CMain.o CArray.o CMPI.o CVector.o CParticle.o CParticles.o CHalo
 
 obj = $(patsubst %,$(SOURCEDIR)/%,$(_obj))
 
-CC 	= mpic++ 
+CC = mpic++ 
 
 default: $(PROJECT)
 
@@ -34,7 +33,6 @@ $(PROJECT):  $(obj)
 
 %.o: %.cpp
 	$(CC) -c -o $@ $^ $(INCLUDES) $(CFLAGS)   
-
 
 clean:	
 	rm *.o  main	
