@@ -7,8 +7,8 @@ void CMain::master() {
 	CHalos m,n;
 	//a.get_Data ("particles.dat");
 	
-	//m.LoadBin(myConstants::constants.inFile);
-	m.LoadData(myConstants::constants.DataFile);
+	m.LoadBin(myConstants::constants.inFile);
+	//m.LoadData(myConstants::constants.DataFile);
 	//a.print();
 	//a.initialize_Halos();
 	//m.FriendOfFriendN2();
