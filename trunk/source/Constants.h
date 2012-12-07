@@ -16,12 +16,14 @@ class Constants {
 	Constants() {
 		//Load ini-file
 		CIniFile IniFile;
-		
-		IniFile.load("mybody.ini");
 
-		//#ifdef UiO
-		//IniFile.load("mybodyUiO.ini");
-		//#endif
+		#ifndef UIO
+		IniFile.load("mybody.ini");
+		#endif
+		
+		#ifdef UIO
+		IniFile.load("mybodyUiO.ini");
+		#endif
 		
 		//Load ints
 		ParticleSize = IniFile.getdouble("ParticleSize");

@@ -3,9 +3,6 @@
 
 using namespace std;
 
-
-//Constants myConstants::constants;
-
 int CParticle::ID_Generator = 0;
 
 //Creates an "empty" particle
