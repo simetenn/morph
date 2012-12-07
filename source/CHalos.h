@@ -76,14 +76,14 @@ class CHalos{
 	void printHalos();
 
 	//Load a binary file from a N-body simulation into memory
-	void LoadBin(string Filename);
+	void loadBin(string Filename);
 	//Load a text file, 
-	void LoadData(string Filename);
+	void loadData(string Filename);
 
-	void save();
+	void save(string Filename, int NrParticles2File);
 	//save the positions of each particle together with the halo it belongs to to file
-	void saveP();
-	void saveSize();
+	void saveP(string Filename);
+	void saveSize(string Filename);
 
 	//Calculate halo statistics for each halo
 	void CalculateAllStatistics();

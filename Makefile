@@ -35,6 +35,6 @@ $(PROJECT):  $(obj)
 	$(CC) -c -o $@ $^ $(INCLUDES) $(CFLAGS)   
 
 clean:	
-	rm *.o  main	
+	rm $(SOURCEDIR)/*.o  main	
 
 
