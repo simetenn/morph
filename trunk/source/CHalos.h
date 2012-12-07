@@ -25,6 +25,7 @@ class CHalos{
 	//Testing routines, for testing purposes only
 	//void initializeHalos();
 	//Get data from my own type of input file
+	//For testing purposes only
 	void getData(string filename);
 
 

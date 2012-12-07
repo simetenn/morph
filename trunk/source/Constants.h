@@ -9,7 +9,8 @@ class Constants {
 	int ParticleSize, HaloLimit,Width,NrLinking;
 	int HaloSize,NrParticles2File, MaxHalos;
 	double b,PhaseDistance,f,LinkingLength,rhovir;
-	string inFile, outFile,haloFile, DataFile, source, data,outSize,outPosition;
+	string inFile, outFile,haloFile, DataFile;
+	string source, data,outSize,outPosition;
 	
 	Constants() {
 		//Load ini-file
