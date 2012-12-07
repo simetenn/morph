@@ -19,9 +19,9 @@ class Constants {
 		
 		IniFile.load("mybody.ini");
 
-		#ifdef UiO
-		IniFile.load("mybodyUiO.ini");
-		#endif
+		//#ifdef UiO
+		//IniFile.load("mybodyUiO.ini");
+		//#endif
 		
 		//Load ints
 		ParticleSize = IniFile.getdouble("ParticleSize");
