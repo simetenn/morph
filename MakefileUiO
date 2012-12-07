@@ -2,7 +2,7 @@ VPATH	= .
 
 # target might be WINDOWS, OS_X or LINUX
 
-TARGET = UiO
+TARGET = UIO
 # Home directory of the acw program
 #HOME = /home/simen/Master/mybody-mpi/source
 

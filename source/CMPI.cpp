@@ -52,14 +52,11 @@ CMPI::~CMPI(){
 
 
 void CMPI::send_array_master(double* master_send_array, int processor, int length){
-	MPI_Request Req[2];
+	MPI_Request Req;
 	//send the length
-	//cout << "Length of array to send: "<< length << endl;
 	MPI_Send(&length,1,MPI_INT,processor,processor,MPI_COMM_WORLD);
-	//MPI_Isend(&length,1,MPI_INT,processor,processor,MPI_COMM_WORLD, &Req[0]);
 	//send the array
-	//MPI_Send(master_send_array,length,MPI_DOUBLE,processor,processor+size,MPI_COMM_WORLD);
-	MPI_Isend(master_send_array,length,MPI_DOUBLE,processor,processor+size,MPI_COMM_WORLD, &Req[1]);
+	MPI_Isend(master_send_array,length,MPI_DOUBLE,processor,processor+size,MPI_COMM_WORLD, &Req);
 }
 
 
@@ -70,38 +67,31 @@ double* CMPI::receive_array_master(int processor, int& master_length, MPI_Reques
 
 	//recieve length of array
 	//MPI_Recv(&master_length,1,MPI_INT,processor,processor+2*size,MPI_COMM_WORLD,&Stat);
-
 	//double* master_receive_array = new double [master_length]; //<- Memory leak
-	//cout << "master "<<master_length << endl; 
-	//cout << "master "<<master_length+(1+myConstants::constants.HaloSize)*myConstants::constants.MaxHalos << endl;
-	master_length+=(1+myConstants::constants.HaloSize)*myConstants::constants.MaxHalos;
-	
-	double* master_receive_array = new double [master_length]; //<- Memory leak
-	//Recieve the array, non blocking
-	
-	MPI_Irecv(master_receive_array,master_length, MPI_DOUBLE,processor,processor+3*size,MPI_COMM_WORLD, Req);
-	//MPI_Irecv(master_receive_array,master_length,MPI_DOUBLE,processor,processor+3*size,MPI_COMM_WORLD, Req);
 
+	//Create an array longer than needed to avoid having to send the length back
+	//from the master processor
+	master_length+=(1+myConstants::constants.HaloSize)*myConstants::constants.MaxHalos;
+
+	double* master_receive_array = new double [master_length]; //<- Memory leak
+
+	//Recieve the array, non blocking
+	MPI_Irecv(master_receive_array,master_length, MPI_DOUBLE,processor,processor+3*size,MPI_COMM_WORLD, Req);
 	return master_receive_array;
 }
 
 
 //Send an array to the Master processor from the slave processor
 void CMPI::send_array_slave(double* slave_send_array, int length){
-	//sleep(1);
 	//MPI_Send(&length,1,MPI_INT,0,rank+2*size,MPI_COMM_WORLD);
-	//cout << "length in slave" << length << endl;
 	MPI_Send(slave_send_array,length,MPI_DOUBLE,0,rank+3*size,MPI_COMM_WORLD);
-	//cout << "sent from: " << rank << endl;
 }
 
 
 //Recieve an array in the Slave process from the Master process
 double* CMPI::receive_array_slave(int& slave_length){
 	MPI_Status Stat;
-	//slave_length = 0;
 	MPI_Recv(&slave_length,1,MPI_INT,0,rank,MPI_COMM_WORLD,&Stat);
-	//cout << "Length of array recieved: "<< slave_length << endl;
 	double* slave_receive_array = new double [slave_length]; //<- memory leak
 	MPI_Recv(slave_receive_array,slave_length,MPI_DOUBLE,0,rank+size,MPI_COMM_WORLD,&Stat);
 	return slave_receive_array;
@@ -181,26 +171,16 @@ int CMPI::getSize(){
 //Test which slave processor finishes first and return processor nr
 int CMPI::listener(MPI_Request* Req){
 	MPI_Status Stat;
-	int flag;
-	//int test [1000];
-	int p;
-	
+	int flag, p, test;
+
 	//Eternal loop to keep listening until a processor finishes
 	while (true) {
-	  
-	  //for (p = 1;p<size;p++){
-	    //test if finished or not
-
-	  int test=currentcount;
-	  currentcount++;
-	  if (currentcount == size) currentcount = 1;
-
-	  //cout << "testing for: " << test <<" "<< size << endl;
-	  MPI_Test(&Req[test-1],&flag,&Stat);
-	  if (flag == 1) return test;
-	  
-	    
-	    //}
+		test = currentcount;
+		currentcount++;
+		if (currentcount == size) currentcount = 1;
+		
+		MPI_Test(&Req[test-1],&flag,&Stat);
+		if (flag == 1) return test;
 	}
 }
 

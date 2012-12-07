@@ -271,10 +271,8 @@ void CArray::send_slave(){
 }
 
 void CArray::send_slave_modified(int inLength){
-	//cout << "slave "<< inLength << endl;
 	inLength = inLength+(1+myConstants::constants.HaloSize)*myConstants::constants.MaxHalos;
 
-	//cout << "slave "<< inLength << endl;
 	double* tmpArray = new double [inLength];
 
 	for (int i = 0; i < length; i++) {
