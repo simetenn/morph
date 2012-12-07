@@ -3,6 +3,7 @@
 #include "CIniFile.h"
 
 
+
 class Constants {
  public:
 
@@ -15,7 +16,12 @@ class Constants {
 	Constants() {
 		//Load ini-file
 		CIniFile IniFile;
+		
 		IniFile.load("mybody.ini");
+
+		#ifdef UiO
+		IniFile.load("mybodyUiO.ini");
+		#endif
 		
 		//Load ints
 		ParticleSize = IniFile.getdouble("ParticleSize");
