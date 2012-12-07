@@ -7,22 +7,22 @@ void CMain::master() {
 	CHalos m,n;
 	//a.get_Data ("particles.dat");
 	
-	m.LoadBin(myConstants::constants.inFile);
-	//m.LoadData(myConstants::constants.DataFile);
+	//m.loadBin(myConstants::constants.inFile);
+	m.loadData(myConstants::constants.DataFile);
 	//a.print();
 	//a.initialize_Halos();
 	//m.FriendOfFriendN2();
 	//m.printHalos();
 	m.FriendOfFriendGrid();
-	m.printHalos();
+	//m.printHalos();
 	//n = *m.master();//->printHalos();
 	//m.saveP();
 	n = *m.master();
 	n.HaloSort();
-	n.printHalos();
-	n.saveSize();
+	//n.printHalos();
+	n.saveSize(myConstants::constants.outSize);
 	//n.print();
-	n.saveP();
+	n.saveP(myConstants::constants.outPosition);
 	//m.printHalos();
 }
 
