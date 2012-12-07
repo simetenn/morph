@@ -16,27 +16,17 @@ class CHalos{
 	CHalos();
 	//Create CHalos from an in array on the form:
 	//nr of halos, nr of particles in halo 1, nr of particles in halo 2, ... ,
-	//nr of particles of in halo N, particle array 1, particle array 2, ... ,
-	//particle array N
+	//nr of particles of in halo N, halo array 1, halo array 2, ... halo array N]
 	CHalos(CArray* inArray);
 	~CHalos();
 
-
-	//Testing routines, for testing purposes only
-	//void initializeHalos();
-	//Get data from my own type of input file
-	//For testing purposes only
-	void getData(string filename);
-
-
-	//Sort halos by size, not existing yet
+	//Sort halos by NrParticles
 	void HaloSort();
 
-	
 
-
-
-	//Convert all halos to one array
+	//Convert from all halos to one array. On the form:
+	//nr of halos, nr of particles in halo 1, nr of particles in halo 2, ... ,
+	//nr of particles of in halo N, halo array 1, halo array 2, ... halo array N]
 	CArray* Halos2Array();
 
 	//Add halo to the existing ones
@@ -47,15 +37,11 @@ class CHalos{
 	void removeHalo(int element);
 
 
-
-
 	//Add two CHalos. Not tested, so unsure if correct
 	CHalos operator+(CHalos* inCHalo);
 
 
-	//Flags the given particle and adds it to the given halo.
-	//Then finds the neighboring particles, within the linking length.
-	//Before calling itself for each particle found this way	//Return total nr of particles
+	//Return total nr of particles
 	int getNrParticles();
 	//Return nr of halos
 	int getNrHalos();
@@ -76,17 +62,21 @@ class CHalos{
 	//Print out all halos
 	void printHalos();
 
+
 	//Load a binary file from a N-body simulation into memory
 	void loadBin(string Filename);
-	//Load a text file, 
+	//Load a text file, with all information about each particle
 	void loadData(string Filename);
 
+	//Save NrParticles2File evenly distributed particles to file
+	//Mainly used to create smaller datasets
 	void save(string Filename, int NrParticles2File);
 	//save the positions of each particle together with the halo it belongs to to file
 	void saveP(string Filename);
+	//Save the size of all the halos to a txt fil
 	void saveSize(string Filename);
 
-	//Calculate halo statistics for each halo
+	//Calculate halo statistics for all halos
 	void CalculateAllStatistics();
 
 	//Calculating Friend of Friend using recursion, without a grid
@@ -100,7 +90,7 @@ class CHalos{
 	void findNeighbors(CParticle* inParticle, CHalo* inHalo);
 
 
-	//Friend of Friend methode that uses a grid to speed up the calculations
+	//Friend of Friend methode that uses a grid to sped up the calculations
 	//Scales as something*log(N)
 	void FriendOfFriendGrid();
 	//Flags the given particle and adds it to the given halo.
@@ -108,16 +98,17 @@ class CHalos{
 	//Before calling itself for each particle found this way
 	void findNeighborsGrid(CParticle* inParticle, CHalo* inHalo);
 
-	//Not used in this class, moved to Halo to be able to sort one halo into subhalos
-	//void SplitHalo(int element);
-	//void FriendOfFriendPhaseSpace();
-	//void findNeighborsPhaseSpace(CParticle* inParticle, CHalo* inHalo, CVector* SigmaP,CVector*  SigmaV);
-	//double PhaseSpaceDistance(CParticle* p1, CParticle* p2, double SigmaP, double SigmaV);
 
+	//Runs the splitting routine for all halos to split each into several subhalos
 	void SplitHalos();
-	
 
+	//A routine to be run in the master process to do calulations on each halo in parallel.
+	//It sends the data from each halo to all available processors,
+	//then sends out new data as soon as a processor finishes its task
 	CHalos* master();
+	//Slave processor, listening for data from the master processor
+	//Then does something with the data before sending it back to the
+	//master processor
 	void slave();
 
 
