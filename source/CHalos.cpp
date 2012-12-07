@@ -904,7 +904,7 @@ void CHalos::slave(){
 		CHalos SlaveHalos (&HalosArray);
 		
 		//Do something in each slave processor here
-		//SlaveHalos.SplitHalos();
+		SlaveHalos.SplitHalos();
 		//SlaveHalos.getHalo(0)->printSubHalos();
 		SlaveHalos.getHalo(0)->SubHalos2Array()->send_slave_modified(tmpLength);
 	}
