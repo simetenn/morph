@@ -323,7 +323,7 @@ void CHalos::loadBin(string Filename){
 
 //Load a text file, with all information about each particle
 void CHalos::loadData(string Filename){
-	vector<string> strData;
+	/*vector<string> strData;
 
 	ifstream file((myConstants::constants.data + Filename).c_str());
 	string line;
@@ -364,7 +364,7 @@ void CHalos::loadData(string Filename){
 	}
 	else cout << "Unable to open file" << endl;
 	NrInHalo.push_back(NrParticles);
-	LinkingLength = pow(1./NrParticles,1./3);
+	LinkingLength = pow(1./NrParticles,1./3);*/
 }
 
 

@@ -1,7 +1,7 @@
 #include "CParticles.h"
 
 using namespace std;
-using namespace boost;
+//using namespace boost;
 
 CParticles::CParticles(){
 	NrParticles = 0;

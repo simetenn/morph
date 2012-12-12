@@ -652,8 +652,7 @@ CParticle* CHalo::nextParticle(){
 
 		if (searchParticle == NULL)
 			return NULL;
-
-	}
+}	
 }
 
 
