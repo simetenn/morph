@@ -6,8 +6,8 @@ Constants myConstants::constants;
 void CMain::master() {
 	CHalos m,n;
 		
-	//m.loadBin(myConstants::constants.inFile);
-	m.loadData(myConstants::constants.DataFile);
+	m.loadBin(myConstants::constants.inFile);
+	//m.loadData(myConstants::constants.DataFile);
 	//m.printHalos();
 	m.FriendOfFriendGrid();
 	//m.printHalos();

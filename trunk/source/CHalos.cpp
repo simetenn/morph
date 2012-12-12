@@ -281,6 +281,7 @@ void CHalos::loadBin(string Filename){
 
 	//Reading binary file into memory
 	file.read((char *)&count, sizeof(unsigned int));
+	cout << count << endl;
 	particle_save* block = new particle_save[count];
 	file.read((char *)block, sizeof(particle_save)*count);
 

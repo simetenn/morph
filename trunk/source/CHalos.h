@@ -7,7 +7,9 @@
 struct particle_save {
 	CVector_bare P, V;
 	unsigned int halo;
+	//CVector_bare tmp;
 };
+
 
 
 
