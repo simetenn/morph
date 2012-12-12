@@ -4,10 +4,10 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
-#include <boost/algorithm/string.hpp>
+//#include <boost/algorithm/string.hpp>
 #include "CParticle.h"
 #include "CArray.h"
-using namespace boost;
+//using namespace boost;
 
 
 class CParticles{

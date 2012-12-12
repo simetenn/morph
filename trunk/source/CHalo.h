@@ -1,8 +1,10 @@
 #pragma once
 
 #include "CParticles.h"
+#include <list>
+#include <algorithm>
 
-
+using namespace std;
 
 class CHalo{
 
@@ -82,7 +84,7 @@ class CHalo{
 
 	//Return the list over all subhalos
 	list<CHalo*> getSubHalos();
-	//Return the iterator pointing at the begining element of the subhalo list
+	//Return the iterator pointing at the begining element of the subhalo litsfa
 	list<CHalo*>::iterator begin();
 	//Return the iterator pointing at the end element of the subhalo list
 	list<CHalo*>::iterator end();
