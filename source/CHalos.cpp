@@ -272,15 +272,22 @@ void CHalos::printHalos(){
 //Load a binary file from a N-body simulation into memory
 void CHalos::loadBin(string Filename){
 
-	ifstream file((myConstants::constants.data + Filename).c_str(), ios::in | ios::binary);
+	ifstream file((myConstants::constants.data + Filename).c_str(), ios::in | ios::binary | ios::ate);
 
 	cout << "---------------------------------" << endl;
 	cout << "Reading file " << Filename << endl;
 
 	unsigned int count = -1;
 
+	ifstream::pos_type size;
 	//Reading binary file into memory
+
+	
+	size = file.tellg();
+	file.seekg (0, ios::beg);
+
 	file.read((char *)&count, sizeof(unsigned int));
+	cout << (int) size/(double)sizeof(unsigned int)) << endl;
 	cout << count << endl;
 	particle_save* block = new particle_save[count];
 	file.read((char *)block, sizeof(particle_save)*count);
@@ -323,7 +330,7 @@ void CHalos::loadBin(string Filename){
 
 //Load a text file, with all information about each particle
 void CHalos::loadData(string Filename){
-	/*vector<string> strData;
+	vector<string> strData;
 
 	ifstream file((myConstants::constants.data + Filename).c_str());
 	string line;
@@ -364,7 +371,7 @@ void CHalos::loadData(string Filename){
 	}
 	else cout << "Unable to open file" << endl;
 	NrInHalo.push_back(NrParticles);
-	LinkingLength = pow(1./NrParticles,1./3);*/
+	LinkingLength = pow(1./NrParticles,1./3);
 }
 
 
