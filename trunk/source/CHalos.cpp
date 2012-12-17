@@ -269,30 +269,24 @@ void CHalos::printHalos(){
 
 
 
-//Load a binary file from a N-body simulation into memory
-void CHalos::loadBin(string Filename){
 
-	ifstream file((myConstants::constants.data + Filename).c_str(), ios::in | ios::binary | ios::ate);
+
+//Load a binary file from a N-body simulation into memory. Our format
+void CHalos::loadBin(string Filename){
+	ifstream file((myConstants::constants.data + Filename).c_str(), ios::in | ios::binary);
 
 	cout << "---------------------------------" << endl;
 	cout << "Reading file " << Filename << endl;
 
 	unsigned int count = -1;
 
-	ifstream::pos_type size;
 	//Reading binary file into memory
-
-	
-	size = file.tellg();
-	file.seekg (0, ios::beg);
-
 	file.read((char *)&count, sizeof(unsigned int));
-	cout << (int) size/(double)sizeof(unsigned int)) << endl;
-	cout << count << endl;
 	particle_save* block = new particle_save[count];
 	file.read((char *)block, sizeof(particle_save)*count);
-
-
+	
+	double ParticleMass = myConstants::constants.RhoC*myConstants::constants.OmegaD*pow(myConstants::constants.BoxSize,3)/pow(count,3);
+	
 	Halos.clear();
 	NrInHalo.clear();
 	NrHalos = 1;
@@ -309,10 +303,15 @@ void CHalos::loadBin(string Filename){
 	for (int i=0;i<count;i++) {
 		CParticle* tmpParticle = &AllParticles[i];
 
+		block[i].P.x /= myConstants::constants.BoxSize;
+		block[i].P.y /= myConstants::constants.BoxSize;
+		block[i].P.z /= myConstants::constants.BoxSize;
+			
 		tmpParticle->setPosition(block[i].P.x,block[i].P.y,block[i].P.z);
 		tmpParticle->setVelocity(block[i].V.x,block[i].V.y,block[i].V.z);
 		tmpParticle->setAcceleration(0,0,0);
-
+		tmpParticle->setMass(ParticleMass);
+		
 		tmpHalo->addParticle(tmpParticle);
 	}
 
@@ -324,8 +323,70 @@ void CHalos::loadBin(string Filename){
 	NrParticles = count;
 	NrInHalo.push_back(NrParticles);
 	LinkingLength = pow(1./NrParticles,1./3);
-
 }
+
+
+
+
+//Load a binary file from a N-body simulation into memory. Claudio's format, converted from ramses file
+void CHalos::loadClaudio(string Filename){
+	ifstream file((myConstants::constants.data + Filename).c_str(), ios::in | ios::binary | ios::ate);
+
+	cout << "---------------------------------" << endl;
+	cout << "Reading file " << Filename << endl;
+
+	unsigned int count = -1;
+
+	ifstream::pos_type size;
+	//Reading binary file into memory
+	size = file.tellg();
+	file.seekg (0, ios::beg);
+
+	count = (int)(size/ (double)sizeof(particle_save));
+
+	particle_save* block = new particle_save[count];
+	file.read((char *)block, sizeof(particle_save)*count);
+	
+	double ParticleMass = myConstants::constants.RhoC*myConstants::constants.OmegaD*pow(myConstants::constants.BoxSize,3)/pow(count,3);
+	
+	Halos.clear();
+	NrInHalo.clear();
+	NrHalos = 1;
+
+	CHalo* tmpHalo = new CHalo();
+	Halos.push_back(tmpHalo);
+
+	cout << "Copying data ..." << endl;
+	cout << "Nr of particles: "<< count << endl;
+
+	//Saving data into existing structure
+	//Saving all Particles into the first halo in Halos, get with Halos[0]
+	AllParticles.resize(count);
+	for (int i=0;i<count;i++) {
+		CParticle* tmpParticle = &AllParticles[i];
+
+		block[i].P.x /= myConstants::constants.BoxSize;
+		block[i].P.y /= myConstants::constants.BoxSize;
+		block[i].P.z /= myConstants::constants.BoxSize;
+			
+		tmpParticle->setPosition(block[i].P.x,block[i].P.y,block[i].P.z);
+		tmpParticle->setVelocity(block[i].V.x,block[i].V.y,block[i].V.z);
+		tmpParticle->setAcceleration(0,0,0);
+		tmpParticle->setMass(ParticleMass);
+		
+		tmpHalo->addParticle(tmpParticle);
+	}
+
+	cout << "Done loading!" << endl;
+	cout << "---------------------------------" << endl;
+	file.close();
+	delete[] block;
+
+	NrParticles = count;
+	NrInHalo.push_back(NrParticles);
+	LinkingLength = pow(1./NrParticles,1./3);
+}
+
 
 
 //Load a text file, with all information about each particle

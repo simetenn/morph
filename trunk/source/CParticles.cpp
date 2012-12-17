@@ -122,6 +122,7 @@ void CParticles::addParticle(CParticle* inParticle){
 }
 
 
+
 //Add several particles to CParticles
 void CParticles::addParticles(CParticles* inParticles){
 	NrParticles += inParticles->getNrParticles();
@@ -129,6 +130,13 @@ void CParticles::addParticles(CParticles* inParticles){
 	for (int i = 0; i < inParticles->getNrParticles();i++){
 		Particles.push_back(inParticles->get(i));
 	}
+}
+
+
+//remove particle #element from CParticles
+void CParticles::removeParticle(int element){
+	Particles.erase(Particles.begin() + element);
+	NrParticles--;
 }
 
 

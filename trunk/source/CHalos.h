@@ -65,8 +65,11 @@ class CHalos{
 	void printHalos();
 
 
-	//Load a binary file from a N-body simulation into memory
+	//Load a binary file from a N-body simulation into memory. Our format. 
 	void loadBin(string Filename);
+	//Load a binary file from a N-body simulation into memory.
+	//Claudio's format, converted from Ramses files
+	void loadClaudio(string Filename);
 	//Load a text file, with all information about each particle
 	void loadData(string Filename);
 

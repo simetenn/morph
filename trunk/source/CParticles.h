@@ -46,8 +46,10 @@ class CParticles{
 	void addParticle(CParticle* inParticle);
 	//Add several particles to CParticles
 	void addParticles(CParticles* inParticles);
+	//remove particle from CParticles
+	void removeParticle(int element);
 
-
+	
 	//Convert CParticles to a CArray on the form
 	//[ParticleArray 1, ParticleArray 2, ParticleArray 3, ... , ParticleArray N]
 	CArray* Particles2Array();

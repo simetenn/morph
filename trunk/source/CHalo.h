@@ -90,7 +90,7 @@ class CHalo{
 	void attachSubHalo(CHalo* inHalo);
 	//Remove halo from the subhalo list.
 	void removeSubHalo(CHalo* inHalo);
-
+	
 
 	//Return particle nr #element
 	CParticle* operator[](int element);
@@ -105,6 +105,8 @@ class CHalo{
 	void addHalo(CHalo* inHalo);
 	//Add several particles to the Halo
 	void addParticles(CParticles* inParticles);
+	//Remove particle #element from halo
+	void removeParticle(int element);
 
 
 	//Calculate all the statistics relevant for a halo, such as:
@@ -165,13 +167,16 @@ class CHalo{
 	void findHalo(CParticle* inParticle,CHalo* inHalo);
 	//Remove halos that has fewer than HaloLimit particles
 	void removeEmptyHalos(CHalo* prevHalo);
-
+	
 
 	//Merge halos that are statisticaly the same halo
 	void mergeStatistical();
 	//Recursivly goes through all subhalos bottom up and merges halos that are statisticaly equal
 	void mergeStatisticalRec(CHalo* mergeHalo, int &flag);
 
+	
+	//Method for unbinding particles from a halo
+	void Unbinding();
 
 	//Do the splitting of halos, assigning particles to all halos, and merge statisticaly equal halos
 	void createSubHalos();

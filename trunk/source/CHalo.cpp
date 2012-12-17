@@ -328,8 +328,17 @@ int CHalo::getNrSubHalos(){
 
 //Add a particle to the array
 void CHalo::addParticle(CParticle* inParticle){
-	NrParticles += 1;
+	NrParticles++;
 	Halo.addParticle(inParticle);
+	Mass += inParticle->getMass();
+}
+
+
+//Remove particle #element from halo
+void CHalo::removeParticle(int element){
+	Mass -= Halo[element]->getMass();
+	Halo.removeParticle(element);
+	NrParticles--;
 }
 
 
@@ -495,8 +504,9 @@ void CHalo::saveHaloStatX(fstream& fileName, int& HaloID){
 
 //Calculate the Phase-Space distance between a halo and a particle
 double CHalo::PhaseSpaceDistanceHalo(CParticle* inParticle, CVector* inSigmaP, CVector* inSigmaV){
-	double rvir2 = pow((Mass/(16./3.*atan(1)*myConstants::constants.rhovir)),2./3.);
-	return sqrt((inParticle->getP() - MeanP).Length2()/inSigmaP->Length2() +  (inParticle->getV() - MeanV).Length2()/inSigmaV->Length2());
+	double rvir2 = pow((Mass/(16./3.*atan(1)*myConstants::constants.ScaleDensity*myConstants::constants.RhoC)),2./3.);
+	return sqrt((inParticle->getP() - MeanP).Length2()/rvir2 +  (inParticle->getV() - MeanV).Length2()/inSigmaV->Length2());
+	//return sqrt((inParticle->getP() - MeanP).Length2()/inSigmaP->Length2() +  (inParticle->getV() - MeanV).Length2()/inSigmaV->Length2());
 }
 
 
@@ -553,7 +563,7 @@ double CHalo::LinkingLength(){
 //Then calculates the subhalos of the subhalo recursivly until either the halo limit
 //is reached or no particles are found being linked together.
 void CHalo::SplitHalo(){
-	if (Halo.getNrParticles() < myConstants::constants.HaloLimit) {
+	if (Halo.getNrParticles() < myConstants::constants.HaloSeed) {
 		return;
 	}
 
@@ -606,7 +616,7 @@ void CHalo::FriendOfFriendPhaseSpace(){
 			Particle->RemoveFromList();
 			findNeighborsPhaseSpace(Particle, &tmpHalo, L);
 
-			if (tmpHalo.getNrParticles() > myConstants::constants.HaloLimit && tmpHalo.getNrParticles() != NrParticles){
+			if (tmpHalo.getNrParticles() > myConstants::constants.HaloSeed && tmpHalo.getNrParticles() != NrParticles){
 				SubHalos.push_back(new CHalo(&tmpHalo));
 			}
 		}
@@ -671,6 +681,10 @@ void CHalo::assignParticles(CParticles* allParticles){
 
 	//curently doesn't do anything if the first halo has fewer than halolimit particles
 	//try to copy all below and one step up
+	if (NrParticles < myConstants::constants.HaloLimit){
+		cout << "WARNING: Host halo has to few particles. I need to do stuff" << endl;
+	}
+	
 
 	//Remove halos that has fewer than HaloLimit particles
 	list<CHalo*>::iterator itKeep;
@@ -769,6 +783,13 @@ void CHalo::mergeStatisticalRec(CHalo* prevHalo, int &flag){
 	}
 	//It completes withouth merging any halos
 	flag = 1;
+}
+
+//Method for unbinding particles from a halo
+void CHalo::Unbinding(){
+	//	if () {
+		
+	//}
 }
 
 
