@@ -133,6 +133,8 @@ class CHalo{
 	//Save the statistical data in the x direction, for a single halo
 	void saveHaloStatX(fstream& fileName, int& HaloID);
 
+	void savePhi(string Filename);
+	
 
 	//Calculate the Phase-Space distance between a halo and a particle
 	double PhaseSpaceDistanceHalo(CParticle* inParticle, CVector* inSigmaP, CVector* inSigmaV);
@@ -165,6 +167,8 @@ class CHalo{
 	void assignParticles(CParticles* allParticles);
 	//Find the halo a particle is closest too and add the particle to that halo
 	void findHalo(CParticle* inParticle,CHalo* inHalo);
+
+	void removeEmptySubHalos();
 	//Remove halos that has fewer than HaloLimit particles
 	void removeEmptyHalos(CHalo* prevHalo);
 	
@@ -175,8 +179,12 @@ class CHalo{
 	void mergeStatisticalRec(CHalo* mergeHalo, int &flag);
 
 	
+		
+	void SortParticlesDistance();
+	void CalculatePhiSpherical();
 	//Method for unbinding particles from a halo
-	void Unbinding();
+	void Unbind();
+	void UnbindAll();
 
 	//Do the splitting of halos, assigning particles to all halos, and merge statisticaly equal halos
 	void createSubHalos();
@@ -189,4 +197,5 @@ class CHalo{
 	int ParticleSize, NrParticles;
 	CParticle* searchParticle;
 	list<CHalo*> SubHalos;
+	vector<double> r, Phi;
 };

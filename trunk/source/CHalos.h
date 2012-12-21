@@ -64,6 +64,9 @@ class CHalos{
 	//Print out all halos
 	void printHalos();
 
+	
+	void CalculatePhiSpherical();
+	
 
 	//Load a binary file from a N-body simulation into memory. Our format. 
 	void loadBin(string Filename);
