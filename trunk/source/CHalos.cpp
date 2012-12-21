@@ -291,7 +291,7 @@ void CHalos::loadBin(string Filename){
 	particle_save* block = new particle_save[count];
 	file.read((char *)block, sizeof(particle_save)*count);
 	
-	double ParticleMass = myConstants::constants.RhoC*myConstants::constants.OmegaD*pow(myConstants::constants.BoxSize,3)/pow(count,3);
+	double ParticleMass = myConstants::constants.RhoC*myConstants::constants.OmegaD*pow(myConstants::constants.BoxSize,3)/count;
 	
 	Halos.clear();
 	NrInHalo.clear();
@@ -353,7 +353,7 @@ void CHalos::loadClaudio(string Filename){
 	particle_save* block = new particle_save[count];
 	file.read((char *)block, sizeof(particle_save)*count);
 	
-	double ParticleMass = myConstants::constants.RhoC*myConstants::constants.OmegaD*pow(myConstants::constants.BoxSize,3)/pow(count,3);
+	double ParticleMass = myConstants::constants.RhoC*myConstants::constants.OmegaD*pow(myConstants::constants.BoxSize,3)/count;
 	
 	Halos.clear();
 	NrInHalo.clear();
