@@ -268,6 +268,12 @@ void CHalos::printHalos(){
 
 
 
+void CHalos::CalculatePhiSpherical(){
+	for (int i = 0; i < NrHalos; i++) {
+		Halos[i]->CalculatePhiSpherical();
+	}
+}
+
 
 
 

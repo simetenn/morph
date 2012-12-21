@@ -13,6 +13,9 @@ void CMain::master() {
 	//m.printHalos();
 	n = *m.master();
 	n.HaloSort();
+	n.CalculatePhiSpherical();
+
+	n[10]->savePhi(myConstants::constants.outPhi);
 	n.saveSize(myConstants::constants.outSize);
 	n.saveP(myConstants::constants.outPosition);
 }
