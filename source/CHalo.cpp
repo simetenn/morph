@@ -277,6 +277,20 @@ void CHalo::getTotalNrParticlesRec(int& TotalNrParticles){
 }
 
 
+void CHalo::calculateMvir(){
+	Rvir = pow((Mass/(16./3.*atan(1)*myConstants::constants.ScaleDensity*myConstants::constants.RhoC)),1./3.);
+	Mvir = 0;
+	//cout << r[0] << " " << Rvir<<endl;
+	//cout << NrParticles << endl;
+	for (int i = 0; i < NrParticles; i++) {
+		if(r[i] > Rvir) {
+			//cout << i << endl;
+			break;
+		}
+		Mvir += Halo[i]->getMass(); 
+	}
+}
+
 
 
 
@@ -525,7 +539,9 @@ void CHalo::savePhi(string Filename){
 	file.open((myConstants::constants.data + Filename).c_str(), ios::out);
 
 	//Saves data for each particle to file
+	//cout << NrParticles << endl;
 	for (int i = 0;i<NrParticles;i++){
+		//cout << "saving i " << i <<endl; 
 		file << Phi[i] << " " << r[i] << endl;
 	}
 	file.close();
@@ -727,9 +743,9 @@ void CHalo::assignParticles(CParticles* allParticles){
 		itKeep++;
 		(*it)->removeEmptyHalos(this);
 		it = itKeep;
-	}
+	}*/
 	//Calculate the new statistics
-	CalculateAllStatistics();*/
+	CalculateAllStatistics();
 }
 
 
@@ -871,22 +887,23 @@ void CHalo::SortParticlesDistance(){
 
 void CHalo::CalculatePhiSpherical(){
 	SortParticlesDistance();
-	//cout << "in Calculate Phi" << endl;
-	//cout << Halo[0] << endl;
-	//cout << r[0] << endl;
-	double rvir = pow((Mass/(16./3.*atan(1)*myConstants::constants.ScaleDensity*myConstants::constants.RhoC)),1./3.);
-	double Mvir = 
-	for (int i = 0; i < NrParticles; i++) {
-		if(r[i] > rvir) break;
-		
-	}
 	
+
+	//Move this to the correct okace to calulate irialisation stuf. Probably statistics
+	calculateMvir();
+
+	/*double Phi0 = Mvir/Rvir;	
+	for (int i = 0; i < NrParticles; i++) {
+		if(r[i] > Rvir) break;
+		Phi0 += Halo[i]->getMass()/(r[i]); 
+	}
+	Phi0 *= -myConstants::constants.G;
+	*/
 	Phi.push_back(myConstants::constants.G*Halo[0]->getMass()/r[0]);	
-	//cout << "in Calculate Phi 2" << endl;
 	for (int i = 1; i < NrParticles; i++) {
 		Phi.push_back(myConstants::constants.G*Halo[i]->getMass()/(r[i])+Phi[i-1]);
 	}
-	//cout << "in Calculate Phi 3" << endl;
+	
 }
 
 
@@ -934,7 +951,7 @@ void CHalo::createSubHalos(){
 	assignParticles(&allParticles);
 	mergeStatistical();
 	//printSubHalos();
-	UnbindAll();
+	//UnbindAll();
 	removeEmptySubHalos();
 	//Unbind();
 }

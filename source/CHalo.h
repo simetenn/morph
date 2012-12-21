@@ -79,6 +79,8 @@ class CHalo{
 	//Recursivly run trough all subhalos and add the NrParticles in each halo to TotalNrParticles
 	void getTotalNrParticlesRec(int& TotalNrParticles);
 
+	void calculateMvir();
+	
 
 	//Return the list over all subhalos
 	list<CHalo*> getSubHalos();
@@ -197,5 +199,7 @@ class CHalo{
 	int ParticleSize, NrParticles;
 	CParticle* searchParticle;
 	list<CHalo*> SubHalos;
+	//New values, needs to be added support for the relevant MPI send/recieve routines
 	vector<double> r, Phi;
+	double Mvir,Rvir;
 };
