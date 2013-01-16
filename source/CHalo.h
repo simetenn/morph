@@ -79,8 +79,9 @@ class CHalo{
 	//Recursivly run trough all subhalos and add the NrParticles in each halo to TotalNrParticles
 	void getTotalNrParticlesRec(int& TotalNrParticles);
 
-	void calculateMvir();
-	
+	void calculateVir();
+
+	void scalePositions(int scale);
 
 	//Return the list over all subhalos
 	list<CHalo*> getSubHalos();
@@ -139,7 +140,7 @@ class CHalo{
 	
 
 	//Calculate the Phase-Space distance between a halo and a particle
-	double PhaseSpaceDistanceHalo(CParticle* inParticle, CVector* inSigmaP, CVector* inSigmaV);
+	double PhaseSpaceDistanceHalo(CParticle* inParticle);
 	//Calculate the linking length of a halo
 
 	//Calculate the Linking Length for each halo.
