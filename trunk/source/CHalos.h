@@ -76,6 +76,9 @@ class CHalos{
 	//Load a text file, with all information about each particle
 	void loadData(string Filename);
 
+	void scalePositions();
+	
+	
 	//Save NrParticles2File evenly distributed particles to file
 	//Mainly used to create smaller datasets
 	void save(string Filename, int NrParticles2File);

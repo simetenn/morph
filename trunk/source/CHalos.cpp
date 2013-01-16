@@ -374,7 +374,7 @@ void CHalos::loadClaudio(string Filename){
 		block[i].P.x /= myConstants::constants.BoxSize;
 		block[i].P.y /= myConstants::constants.BoxSize;
 		block[i].P.z /= myConstants::constants.BoxSize;
-			
+
 		tmpParticle->setPosition(block[i].P.x,block[i].P.y,block[i].P.z);
 		tmpParticle->setVelocity(block[i].V.x,block[i].V.y,block[i].V.z);
 		tmpParticle->setAcceleration(0,0,0);
@@ -442,6 +442,12 @@ void CHalos::loadData(string Filename){
 }
 
 
+
+void CHalos::scalePositions(){
+	for (int i = 0; i < NrHalos; i++) {
+		Halos[i]->scalePositions(myConstants::constants.BoxSize);
+	}
+}
 
 
 
@@ -705,11 +711,18 @@ void CHalos::FriendOfFriendGrid(){
 	cout << ".." << endl;
 	cout << "..." << endl;
 
-	CalculateAllStatistics();
+	//Reseting the position to it's correct value, not the scaled one needed in the grid version.
+	
 
+	scalePositions();
+	CalculateAllStatistics();
+	
+	
 	cout << "Finished calculating Halo statistics" << endl;
 	cout << "---------------------------------" << endl;
 
+	
+	
 	//Sort the halos from biggest to smalest for maximum speed during the parallelisation
 	HaloSort();
 }
