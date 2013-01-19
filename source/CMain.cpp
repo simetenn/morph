@@ -15,7 +15,7 @@ void CMain::master() {
 	//n.CalculateAllStatistics();
 	n.HaloSort();
 	n.CalculatePhiSpherical();
-	n[0]->savePhi(myConstants::constants.outPhi);
+	n[10]->savePhi(myConstants::constants.outPhi);
 	n.saveSize(myConstants::constants.outSize);
 	n.saveP(myConstants::constants.outPosition);
 }
