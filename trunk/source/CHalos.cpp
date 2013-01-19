@@ -159,8 +159,20 @@ void CHalos::removeHalo(int element){
 }
 
 
-
-
+//Remove Halos with fewer particles than HaloLimit
+void CHalos::removeEmptyHalos(){
+	vector<int> RemoveIndex;
+	for (int i = 0; i < NrInHalo.size(); i++) {
+		if (NrInHalo[i] < myConstants::constants.HaloLimit){
+			RemoveIndex.push_back(i);
+		}
+	}
+	for (int i = 0; i < RemoveIndex.size(); i++) {
+		Halos.erase(Halos.begin() + RemoveIndex[i] - i);
+		NrInHalo.erase(NrInHalo.begin() + RemoveIndex[i] - i);
+		NrHalos--;
+	}
+}
 
 
 //Add two CHalos. Not tested, so unsure if correct
@@ -793,6 +805,7 @@ void CHalos::SplitHalos(){
 
 
 
+
 //A routine to be run in the master process to do calulations on each halo in parallel.
 //It sends the data from each halo to all available processors,
 //then sends out new data as soon as a processor finishes its task
@@ -808,7 +821,7 @@ CHalos* CHalos::master(){
 
 	//Initialize, sending one halo to each processor
 	for (int p = 1; p < size; p++){
-		cout << "Initializing for halo nr: " << p-1 << endl;
+		//cout << "Initializing for halo nr: " << p-1 << endl;
 
 		//Add how many particles in halo to be sent
 		//and that it only is one halo to the CArray
@@ -827,7 +840,7 @@ CHalos* CHalos::master(){
 	cout << "-------------------------------------------------" << endl;
 	//Send halo to processor as soon as a processor finishes
 	while (count < NrHalos) {
-		cout << "Calculating for halo nr: " << count << endl;
+		//cout << "Calculating for halo nr: " << count << endl;
 		//Listening for a processor to finish
 		processor = MPI.listener(Req);
 		FinalHalos->addHalos(Array[processor-1]);
@@ -863,6 +876,8 @@ CHalos* CHalos::master(){
 		MPI.End(p,1);
 	}
 
+
+	FinalHalos->removeEmptyHalos();
 	return FinalHalos;
 }
 

@@ -12,7 +12,7 @@ class Constants {
 	double b,PhaseDistance,f,LinkingLength,rhovir, HaloSeed, BoxSize;
 	double ScaleDensity, RhoC, OmegaD, Mass, G;
 	string inFile, outFile,haloFile, DataFile;
-	string source, data,outSize,outPosition,outPhi;
+	string source, data,outSize,outPosition,outPhi, outBounding;
 	
 	Constants() {
 		//Load ini-file
@@ -59,6 +59,8 @@ class Constants {
 		outSize = IniFile.getstring("outSize");
 		outPosition = IniFile.getstring("outPosition");
 		outPhi = IniFile.getstring("outPhi");
+		outBounding = IniFile.getstring("outBounding");
+		//outBounding = IniFile.getstring("outBonding");
 	}
 };
 

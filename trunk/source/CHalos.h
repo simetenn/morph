@@ -37,8 +37,9 @@ class CHalos{
 	void addHalos(CArray* inArray);
 	//Remove halo nr element from CHalos
 	void removeHalo(int element);
-
-
+	//Remove Halos with fewer particles than HaloLimit
+	void removeEmptyHalos();
+	
 	//Add two CHalos. Not tested, so unsure if correct
 	CHalos operator+(CHalos* inCHalo);
 
@@ -76,6 +77,7 @@ class CHalos{
 	//Load a text file, with all information about each particle
 	void loadData(string Filename);
 
+	
 	void scalePositions();
 	
 	

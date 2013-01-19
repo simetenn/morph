@@ -78,7 +78,15 @@ class CHalo{
 	int getTotalNrParticles();
 	//Recursivly run trough all subhalos and add the NrParticles in each halo to TotalNrParticles
 	void getTotalNrParticlesRec(int& TotalNrParticles);
-
+	//Return the virialisation mass
+	double getMvir();
+	//Return the virialisation radius
+	double getRvir();
+	//Return distance from center, sorted
+	vector<double>* getR();
+	//Retturn gravitational potential, sorted as distance from center
+	vector<double>* getPhi();
+	
 	void calculateVir();
 
 	void scalePositions(int scale);
@@ -93,7 +101,7 @@ class CHalo{
 	void attachSubHalo(CHalo* inHalo);
 	//Remove halo from the subhalo list.
 	void removeSubHalo(CHalo* inHalo);
-	
+
 
 	//Return particle nr #element
 	CParticle* operator[](int element);
@@ -137,7 +145,9 @@ class CHalo{
 	void saveHaloStatX(fstream& fileName, int& HaloID);
 
 	void savePhi(string Filename);
-	
+
+	void save(string Filename, double value);
+
 
 	//Calculate the Phase-Space distance between a halo and a particle
 	double PhaseSpaceDistanceHalo(CParticle* inParticle);
@@ -174,19 +184,19 @@ class CHalo{
 	void removeEmptySubHalos();
 	//Remove halos that has fewer than HaloLimit particles
 	void removeEmptyHalos(CHalo* prevHalo);
-	
+
 
 	//Merge halos that are statisticaly the same halo
 	void mergeStatistical();
 	//Recursivly goes through all subhalos bottom up and merges halos that are statisticaly equal
 	void mergeStatisticalRec(CHalo* mergeHalo, int &flag);
 
-	
-		
+
+
 	void SortParticlesDistance();
 	void CalculatePhiSpherical();
 	//Method for unbinding particles from a halo
-	void Unbind();
+	void Unbind(int& count);
 	void UnbindAll();
 
 	//Do the splitting of halos, assigning particles to all halos, and merge statisticaly equal halos
