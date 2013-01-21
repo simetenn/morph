@@ -896,7 +896,7 @@ void CHalo::mergeStatisticalRec(CHalo* prevHalo, int &flag){
 	//For all subhalos of one halo, check if the subhalos are statisticaly equal
 	//If they are erase one of the subhalos, and add it to the other
 	for (list<CHalo*>::iterator it = prevHalo->begin(); it != prevHalo->end(); it++) {
-		double tmp1= ((MeanP - *((*+it)->getMeanP()))/SigmaP).Length2();
+		double tmp1= ((MeanP - *((*it)->getMeanP()))/SigmaP).Length2();
 		double tmp2= ((MeanV - *((*it)->getMeanV()))/SigmaV).Length2();
 
 		if (this != (*it) && NrParticles*(tmp1 + tmp2) < 200) {
