@@ -361,7 +361,9 @@ void CHalos::loadClaudio(string Filename){
 	file.seekg (0, ios::beg);
 
 	count = (int)(size/ (double)sizeof(particle_save));
-
+	
+	cout << "Nr Particles read in:" << count << endl;
+	
 	particle_save* block = new particle_save[count];
 	file.read((char *)block, sizeof(particle_save)*count);
 	

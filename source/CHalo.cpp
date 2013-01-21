@@ -592,7 +592,7 @@ void CHalo::save(string Filename, double value){
 //Calculate the Phase-Space distance between a halo and a particle
 double CHalo::PhaseSpaceDistanceHalo(CParticle* inParticle){
 	double rvir2 = pow((Mass/(16./3.*atan(1)*myConstants::constants.ScaleDensity*myConstants::constants.RhoC)),2./3.);
-	return sqrt((inParticle->getP() - MeanP).Length2()/rvir2 + (inParticle->getV() - MeanV).Length2()/SigmaV.Length2());
+	return sqrt((inParticle->getP() - MeanP).Length2()/rvir2 + (inParticle->getV() - MeanV).Length2(/)SigmaV.Length2());
 	//return sqrt((inParticle->getP() - MeanP).Length2()/inSigmaP->Length2() +	(inParticle->getV() - MeanV).Length2()/inSigmaV->Length2());
 }
 
@@ -896,7 +896,7 @@ void CHalo::mergeStatisticalRec(CHalo* prevHalo, int &flag){
 	//For all subhalos of one halo, check if the subhalos are statisticaly equal
 	//If they are erase one of the subhalos, and add it to the other
 	for (list<CHalo*>::iterator it = prevHalo->begin(); it != prevHalo->end(); it++) {
-		double tmp1= ((MeanP - *((*it)->getMeanP()))/SigmaP).Length2();
+		double tmp1= ((MeanP - *((*+it)->getMeanP()))/SigmaP).Length2();
 		double tmp2= ((MeanV - *((*it)->getMeanV()))/SigmaV).Length2();
 
 		if (this != (*it) && NrParticles*(tmp1 + tmp2) < 200) {
