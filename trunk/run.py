@@ -45,7 +45,7 @@ def run(ScaleDensity,b,f):
     sortedDataA = p.sort(amigaData[:,4])[::-1]
 
 
-
+    p.figure()
     p.loglog(sortedData,range(1,len(sortedData)+1))
     p.loglog(sortedDataR,range(1,len(sortedDataR)+1))
     p.loglog(sortedDataA,range(1,len(sortedDataA)+1))
@@ -54,16 +54,21 @@ def run(ScaleDensity,b,f):
     p.savefig(savepath+name+".png")
 
 
-ScaleDensity = range(300,400,10)
-b = p.linspace(0.18,0.3,12)
-f = p.linspace(0.4,0.9)
-
+ScaleDensity = [360]#range(300,400,20)
+b = p.linspace(0.2,0.3,12)
+f = p.linspace(0.5,0.9,4)
+print f
 runs = len(ScaleDensity)*len(b)*len(f)
 count = 1.
-""""for i in ScaleDensity:
-    for j in n:
+
+for i in ScaleDensity:
+    for j in b:
         for k in f:
+            print "__________________________________________"
+            print
             print str(count/runs*100)+"%"
+            print "__________________________________________"
             run(i,j,k)
-            count += 1"""
-run(ScaleDensity[0],b[0],f[0])
+            count += 1
+            
+#run(ScaleDensity[0],b[0],f[0])
