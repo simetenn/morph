@@ -47,7 +47,7 @@ CHalo::CHalo(CArray* inArray){
 	// and standard deviation of velocity
 	NrParticles = inArray->get(0);
 	Mass = inArray->get(1);
-	MeanP.Set(inArray->get(2),inArray->get(3),inArray->get(4));
+	MeanP.Set(inArray->get(2),inArray->get(3),inArray->get(4));	
 	MeanV.Set(inArray->get(5),inArray->get(6),inArray->get(7));
 	SigmaP.Set(inArray->get(8),inArray->get(9),inArray->get(10));
 	SigmaV.Set(inArray->get(11),inArray->get(12),inArray->get(13));
