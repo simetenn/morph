@@ -362,7 +362,7 @@ void CHalos::loadClaudio(string Filename){
 
 	count = (int)(size/ (double)sizeof(particle_save));
 	
-	cout << "Nr Particles read in:" << count << endl;
+	//cout << "Nr Particles read in:" << count << endl;
 	
 	particle_save* block = new particle_save[count];
 	file.read((char *)block, sizeof(particle_save)*count);
@@ -821,9 +821,13 @@ CHalos* CHalos::master(){
 	vector<CArray*> Array (size-1);
 	CParticle tmpParticle;
 
+	cout << "------------------------"<< endl;
+	cout << "NrHalos: " << NrHalos << endl;
+	cout << "------------------------"<< endl;
+	
 	//Initialize, sending one halo to each processor
 	for (int p = 1; p < size; p++){
-		//cout << "Initializing for halo nr: " << p-1 << endl;
+		cout << "Initializing for halo nr: " << p-1 << endl;
 
 		//Add how many particles in halo to be sent
 		//and that it only is one halo to the CArray
@@ -832,6 +836,7 @@ CHalos* CHalos::master(){
 		Array[p-1]->front(1);
 		MPI.End(p,0);
 		Array[p-1]->send(p);
+		//Array[p-1]->del();
 		Array[p-1]->recieve(p,&Req[p-1]);
 		count++;
 	}
@@ -842,7 +847,7 @@ CHalos* CHalos::master(){
 	cout << "-------------------------------------------------" << endl;
 	//Send halo to processor as soon as a processor finishes
 	while (count < NrHalos) {
-		//cout << "Calculating for halo nr: " << count << endl;
+		cout << "Calculating for halo nr: " << count << endl;
 		//Listening for a processor to finish
 		processor = MPI.listener(Req);
 		FinalHalos->addHalos(Array[processor-1]);
@@ -857,6 +862,7 @@ CHalos* CHalos::master(){
 
 		//Send the array and start listening for the response
 		Array[processor-1]->send(processor);
+		//Array[processor-1]->del();
 		Array[processor-1]->recieve(processor,&Req[processor-1]);
 		count++;
 

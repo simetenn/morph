@@ -582,12 +582,18 @@ void CHalo::savePhi(string Filename){
 //save the data for a single halo to file
 void CHalo::save(string Filename, double value){
 	fstream file;
-	file.open((myConstants::constants.data + Filename).c_str(), ios::out);
+	file.open((myConstants::constants.data + Filename).c_str(), ios::out | ios::app);
 	//Saves value to Filename
 	file << value << endl;
 	file.close();
 }
 
+void CHalo::del(string Filename){
+	fstream file;
+	file.open((myConstants::constants.data + Filename).c_str(), ios::out);
+	//Saves value to Filename
+	file.close();
+}
 
 //Calculate the Phase-Space distance between a halo and a particle
 double CHalo::PhaseSpaceDistanceHalo(CParticle* inParticle){
@@ -937,6 +943,7 @@ void CHalo::SortParticlesDistance(){
 		r.push_back(data[i]->r);
 		delete data[i];
 	}
+	//delete ParticleAndDistance;
 }
 
 
@@ -1021,6 +1028,7 @@ void CHalo::createSubHalos(){
 	assignParticles(&allParticles);
 	mergeStatistical();
 	//printSubHalos();
+	del(myConstants::constants.outBounding);
 	UnbindAll();
 	removeEmptySubHalos();
 	//Unbind();

@@ -6,7 +6,7 @@
 //Particle save structure, keeps only P and V.
 struct particle_save {
 	CVector_bare P, V;
-	//unsigned int halo;
+	unsigned int halo;
 	//CVector_bare tmp;
 };
 

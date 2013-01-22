@@ -147,6 +147,7 @@ class CHalo{
 	void savePhi(string Filename);
 
 	void save(string Filename, double value);
+	void del(string Filename);
 
 
 	//Calculate the Phase-Space distance between a halo and a particle
