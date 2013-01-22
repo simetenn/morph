@@ -22,6 +22,8 @@ class CArray : public CMPI {
 
 	~CArray();
 
+	void del();
+	
 	//Creates an array, [start, end] with in_length elements
 	void linspace(double start, double end, int in_length);
 

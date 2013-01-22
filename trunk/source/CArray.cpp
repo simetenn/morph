@@ -22,7 +22,6 @@ CArray::CArray(int in_length){
 	CMPI();
 }
 
-
 //Commented out because CArray is supposed to be low level,
 //using pointers and not the vector class. Can be used if wanted/needed
 /*CArray::CArray(vector<double> in_vector){
@@ -44,13 +43,13 @@ CArray::CArray(int in_length){
 CArray::CArray(int in_length, double* in_array){
 	length = in_length;
 	array = in_array;
-	CMPI();
+	//CMPI();
 }
 
 CArray::CArray(CArray* inCArray){
 	length = inCArray->len();
 	array = inCArray->CArray2array();
-	CMPI();
+	//CMPI();
 }
 
 
@@ -59,6 +58,12 @@ CArray::~CArray(){
 		delete[] array;
 	}
 	//~CMPI(); <-why not working?
+}
+
+void CArray::del(){
+	if (array != NULL){
+		delete[] array;
+	}
 }
 
 
