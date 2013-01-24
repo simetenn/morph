@@ -8,8 +8,11 @@ void CMain::master() {
 		
 	m.loadClaudio(myConstants::constants.inFile);
 	//m.loadData(myConstants::constants.DataFile);
-	//m.printHalos();
+	//m.print();
+	//cout << m.getNrParticles() << endl;
 	m.FriendOfFriendGrid();
+	//m.save(myConstants::constants.DataFile,myConstants::constants.NrParticles2File);
+	//m.FriendOfFriendN2();
 	//m.printHalos();
 	n = *m.master();
 	//n.CalculateAllStatistics();
@@ -17,7 +20,7 @@ void CMain::master() {
 	n.CalculatePhiSpherical();
 	n[10]->savePhi(myConstants::constants.outPhi);
 	n.saveSize(myConstants::constants.outSize);
-	n.saveP(myConstants::constants.outPosition);
+	//n.saveP(myConstants::constants.outPosition);
 }
 
 void CMain::slave(){

@@ -89,7 +89,7 @@ class CHalo{
 	
 	void calculateVir();
 
-	void scalePositions(int scale);
+	void scalePositions(double scale);
 
 	//Return the list over all subhalos
 	list<CHalo*> getSubHalos();

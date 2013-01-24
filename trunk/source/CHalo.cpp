@@ -317,7 +317,7 @@ void CHalo::calculateVir(){
 	}
 }
 
-void CHalo::scalePositions(int scale){
+void CHalo::scalePositions(double scale){
 	for (int i = 0; i < NrParticles; i++) {
 		Halo[i]->setP(Halo[i]->getP()*scale);
 	}
@@ -966,15 +966,16 @@ void CHalo::CalculatePhiSpherical(){
 
 	Phi.clear();
 	Phi.push_back(Phi0);
+	//Phi.push_back(myConstants::constants.G*Halo[1]->getMass()/(r[1]*r[1])*(r[1]-r[0]));
 	for (int i = 1; i < NrParticles; i++) {
 		//Phi.push_back(myConstants::constants.G*Halo[i]->getMass()/(r[i]*r[i])+Phi[i-1]);
 		Phi.push_back((myConstants::constants.G*Halo[i]->getMass()/(r[i]*r[i]))*(r[i]-r[i-1])+Phi[i-1]);
 	}
 
-	Phi0 = Phi[NrParticles-1];
-	for (int i = 0; i < NrParticles; i++) {
-		Phi[i] -= Phi0;
-	}
+//Phi0 = Phi[NrParticles-1];
+//	for (int i = 0; i < NrParticles; i++) {
+//		Phi[i] -= Phi0;
+//	}
 }
 
 
