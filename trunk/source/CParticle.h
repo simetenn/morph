@@ -36,6 +36,7 @@ class CParticle{
 
 	void attachParticle(CParticle* p){
 		//CParticle* oldNext = nextGrid;
+		
 		p->nextGrid = nextGrid;
 		if (nextGrid != NULL)
 			nextGrid->prevGrid = p;

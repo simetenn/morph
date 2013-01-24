@@ -47,7 +47,7 @@ CHalo::CHalo(CArray* inArray){
 	// and standard deviation of velocity
 	NrParticles = inArray->get(0);
 	Mass = inArray->get(1);
-	MeanP.Set(inArray->get(2),inArray->get(3),inArray->get(4));
+	MeanP.Set(inArray->get(2),inArray->get(3),inArray->get(4));	
 	MeanV.Set(inArray->get(5),inArray->get(6),inArray->get(7));
 	SigmaP.Set(inArray->get(8),inArray->get(9),inArray->get(10));
 	SigmaV.Set(inArray->get(11),inArray->get(12),inArray->get(13));
@@ -317,7 +317,7 @@ void CHalo::calculateVir(){
 	}
 }
 
-void CHalo::scalePositions(double scale){
+void CHalo::scalePositions(int scale){
 	for (int i = 0; i < NrParticles; i++) {
 		Halo[i]->setP(Halo[i]->getP()*scale);
 	}
@@ -660,7 +660,6 @@ void CHalo::SplitHalo(){
 		return;
 	}
 
-
 	FriendOfFriendPhaseSpace();
 	clean();
 
@@ -815,38 +814,38 @@ void CHalo::removeEmptySubHalos(){
 	//if (NrParticles < myConstants::constants.HaloLimit){
 	//	cout << "WARNING: Host halo has to few particles. I need to do stuff!" << endl;
 
-	//Find the largest subhalo to use as a new hosthalo
-	/*double tmpNrParticles;
-	  double SubHaloNrParticles = -1;
-	  int count = 0;
-	  list<CHalo*>::iterator itKeep;
-	  cout << "0" <<endl;
-	  for (list<CHalo*>::iterator it = SubHalos.begin()++; it != SubHalos.end();it++) {
-	  tmpNrParticles = (*it)->getNrParticles();
-	  cout << "sdfsdfsdfsdf: " <<tmpNrParticles << endl;
-	  if (tmpNrParticles > SubHaloNrParticles){
-	  cout << "Do I ever get here?" << endl;
-	  SubHaloNrParticles = tmpNrParticles;
-	  itKeep = it;
-	  }
-	  count++;
-	  }
-	  if (count > 0){
-	  list<CHalo*> otherSubHalos = SubHalos;
-	  //otherSubHalos.remove(*itKeep);
-	  //Copy over the information from the largest subhalo to this halo
-	  cout << "1.3" <<endl;
+		//Find the largest subhalo to use as a new hosthalo
+		/*double tmpNrParticles;
+		double SubHaloNrParticles = -1;
+		int count = 0;
+		list<CHalo*>::iterator itKeep;
+		cout << "0" <<endl;
+		for (list<CHalo*>::iterator it = SubHalos.begin()++; it != SubHalos.end();it++) {
+			tmpNrParticles = (*it)->getNrParticles();
+			cout << "sdfsdfsdfsdf: " <<tmpNrParticles << endl;
+			if (tmpNrParticles > SubHaloNrParticles){
+				cout << "Do I ever get here?" << endl;
+				SubHaloNrParticles = tmpNrParticles;
+				itKeep = it;
+			}
+			count++;
+		}
+		if (count > 0){
+			list<CHalo*> otherSubHalos = SubHalos;
+			//otherSubHalos.remove(*itKeep);
+			//Copy over the information from the largest subhalo to this halo
+			cout << "1.3" <<endl;
 
-	  copy(*itKeep);
-	  cout << "1.5" <<endl;
-	  //Add the other subhalos as subhalos of the same subhalo
-	  for (list<CHalo*>::iterator it = SubHalos.begin(); it != SubHalos.end();it++) {
-	  if (it != itKeep){
-	  SubHalos.push_back(*it);
-	  }
-	  }
-	  }
-	  cout << "2" <<endl;*/
+			copy(*itKeep);
+			cout << "1.5" <<endl;
+			//Add the other subhalos as subhalos of the same subhalo
+			for (list<CHalo*>::iterator it = SubHalos.begin(); it != SubHalos.end();it++) {
+				if (it != itKeep){
+					SubHalos.push_back(*it);
+				}
+			}
+		}
+		cout << "2" <<endl;*/
 	//}
 
 	//Remove halos that has fewer than HaloLimit particles
@@ -857,7 +856,7 @@ void CHalo::removeEmptySubHalos(){
 		(*it)->removeEmptyHalos(this);
 		it = itKeep;
 	}
-
+	
 	//Calculate the new statistics
 	CalculateAllStatistics();
 }
@@ -967,16 +966,15 @@ void CHalo::CalculatePhiSpherical(){
 
 	Phi.clear();
 	Phi.push_back(Phi0);
-	//Phi.push_back(myConstants::constants.G*Halo[1]->getMass()/(r[1]*r[1])*(r[1]-r[0]));
 	for (int i = 1; i < NrParticles; i++) {
 		//Phi.push_back(myConstants::constants.G*Halo[i]->getMass()/(r[i]*r[i])+Phi[i-1]);
 		Phi.push_back((myConstants::constants.G*Halo[i]->getMass()/(r[i]*r[i]))*(r[i]-r[i-1])+Phi[i-1]);
 	}
 
-	//Phi0 = Phi[NrParticles-1];
-	//for (int i = 0; i < NrParticles; i++) {
-	//		Phi[i] -= Phi0;
-	//}
+	Phi0 = Phi[NrParticles-1];
+	for (int i = 0; i < NrParticles; i++) {
+		Phi[i] -= Phi0;
+	}
 }
 
 
@@ -1025,12 +1023,13 @@ void CHalo::UnbindAll(){
 //Do the splitting of halos, assigning particles to all halos, and merge statisticaly equal halos
 void CHalo::createSubHalos(){
 	CParticles allParticles = Halo;
+
 	SplitHalo();
 	assignParticles(&allParticles);
 	mergeStatistical();
 	//printSubHalos();
-	//del(myConstants::constants.outBounding);
-	//UnbindAll();
+	del(myConstants::constants.outBounding);
+	UnbindAll();
 	removeEmptySubHalos();
 	//Unbind();
 }

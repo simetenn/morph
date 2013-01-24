@@ -51,9 +51,9 @@ CVector CGrid::getPosition(CParticle* inParticle){
 	CVector pos = (inParticle->getP() - (Min))/Delta;
 	//pos.Add(Width);
 	//pos = CVector(pos.x()/Delta.x(),pos.y()/Delta.y(),pos.z()/Delta.z());
-	//pos.print();
+	
 	//return (inParticle->getP() - (Min))/Delta;
-	return CVector((int) (pos.x()-0.000000000001),(int)( pos.y()-0.000000000001),(int) (pos.z()-0.000000000001));
+	return CVector(((int) pos.x()),((int) pos.y()),((int) pos.z()));
 }
 
 
@@ -61,8 +61,8 @@ void CGrid::addParticle(CParticle* inParticle){
 	CVector tmpPosition = getPosition(inParticle);
 
 	//CVector tmpPosition(1,1,1);
+	//tmpPosition.Set(1,1,1);
 	//CParticles* p = (Grid[tmpPosition.x()][tmpPosition.y()][tmpPosition.z()]);
-	//tmpPosition.print();
 	//cout << p << endl;
 	//p->print();//->addParticle(inParticle);
 	inParticle->setFlag(0);
@@ -75,7 +75,6 @@ void CGrid::addParticle(CParticle* inParticle){
 	//cout << "there" << endl;
 	//tmpPosition.print();
 }
-
 
 
 CParticle* CGrid::get(int x, int y, int z) {
