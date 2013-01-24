@@ -78,7 +78,7 @@ class CHalos{
 	void loadData(string Filename);
 
 	
-	void scalePositions();
+	void scalePositions(double scale);
 	
 	
 	//Save NrParticles2File evenly distributed particles to file
