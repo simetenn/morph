@@ -321,9 +321,9 @@ void CHalos::loadBin(string Filename){
 	for (int i=0;i<count;i++) {
 		CParticle* tmpParticle = &AllParticles[i];
 
-		//block[i].P.x /= myConstants::constants.BoxSize;
-		//block[i].P.y /= myConstants::constants.BoxSize;
-		//block[i].P.z /= myConstants::constants.BoxSize;
+		block[i].P.x /= myConstants::constants.BoxSize;
+		block[i].P.y /= myConstants::constants.BoxSize;
+		block[i].P.z /= myConstants::constants.BoxSize;
 			
 		tmpParticle->setPosition(block[i].P.x,block[i].P.y,block[i].P.z);
 		tmpParticle->setVelocity(block[i].V.x,block[i].V.y,block[i].V.z);
@@ -385,9 +385,9 @@ void CHalos::loadClaudio(string Filename){
 	for (int i=0;i<count;i++) {
 		CParticle* tmpParticle = &AllParticles[i];
 
-		//block[i].P.x /= myConstants::constants.BoxSize;
-		//block[i].P.y /= myConstants::constants.BoxSize;
-		//block[i].P.z /= myConstants::constants.BoxSize;
+		block[i].P.x /= myConstants::constants.BoxSize;
+		block[i].P.y /= myConstants::constants.BoxSize;
+		block[i].P.z /= myConstants::constants.BoxSize;
 
 		tmpParticle->setPosition(block[i].P.x,block[i].P.y,block[i].P.z);
 		tmpParticle->setVelocity(block[i].V.x,block[i].V.y,block[i].V.z);
@@ -434,7 +434,7 @@ void CHalos::loadData(string Filename){
 		}
 
 		tmpHalo->addParticle(new CParticle(tmpData));
-		//NrParticles++;
+		NrParticles++;
 
 		while (!file.eof()){
 			split(strData, line, is_any_of(" "));
@@ -446,6 +446,7 @@ void CHalos::loadData(string Filename){
 			tmpHalo->addParticle(new CParticle(tmpData));
 			NrParticles++;
 			getline(file,line);
+
 		}
 		file.close();
 	}
@@ -456,9 +457,9 @@ void CHalos::loadData(string Filename){
 
 
 
-void CHalos::scalePositions(double scale){
+void CHalos::scalePositions(){
 	for (int i = 0; i < NrHalos; i++) {
-		Halos[i]->scalePositions(scale);
+		Halos[i]->scalePositions(myConstants::constants.BoxSize);
 	}
 }
 
@@ -479,14 +480,14 @@ void CHalos::save(string Filename, int NrParticles2File){
 
 	double delta = NrParticles/(double)NrParticles2File;
 	//Saves data for each particle to file
-	for (double i = 0;i < NrParticles-1;i+=delta){
+	for (double i = 0;i<NrParticles;i+=delta){
 		tmpArray = Halos[0]->get((int)i)->Particle2Array();
 
 		for (int j = 0; j < ParticleSize; j++) {
 			file << tmpArray[j] << " ";
 		}
 
-		if (i != delta*NrParticles2File) file << endl;
+		if (i != NrParticles-1) file << endl;
 	}
 	file.close();
 	cout << "Finished saving to file" << endl;
@@ -669,18 +670,12 @@ void CHalos::FriendOfFriendGrid(){
 	CVector min(-1,-1,-1);
 	CVector max(1,1,1);
 
-	scalePositions(1./myConstants::constants.BoxSize);
-	
 	//Uncomment to manually set the linking length
 	//LinkingLength = myConstants::constants.LinkingLength;
 
+	int Width = (int) 2./LinkingLength;
 
-	int Width = (int) (2./LinkingLength);
-	//cout << Width << endl;
-	//cout << 2./LinkingLength << endl;
-	//exit(1);
 	Grid.initialize(&min,&max,Width);
-	//cout <<"2" << endl;
 	Grid.Populate(Halos[0]->getParticles());
 
 	cout << "Finished initializing grid" << endl;
@@ -733,7 +728,7 @@ void CHalos::FriendOfFriendGrid(){
 	//Reseting the position to it's correct value, not the scaled one needed in the grid version.
 	
 
-	scalePositions(myConstants::constants.BoxSize);
+	scalePositions();
 	CalculateAllStatistics();
 	
 	

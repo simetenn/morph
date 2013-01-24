@@ -266,7 +266,6 @@ void CArray::send(int in_processor){
 
 //Recieve a CArray in the master processor from a slave processor
 void CArray::recieve(int in_processor, MPI_Request* Req){
-	del();
 	array = CMPI::receive_array_master(in_processor, length, Req);
 }
 
@@ -289,7 +288,6 @@ void CArray::send_slave_modified(int inLength){
 
 //Recieve a CArray from the master in a slave 
 void CArray::recieve_slave(){
-	del();
 	array = CMPI::receive_array_slave(length);
 }
 
