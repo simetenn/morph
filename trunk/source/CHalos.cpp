@@ -924,6 +924,9 @@ void CHalos::slave(){
 		cout << "Before splitting halo in slave" << endl;
 		SlaveHalos.SplitHalos();
 		cout << "after splitting halo in slave" << endl;
+		SlaveHalos[0];
+		cout << "after indexing" << endl;
+		SlaveHalos[0]->printSubHalos();
 		cout << "Nr of subhalos to send back to master node: " << SlaveHalos[0]->getNrSubHalos() << endl;
 		//SlaveHalos.getHalo(0)->printSubHalos();
 		SlaveHalos.getHalo(0)->SubHalos2Array()->send_slave_modified(tmpLength);
