@@ -916,6 +916,7 @@ void CHalos::slave(){
 
 		//Do something in each slave processor here
 		SlaveHalos.SplitHalos();
+		cout << SlaveHalos.getNrHalos() << endl;
 		//SlaveHalos.getHalo(0)->printSubHalos();
 		SlaveHalos.getHalo(0)->SubHalos2Array()->send_slave_modified(tmpLength);
 	}
