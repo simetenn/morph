@@ -958,27 +958,23 @@ void CHalo::CalculatePhiSpherical(){
 	calculateVir();
 	double M = 0;
 	double Phi0 = Mvir/Rvir;
+
 	for (int i = 1; i < NrParticles; i++) {
 		if(r[i] > Rvir) break;
-		M += Halo[i]->getMass();
+		M+=Halo[i]->getMass();
 		Phi0 += M/(r[i]*r[i])*(r[i]-r[i-1]);
 		//Phi0 += Halo[i]->getMass()/(r[i]*r[i]);
-	}
+		}
 	Phi0 *= -myConstants::constants.G;
 	
 	M = 0;
 	Phi.clear();
 	Phi.push_back(Phi0);
 	//Phi.push_back(myConstants::constants.G*Halo[1]->getMass()/(r[1]*r[1])*(r[1]-r[0]));
-	cout << r.size() << endl;
-	cout << NrParticles << endl;
-	cout << Halo.getNrParticles() << endl;
 	for (int i = 1; i < NrParticles; i++) {
-		//r[i];
-		
-		Phi.push_back(myConstants::constants.G*Halo[i]->getMass()/(r[i]*r[i])+Phi[i-1]);
-		//M += Halo[i]->getMass();
-		//Phi.push_back((myConstants::constants.G*M/(r[i]*r[i]))*(r[i]-r[i-1])+Phi[i-1]);
+		//Phi.push_back(myConstants::constants.G*Halo[i]->getMass()/(r[i]*r[i])+Phi[i-1]);
+		M += Halo[i]->getMass();
+		Phi.push_back((myConstants::constants.G*M/(r[i]*r[i]))*(r[i]-r[i-1])+Phi[i-1]);
 	}
 
 	/*Phi0 = Phi[NrParticles-1];
@@ -1005,23 +1001,21 @@ void CHalo::Unbind(int& count){
 	}
 	count += RemoveIndex.size();
 	//Be carefull, this is gona fuck me up royaly(with the RemoveIndex[i]-i)
-	for (int i = 0; i < RemoveIndex.size()-1; i++) {
+	for (int i = 0; i < RemoveIndex.size(); i++) {
 		removeParticle(RemoveIndex[i]-i);
 	}
 
-
-	CalculatePhiSpherical();
-	if (RemoveIndex.size() > 1 and NrParticles >= myConstants::constants.HaloLimit) Unbind(count);
+	if (RemoveIndex.size() > 0 and NrParticles >= myConstants::constants.HaloLimit) Unbind(count);
 }
 
 
 void CHalo::UnbindAll(){
 	int count =0;
 	Unbind(count);
-	//cout << "Percentage off particles unbound: " << (count-1)/(double)NrParticles*100 << endl;
+	cout << "Percentage off particles unbound: " << (count)/(double)NrParticles*100 << endl;
 	//savePhi(myConstants::constants.outPhi);
 	//cout << myConstants::constants.outBounding << endl;;
-	save(myConstants::constants.outBounding, (count-1)/(double)NrParticles);
+	//save(myConstants::constants.outBounding, (count-1)/(double)NrParticles);
 	//cout << "in unbind all" << endl;
 	for (list<CHalo*>::iterator it = SubHalos.begin(); it != SubHalos.end(); it++) {
 		(*it)->UnbindAll();
