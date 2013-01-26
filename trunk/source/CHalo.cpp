@@ -958,27 +958,33 @@ void CHalo::CalculatePhiSpherical(){
 	calculateVir();
 	double M = 0;
 	double Phi0 = Mvir/Rvir;
-
 	for (int i = 1; i < NrParticles; i++) {
 		if(r[i] > Rvir) break;
-		Phi0 += Halo[i]->getMass()/(r[i]*r[i])*(r[i]-r[i-1]);
+		M += Halo[i]->getMass();
+		Phi0 += M/(r[i]*r[i])*(r[i]-r[i-1]);
 		//Phi0 += Halo[i]->getMass()/(r[i]*r[i]);
-		}
+	}
 	Phi0 *= -myConstants::constants.G;
 	
-	
+	M = 0;
 	Phi.clear();
 	Phi.push_back(Phi0);
 	//Phi.push_back(myConstants::constants.G*Halo[1]->getMass()/(r[1]*r[1])*(r[1]-r[0]));
+	cout << r.size() << endl;
+	cout << NrParticles << endl;
+	cout << Halo.getNrParticles() << endl;
 	for (int i = 1; i < NrParticles; i++) {
-		//Phi.push_back(myConstants::constants.G*Halo[i]->getMass()/(r[i]*r[i])+Phi[i-1]);
-		Phi.push_back((myConstants::constants.G*Halo[i]->getMass()/(r[i]*r[i]))*(r[i]-r[i-1])+Phi[i-1]);
+		//r[i];
+		
+		Phi.push_back(myConstants::constants.G*Halo[i]->getMass()/(r[i]*r[i])+Phi[i-1]);
+		//M += Halo[i]->getMass();
+		//Phi.push_back((myConstants::constants.G*M/(r[i]*r[i]))*(r[i]-r[i-1])+Phi[i-1]);
 	}
 
-	Phi0 = Phi[NrParticles-1];
+	/*Phi0 = Phi[NrParticles-1];
 	for (int i = 0; i < NrParticles; i++) {
 		Phi[i] -= Phi0;
-	}
+		}*/
 }
 
 
