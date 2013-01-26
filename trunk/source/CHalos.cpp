@@ -840,8 +840,10 @@ CHalos* CHalos::master(){
 		Array[p-1]->front(NrInHalo[count]);
 		Array[p-1]->front(1);
 		MPI.End(p,0);
+		cout << "before send" << endl;
 		Array[p-1]->send(p);
 		//Array[p-1]->del();
+		cout << "before recieve" << endl;
 		Array[p-1]->recieve(p,&Req[p-1]);
 		count++;
 	}
