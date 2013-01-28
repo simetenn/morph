@@ -836,8 +836,11 @@ CHalos* CHalos::master(){
 
 		//Add how many particles in halo to be sent
 		//and that it only is one halo to the CArray
+		cout << "before reverting to array" << endl;
 		Array[p-1] = Halos[count]->Halo2Array();
+		cout << "before front" << endl;
 		Array[p-1]->front(NrInHalo[count]);
+		cout << "before front 2" << endl;
 		Array[p-1]->front(1);
 		MPI.End(p,0);
 		cout << "before send" << endl;
