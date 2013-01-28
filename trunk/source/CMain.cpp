@@ -5,7 +5,7 @@ Constants myConstants::constants;
 
 void CMain::master() {
 	CHalos m,n;
-		
+
 	m.loadClaudio(myConstants::constants.inFile);
 	//m.loadData(myConstants::constants.DataFile);
 	//m.print();
