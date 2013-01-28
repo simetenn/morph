@@ -53,9 +53,8 @@ CVector CGrid::getPosition(CParticle* inParticle){
 	//pos = CVector(pos.x()/Delta.x(),pos.y()/Delta.y(),pos.z()/Delta.z());
 	//pos.print();
 	//return (inParticle->getP() - (Min))/Delta;
-	return CVector((int) (pos.x()-0.000000000001),(int)( pos.y()-0.000000000001),(int) (pos.z()-0.000000000001));
+	return CVector((int) (pos.x()) % Width,(int)( pos.y())% Width,(int) (pos.z())% Width);
 }
-
 
 void CGrid::addParticle(CParticle* inParticle){
 	CVector tmpPosition = getPosition(inParticle);

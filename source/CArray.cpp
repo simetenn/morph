@@ -242,7 +242,8 @@ void CArray::front(double in_value){
 	cout << "test" << endl;
 	cout << length << endl;
 	cout << "in front" << endl;
-	double* oldArray = new double [length];
+	//double* oldArray = new double [length];
+	double oldArray [length];
 	cout << "Copying old array" << endl;
 	for (int i = 0;i<length;i++){
 		oldArray[i] = array[i];
@@ -257,7 +258,7 @@ void CArray::front(double in_value){
 	for (int i = 0;i<length-1;i++){
 		array[i+1] = oldArray[i];
 	}
-	delete[] array;
+	//delete[] oldArray;
 }
 
 
