@@ -239,6 +239,8 @@ void CArray::push_back(double in_value){
 
 //Add an element to CArray in the front
 void CArray::front(double in_value){
+	cout << "test" << endl;
+	cout << length << endl;
 	cout << "in front" << endl;
 	double oldArray [length];
 	cout << "Copying old array" << endl;
