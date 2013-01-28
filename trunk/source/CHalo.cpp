@@ -1037,8 +1037,3 @@ void CHalo::createSubHalos(){
 	//Unbind();
 }
 
-
-
-//TODO:
-// - do something if the first halo has fewer than halo limit particles
-// - double check the phase distance caluclations in findHalo
