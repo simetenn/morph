@@ -921,6 +921,7 @@ void CHalos::slave(){
 
 	while (true) {
 		if (MPI.ifEnd() == 1) break;
+		cout << "Before recieve halo in slave" << endl;
 		HalosArray.recieve_slave();
 		int tmpLength = HalosArray.len();
 		CHalos SlaveHalos (&HalosArray);
