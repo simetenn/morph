@@ -239,15 +239,18 @@ void CArray::push_back(double in_value){
 
 //Add an element to CArray in the front
 void CArray::front(double in_value){
+	cout << "in front" << endl;
 	double oldArray [length];
+	cout << "Copying old array" << endl;
 	for (int i = 0;i<length;i++){
 		oldArray[i] = array[i];
 	}
-
+	cout << "Creating empty new array" << endl;
 	length += 1;
 	delete[] array;
 	array = new double [length];
 
+	cout << "Copying old values back" << endl;
 	array[0] = in_value;
 	for (int i = 0;i<length-1;i++){
 		array[i+1] = oldArray[i];
