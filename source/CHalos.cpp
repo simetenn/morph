@@ -327,7 +327,7 @@ void CHalos::loadBin(string Filename){
 			
 		tmpParticle->setPosition(block[i].P.x,block[i].P.y,block[i].P.z);
 		tmpParticle->setVelocity(block[i].V.x,block[i].V.y,block[i].V.z);
-		tmpParticle->setAcceleration(0,0,0);
+		//tmpParticle->setAcceleration(0,0,0);
 		tmpParticle->setMass(ParticleMass);
 		
 		tmpHalo->addParticle(tmpParticle);
@@ -391,7 +391,7 @@ void CHalos::loadClaudio(string Filename){
 
 		tmpParticle->setPosition(block[i].P.x,block[i].P.y,block[i].P.z);
 		tmpParticle->setVelocity(block[i].V.x,block[i].V.y,block[i].V.z);
-		tmpParticle->setAcceleration(0,0,0);
+		//tmpParticle->setAcceleration(0,0,0);
 		tmpParticle->setMass(ParticleMass);
 		
 		tmpHalo->addParticle(tmpParticle);
