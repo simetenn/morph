@@ -3,16 +3,16 @@
 
 using namespace std;
 
-int CParticle::ID_Generator = 0;
+//int CParticle::ID_Generator = 0;
 
 //Creates an "empty" particle
 CParticle::CParticle(){
 	ParticleSize =  myConstants::constants.ParticleSize;
 	
-	CVector P,V,A;
+	//CVector P,V,A;
 	Mass = 1;
-	Charge = 0;
-	Generate_ID();
+	//Charge = 0;
+	//Generate_ID();
 	HaloID = -1;
 	next = prev = nextGrid = prevGrid = NULL;
 	
@@ -23,16 +23,16 @@ CParticle::CParticle(){
 //[HaloID,Mass,Charge,Px,Py,Pz,Vx,Vy,Vz,Ax,Ay,Az]
 CParticle::CParticle(double* inArray){
 	//Some way to test if length of the array is equal to particle size
-	Generate_ID();
+	//Generate_ID();
 
 	ParticleSize =  myConstants::constants.ParticleSize;
 
 	HaloID = inArray[0];
 	Mass = inArray[1];
-	Charge = inArray[2];
-	P.Set(inArray[3],inArray[4],inArray[5]);
-	V.Set(inArray[6],inArray[7],inArray[8]);
-	A.Set(inArray[9],inArray[10],inArray[11]);
+	//Charge = inArray[2];
+	P.Set(inArray[2],inArray[3],inArray[4]);
+	V.Set(inArray[5],inArray[6],inArray[7]);
+	//A.Set(inArray[9],inArray[10],inArray[11]);
 
 	next = prev = nextGrid = prevGrid = NULL;
 }
@@ -67,7 +67,7 @@ void CParticle::RemoveFromListGrid(){
 	prevGrid =  NULL;
 }
 
-
+//Somehing weird with this???
 //Set the different values a particle has
 void CParticle::setHalo(int element){
 	if (element < 0){
@@ -81,9 +81,9 @@ void CParticle::setMass(double in_M){
 }
 
 
-void CParticle::setCharge(double in_C){
+/*void CParticle::setCharge(double in_C){
 	Charge = in_C;
-}
+	}*/
 
 
 void CParticle::setPosition(double Px, double Py, double Pz){
@@ -96,19 +96,19 @@ void CParticle::setVelocity(double Vx, double Vy, double Vz){
 }
 
 
-void CParticle::setAcceleration(double Ax, double Ay, double Az){
+/*void CParticle::setAcceleration(double Ax, double Ay, double Az){
 	A.Set(Ax,Ay,Az);
-}
+	}*/
 
 void CParticle::setData(vector<double> data){
 	HaloID = data[0];
 	Mass = data[1];
-	Charge = data[2];
+	//Charge = data[2];
 
 	for (int i = 0;i<P.getDimensions();i++){
-		P[i] = data[i+3];
-		V[i] = data[i+6];
-		A[i] = data[i+9];
+		P[i] = data[i+2];
+		V[i] = data[i+5];
+		//A[i] = data[i+9];
 	}
 }
 
@@ -125,9 +125,9 @@ void CParticle::setV(CVector inV){
 
 
 //Get the different values a particle has
-int CParticle::getID(){
+/*int CParticle::getID(){
 	return ID;
-}
+	}*/
 
 int CParticle::getHalo(){
 	return HaloID;
@@ -148,9 +148,9 @@ CVector& CParticle::getV(){
 }
 
 
-CVector& CParticle::getA(){
+/*CVector& CParticle::getA(){
 	return A;
-}
+	}*/
 
 
 int CParticle::getParticleSize(){
@@ -179,12 +179,12 @@ double* CParticle::Particle2Array(){
 	double * tmpArray = new double [ParticleSize]; //<- Memory leak
 	tmpArray[0] = HaloID;
 	tmpArray[1] = Mass;
-	tmpArray[2] = Charge;
+	//tmpArray[2] = Charge;
 	
 	for (int i = 0;i<P.getDimensions();i++){
-		tmpArray[i+3] = P[i];
-		tmpArray[i+6] = V[i];
-		tmpArray[i+9] = A[i];
+		tmpArray[i+2] = P[i];
+		tmpArray[i+5] = V[i];
+		//tmpArray[i+9] = A[i];
 	}
 
 	return tmpArray;
@@ -197,7 +197,7 @@ double* CParticle::Particle2Array(){
 void CParticle::Move(double dt){
 	for (int i = 0; i < P.getDimensions(); i++) {
 		P[i] += V[i]*dt;
-		V[i] += A[i]*dt;
+		//V[i] += A[i]*dt;
 	}
 }
 
@@ -222,16 +222,16 @@ double CParticle::PhaseSpaceDistance(CParticle* p2, CVector* inSigmaP, CVector* 
 //Print out all the information contained in one particle
 void CParticle::print(){
 	cout << "------------------------------------" << endl;
-	cout << "Particle ID: " << ID << endl;
+	//cout << "Particle ID: " << ID << endl;
 	cout << "Halo ID: " << HaloID << endl;
 	cout << "Mass: " << Mass << endl;
-	cout << "Charge: " << Charge << endl;
+	//cout << "Charge: " << Charge << endl;
 	cout << "Position:	   ";
 	P.print();
 	cout << "Velocity:	   ";
 	V.print();
-	cout << "Acceleration: ";
-	A.print();
+	//cout << "Acceleration: ";
+	//A.print();
 	cout << "------------------------------------" << endl;
 }
 
@@ -260,6 +260,6 @@ void CParticle::decreaseHalo(){
 }
 
 
-void CParticle::Generate_ID(){
+/*void CParticle::Generate_ID(){
 	ID = ID_Generator++;
-}
+	}*/
