@@ -1032,7 +1032,7 @@ void CHalo::createSubHalos(){
 	mergeStatistical();
 	//printSubHalos();
 	//del(myConstants::constants.outBounding);
-	UnbindAll();
+	//UnbindAll();
 	removeEmptySubHalos();
 	//Unbind();
 }

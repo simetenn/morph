@@ -7,7 +7,7 @@ using namespace std;
 
 class CArray : public CMPI {
  public:
-	vector<double> array;
+	
 
 	CArray();
 
@@ -89,5 +89,7 @@ class CArray : public CMPI {
 	
 	//int length;
 	//double* array;
+ protected:
+	vector<double> array;
 
 };
