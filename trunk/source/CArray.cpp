@@ -17,7 +17,7 @@ CArray::CArray(){
 
 //Create a CArray with a length and no elements
 CArray::CArray(int in_length){
-	array.clear();
+	//array.clear();
 	array.resize(in_length);
 	//CMPI();
 }
@@ -215,15 +215,39 @@ void CArray::front(double in_value){
 void CArray::send(int in_processor){
 	cout << "huh?" << array[0] << endl;
 	cout << array.size() << endl;
-	CMPI::send_array_master(array.data(), in_processor,array.size());
+	double* test = new double [array.size()]; 
+
+	vector<double> vec = array;
+	//vec.resize(array.size());
+	
+	
+	for (int i = 0; i < array.size(); i++) {
+		test[i] = array[i];
+		array[i] = i;
+		//vec[i] = array[i];
+	}
+
+	
+	
+	
+	cout << "---------------------------------" << endl;
+	double* test2 = &array.front(); 
+	cout << array[0] << endl;
+	cout << array.front() << endl;
+
+	cout << &array[0] << endl;
+	cout << &array.front() << endl;
+
+	CMPI::send_array_master(vec.data(), in_processor, array.size());
 }
 
 
 //Recieve a CArray in the master processor from a slave processor
 void CArray::recieve(int in_processor, MPI_Request* Req){
-	int length;
+	int length = array.size();
 	array.clear();
 	double* tmparray = CMPI::receive_array_master(in_processor, length, Req);
+	cout << "LOOOOOOK HEEERE! In master= " << length << endl;
 	array.resize(length);
 	array.assign(tmparray,tmparray+length);
 }
@@ -241,13 +265,15 @@ void CArray::send_slave_modified(int inLength){
 
 	double* tmpArray = new double [inLength];
 
+	cout << "LOOOOOOK HEEERE! In slave= " << inLength << endl;
+	
 	for (int i = 0; i < array.size(); i++) {
 		tmpArray[i] = array[i];
 	}
 
-	for (int j = array.size(); j < inLength; j++){
+	/*for (int j = array.size(); j < inLength; j++){
 		tmpArray[j] = -1;
-	}
+		}*/
 	
 	CMPI::send_array_slave(tmpArray, inLength);
 	
