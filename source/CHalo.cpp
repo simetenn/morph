@@ -603,7 +603,7 @@ double CHalo::PhaseSpaceDistanceHalo(CParticle* inParticle){
 }
 
 
-//Calculate the Linking Length for each halo.
+//Calculate the Linking Length for each halo.mod
 //The linking length is chosen such that a fraction f of all particles
 //atleast is linked together with one other particle
 //For large groups > NrLinking we only calculate this for NrLinking particles
@@ -1032,7 +1032,7 @@ void CHalo::createSubHalos(){
 	mergeStatistical();
 	//printSubHalos();
 	//del(myConstants::constants.outBounding);
-	UnbindAll();
+	//UnbindAll();
 	removeEmptySubHalos();
 	//Unbind();
 }
