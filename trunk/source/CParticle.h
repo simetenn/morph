@@ -55,10 +55,10 @@ class CParticle{
 	//Set the different values a particle has
 	void setHalo(int element);
 	void setMass(double in_M);
-	void setCharge(double in_C);
+	//void setCharge(double in_C);
 	void setPosition(double Px, double Py, double Pz);
 	void setVelocity(double Vx, double Vy, double Vz);
-	void setAcceleration(double Ax, double Ay, double Az);
+	//void setAcceleration(double Ax, double Ay, double Az);
 
 	//Set all data, given by a vector
 	void setData(vector<double> data);
@@ -68,12 +68,12 @@ class CParticle{
 
 
 	//Get the different values a particle has
-	int getID();
+	//int getID();
 	int getHalo();
 	double getMass();
 	CVector& getP();
 	CVector& getV();
-	CVector& getA();
+	//CVector& getA();
 	int getParticleSize();
 
 
@@ -112,15 +112,15 @@ class CParticle{
 
 
 	//put this private, and get the code to work in some way.
-	CVector P,V,A;
+	CVector P,V;//,A;
 
  protected:
-	static int ID_Generator;
+	//static int ID_Generator;
 	
-	int ID, HaloID,ParticleSize,flag;
-	double Mass, Charge;
+	int HaloID,ParticleSize,flag;
+	double Mass;
 
-	void Generate_ID();
+	//void Generate_ID();
 };
 
 
