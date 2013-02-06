@@ -327,7 +327,7 @@ void CHalos::loadBin(string Filename){
 			
 		tmpParticle->setPosition(block[i].P.x,block[i].P.y,block[i].P.z);
 		tmpParticle->setVelocity(block[i].V.x,block[i].V.y,block[i].V.z);
-		//tmpParticle->setAcceleration(0,0,0);
+		tmpParticle->setAcceleration(0,0,0);
 		tmpParticle->setMass(ParticleMass);
 		
 		tmpHalo->addParticle(tmpParticle);
@@ -391,7 +391,7 @@ void CHalos::loadClaudio(string Filename){
 
 		tmpParticle->setPosition(block[i].P.x,block[i].P.y,block[i].P.z);
 		tmpParticle->setVelocity(block[i].V.x,block[i].V.y,block[i].V.z);
-		//tmpParticle->setAcceleration(0,0,0);
+		tmpParticle->setAcceleration(0,0,0);
 		tmpParticle->setMass(ParticleMass);
 		
 		tmpHalo->addParticle(tmpParticle);
@@ -838,23 +838,12 @@ CHalos* CHalos::master(){
 		//and that it only is one halo to the CArray
 		cout << "before reverting to array" << endl;
 		Array[p-1] = Halos[count]->Halo2Array();
-
-		
 		cout << "before front" << endl;
 		Array[p-1]->front(NrInHalo[count]);
+		cout << "before front 2" << endl;
 		Array[p-1]->front(1);
-		cout << Array[p-1]->get(0) << endl;
-		cout << Array[p-1]->get(1) << endl;
-		cout << Array[p-1]->get(2) << endl;
-		cout << Array[p-1]->get(3) << endl;
-		cout << Array[p-1]->get(4) << endl;
-		cout << Array[p-1]->get(5) << endl;
-		cout << Array[p-1]->get(6) << endl;
-		cout << Array[p-1]->get(7) << endl;
-		cout << Array[p-1]->get(8) << endl;
 		MPI.End(p,0);
 		cout << "before send" << endl;
-		cout << "whut?: " << Array[p-1]->len() << endl;
 		Array[p-1]->send(p);
 		//Array[p-1]->del();
 		cout << "before recieve" << endl;
@@ -934,26 +923,11 @@ void CHalos::slave(){
 		if (MPI.ifEnd() == 1) break;
 		cout << "Before recieve halo in slave" << endl;
 		HalosArray.recieve_slave();
-		cout << "does i ever get here?" << endl;
 		int tmpLength = HalosArray.len();
-		cout << "What about here?" << endl;
-		//cout << tmpLength << endl;
-		cout << HalosArray[0] << endl;
-		cout << HalosArray[1] << endl;
-		cout << HalosArray[2] << endl;
-		cout << HalosArray[3] << endl;
-		cout << HalosArray[4] << endl;
-		cout << HalosArray[5] << endl;
-		cout << HalosArray[6] << endl;
-		cout << HalosArray[7] << endl;
-		cout << HalosArray[8] << endl;
-		cout << HalosArray[9] << endl;
-		cout << "After initializing slave halo" << endl;
 		CHalos SlaveHalos (&HalosArray);
-		
+
 		//Do something in each slave processor here
 		cout << "Before splitting halo in slave" << endl;
-		SlaveHalos.printHalos();
 		SlaveHalos.SplitHalos();
 		cout << "after splitting halo in slave" << endl;
 		SlaveHalos[0];
