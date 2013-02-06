@@ -17,7 +17,7 @@ CArray::CArray(){
 
 //Create a CArray with a length and no elements
 CArray::CArray(int in_length){
-	//array.clear();
+	array.clear();
 	array.resize(in_length);
 	//CMPI();
 }
@@ -238,7 +238,7 @@ void CArray::send(int in_processor){
 	cout << &array[0] << endl;
 	cout << &array.front() << endl;
 
-	CMPI::send_array_master(vec.data(), in_processor, array.size());
+	CMPI::send_array_master(vec.data(), in_processor, vec.size());
 }
 
 
@@ -255,7 +255,8 @@ void CArray::recieve(int in_processor, MPI_Request* Req){
 
 //Send a CArray from a slave processor to the master process
 void CArray::send_slave(){
-	CMPI::send_array_slave(array.data(), array.size());
+	vector<double> vec = array;
+	CMPI::send_array_slave(vec.data(), vec.size());
 }
 
 
@@ -264,18 +265,21 @@ void CArray::send_slave_modified(int inLength){
 	inLength += (1+myConstants::constants.HaloSize)*myConstants::constants.MaxHalos;
 
 	double* tmpArray = new double [inLength];
-
+	
 	cout << "LOOOOOOK HEEERE! In slave= " << inLength << endl;
 	
 	for (int i = 0; i < array.size(); i++) {
 		tmpArray[i] = array[i];
 	}
 
-	/*for (int j = array.size(); j < inLength; j++){
+	for (int j = array.size(); j < inLength; j++){
 		tmpArray[j] = -1;
-		}*/
+	}
+
+	vector<double> vec (tmpArray,tmpArray+inLength);
 	
-	CMPI::send_array_slave(tmpArray, inLength);
+	
+	CMPI::send_array_slave(vec.data(), vec.size());
 	
 	delete [] tmpArray;
 }
