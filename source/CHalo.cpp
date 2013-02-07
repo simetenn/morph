@@ -710,19 +710,19 @@ void CHalo::FriendOfFriendPhaseSpace(){
 		Particle = nextParticle();
 		cout << "H" << endl;
 		if (Particle == NULL) break;
-		cout << "I" << endl;
 		else {
+			cout << "I" << endl;
 			tmpHalo.clear();
-			cout << "K" << endl;
+			cout << "J" << endl;
 			//Calls findNeighbors to find the particles within linking distance
 			Particle->setFlag(1);
-			cout << "L" << endl;
+			cout << "K" << endl;
 			Particle->RemoveFromList();
-			cout << "M" << endl;
+			cout << "L" << endl;
 			findNeighborsPhaseSpace(Particle, &tmpHalo, L);
-			cout << "N" << endl;
+			cout << "M" << endl;
 			if (tmpHalo.getNrParticles() > myConstants::constants.HaloSeed && tmpHalo.getNrParticles() != NrParticles){
-				cout << "O" << endl;
+				cout << "N" << endl;
 				SubHalos.push_back(new CHalo(&tmpHalo));
 			}
 		}
