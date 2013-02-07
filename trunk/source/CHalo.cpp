@@ -657,11 +657,13 @@ double CHalo::LinkingLength(){
 //is reached or no particles are found being linked together.
 void CHalo::SplitHalo(){
 	if (Halo.getNrParticles() < myConstants::constants.HaloSeed) {
+		cout << "Finished with splithalo" << endl;
 		return;
 	}
 
-
+	cout << "Before FriendOfFriendPhaseSpace" << endl;
 	FriendOfFriendPhaseSpace();
+	cout << "Before FriendOfFriendPhaseSpace" << endl;
 	clean();
 
 	for (list<CHalo*>::iterator it = SubHalos.begin(); it != SubHalos.end(); it++) {
@@ -675,6 +677,7 @@ void CHalo::SplitHalo(){
 //Calculating Friend of Friend using recursion, in phase space.
 //It scales as N^2
 void CHalo::FriendOfFriendPhaseSpace(){
+	cout << "In FriendOfFriendPhaseSpace" << endl;
 	CalculateStatistics();
 
 	CHalo tmpHalo;
