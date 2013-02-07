@@ -265,6 +265,7 @@ void CHalos::print(){
 
 //Print out all halos, together with some information
 void CHalos::printHalos(){
+	cout << "in printhalos" << endl;
 	cout << "__________________________________" << endl;
 	for (int i = 0;i < NrHalos; i++){
 		cout << "								   " << endl;
@@ -954,6 +955,7 @@ void CHalos::slave(){
 		//Do something in each slave processor here
 		cout << "Before splitting halo in slave" << endl;
 		SlaveHalos.printHalos();
+		cout << "after printing halo in slave" << endl;
 		SlaveHalos.SplitHalos();
 		cout << "after splitting halo in slave" << endl;
 		SlaveHalos[0];
