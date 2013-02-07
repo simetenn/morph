@@ -614,15 +614,18 @@ double CHalo::LinkingLength(){
 
 	//If more than NrLinking particles, set NrLinking particles
 	//as the maximum amount of particles to use
+	cout << "AA" << endl;
 	if (NrParticles > myConstants::constants.NrLinking) {
 		delta = NrParticles/(double)myConstants::constants.NrLinking;
 		tmpNrParticles = myConstants::constants.NrLinking;
 	}
 
+	cout << "BB" << endl;
 	vector<double> LinkingLengths (tmpNrParticles);
 	int tmpLinkingLength,prevtmpLinkingLength;
 
 	//Calculate the	 phase space distance between the first particle and the particle closest to this
+	cout << "CC" << endl;
 	prevtmpLinkingLength = Halo[0]->PhaseSpaceDistance(Halo[1],&SigmaP,&SigmaV);
 	for (double j = delta; j < tmpNrParticles; j+=delta) {
 		tmpLinkingLength = Halo[0]->PhaseSpaceDistance(Halo[(int)j],&SigmaP,&SigmaV);
@@ -630,10 +633,11 @@ double CHalo::LinkingLength(){
 			prevtmpLinkingLength = tmpLinkingLength;
 		}
 	}
-
+	cout << "DD" << endl;
 	LinkingLengths[0] = prevtmpLinkingLength;
-
+	
 	//Calculate the minimum phase space distance between all the other particles
+	cout << "EE" << endl;
 	for (int i = 1; i < tmpNrParticles; i++) {
 		prevtmpLinkingLength = Halo[i]->PhaseSpaceDistance(Halo[0],&SigmaP,&SigmaV);
 		for (int j = 1; j < tmpNrParticles; j++) {
@@ -647,7 +651,9 @@ double CHalo::LinkingLength(){
 
 	//Sort the linking<lengths and return the one where a fraction f of the
 	//particles is linked together woth atleast one other aprticle
+	cout << "FF" << endl;
 	sort(LinkingLengths.begin(),LinkingLengths.end());
+	cout << "GG" << endl;
 	return LinkingLengths[(int) LinkingLengths.size()*myConstants::constants.f];
 }
 
