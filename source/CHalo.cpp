@@ -683,12 +683,15 @@ void CHalo::FriendOfFriendPhaseSpace(){
 	CHalo tmpHalo;
 	vector<CHalo*> tmpHalos;
 
-
+	cout << "A" << endl;
 	searchParticle = Halo[0];
+	cout << "B" << endl;
 	CParticle* Particle = searchParticle;
+	cout << "C" << endl;
 	SubHalos.clear();
 
 	//Create a linked list of all particles
+	cout << "D" << endl;
 	Particle->prev=NULL;
 	for (int i=1; i < NrParticles;i++){
 		Particle->setFlag(0);
@@ -698,22 +701,28 @@ void CHalo::FriendOfFriendPhaseSpace(){
 	}
 	Particle->setFlag(0);
 	Particle->next = NULL;
-
+	cout << "E" << endl;
 	double L = LinkingLength();
 	//Using recursion to link all particles belonging to a halo
+	cout << "F" << endl;
 	while (true){
+		cout << "G" << endl;
 		Particle = nextParticle();
-
+		cout << "H" << endl;
 		if (Particle == NULL) break;
+		cout << "I" << endl;
 		else {
 			tmpHalo.clear();
-
+			cout << "K" << endl;
 			//Calls findNeighbors to find the particles within linking distance
 			Particle->setFlag(1);
+			cout << "L" << endl;
 			Particle->RemoveFromList();
+			cout << "M" << endl;
 			findNeighborsPhaseSpace(Particle, &tmpHalo, L);
-
+			cout << "N" << endl;
 			if (tmpHalo.getNrParticles() > myConstants::constants.HaloSeed && tmpHalo.getNrParticles() != NrParticles){
+				cout << "O" << endl;
 				SubHalos.push_back(new CHalo(&tmpHalo));
 			}
 		}
