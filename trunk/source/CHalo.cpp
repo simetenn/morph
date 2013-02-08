@@ -642,6 +642,7 @@ double CHalo::LinkingLength(){
 	
 	//Calculate the minimum phase space distance between all the other particles
 	cout << "EE" << endl;
+	cout << tmpNrParticles << endl;
 	for (int i = 1; i < tmpNrParticles; i++) {
 		prevtmpLinkingLength = Halo[i]->PhaseSpaceDistance(Halo[0],&SigmaP,&SigmaV);
 		for (int j = 1; j < tmpNrParticles; j++) {

@@ -800,10 +800,10 @@ void CHalos::findNeighborsGrid(CParticle* inParticle, CHalo* inHalo){
 //Runs the splitting routine for all halos to split each into several subhalos
 void CHalos::SplitHalos(){
 	for (int i = 0; i < NrHalos; i++) {
-		//cout << "-------------------------------------------------" << endl;
-		//cout << "Splitting halo in phase space" << endl;
-		//cout << "Splitting halo: " << i << endl;
-		//cout << "-------------------------------------------------" << endl;
+		cout << "-------------------------------------------------" << endl;
+		cout << "Splitting halo in phase space" << endl;
+		cout << "Splitting halo: " << i << endl;
+		cout << "-------------------------------------------------" << endl;
 		Halos[i]->createSubHalos();
 	}
 }
