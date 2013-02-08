@@ -1,5 +1,7 @@
 #include "CHalos.h"
 
+//Weird behaviour
+
 using namespace std;
 
 //Sorting routines
