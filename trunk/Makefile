@@ -6,7 +6,8 @@ TARGET = LINUX #OS_X
 # Home directory of the acw program
 #HOME = /home/simen/Master/mybody-mpi/source
 
-SOURCEDIR = /home/simen/Master/mybody-mpi/source
+SOURCEDIR = ./source
+#/home/simen/Master/mybody-mpi/source
 
 INCLUDES =-I/sw/include  -I$(SOURCEDIR)  
 # library dir
@@ -29,7 +30,7 @@ CC = mpic++
 default: $(PROJECT)
 
 $(PROJECT):  $(obj) 
-	$(CC)  -L$(LIBDIR)  $(INCLUDES) -o $(PROJECT) $(obj) $(FFLAGS)  
+	$(CC)  $(INCLUDES) -o $(PROJECT) $(obj) $(FFLAGS)  
 
 %.o: %.cpp
 	$(CC) -c -o $@ $^ $(INCLUDES) $(CFLAGS)   

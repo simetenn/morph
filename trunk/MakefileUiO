@@ -6,7 +6,8 @@ TARGET = UIO
 # Home directory of the acw program
 #HOME = /home/simen/Master/mybody-mpi/source
 
-SOURCEDIR = /mn/stornext/u2/simenten/Master/masteroppgave/mybody-mpi/source
+SOURCEDIR = ./source
+#/mn/stornext/u2/simenten/Master/masteroppgave/mybody-mpi/source
 
 INCLUDES =-I/sw/include  -I$(SOURCEDIR)  
 # library dir
@@ -29,7 +30,7 @@ CC = mpicxx
 default: $(PROJECT)
 
 $(PROJECT):  $(obj) 
-	$(CC)  -L$(LIBDIR)  $(INCLUDES) -o $(PROJECT) $(obj) $(FFLAGS)  
+	$(CC)   $(INCLUDES) -o $(PROJECT) $(obj) $(FFLAGS)  
 
 %.o: %.cpp
 	$(CC) -c -o $@ $^ $(INCLUDES) $(CFLAGS)   
