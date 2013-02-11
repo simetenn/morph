@@ -711,7 +711,8 @@ void CHalos::FriendOfFriendGrid(){
 			Particle->RemoveFromListGrid();
 			Particle->setFlag(1);
 			cout <<"Linking all particles" << endl;
-			findNeighborsGrid(Particle, &tmpHalo);
+			int depth = 0;
+			findNeighborsGrid(Particle, &tmpHalo, depth);
 
 			//Only saving halos that has more than HaloLimit particles, updating NrInHalos
 			//count += tmpHalo.getNrParticles();
@@ -751,10 +752,11 @@ void CHalos::FriendOfFriendGrid(){
 }
 
 
-//Flags the given particle and adds it to the given halo.
+ //Flags the given particle and adds it to the given halo.
 //Then finds the neighboring particles, within 26 closest cubes in the grid.
 //Before calling itself for each particle found this way
-void CHalos::findNeighborsGrid(CParticle* inParticle, CHalo* inHalo){
+void CHalos::findNeighborsGrid(CParticle* inParticle, CHalo* inHalo, int& depth){
+	cout << "recursion depth: " << depth << endl;
 	cout << "findNeighborsGrid" << endl;
 	inHalo->addParticle(inParticle);
 	inParticle->RemoveFromList();
@@ -792,9 +794,10 @@ void CHalos::findNeighborsGrid(CParticle* inParticle, CHalo* inHalo){
 	cout << "After looop" << endl;
 	//Finds the neighboring particles for each particle found to be within
 	//the linking length and adds them to the given halo
+	depth++;
 	for (int i = 0; i<FriendList.getNrParticles();i++){
 		cout << "Going deeper" << endl;
-		findNeighborsGrid(FriendList[i], inHalo);
+		findNeighborsGrid(FriendList[i], inHalo, depth);
 	}
 }
 

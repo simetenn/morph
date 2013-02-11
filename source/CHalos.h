@@ -109,7 +109,7 @@ class CHalos{
 	//Flags the given particle and adds it to the given halo.
 	//Then finds the neighboring particles, within 26 closest cubes in the grid.
 	//Before calling itself for each particle found this way
-	void findNeighborsGrid(CParticle* inParticle, CHalo* inHalo);
+	void findNeighborsGrid(CParticle* inParticle, CHalo* inHalo, int& depth);
 
 
 	//Runs the splitting routine for all halos to split each into several subhalos
