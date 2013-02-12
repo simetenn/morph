@@ -618,18 +618,18 @@ double CHalo::LinkingLength(){
 
 	//If more than NrLinking particles, set NrLinking particles
 	//as the maximum amount of particles to use
-	//cout << "AA" << endl;
+	cout << "AA" << endl;
 	if (NrParticles > myConstants::constants.NrLinking) {
 		delta = NrParticles/(double)myConstants::constants.NrLinking;
 		tmpNrParticles = myConstants::constants.NrLinking;
 	}
 
-	//cout << "BB" << endl;
+	cout << "BB" << endl;
 	vector<double> LinkingLengths (tmpNrParticles);
 	int tmpLinkingLength,prevtmpLinkingLength;
 
 	//Calculate the	 phase space distance between the first particle and the particle closest to this
-	//cout << "CC" << endl;
+	cout << "CC" << endl;
 	prevtmpLinkingLength = Halo[0]->PhaseSpaceDistance(Halo[1],&SigmaP,&SigmaV);
 	for (double j = delta; j < tmpNrParticles; j+=delta) {
 		tmpLinkingLength = Halo[0]->PhaseSpaceDistance(Halo[(int)j],&SigmaP,&SigmaV);
@@ -637,11 +637,11 @@ double CHalo::LinkingLength(){
 			prevtmpLinkingLength = tmpLinkingLength;
 		}
 	}
-	//cout << "DD" << endl;
+	cout << "DD" << endl;
 	LinkingLengths[0] = prevtmpLinkingLength;
 	
 	//Calculate the minimum phase space distance between all the other particles
-	//cout << "EE" << endl;
+	cout << "EE" << endl;
 	cout << tmpNrParticles << endl;
 	for (int i = 1; i < tmpNrParticles; i++) {
 		prevtmpLinkingLength = Halo[i]->PhaseSpaceDistance(Halo[0],&SigmaP,&SigmaV);
@@ -656,9 +656,9 @@ double CHalo::LinkingLength(){
 
 	//Sort the linking<lengths and return the one where a fraction f of the
 	//particles is linked together woth atleast one other aprticle
-	//cout << "FF" << endl;
+	cout << "FF" << endl;
 	//sort(LinkingLengths.begin(),LinkingLengths.end());
-	//cout << "GG" << endl;
+	cout << "GG" << endl;
 	return LinkingLengths[(int) LinkingLengths.size()*myConstants::constants.f];
 }
 
@@ -674,7 +674,7 @@ void CHalo::SplitHalo(){
 
 	cout << "Before FriendOfFriendPhaseSpace" << endl;
 	FriendOfFriendPhaseSpace();
-	cout << "Before FriendOfFriendPhaseSpace" << endl;
+	cout << "After FriendOfFriendPhaseSpace" << endl;
 	clean();
 
 	for (list<CHalo*>::iterator it = SubHalos.begin(); it != SubHalos.end(); it++) {
@@ -688,21 +688,21 @@ void CHalo::SplitHalo(){
 //Calculating Friend of Friend using recursion, in phase space.
 //It scales as N^2
 void CHalo::FriendOfFriendPhaseSpace(){
-	//cout << "In FriendOfFriendPhaseSpace" << endl;
+	cout << "In FriendOfFriendPhaseSpace" << endl;
 	CalculateStatistics();
 
 	CHalo tmpHalo;
 	vector<CHalo*> tmpHalos;
 
-	//cout << "A" << endl;
+	cout << "A" << endl;
 	searchParticle = Halo[0];
-	//cout << "B" << endl;
+	cout << "B" << endl;
 	CParticle* Particle = searchParticle;
-	//cout << "C" << endl;
+	cout << "C" << endl;
 	SubHalos.clear();
 
 	//Create a linked list of all particles
-	//cout << "D" << endl;
+	cout << "D" << endl;
 	Particle->prev=NULL;
 	for (int i=1; i < NrParticles;i++){
 		Particle->setFlag(0);
@@ -712,28 +712,28 @@ void CHalo::FriendOfFriendPhaseSpace(){
 	}
 	Particle->setFlag(0);
 	Particle->next = NULL;
-	//cout << "E" << endl;
+	cout << "E" << endl;
 	double L = LinkingLength();
 	//Using recursion to link all particles belonging to a halo
-	//cout << "F" << endl;
+	cout << "F" << endl;
 	while (true){
-		//cout << "G" << endl;
+		cout << "G" << endl;
 		Particle = nextParticle();
-		//cout << "H" << endl;
+		cout << "H" << endl;
 		if (Particle == NULL) break;
 		else {
-			//cout << "I" << endl;
+		cout << "I" << endl;
 			tmpHalo.clear();
-			//cout << "J" << endl;
+			cout << "J" << endl;
 			//Calls findNeighbors to find the particles within linking distance
 			Particle->setFlag(1);
-			//cout << "K" << endl;
+			cout << "K" << endl;
 			Particle->RemoveFromList();
-			//cout << "L" << endl;
+			cout << "L" << endl;
 			findNeighborsPhaseSpace(Particle, &tmpHalo, L);
-			//cout << "M" << endl;
+			cout << "M" << endl;
 			if (tmpHalo.getNrParticles() > myConstants::constants.HaloSeed && tmpHalo.getNrParticles() != NrParticles){
-				//cout << "N" << endl;
+				cout << "N" << endl;
 				SubHalos.push_back(new CHalo(&tmpHalo));
 			}
 		}
