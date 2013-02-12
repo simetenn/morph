@@ -756,7 +756,7 @@ void CHalos::FriendOfFriendGrid(){
 //Then finds the neighboring particles, within 26 closest cubes in the grid.
 //Before calling itself for each particle found this way
 void CHalos::findNeighborsGrid(CParticle* inParticle, CHalo* inHalo, int& depth){
-	//cout << "recursion depth: " << depth << endl;
+	cout << "recursion depth: " << depth << endl;
 	//cout << "findNeighborsGrid" << endl;
 	inHalo->addParticle(inParticle);
 	inParticle->RemoveFromList();
