@@ -305,9 +305,9 @@ void CHalos::loadBin(string Filename){
 	file.read((char *)&count, sizeof(unsigned int));
 	particle_save* block = new particle_save[count];
 	file.read((char *)block, sizeof(particle_save)*count);
-	
+
 	double ParticleMass = myConstants::constants.RhoC*myConstants::constants.OmegaD*pow(myConstants::constants.BoxSize,3)/count;
-	
+
 	Halos.clear();
 	NrInHalo.clear();
 	NrHalos = 1;
@@ -327,12 +327,12 @@ void CHalos::loadBin(string Filename){
 		//block[i].P.x /= myConstants::constants.BoxSize;
 		//block[i].P.y /= myConstants::constants.BoxSize;
 		//block[i].P.z /= myConstants::constants.BoxSize;
-			
+
 		tmpParticle->setPosition(block[i].P.x,block[i].P.y,block[i].P.z);
 		tmpParticle->setVelocity(block[i].V.x,block[i].V.y,block[i].V.z);
 		//tmpParticle->setAcceleration(0,0,0);
 		tmpParticle->setMass(ParticleMass);
-		
+
 		tmpHalo->addParticle(tmpParticle);
 	}
 
@@ -364,14 +364,14 @@ void CHalos::loadClaudio(string Filename){
 	file.seekg (0, ios::beg);
 
 	count = (int)(size/ (double)sizeof(particle_save));
-	
+
 	//cout << "Nr Particles read in:" << count << endl;
-	
+
 	particle_save* block = new particle_save[count];
 	file.read((char *)block, sizeof(particle_save)*count);
-	
+
 	double ParticleMass = myConstants::constants.RhoC*myConstants::constants.OmegaD*pow(myConstants::constants.BoxSize,3)/count;
-	
+
 	Halos.clear();
 	NrInHalo.clear();
 	NrHalos = 1;
@@ -396,7 +396,7 @@ void CHalos::loadClaudio(string Filename){
 		tmpParticle->setVelocity(block[i].V.x,block[i].V.y,block[i].V.z);
 		//tmpParticle->setAcceleration(0,0,0);
 		tmpParticle->setMass(ParticleMass);
-		
+
 		tmpHalo->addParticle(tmpParticle);
 	}
 
@@ -583,7 +583,7 @@ void CHalos::FriendOfFriendN2(){
 	Halos.clear();
 	NrInHalo.clear();
 	for (int i = 0; i < tmpHalos.size(); i++){
-		if (tmpHalos[i]->getNrParticles() > myConstants::constants.HaloLimit){
+		if (tmpHalos[i]->getNrParticles() >= myConstants::constants.HaloLimit){
 			Halos.push_back(tmpHalos[i]);
 			NrInHalo.push_back(tmpHalos[i]->getNrParticles());
 		}
@@ -673,7 +673,7 @@ void CHalos::FriendOfFriendGrid(){
 	CVector max(1,1,1);
 
 	scalePositions(1./myConstants::constants.BoxSize);
-	
+
 	//Uncomment to manually set the linking length
 	//LinkingLength = myConstants::constants.LinkingLength;
 
@@ -716,7 +716,7 @@ void CHalos::FriendOfFriendGrid(){
 
 			//Only saving halos that has more than HaloLimit particles, updating NrInHalos
 			//count += tmpHalo.getNrParticles();
-			if (tmpHalo.getNrParticles() > myConstants::constants.HaloLimit) {
+			if (tmpHalo.getNrParticles() >= myConstants::constants.HaloLimit) {
 				Halos.push_back(new CHalo(&tmpHalo));
 				NrInHalo.push_back(tmpHalo.getNrParticles());
 			}
@@ -736,23 +736,23 @@ void CHalos::FriendOfFriendGrid(){
 	cout << "..." << endl;
 
 	//Reseting the position to it's correct value, not the scaled one needed in the grid version.
-	
+
 
 	scalePositions(myConstants::constants.BoxSize);
 	CalculateAllStatistics();
-	
-	
+
+
 	cout << "Finished calculating Halo statistics" << endl;
 	cout << "---------------------------------" << endl;
 
-	
-	
+
+
 	//Sort the halos from biggest to smalest for maximum speed during the parallelisation
 	HaloSort();
 }
 
 
- //Flags the given particle and adds it to the given halo.
+//Flags the given particle and adds it to the given halo.
 //Then finds the neighboring particles, within 26 closest cubes in the grid.
 //Before calling itself for each particle found this way
 void CHalos::findNeighborsGrid(CParticle* inParticle, CHalo* inHalo, int& depth){
@@ -765,6 +765,7 @@ void CHalos::findNeighborsGrid(CParticle* inParticle, CHalo* inHalo, int& depth)
 	CHalo FriendList;
 	CParticle* tmpParticle;
 	double distance;
+	int DoubleLinkinglengthFlag = 0;
 	//Loops through all particles and finds the ones
 	//within the linking length not assigned to a halo. Then adds them to a temporary halo
 	double L = myConstants::constants.b*LinkingLength;//pow(myConstants::constants.b*LinkingLength,2.0);
@@ -772,10 +773,24 @@ void CHalos::findNeighborsGrid(CParticle* inParticle, CHalo* inHalo, int& depth)
 	CParticle* next;
 	//cout << "Before loop" << endl;
 	for (int i=-1;i<=1;i++){
+		if (FriendList.getNrParticles() >= myConstants::constants.NrParticlesDouble) {
+			DoubleLinkinglengthFlag = 1;
+			break;
+			}
+		
 		for (int j=-1;j<=1;j++) {
-			for (int k=-1;k<=1;k++) {
-				tmpParticle = Grid.getPeriodic(Position.x()+i,Position.y()+j,Position.z()+k);
+			if (FriendList.getNrParticles() >= myConstants::constants.NrParticlesDouble) {
+				DoubleLinkinglengthFlag = 1;
+				break;
+				}
 
+			for (int k=-1;k<=1;k++) {
+				if (FriendList.getNrParticles() >= myConstants::constants.NrParticlesDouble) {
+					DoubleLinkinglengthFlag = 1;
+					break;
+					}
+
+				tmpParticle = Grid.getPeriodic(Position.x()+i,Position.y()+j,Position.z()+k);
 				while (tmpParticle != NULL) {
 					next = tmpParticle->nextGrid;
 					if (tmpParticle->getFlag() == 0){
@@ -787,6 +802,33 @@ void CHalos::findNeighborsGrid(CParticle* inParticle, CHalo* inHalo, int& depth)
 						}
 					}
 					tmpParticle = next;
+				}
+			}
+		}
+	}
+	
+	if (DoubleLinkinglengthFlag == 1) {
+		int scale = myConstants::constants.LinkingLenghtScale;
+		L = scale*L;
+		
+		for (int i=-scale;i<=scale;i++){
+			for (int j=-scale;j<=scale;j++) {
+				for (int k=-scale;k<=scale;k++) {
+					//cout << "before periodic" << endl;
+					tmpParticle = Grid.getPeriodic(Position.x()+i,Position.y()+j,Position.z()+k);
+					//cout << "after periodic" << endl;
+					while (tmpParticle != NULL) {
+						next = tmpParticle->nextGrid;
+						if (tmpParticle->getFlag() == 0){
+							distance = (inParticle->getP() - tmpParticle->getP()).Length();
+							if (distance < L){
+								tmpParticle->setFlag(1);
+								FriendList.addParticle(tmpParticle);
+								tmpParticle->RemoveFromListGrid();
+							}
+						}
+						tmpParticle = next;
+					}
 				}
 			}
 		}
@@ -839,7 +881,7 @@ CHalos* CHalos::master(){
 	cout << "------------------------"<< endl;
 	cout << "NrHalos: " << NrHalos << endl;
 	cout << "------------------------"<< endl;
-	
+
 	//Initialize, sending one halo to each processor
 	for (int p = 1; p < size; p++){
 		cout << "Initializing for halo nr: " << p-1 << endl;
@@ -849,7 +891,7 @@ CHalos* CHalos::master(){
 		cout << "before reverting to array" << endl;
 		Array[p-1] = Halos[count]->Halo2Array();
 
-		
+
 		cout << "before front" << endl;
 		Array[p-1]->front(NrInHalo[count]);
 		Array[p-1]->front(1);
@@ -960,7 +1002,7 @@ void CHalos::slave(){
 		cout << HalosArray[9] << endl;
 		cout << "After initializing slave halo" << endl;
 		CHalos SlaveHalos (&HalosArray);
-		
+
 		//Do something in each slave processor here
 		cout << "Before splitting halo in slave" << endl;
 		SlaveHalos.printHalos();
