@@ -668,13 +668,13 @@ double CHalo::LinkingLength(){
 //is reached or no particles are found being linked together.
 void CHalo::SplitHalo(){
 	if (Halo.getNrParticles() < myConstants::constants.HaloSeed) {
-		cout << "Finished with splithalo" << endl;
+		//	cout << "Finished with splithalo" << endl;
 		return;
 	}
 
-	cout << "Before FriendOfFriendPhaseSpace" << endl;
+	//cout << "Before FriendOfFriendPhaseSpace" << endl;
 	FriendOfFriendPhaseSpace();
-	cout << "After FriendOfFriendPhaseSpace" << endl;
+	//cout << "After FriendOfFriendPhaseSpace" << endl;
 	clean();
 
 	for (list<CHalo*>::iterator it = SubHalos.begin(); it != SubHalos.end(); it++) {
@@ -688,7 +688,7 @@ void CHalo::SplitHalo(){
 //Calculating Friend of Friend using recursion, in phase space.
 //It scales as N^2
 void CHalo::FriendOfFriendPhaseSpace(){
-	cout << "In FriendOfFriendPhaseSpace" << endl;
+	//cout << "In FriendOfFriendPhaseSpace" << endl;
 	CalculateStatistics();
 
 	CHalo tmpHalo;
@@ -1049,20 +1049,20 @@ void CHalo::UnbindAll(){
 
 //Do the splitting of halos, assigning particles to all halos, and merge statisticaly equal halos
 void CHalo::createSubHalos(){
-	cout << "In createSubHalos in CHalo" << endl;
+	//cout << "In createSubHalos in CHalo" << endl;
 	CParticles allParticles = Halo;
-	cout << "In createSubHalos in CHalo, before splithalo" << endl;
+	//cout << "In createSubHalos in CHalo, before splithalo" << endl;
 	SplitHalo();
-	cout << "In createSubHalos in CHalo, before assigning particles" << endl;
+	//cout << "In createSubHalos in CHalo, before assigning particles" << endl;
 	assignParticles(&allParticles);
-	cout << "In createSubHalos in CHalo, before merging statistical" << endl;
+	//cout << "In createSubHalos in CHalo, before merging statistical" << endl;
 	mergeStatistical();
 	//printSubHalos();
 	//del(myConstants::constants.outBounding);
 	//UnbindAll();
-	cout << "In createSubHalos in CHalo, before removing halos" << endl;
+	//cout << "In createSubHalos in CHalo, before removing halos" << endl;
 	removeEmptySubHalos();
-	cout << "In createSubHalos in CHalo, finished" << endl;
+	//cout << "In createSubHalos in CHalo, finished" << endl;
 	//Unbind();
 }
 

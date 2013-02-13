@@ -892,10 +892,10 @@ CHalos* CHalos::master(){
 		Array[p-1] = Halos[count]->Halo2Array();
 
 
-		cout << "before front" << endl;
+		//cout << "before front" << endl;
 		Array[p-1]->front(NrInHalo[count]);
 		Array[p-1]->front(1);
-		cout << Array[p-1]->get(0) << endl;
+		/*cout << Array[p-1]->get(0) << endl;
 		cout << Array[p-1]->get(1) << endl;
 		cout << Array[p-1]->get(2) << endl;
 		cout << Array[p-1]->get(3) << endl;
@@ -903,13 +903,13 @@ CHalos* CHalos::master(){
 		cout << Array[p-1]->get(5) << endl;
 		cout << Array[p-1]->get(6) << endl;
 		cout << Array[p-1]->get(7) << endl;
-		cout << Array[p-1]->get(8) << endl;
+		cout << Array[p-1]->get(8) << endl;*/
 		MPI.End(p,0);
-		cout << "before send" << endl;
-		cout << "whut?: " << Array[p-1]->len() << endl;
+		//cout << "before send" << endl;
+		//cout << "whut?: " << Array[p-1]->len() << endl;
 		Array[p-1]->send(p);
 		//Array[p-1]->del();
-		cout << "before recieve" << endl;
+		//cout << "before recieve" << endl;
 		Array[p-1]->recieve(p,&Req[p-1]);
 		count++;
 	}
@@ -923,11 +923,11 @@ CHalos* CHalos::master(){
 		cout << "-------------------------------------------------" << endl;
 		cout << "Calculating for halo nr: " << count << endl;
 		cout << "-------------------------------------------------" << endl;
-		cout << "Listening for a processor to finish" << endl;
+		//cout << "Listening for a processor to finish" << endl;
 		processor = MPI.listener(Req);
-		cout << "Adding halo to finalhalos" << endl;
+		//cout << "Adding halo to finalhalos" << endl;
 		FinalHalos->addHalos(Array[processor-1]);
-		cout << "Converting halo to array" << endl;
+		//cout << "Converting halo to array" << endl;
 		Array[processor-1] =  Halos[count]->Halo2Array();
 
 		MPI.End(processor,0);
@@ -938,7 +938,7 @@ CHalos* CHalos::master(){
 		Array[processor-1]->front(1);
 
 		//Send the array and start listening for the response
-		cout << "Sending array to processor: " << processor << endl;
+		//cout << "Sending array to processor: " << processor << endl;
 		Array[processor-1]->send(processor);
 		//Array[processor-1]->del();
 		cout << "Listening for processot to finish" << endl;
@@ -984,11 +984,11 @@ void CHalos::slave(){
 
 	while (true) {
 		if (MPI.ifEnd() == 1) break;
-		cout << "Before recieve halo in slave" << endl;
+		//cout << "Before recieve halo in slave" << endl;
 		HalosArray.recieve_slave();
-		cout << "does i ever get here?" << endl;
+		//cout << "does i ever get here?" << endl;
 		int tmpLength = HalosArray.len();
-		cout << "What about here?" << endl;
+		/*cout << "What about here?" << endl;
 		//cout << tmpLength << endl;
 		cout << HalosArray[0] << endl;
 		cout << HalosArray[1] << endl;
@@ -1000,19 +1000,19 @@ void CHalos::slave(){
 		cout << HalosArray[7] << endl;
 		cout << HalosArray[8] << endl;
 		cout << HalosArray[9] << endl;
-		cout << "After initializing slave halo" << endl;
+		cout << "After initializing slave halo" << endl;*/
 		CHalos SlaveHalos (&HalosArray);
 
 		//Do something in each slave processor here
-		cout << "Before splitting halo in slave" << endl;
-		SlaveHalos.printHalos();
-		cout << "after printing halo in slave" << endl;
+		//cout << "Before splitting halo in slave" << endl;
+		//SlaveHalos.printHalos();
+		//cout << "after printing halo in slave" << endl;
 		SlaveHalos.SplitHalos();
-		cout << "after splitting halo in slave" << endl;
-		SlaveHalos[0];
-		cout << "after indexing" << endl;
-		SlaveHalos[0]->printSubHalos();
-		cout << "Nr of subhalos to send back to master node: " << SlaveHalos[0]->getNrSubHalos() << endl;
+		//cout << "after splitting halo in slave" << endl;
+		//SlaveHalos[0];
+		//cout << "after indexing" << endl;
+		//SlaveHalos[0]->printSubHalos();
+		//cout << "Nr of subhalos to send back to master node: " << SlaveHalos[0]->getNrSubHalos() << endl;
 		//SlaveHalos.getHalo(0)->printSubHalos();
 		SlaveHalos.getHalo(0)->SubHalos2Array()->send_slave_modified(tmpLength);
 	}
