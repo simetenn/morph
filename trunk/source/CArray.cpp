@@ -61,10 +61,10 @@ CArray::~CArray(){
 }
 
 /*void CArray::del(){
-	if (array != NULL){
-		delete[] array;
-	}
-	}*/
+  if (array != NULL){
+  delete[] array;
+  }
+  }*/
 
 
 vector<double> CArray::getVector(){
@@ -77,7 +77,7 @@ void CArray::linspace(double start, double end, int in_length){
 	//if (array != NULL){
 	//	delete[] array;
 	//}
-	
+
 	//array = new double [length]; //<- memory leak
 	array.resize(in_length);
 	double step = (end-start)/(in_length-1);
@@ -175,16 +175,16 @@ CArray* CArray::operator+(CArray* inArray){
 //Something is wrong with this method
 //Add two CArrays
 /*CArray* CArray::add(CArray* inArray){
-	double tmp[length+inArray->len()];
-	for (int i =0; i< length;i++) {
-		tmp[i] = array[i];
-	}
-	for (int j =0; j< inArray->len();j++) {
-		tmp[length + j] = inArray->get(j);
-	}
-	
-	return new CArray(length+inArray->len(),tmp); //<- memory leak
-	}*/
+  double tmp[length+inArray->len()];
+  for (int i =0; i< length;i++) {
+  tmp[i] = array[i];
+  }
+  for (int j =0; j< inArray->len();j++) {
+  tmp[length + j] = inArray->get(j);
+  }
+
+  return new CArray(length+inArray->len(),tmp); //<- memory leak
+  }*/
 
 void CArray::add(CArray* inArray){
 	int tmplen = array.size();
@@ -215,28 +215,33 @@ void CArray::front(double in_value){
 void CArray::send(int in_processor){
 	cout << "huh?" << array[0] << endl;
 	cout << array.size() << endl;
-	double* test = new double [array.size()]; 
+	double* test = new double [array.size()];
 
 	vector<double> vec = array;
 	//vec.resize(array.size());
-	
-	
+
+
 	for (int i = 0; i < array.size(); i++) {
 		test[i] = array[i];
 		array[i] = i;
 		//vec[i] = array[i];
 	}
 
-	
-	
-	
-	cout << "---------------------------------" << endl;
-	double* test2 = &array.front(); 
-	cout << array[0] << endl;
-	cout << array.front() << endl;
 
-	cout << &array[0] << endl;
-	cout << &array.front() << endl;
+
+
+	cout << "---------------------------------" << endl;
+	cout << test[0] << endl;
+	cout << test[1] << endl;
+	cout << test[2] << endl;
+	cout << test[3] << endl;
+	cout << test[4] << endl;
+	cout << test[5] << endl;
+	cout << test[6] << endl;
+	cout << test[7] << endl;
+	cout << test[8] << endl;
+	cout << test[9] << endl;
+
 
 	CMPI::send_array_master(vec.data(), in_processor, vec.size());
 }
@@ -265,9 +270,9 @@ void CArray::send_slave_modified(int inLength){
 	inLength += (1+myConstants::constants.HaloSize)*myConstants::constants.MaxHalos;
 
 	double* tmpArray = new double [inLength];
-	
+
 	cout << "LOOOOOOK HEEERE! In slave= " << inLength << endl;
-	
+
 	for (int i = 0; i < array.size(); i++) {
 		tmpArray[i] = array[i];
 	}
@@ -277,15 +282,15 @@ void CArray::send_slave_modified(int inLength){
 	}
 
 	vector<double> vec (tmpArray,tmpArray+inLength);
-	
-	
+
+
 	CMPI::send_array_slave(vec.data(), vec.size());
-	
+
 	delete [] tmpArray;
 }
 
 
-//Recieve a CArray from the master in a slave 
+//Recieve a CArray from the master in a slave
 void CArray::recieve_slave(){
 	int length;
 	array.clear();
@@ -314,18 +319,18 @@ double* CArray::CArray2array(){
 
 //specialized, used for testing purposes only
 /*CArray* CArray::gather_sum(){
-	int result_length;
-	int size = getSize();
-	double **results = CMPI::receive_array_master_all(result_length);
-	double* resArray = new double [size-1]; // <-- Memory leak
+  int result_length;
+  int size = getSize();
+  double **results = CMPI::receive_array_master_all(result_length);
+  double* resArray = new double [size-1]; // <-- Memory leak
 
-	for (int i = 0;i<size-1;i++){
-		resArray[i] = results[i][0];
-	}
+  for (int i = 0;i<size-1;i++){
+  resArray[i] = results[i][0];
+  }
 
-	CArray* sumArray = new CArray(size-1, resArray);//<- memory leak
-	return sumArray;
-	}*/
+  CArray* sumArray = new CArray(size-1, resArray);//<- memory leak
+  return sumArray;
+  }*/
 
 
 /*double CArray::sum_MPI(int argc,char **argv){
