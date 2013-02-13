@@ -1,21 +1,16 @@
 #include "CMPI.h"
 #include <iostream>
-#include <vector>
-
-using namespace std;
+//#include <vector>
 
 
 class CArray : public CMPI {
  public:
-	
 
 	CArray();
 
 	//Create a CArray with a length and no elements
 	CArray(int in_length);
 
-	
-	
 	//Commented out because CArray is supposed to be low level,
 	//using pointers and not the vector class. Can be used if wanted/needed
 	//CArray( vector<double> in_vector);
@@ -27,10 +22,6 @@ class CArray : public CMPI {
 
 	~CArray();
 
-	vector<double> getVector();
-
-
-	
 	void del();
 	
 	//Creates an array, [start, end] with in_length elements
@@ -82,14 +73,12 @@ class CArray : public CMPI {
 
 	//specialized, used for testing purposes only
 	//double sum_MPI(int argc,char **argv);
-	//CArray* gather_sum();
+	CArray* gather_sum();
 
-	//protected:
-
-	
-	//int length;
-	//double* array;
  protected:
-	vector<double> array;
+	vector<double> vec;
+	
+	int length;
+	double* array;
 
 };

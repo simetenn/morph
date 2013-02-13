@@ -41,7 +41,7 @@ void CMain::master() {
 	n[64]->savePhi("Phi6.dat");	
 	n[128]->savePhi("Phi7.dat");*/
 	
-	//n.saveSize(myConstants::constants.outSize);
+	n.saveSize(myConstants::constants.outSize);
 	//n.saveP(myConstants::constants.outPosition);
 }
 
