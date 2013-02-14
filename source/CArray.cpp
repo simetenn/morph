@@ -288,6 +288,10 @@ void CArray::send(int in_processor){
 void CArray::recieve(int in_processor, MPI_Request* Req){
 	del();
 	array = CMPI::receive_array_master(in_processor, length, Req);
+
+	for (int i = 0; i < 10; i++) {
+		cout << array[i] << endl;
+	}
 	vec.clear();
 	vec.assign(array, array+length);
 }
@@ -295,7 +299,7 @@ void CArray::recieve(int in_processor, MPI_Request* Req){
 
 //Send a CArray from a slave processor to the master process
 void CArray::send_slave(){
-	vector<double> tmp = vec;
+	//vector<double> tmp = vec;
 	CMPI::send_array_slave(vec.data(), vec.size());
 }
 
@@ -317,7 +321,6 @@ void CArray::send_slave_modified(int inLength){
 void CArray::recieve_slave(){
 	del();
 	array = CMPI::receive_array_slave(length);
-	vec.clear();
 	vec.assign(array, array+length);
 }
 
@@ -325,7 +328,8 @@ void CArray::recieve_slave(){
 
 //Return the pointer to the array in CArray
 double* CArray::CArray2array(){
-	return vec.data();
+	vector<double> tmp = vec;
+	return array;
 }
 
 
