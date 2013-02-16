@@ -10,19 +10,18 @@ using namespace std;
 
 CArray::CArray(){
 	length = 0;
-	array = NULL;
-	vec.resize(0);
-	//CMPI();
+	dataLength = myConstants::constants.ArrayExtraSize;
+	array = new double [dataLength];
+	CMPI();
 }
 
 
 //Create a CArray with a length and no elements
 CArray::CArray(int in_length){
-	vec.resize(in_length);
-	
 	length = in_length;
-	array = new double [length]; //<- memory leak
-	//CMPI();
+	dataLength = in_length + myConstants::constants.ArrayExtraSize;
+	array = new double [dataLength]; //<- memory leak
+	CMPI();
 }
 
 //Commented out because CArray is supposed to be low level,
@@ -44,41 +43,56 @@ CArray::CArray(int in_length){
 
 //create a CArray from an array
 CArray::CArray(int in_length, double* in_array){
-	//.resize(in_length);
-	vec.assign(in_array,in_array+in_length);
 	length = in_length;
-	array = in_array;
+	dataLength = in_length + myConstants::constants.ArrayExtraSize;
+
+	array = new double [dataLength];
+	for (int i = 0; i < length; i++) {
+		array[i] = in_array[i];
+	}
+
 	//CMPI();
 }
 
+
 CArray::CArray(CArray* inCArray){
 	length = inCArray->len();
+	dataLength = length + myConstants::constants.ArrayExtraSize;
 	array = inCArray->CArray2array();
 	//CMPI();
 }
 
 
 CArray::~CArray(){
-	if (array != NULL){
-		delete[] array;
-	}
+	del();
 	//~CMPI(); <-why not working?
 }
 
 void CArray::del(){
+	length = 0;
+	if (array != NULL){
+		delete[] array;
+	}
+}
+
+void CArray::delArray(){
 	if (array != NULL){
 		delete[] array;
 	}
 }
 
 
+
+
+
 //Creates an array, [start, end] with in_length elements
 void CArray::linspace(double start, double end, int in_length){
+	del();
 	length = in_length;
-	if (array != NULL){
-		delete[] array;
-	}
-	array = new double [length]; //<- memory leak
+	dataLength = length + myConstants::constants.ArrayExtraSize;
+
+	array = new double [dataLength]; //<- memory leak
+
 	double step = (end-start)/(length-1);
 	for (int i = 0; i < length; i++) {
 		array[i] = start + i*step;
@@ -88,8 +102,8 @@ void CArray::linspace(double start, double end, int in_length){
 
 //Print CArray line by line
 void CArray::print(){
-	for (int i = 0; i < 200; i++) {
-		cout<< array[i] << endl;
+	for (int i = 0; i < 20; i++) {
+		cout << array[i] << endl;
 	}
 }
 
@@ -105,7 +119,7 @@ void CArray::print_array(){
 //Calculate the sum of the array
 double CArray::sum(){
 	double sum = 0;
-	for (int i =0; i< length;i++) {
+	for (int i = 0; i< length;i++) {
 		sum += array[i];
 	}
 	return sum;
@@ -158,7 +172,6 @@ void CArray::set(int element,double value){
 		throw "Index out of bounds";
 	}
 	else {
-		vec[element] = value;
 		array[element] = value;
 	}
 }
@@ -178,9 +191,11 @@ CArray CArray::operator+(double number){
 //Add two CArrays
 CArray* CArray::operator+(CArray* inArray){
 	double tmp[length+inArray->len()];
+
 	for (int i =0; i< length;i++) {
 		tmp[i] = array[i];
 	}
+
 	for (int j =0; j< inArray->len();j++) {
 		tmp[length + j] = inArray->get(j);
 	}
@@ -191,33 +206,39 @@ CArray* CArray::operator+(CArray* inArray){
 //Something is wrong with this method
 //Add two CArrays
 /*CArray* CArray::add(CArray* inArray){
-	double tmp[length+inArray->len()];
-	for (int i =0; i< length;i++) {
-		tmp[i] = array[i];
-	}
-	for (int j =0; j< inArray->len();j++) {
-		tmp[length + j] = inArray->get(j);
-	}
-	
-	return new CArray(length+inArray->len(),tmp); //<- memory leak
-	}*/
+  double tmp[length+inArray->len()];
+  for (int i =0; i< length;i++) {
+  tmp[i] = array[i];
+  }
+  for (int j =0; j< inArray->len();j++) {
+  tmp[length + j] = inArray->get(j);
+  }
+
+  return new CArray(length+inArray->len(),tmp); //<- memory leak
+  }*/
 
 void CArray::add(CArray* inArray){
-	double oldArray [length];
 	int oldlength = length;
-	
-	for (int i = 0;i<length;i++){
-		oldArray[i] = array[i];
+
+	if (inArray->len() < dataLength-length){
+		for (int i = 0; i < inArray->len(); i++){
+			array[length+i] = inArray->get(i);
+		}
+		return;
 	}
 
 	length += inArray->len();
-	delete[] array;
-	array = new double [length];
+	dataLength = length + myConstants::constants.ArrayExtraSize;
 
-	for (int i = 0;i<oldlength;i++){
-		array[i] = oldArray[i];
+	double* tmp = new double [dataLength];
+
+	for (int i = 0;i < oldlength;i++){
+		tmp[i] = array[i];
 	}
-	
+
+	delete[] array;
+	array = tmp;
+
 	for (int j =0; j< inArray->len();j++) {
 		array[oldlength + j] = inArray->get(j);
 	}
@@ -226,51 +247,48 @@ void CArray::add(CArray* inArray){
 
 //Add an element to CArray at the end
 void CArray::push_back(double in_value){
-	double oldArray [length];
-
-	for (int i = 0;i<length;i++){
-		oldArray[i] = array[i];
+	if (dataLength-length >= 1) {
+		array[length] = in_value;
+		length++;
+		return;
 	}
 
-	length += 1;
+	length++;
+	dataLength = length + myConstants::constants.ArrayExtraSize;
+
+	double* tmp = new double [dataLength];
+	
+	for (int i = 0;i < length-1;i++){
+		tmp[i] = array[i];
+	}
+	tmp[length-1] = in_value;
+
 	delete[] array;
-	array = new double [length];
-
-	for (int i = 0;i<length-1;i++){
-		array[i] = oldArray[i];
-	}
-	array[length-1] = in_value;
-
-	vec.push_back(in_value);
+	array = tmp;
 }
 
 
 
 //Add an element to CArray in the front
 void CArray::front(double in_value){
-	//cout << "test" << endl;
-	//cout << length << endl;
-	//cout << "in front" << endl;
-	//double* oldArray = new double [length];
-	double oldArray [length];
-	//cout << "Copying old array" << endl;
-	for (int i = 0;i<length;i++){
-		oldArray[i] = array[i];
-	}
-	//cout << "Creating empty new array" << endl;
-	length += 1;
-	delete[] array;
-	array = new double [length];
-
-	//cout << "Copying old values back" << endl;
-	array[0] = in_value;
-	for (int i = 0;i<length-1;i++){
-		array[i+1] = oldArray[i];
+	length++;
+	if (dataLength-length >= 0) {
+		for (int i = length; i > 0; i--) {
+			array[i] = array[i-1];
+		}
+		array[0] = in_value;
+		return;
 	}
 
-	vec.insert(vec.begin(), in_value);
+	dataLength = length + myConstants::constants.ArrayExtraSize;
+	double* tmp = new double [dataLength];
+	for (int i = length; i > 0; i--) {
+		tmp[i] = array[i-1];
+	}
+	tmp[0] = in_value;
 	
-	//delete[] oldArray;
+	delete[] array;
+	array = tmp;
 }
 
 
@@ -279,56 +297,46 @@ void CArray::front(double in_value){
 
 //Send a CArray from the master processor to a slave processor
 void CArray::send(int in_processor){
-	//vector<double> tmp = vec;
-	CMPI::send_array_master(vec.data(), in_processor,vec.size());
+	CMPI::send_array_master(array, in_processor,length);
 }
 
 
 //Recieve a CArray in the master processor from a slave processor
 void CArray::recieve(int in_processor, MPI_Request* Req){
-	del();
-	array = CMPI::receive_array_master(in_processor, length, Req);
+	//del();
+	delArray();
 
-	for (int i = 0; i < 10; i++) {
-		cout << array[i] << endl;
-	}
-	vec.clear();
-	vec.assign(array, array+length);
+	array = CMPI::receive_array_master(in_processor, length, Req);
+	dataLength = length + myConstants::constants.ArrayExtraSize;
 }
 
 
 //Send a CArray from a slave processor to the master process
 void CArray::send_slave(){
-	//vector<double> tmp = vec;
-	CMPI::send_array_slave(vec.data(), vec.size());
+	CMPI::send_array_slave(array, length);
 }
 
 void CArray::send_slave_modified(int inLength){
 	inLength = inLength+(1+myConstants::constants.HaloSize)*myConstants::constants.MaxHalos;
 
-	double* tmpArray = new double [inLength];
-	vector<double> tmp;
-	tmp.resize(inLength);
+	double tmpArray [inLength];
 	for (int i = 0; i < length; i++) {
 		tmpArray[i] = array[i];
-		tmp[i] = array[i];
 	}
-	
-	CMPI::send_array_slave(tmp.data(), inLength);
+	CMPI::send_array_slave(tmpArray, inLength);
 }
 
-//Recieve a CArray from the master in a slave 
+//Recieve a CArray from the master in a slave
 void CArray::recieve_slave(){
 	del();
 	array = CMPI::receive_array_slave(length);
-	vec.assign(array, array+length);
+	dataLength = length + myConstants::constants.ArrayExtraSize;
 }
 
 
 
 //Return the pointer to the array in CArray
 double* CArray::CArray2array(){
-	vector<double> tmp = vec;
 	return array;
 }
 

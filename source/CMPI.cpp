@@ -55,7 +55,6 @@ void CMPI::send_array_master(double* master_send_array, int processor, int lengt
 	MPI_Request Req;
 	//send the length
 	MPI_Send(&length,1,MPI_INT,processor,processor,MPI_COMM_WORLD);
-	cout << "MPI:" <<  master_send_array[0] <<endl;
 	//send the array
 	MPI_Isend(master_send_array,length,MPI_DOUBLE,processor,processor+size,MPI_COMM_WORLD, &Req);
 }
@@ -72,9 +71,7 @@ double* CMPI::receive_array_master(int processor, int& master_length, MPI_Reques
 
 	//Create an array longer than needed to avoid having to send the length back
 	//from the master processor
-	cout << "LOOOOOOK HEEERE! In masterMPI= " << master_length << endl;
 	master_length += (1+myConstants::constants.HaloSize)*myConstants::constants.MaxHalos;
-	cout << "LOOOOOOK HEEERE! In masterMPI= " << master_length << endl;
 	double* master_receive_array = new double [master_length]; //<- Memory leak
 
 	//Recieve the array, non blocking
@@ -99,7 +96,7 @@ double* CMPI::receive_array_slave(int& slave_length){
 	//cout << "MPI: TRALALALALA "<< slave_length << endl;
 	double* slave_receive_array = new double [slave_length]; //<- memory leak
 	MPI_Recv(slave_receive_array,slave_length,MPI_DOUBLE,0,rank+size,MPI_COMM_WORLD,&Stat);
-	cout << "MPI: Slave "<< slave_receive_array[0]  << endl;
+	
 	return slave_receive_array;
 }
 
