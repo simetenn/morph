@@ -22,7 +22,10 @@ class CArray : public CMPI {
 
 	~CArray();
 
+	
 	void del();
+
+	void delArray();
 	
 	//Creates an array, [start, end] with in_length elements
 	void linspace(double start, double end, int in_length);
@@ -76,9 +79,8 @@ class CArray : public CMPI {
 	CArray* gather_sum();
 
  protected:
-	vector<double> vec;
-	
-	int length;
+
+	int length, dataLength;
 	double* array;
 
 };

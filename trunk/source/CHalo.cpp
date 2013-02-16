@@ -37,7 +37,7 @@ CHalo::CHalo(CParticles* inParticles){
 	SigmaV.Set(0,0,0);
 }
 
-//Creates CParticles from a CArray on the following form:
+//Creates CParticles from a CArra yon the following form:
 //[NrParticles, Mass, Mean position, Mean velocity, standard deviation of position,
 //standard deviation of velocity, ParticleArray 1, ParticleArray 2, ... , ParticleArray N]
 CHalo::CHalo(CArray* inArray){
@@ -642,7 +642,7 @@ double CHalo::LinkingLength(){
 	
 	//Calculate the minimum phase space distance between all the other particles
 	//cout << "EE" << endl;
-	cout << tmpNrParticles << endl;
+	//cout << tmpNrParticles << endl;
 	for (int i = 1; i < tmpNrParticles; i++) {
 		prevtmpLinkingLength = Halo[i]->PhaseSpaceDistance(Halo[0],&SigmaP,&SigmaV);
 		for (int j = 1; j < tmpNrParticles; j++) {
@@ -719,8 +719,8 @@ void CHalo::FriendOfFriendPhaseSpace(){
 	while (true){
 		//cout << "G" << endl;
 		Particle = nextParticle();
-		//cout << "H" << endl;
-		if (Particle == NULL) break;
+		//cout << "H" << endl;	
+	if (Particle == NULL) break;
 		else {
 		//cout << "I" << endl;
 			tmpHalo.clear();

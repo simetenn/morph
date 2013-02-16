@@ -43,6 +43,7 @@ void CMain::master() {
 	
 	n.saveSize(myConstants::constants.outSize);
 	//n.saveP(myConstants::constants.outPosition);
+
 }
 
 void CMain::slave(){
