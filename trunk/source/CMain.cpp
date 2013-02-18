@@ -15,7 +15,7 @@ void CMain::master() {
 	//m.saveP("positionsFOF.dat");
 	//m.save(myConstants::constants.DataFile,myConstants::constants.NrParticles2File);
 	//m.FriendOfFriendN2();
-	//m.CalculateAllStatistics();
+	m.CalculateAllStatistics();
 	
 	/*m[5]->saveHalo("velocity0.dat");
 	m[6]->saveHalo("velocity1.dat");
@@ -28,7 +28,7 @@ void CMain::master() {
 	m[13]->saveHalo("velocity8.dat");
 	m[14]->saveHalo("velocity9.dat");*/
 	
-	m.printHalos()
+	m.printHalos();
 	
 	m[0]->createSubHalos();
 	
