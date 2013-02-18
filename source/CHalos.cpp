@@ -414,6 +414,9 @@ void CHalos::loadClaudio(string Filename){
 
 //Load a text file, with all information about each particle
 void CHalos::loadData(string Filename){
+	cout << "---------------------------------" << endl;
+	cout << "Reading file " << Filename << endl;
+	
 	vector<string> strData;
 
 	ifstream file((myConstants::constants.data + Filename).c_str());
@@ -455,6 +458,10 @@ void CHalos::loadData(string Filename){
 	else cout << "Unable to open file" << endl;
 	NrInHalo.push_back(NrParticles);
 	LinkingLength = pow(1./NrParticles,1./3);
+	
+	cout << "Done loading!" << endl;
+	cout << "---------------------------------" << endl;
+	
 }
 
 
