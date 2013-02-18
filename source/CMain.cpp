@@ -27,7 +27,9 @@ void CMain::master() {
 	m[12]->saveHalo("velocity7.dat");
 	m[13]->saveHalo("velocity8.dat");
 	m[14]->saveHalo("velocity9.dat");*/
-
+	
+	m.printHalos()
+	
 	m[0]->createSubHalos();
 	
 	m.printHalos();
