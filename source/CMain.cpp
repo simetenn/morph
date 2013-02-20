@@ -6,16 +6,16 @@ Constants myConstants::constants;
 void CMain::master() {
 	CHalos m,n;
 
-	//m.loadClaudio(myConstants::constants.inFile);
-	m.loadData(myConstants::constants.DataFile);
+	m.loadClaudio(myConstants::constants.inFile);
+	//m.loadData(myConstants::constants.DataFile);
 	//m.print();
 	
 	//cout << m.getNrParticles() << endl;
-	//m.FriendOfFriendGrid();
+	m.FriendOfFriendGrid();
 	//m.saveP("positionsFOF.dat");
 	//m.save(myConstants::constants.DataFile,myConstants::constants.NrParticles2File);
 	//m.FriendOfFriendN2();
-	m.CalculateAllStatistics();
+	//m.CalculateAllStatistics();
 	
 	/*m[5]->saveHalo("velocity0.dat");
 	m[6]->saveHalo("velocity1.dat");
@@ -28,12 +28,8 @@ void CMain::master() {
 	m[13]->saveHalo("velocity8.dat");
 	m[14]->saveHalo("velocity9.dat");*/
 	
-	m.printHalos();
-	
-	m[0]->createSubHalos();
-	
-	m.printHalos();
-	//n = *m.master();
+	//m.printHalos();
+	n = *m.master();
 	//n.CalculateAllStatistics();
 	/*n.HaloSort();
 	n.CalculatePhiSpherical();
@@ -45,7 +41,7 @@ void CMain::master() {
 	n[64]->savePhi("Phi6.dat");	
 	n[128]->savePhi("Phi7.dat");*/
 	
-	m.saveSize(myConstants::constants.outSize);
+	n.saveSize(myConstants::constants.outSize);
 	//n.saveP(myConstants::constants.outPosition);
 
 }
