@@ -9,8 +9,7 @@ struct ParticleAndDistance{
 };
 
 //Sorts Mass and distance from center of halo f after distance from halo
-bool ParticleAndDistanceSortFunc(ParticleAndDistance* a, ParticleAndDistance* b){
-	return a->r < b->r;
+bool ParticleAndDistanceSortFunc(ParticleAndDistance* a, ParticleAndDistance* b){return a->r < b->r;
 }
 
 
@@ -178,9 +177,11 @@ void CHalo::copy(CHalo* inHalo) {
 //[NrParticles, Mass, Mean position, Mean velocity, standard deviation of position,
 //standard deviation of velocity, ParticleArray 1, ParticleArray 2, ... , ParticleArray N]
 CArray*	 CHalo::Halo2Array(){
+	cout << "hehehehehjejhejh: "<< NrParticles << endl;
 	CArray tmpArray(Halo.Particles2Array()); // Memory leak
 	double* Array = new double [tmpArray.len() + myConstants::constants.HaloSize]; // Memory leak
 
+	
 	Array[0] = NrParticles;
 	Array[1] = Mass;
 	for (int i = 0; i < MeanP.getDimensions(); i++) {
