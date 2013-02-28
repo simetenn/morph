@@ -428,18 +428,11 @@ void CHalos::loadData(string Filename){
 	double tmpData [ParticleSize];
 	NrParticles = 0;
 
+	
 	if (file.is_open()){
-		getline(file,line);
-		split(strData, line, is_any_of(" "));
-
-		for (int i = 0; i < ParticleSize; i++){
-			tmpData[i] = atof(strData[i].c_str());
-		}
-
-		tmpHalo->addParticle(new CParticle(tmpData));
-		//NrParticles++;
-
 		while (!file.eof()){
+			getline(file,line);
+
 			split(strData, line, is_any_of(" "));
 
 			for (int i = 0; i < ParticleSize; i++){
@@ -448,13 +441,24 @@ void CHalos::loadData(string Filename){
 
 			tmpHalo->addParticle(new CParticle(tmpData));
 			NrParticles++;
-			getline(file,line);
+
 		}
 		file.close();
 	}
 	else cout << "Unable to open file" << endl;
+
+	/*tmpHalo->Halo.NrParticles = NrParticles;
+	  tmpHalo->Halo.Particles.resize(NrParticles);
+	double tmp [8] = {1.,2.,3.,4.,5.,6.,7.,8.};
+	for (int i = 0; i < NrParticles; i++) {
+		tmpHalo->Halo.Particles[i] = new CParticle(tmp);
+		}*/
+
 	NrInHalo.push_back(NrParticles);
 	LinkingLength = pow(1./NrParticles,1./3);
+
+	//Why do i have to do this. Doublecheck hwo addParticle works
+	//tmpHalo->setNrParticles(NrParticles);
 }
 
 
@@ -776,19 +780,19 @@ void CHalos::findNeighborsGrid(CParticle* inParticle, CHalo* inHalo, int& depth)
 		if (FriendList.getNrParticles() >= myConstants::constants.NrParticlesDouble) {
 			DoubleLinkinglengthFlag = 1;
 			break;
-			}
-		
+		}
+
 		for (int j=-1;j<=1;j++) {
 			if (FriendList.getNrParticles() >= myConstants::constants.NrParticlesDouble) {
 				DoubleLinkinglengthFlag = 1;
 				break;
-				}
+			}
 
 			for (int k=-1;k<=1;k++) {
 				if (FriendList.getNrParticles() >= myConstants::constants.NrParticlesDouble) {
 					DoubleLinkinglengthFlag = 1;
 					break;
-					}
+				}
 
 				tmpParticle = Grid.getPeriodic(Position.x()+i,Position.y()+j,Position.z()+k);
 				while (tmpParticle != NULL) {
@@ -806,11 +810,11 @@ void CHalos::findNeighborsGrid(CParticle* inParticle, CHalo* inHalo, int& depth)
 			}
 		}
 	}
-	
+
 	if (DoubleLinkinglengthFlag == 1) {
 		int scale = myConstants::constants.LinkingLenghtScale;
 		L = scale*L;
-		
+
 		for (int i=-scale;i<=scale;i++){
 			for (int j=-scale;j<=scale;j++) {
 				for (int k=-scale;k<=scale;k++) {
@@ -896,20 +900,21 @@ CHalos* CHalos::master(){
 		Array[p-1]->front(NrInHalo[count]);
 		Array[p-1]->front(1);
 		/*cout << Array[p-1]->get(0) << endl;
-		cout << Array[p-1]->get(1) << endl;
-		cout << Array[p-1]->get(2) << endl;
-		cout << Array[p-1]->get(3) << endl;
-		cout << Array[p-1]->get(4) << endl;
-		cout << Array[p-1]->get(5) << endl;
-		cout << Array[p-1]->get(6) << endl;
-		cout << Array[p-1]->get(7) << endl;
-		cout << Array[p-1]->get(8) << endl;*/
+		  cout << Array[p-1]->get(1) << endl;
+		  cout << Array[p-1]->get(2) << endl;
+		  cout << Array[p-1]->get(3) << endl;
+		  cout << Array[p-1]->get(4) << endl;
+		  cout << Array[p-1]->get(5) << endl;
+		  cout << Array[p-1]->get(6) << endl;
+		  cout << Array[p-1]->get(7) << endl;
+		  cout << Array[p-1]->get(8) << endl;*/
 		MPI.End(p,0);
 		//cout << "before send" << endl;
 		//cout << "whut?: " << Array[p-1]->len() << endl;
+		Array[p-1]->print();
 		Array[p-1]->send(p);
 		//Array[p-1]->del();
-		//cout << "before recieve" << endl;
+		cout << "before recieve" << endl;
 		Array[p-1]->recieve(p,&Req[p-1]);
 		count++;
 	}
@@ -949,7 +954,7 @@ CHalos* CHalos::master(){
 	//Waiting for all processors to finish their last task
 	cout << "Waiting for the rest of the processors to finish" << endl;
 	MPI.WaitAll(Req);
-
+	cout << "after wait" << endl;
 	for (int i = 0; i < size-1;i++){
 		//processor = MPI.listener(Req);
 		//FinalHalos->addHalos(Array[processor]);
@@ -984,8 +989,9 @@ void CHalos::slave(){
 
 	while (true) {
 		if (MPI.ifEnd() == 1) break;
-		//cout << "Before recieve halo in slave" << endl;
+		cout << "Before recieve halo in slave" << endl;
 		HalosArray.recieve_slave();
+		HalosArray.print();
 		//cout << "does i ever get here?" << endl;
 		int tmpLength = HalosArray.len();
 		/*cout << "What about here?" << endl;
@@ -999,21 +1005,28 @@ void CHalos::slave(){
 		cout << HalosArray[6] << endl;
 		cout << HalosArray[7] << endl;
 		cout << HalosArray[8] << endl;
-		cout << HalosArray[9] << endl;
-		cout << "After initializing slave halo" << endl;*/
+		cout << HalosArray[9] << endl;*/
+		cout << "After initializing slave halo" << endl;
 		CHalos SlaveHalos (&HalosArray);
 
 		//Do something in each slave processor here
 		//cout << "Before splitting halo in slave" << endl;
 		//SlaveHalos.printHalos();
 		//cout << "after printing halo in slave" << endl;
-		SlaveHalos.SplitHalos();
+		//SlaveHalos.SplitHalos();
 		//cout << "after splitting halo in slave" << endl;
 		//SlaveHalos[0];
-		//cout << "after indexing" << endl;
+		cout << "after indexing" << endl;
 		//SlaveHalos[0]->printSubHalos();
 		//cout << "Nr of subhalos to send back to master node: " << SlaveHalos[0]->getNrSubHalos() << endl;
 		//SlaveHalos.getHalo(0)->printSubHalos();
+		/*double tmp [tmpLength];
+		for (int i = 0; i < tmpLength; i++) {
+			tmp[i] = (double)i;
+			}*/
+		
+		//CArray tmpArray (tmpLength,tmp);
+		//tmpArray.send_slave_modified(tmpLength);
 		SlaveHalos.getHalo(0)->SubHalos2Array()->send_slave_modified(tmpLength);
 	}
 }

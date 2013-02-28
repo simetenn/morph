@@ -329,7 +329,9 @@ void CArray::send_slave_modified(int inLength){
 //Recieve a CArray from the master in a slave
 void CArray::recieve_slave(){
 	del();
+	cout << "in carray recieve" << endl;
 	array = CMPI::receive_array_slave(length);
+	cout << "in arrary test"<<length <<endl;
 	dataLength = length + myConstants::constants.ArrayExtraSize;
 }
 

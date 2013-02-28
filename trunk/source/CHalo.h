@@ -203,9 +203,9 @@ class CHalo{
 	//Do the splitting of halos, assigning particles to all halos, and merge statisticaly equal halos
 	void createSubHalos();
 
-
- protected:
 	CParticles Halo;
+ protected:
+	
 	CVector MeanP,MeanV, SigmaP, SigmaV;
 	double Mass;
 	int ParticleSize, NrParticles;

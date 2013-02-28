@@ -54,9 +54,14 @@ CMPI::~CMPI(){
 void CMPI::send_array_master(double* master_send_array, int processor, int length){
 	MPI_Request Req;
 	//send the length
+	cout << "MPI: TRALALALALA "<< length << endl;
+	//length = 10000;
+	/*double* tmp = new double[length];
+	for (int i=0;i<length;i++)
+	tmp[i] = master_send_array[i];*/
 	MPI_Send(&length,1,MPI_INT,processor,processor,MPI_COMM_WORLD);
 	//send the array
-	MPI_Isend(master_send_array,length,MPI_DOUBLE,processor,processor+size,MPI_COMM_WORLD, &Req);
+	MPI_Send(master_send_array,length,MPI_DOUBLE,processor,processor+size,MPI_COMM_WORLD);
 }
 
 
@@ -91,12 +96,18 @@ void CMPI::send_array_slave(double* slave_send_array, int length){
 double* CMPI::receive_array_slave(int& slave_length){
 	MPI_Status Stat;
 	//slave_length =0;
+	cout << "before recieve length" << endl;
 	MPI_Recv(&slave_length,1,MPI_INT,0,rank,MPI_COMM_WORLD,&Stat);
 	
-	//cout << "MPI: TRALALALALA "<< slave_length << endl;
+	cout << "MPI: TRALALALALA "<< slave_length << endl;
 	double* slave_receive_array = new double [slave_length]; //<- memory leak
 	MPI_Recv(slave_receive_array,slave_length,MPI_DOUBLE,0,rank+size,MPI_COMM_WORLD,&Stat);
-	
+
+	cout << "--------------------"<< endl;
+	for (int i = 0; i < 20; i++) {
+		cout << slave_receive_array[i] << endl;
+	}
+	cout << "--------------------"<< endl;
 	return slave_receive_array;
 }
 
