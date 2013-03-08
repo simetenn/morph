@@ -7,7 +7,6 @@
 struct particle_save {
 	CVector_bare P, V;
 	unsigned int halo;
-	//CVector_bare tmp;
 };
 
 
@@ -65,7 +64,7 @@ class CHalos{
 	//Print out all halos
 	void printHalos();
 
-	
+	//Calculate the spherical potential for all halos
 	void CalculatePhiSpherical();
 	
 
@@ -77,7 +76,7 @@ class CHalos{
 	//Load a text file, with all information about each particle
 	void loadData(string Filename);
 
-	
+	//Scale all positions with a number
 	void scalePositions(double scale);
 	
 	
@@ -109,7 +108,7 @@ class CHalos{
 	//Flags the given particle and adds it to the given halo.
 	//Then finds the neighboring particles, within 26 closest cubes in the grid.
 	//Before calling itself for each particle found this way
-	void findNeighborsGrid(CParticle* inParticle, CHalo* inHalo, int& depth);
+	void findNeighborsGrid(CParticle* inParticle, CHalo* inHalo);
 
 
 	//Runs the splitting routine for all halos to split each into several subhalos

@@ -1,7 +1,5 @@
 #include "CHalos.h"
 
-//Weird behaviour
-
 using namespace std;
 
 //Sorting routines
@@ -28,23 +26,23 @@ CHalos::CHalos(){
 //nr of halos, nr of particles in halo 1, nr of particles in halo 2, ... ,
 //nr of particles of in halo N, halo array 1, halo array 2, ... halo array N]
 CHalos::CHalos(CArray* inArray){
+	
 	Halos.clear();
 	NrHalos = inArray->get(0);
 	ParticleSize = myConstants::constants.ParticleSize;
 	int particle_count = 1 + NrHalos;
 	NrParticles = (inArray->len() - 1 - NrHalos - NrHalos*myConstants::constants.HaloSize)/ParticleSize;
-
-
+	cout << NrHalos << endl;
+	
 	for (int i = 0; i < NrHalos; i++){
 		NrInHalo.push_back(inArray->get(1+i));
-
-		double tmpArray[NrInHalo[i]*ParticleSize + myConstants::constants.HaloSize];
+		double* tmpArray = new double [NrInHalo[i]*ParticleSize + myConstants::constants.HaloSize];
 
 		for (int l = 0; l < myConstants::constants.HaloSize; l++){
 			tmpArray[l] = inArray->get(particle_count);
 			particle_count++;
 		}
-
+		
 		for (int j = 0; j < NrInHalo[i];j++){
 			for (int k = 0; k < ParticleSize;k++){
 				tmpArray[j*ParticleSize+k+myConstants::constants.HaloSize] = inArray->get(particle_count);
@@ -52,7 +50,7 @@ CHalos::CHalos(CArray* inArray){
 			}
 		}
 		CArray* tmpCArray = new CArray(NrInHalo[i]*ParticleSize + myConstants::constants.HaloSize, tmpArray);
-
+		delete[] tmpArray;
 		CHalo* tmpHalo = new CHalo(tmpCArray); // <- Memory leak
 		Halos.push_back(tmpHalo);
 	}
@@ -124,20 +122,13 @@ void CHalos::addHalos(CArray* inArray){
 	NrParticles += newNrParticles;
 
 	int particle_count = 1+newNrHalos;
-	//cout << "in addHalos" << endl;
 	for (int i = 0; i < newNrHalos; i++){
-
 		NrInHalo.push_back(inArray->get(1+i));
-
 		tmpNrInHalo.push_back(inArray->get(1+i));
-
-		double tmpArray[tmpNrInHalo[i]*ParticleSize + myConstants::constants.HaloSize];
-
+		double* tmpArray = new double [tmpNrInHalo[i]*ParticleSize + myConstants::constants.HaloSize];
 
 		for (int l = 0; l < myConstants::constants.HaloSize; l++) {
-
 			tmpArray[l] = inArray->get(particle_count);
-
 			particle_count++;
 		}
 
@@ -150,6 +141,8 @@ void CHalos::addHalos(CArray* inArray){
 		CArray* tmpCArray = new CArray(tmpNrInHalo[i]*ParticleSize + myConstants::constants.HaloSize, tmpArray);
 		CHalo* tmpHalo = new CHalo(tmpCArray); // <- Memory leak
 		Halos.push_back(tmpHalo);
+
+		delete[] tmpArray;
 	}
 }
 
@@ -282,7 +275,7 @@ void CHalos::printHalos(){
 }
 
 
-
+//Calculate the spherical potential for all halos
 void CHalos::CalculatePhiSpherical(){
 	for (int i = 0; i < NrHalos; i++) {
 		Halos[i]->CalculatePhiSpherical();
@@ -324,13 +317,8 @@ void CHalos::loadBin(string Filename){
 	for (int i=0;i<count;i++) {
 		CParticle* tmpParticle = &AllParticles[i];
 
-		//block[i].P.x /= myConstants::constants.BoxSize;
-		//block[i].P.y /= myConstants::constants.BoxSize;
-		//block[i].P.z /= myConstants::constants.BoxSize;
-
 		tmpParticle->setPosition(block[i].P.x,block[i].P.y,block[i].P.z);
 		tmpParticle->setVelocity(block[i].V.x,block[i].V.y,block[i].V.z);
-		//tmpParticle->setAcceleration(0,0,0);
 		tmpParticle->setMass(ParticleMass);
 
 		tmpHalo->addParticle(tmpParticle);
@@ -365,8 +353,6 @@ void CHalos::loadClaudio(string Filename){
 
 	count = (int)(size/ (double)sizeof(particle_save));
 
-	//cout << "Nr Particles read in:" << count << endl;
-
 	particle_save* block = new particle_save[count];
 	file.read((char *)block, sizeof(particle_save)*count);
 
@@ -388,13 +374,8 @@ void CHalos::loadClaudio(string Filename){
 	for (int i=0;i<count;i++) {
 		CParticle* tmpParticle = &AllParticles[i];
 
-		//block[i].P.x /= myConstants::constants.BoxSize;
-		//block[i].P.y /= myConstants::constants.BoxSize;
-		//block[i].P.z /= myConstants::constants.BoxSize;
-
 		tmpParticle->setPosition(block[i].P.x,block[i].P.y,block[i].P.z);
 		tmpParticle->setVelocity(block[i].V.x,block[i].V.y,block[i].V.z);
-		//tmpParticle->setAcceleration(0,0,0);
 		tmpParticle->setMass(ParticleMass);
 
 		tmpHalo->addParticle(tmpParticle);
@@ -427,7 +408,6 @@ void CHalos::loadData(string Filename){
 	Halos.push_back(tmpHalo);
 	double tmpData [ParticleSize];
 	NrParticles = 0;
-
 	
 	if (file.is_open()){
 		while (!file.eof()){
@@ -447,22 +427,12 @@ void CHalos::loadData(string Filename){
 	}
 	else cout << "Unable to open file" << endl;
 
-	/*tmpHalo->Halo.NrParticles = NrParticles;
-	  tmpHalo->Halo.Particles.resize(NrParticles);
-	double tmp [8] = {1.,2.,3.,4.,5.,6.,7.,8.};
-	for (int i = 0; i < NrParticles; i++) {
-		tmpHalo->Halo.Particles[i] = new CParticle(tmp);
-		}*/
-
 	NrInHalo.push_back(NrParticles);
 	LinkingLength = pow(1./NrParticles,1./3);
-
-	//Why do i have to do this. Doublecheck hwo addParticle works
-	//tmpHalo->setNrParticles(NrParticles);
 }
 
 
-
+//Scale all positions with a number
 void CHalos::scalePositions(double scale){
 	for (int i = 0; i < NrHalos; i++) {
 		Halos[i]->scalePositions(scale);
@@ -524,8 +494,7 @@ void CHalos::saveSize(string Filename){
 	fstream file;
 	CVector tmpP;
 	file.open((myConstants::constants.data + Filename).c_str(), ios::out);
-	//sort(tmpNrInHalo.begin(),tmpNrInHalo.end());
-
+	
 	//Saves position data for each particle to file
 	for (int i = 0;i < NrHalos; i++){
 		file << NrInHalo[i] << endl;
@@ -683,11 +652,7 @@ void CHalos::FriendOfFriendGrid(){
 
 
 	int Width = (int) (2./LinkingLength);
-	//cout << Width << endl;
-	//cout << 2./LinkingLength << endl;
-	//exit(1);
 	Grid.initialize(&min,&max,Width);
-	//cout <<"2" << endl;
 	Grid.Populate(Halos[0]->getParticles());
 
 	cout << "Finished initializing grid" << endl;
@@ -714,9 +679,8 @@ void CHalos::FriendOfFriendGrid(){
 			tmpHalo.clear();
 			Particle->RemoveFromListGrid();
 			Particle->setFlag(1);
-			//cout <<"Linking all particles" << endl;
-			int depth = 0;
-			findNeighborsGrid(Particle, &tmpHalo, depth);
+			//int depth = 0;
+			findNeighborsGrid(Particle, &tmpHalo);
 
 			//Only saving halos that has more than HaloLimit particles, updating NrInHalos
 			//count += tmpHalo.getNrParticles();
@@ -740,8 +704,6 @@ void CHalos::FriendOfFriendGrid(){
 	cout << "..." << endl;
 
 	//Reseting the position to it's correct value, not the scaled one needed in the grid version.
-
-
 	scalePositions(myConstants::constants.BoxSize);
 	CalculateAllStatistics();
 
@@ -759,9 +721,7 @@ void CHalos::FriendOfFriendGrid(){
 //Flags the given particle and adds it to the given halo.
 //Then finds the neighboring particles, within 26 closest cubes in the grid.
 //Before calling itself for each particle found this way
-void CHalos::findNeighborsGrid(CParticle* inParticle, CHalo* inHalo, int& depth){
-	//cout << "recursion depth: " << depth << endl;
-	//cout << "findNeighborsGrid" << endl;
+void CHalos::findNeighborsGrid(CParticle* inParticle, CHalo* inHalo){
 	inHalo->addParticle(inParticle);
 	inParticle->RemoveFromList();
 
@@ -775,24 +735,23 @@ void CHalos::findNeighborsGrid(CParticle* inParticle, CHalo* inHalo, int& depth)
 	double L = myConstants::constants.b*LinkingLength;//pow(myConstants::constants.b*LinkingLength,2.0);
 
 	CParticle* next;
-	//cout << "Before loop" << endl;
 	for (int i=-1;i<=1;i++){
 		if (FriendList.getNrParticles() >= myConstants::constants.NrParticlesDouble) {
 			DoubleLinkinglengthFlag = 1;
 			break;
-		}
-
+			}
+		
 		for (int j=-1;j<=1;j++) {
 			if (FriendList.getNrParticles() >= myConstants::constants.NrParticlesDouble) {
 				DoubleLinkinglengthFlag = 1;
 				break;
-			}
+				}
 
 			for (int k=-1;k<=1;k++) {
 				if (FriendList.getNrParticles() >= myConstants::constants.NrParticlesDouble) {
 					DoubleLinkinglengthFlag = 1;
 					break;
-				}
+					}
 
 				tmpParticle = Grid.getPeriodic(Position.x()+i,Position.y()+j,Position.z()+k);
 				while (tmpParticle != NULL) {
@@ -810,17 +769,16 @@ void CHalos::findNeighborsGrid(CParticle* inParticle, CHalo* inHalo, int& depth)
 			}
 		}
 	}
-
+	
 	if (DoubleLinkinglengthFlag == 1) {
 		int scale = myConstants::constants.LinkingLenghtScale;
 		L = scale*L;
-
+		
 		for (int i=-scale;i<=scale;i++){
 			for (int j=-scale;j<=scale;j++) {
 				for (int k=-scale;k<=scale;k++) {
-					//cout << "before periodic" << endl;
+					
 					tmpParticle = Grid.getPeriodic(Position.x()+i,Position.y()+j,Position.z()+k);
-					//cout << "after periodic" << endl;
 					while (tmpParticle != NULL) {
 						next = tmpParticle->nextGrid;
 						if (tmpParticle->getFlag() == 0){
@@ -837,13 +795,11 @@ void CHalos::findNeighborsGrid(CParticle* inParticle, CHalo* inHalo, int& depth)
 			}
 		}
 	}
-	//cout << "After loop" << endl;
+	
 	//Finds the neighboring particles for each particle found to be within
 	//the linking length and adds them to the given halo
-	depth++;
 	for (int i = 0; i<FriendList.getNrParticles();i++){
-		//cout << "Going deeper" << endl;
-		findNeighborsGrid(FriendList[i], inHalo, depth);
+		findNeighborsGrid(FriendList[i], inHalo);
 	}
 }
 
@@ -894,27 +850,10 @@ CHalos* CHalos::master(){
 		//and that it only is one halo to the CArray
 		cout << "before reverting to array" << endl;
 		Array[p-1] = Halos[count]->Halo2Array();
-
-
-		//cout << "before front" << endl;
 		Array[p-1]->front(NrInHalo[count]);
 		Array[p-1]->front(1);
-		/*cout << Array[p-1]->get(0) << endl;
-		  cout << Array[p-1]->get(1) << endl;
-		  cout << Array[p-1]->get(2) << endl;
-		  cout << Array[p-1]->get(3) << endl;
-		  cout << Array[p-1]->get(4) << endl;
-		  cout << Array[p-1]->get(5) << endl;
-		  cout << Array[p-1]->get(6) << endl;
-		  cout << Array[p-1]->get(7) << endl;
-		  cout << Array[p-1]->get(8) << endl;*/
 		MPI.End(p,0);
-		//cout << "before send" << endl;
-		//cout << "whut?: " << Array[p-1]->len() << endl;
-		Array[p-1]->print();
 		Array[p-1]->send(p);
-		//Array[p-1]->del();
-		cout << "before recieve" << endl;
 		Array[p-1]->recieve(p,&Req[p-1]);
 		count++;
 	}
@@ -928,11 +867,8 @@ CHalos* CHalos::master(){
 		cout << "-------------------------------------------------" << endl;
 		cout << "Calculating for halo nr: " << count << endl;
 		cout << "-------------------------------------------------" << endl;
-		//cout << "Listening for a processor to finish" << endl;
 		processor = MPI.listener(Req);
-		//cout << "Adding halo to finalhalos" << endl;
 		FinalHalos->addHalos(Array[processor-1]);
-		//cout << "Converting halo to array" << endl;
 		Array[processor-1] =  Halos[count]->Halo2Array();
 
 		MPI.End(processor,0);
@@ -943,9 +879,7 @@ CHalos* CHalos::master(){
 		Array[processor-1]->front(1);
 
 		//Send the array and start listening for the response
-		//cout << "Sending array to processor: " << processor << endl;
 		Array[processor-1]->send(processor);
-		//Array[processor-1]->del();
 		cout << "Listening for processot to finish" << endl;
 		Array[processor-1]->recieve(processor,&Req[processor-1]);
 		count++;
@@ -954,11 +888,8 @@ CHalos* CHalos::master(){
 	//Waiting for all processors to finish their last task
 	cout << "Waiting for the rest of the processors to finish" << endl;
 	MPI.WaitAll(Req);
-	cout << "after wait" << endl;
+
 	for (int i = 0; i < size-1;i++){
-		//processor = MPI.listener(Req);
-		//FinalHalos->addHalos(Array[processor]);
-		//cout << "finished for" << endl;
 		FinalHalos->addHalos(Array[i]);
 	}
 	cout << "Finished" << endl;
@@ -989,44 +920,12 @@ void CHalos::slave(){
 
 	while (true) {
 		if (MPI.ifEnd() == 1) break;
-		cout << "Before recieve halo in slave" << endl;
 		HalosArray.recieve_slave();
-		HalosArray.print();
-		//cout << "does i ever get here?" << endl;
 		int tmpLength = HalosArray.len();
-		/*cout << "What about here?" << endl;
-		//cout << tmpLength << endl;
-		cout << HalosArray[0] << endl;
-		cout << HalosArray[1] << endl;
-		cout << HalosArray[2] << endl;
-		cout << HalosArray[3] << endl;
-		cout << HalosArray[4] << endl;
-		cout << HalosArray[5] << endl;
-		cout << HalosArray[6] << endl;
-		cout << HalosArray[7] << endl;
-		cout << HalosArray[8] << endl;
-		cout << HalosArray[9] << endl;*/
-		cout << "After initializing slave halo" << endl;
 		CHalos SlaveHalos (&HalosArray);
 
-		//Do something in each slave processor here
-		//cout << "Before splitting halo in slave" << endl;
-		//SlaveHalos.printHalos();
-		//cout << "after printing halo in slave" << endl;
-		//SlaveHalos.SplitHalos();
-		//cout << "after splitting halo in slave" << endl;
-		//SlaveHalos[0];
-		cout << "after indexing" << endl;
-		//SlaveHalos[0]->printSubHalos();
-		//cout << "Nr of subhalos to send back to master node: " << SlaveHalos[0]->getNrSubHalos() << endl;
-		//SlaveHalos.getHalo(0)->printSubHalos();
-		/*double tmp [tmpLength];
-		for (int i = 0; i < tmpLength; i++) {
-			tmp[i] = (double)i;
-			}*/
-		
-		//CArray tmpArray (tmpLength,tmp);
-		//tmpArray.send_slave_modified(tmpLength);
+		SlaveHalos.SplitHalos();
+
 		SlaveHalos.getHalo(0)->SubHalos2Array()->send_slave_modified(tmpLength);
 	}
 }
