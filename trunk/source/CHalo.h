@@ -86,9 +86,12 @@ class CHalo{
 	vector<double>* getR();
 	//Retturn gravitational potential, sorted as distance from center
 	vector<double>* getPhi();
-	
-	void calculateVir();
 
+	//Calculate the Virializati0n mass and radius
+	void calculateVir();
+	
+	//Scale the positions by a number
+	//mainly used in FOFGrid to scale the halos read in to be between [0,1]
 	void scalePositions(double scale);
 
 	//Return the list over all subhalos
@@ -144,16 +147,18 @@ class CHalo{
 	//Save the statistical data in the x direction, for a single halo
 	void saveHaloStatX(fstream& fileName, int& HaloID);
 
+	//save the data for a single halo to file
 	void savePhi(string Filename);
 
+	//save the data for a single halo to file
 	void save(string Filename, double value);
+	//empty content of file Filename
 	void del(string Filename);
 
 
 	//Calculate the Phase-Space distance between a halo and a particle
 	double PhaseSpaceDistanceHalo(CParticle* inParticle);
-	//Calculate the linking length of a halo
-
+	
 	//Calculate the Linking Length for each halo.
 	//The linking length is chosen such that a fraction f of all particles
 	//atleast is linked together with one other particle
@@ -203,9 +208,9 @@ class CHalo{
 	//Do the splitting of halos, assigning particles to all halos, and merge statisticaly equal halos
 	void createSubHalos();
 
-	CParticles Halo;
+
  protected:
-	
+	CParticles Halo;
 	CVector MeanP,MeanV, SigmaP, SigmaV;
 	double Mass;
 	int ParticleSize, NrParticles;

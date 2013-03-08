@@ -22,9 +22,9 @@ class CArray : public CMPI {
 
 	~CArray();
 
-	
+	//Delete all elements in the array and set the length to 0
 	void del();
-
+	//Delete all elements in the array
 	void delArray();
 	
 	//Creates an array, [start, end] with in_length elements
@@ -35,11 +35,14 @@ class CArray : public CMPI {
 	//Print CArray in one line
 	void print_array();
 
+	//Calculate the sum of the array
 	double sum();
+	//Return the length of the array
 	int len();
 
-
+	//Set a given element of the array,
 	void set(int element,double value);
+	//Get a given element of the array,
 	double get(int element);
 	double& operator[](int element);
 
@@ -47,7 +50,6 @@ class CArray : public CMPI {
 	CArray operator+(double number);
 	//Add two CArrays
 	CArray* operator+(CArray* inArray);
-	//CArray* add(CArray* inArray);
 	void add(CArray* inArray);
 
 	//Add an element to CArray at the end
@@ -72,14 +74,7 @@ class CArray : public CMPI {
 	//Return the pointer to the array in CArray
 	double* CArray2array();
 
-
-
-	//specialized, used for testing purposes only
-	//double sum_MPI(int argc,char **argv);
-	CArray* gather_sum();
-
  protected:
-
 	int length, dataLength;
 	double* array;
 

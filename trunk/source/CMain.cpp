@@ -9,13 +9,15 @@ void CMain::master() {
 	//m.loadClaudio(myConstants::constants.inFile);
 	//m.loadData(myConstants::constants.DataFile);
 	m.loadData("data.dat");
+	//m.print();
 	
+	//cout << m.getNrParticles() << endl;
 	//m.FriendOfFriendGrid();
 	//m.saveP("positionsFOF.dat");
 	//m.save(myConstants::constants.DataFile,myConstants::constants.NrParticles2File);
 	//m.FriendOfFriendN2();
-	//m.CalculateAllStatistics();
-	//m[0]->saveHalo("dataRamses.dat");
+	m.CalculateAllStatistics();
+	
 	/*m[5]->saveHalo("velocity0.dat");
 	m[6]->saveHalo("velocity1.dat");
 	m[7]->saveHalo("velocity2.dat");
@@ -26,11 +28,9 @@ void CMain::master() {
 	m[12]->saveHalo("velocity7.dat");
 	m[13]->saveHalo("velocity8.dat");
 	m[14]->saveHalo("velocity9.dat");*/
-
+	
 	//m.printHalos();
-	//for 
 	n = *m.master();
-	//usleep(20);
 	//n.CalculateAllStatistics();
 	/*n.HaloSort();
 	n.CalculatePhiSpherical();

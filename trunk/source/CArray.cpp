@@ -24,6 +24,7 @@ CArray::CArray(int in_length){
 	CMPI();
 }
 
+
 //Commented out because CArray is supposed to be low level,
 //using pointers and not the vector class. Can be used if wanted/needed
 /*CArray::CArray(vector<double> in_vector){
@@ -54,7 +55,7 @@ CArray::CArray(int in_length, double* in_array){
 	//CMPI();
 }
 
-
+//Create an CArray from CArray
 CArray::CArray(CArray* inCArray){
 	length = inCArray->len();
 	dataLength = length + myConstants::constants.ArrayExtraSize;
@@ -68,6 +69,8 @@ CArray::~CArray(){
 	//~CMPI(); <-why not working?
 }
 
+
+//Delete all elements in the array and set the length to 0
 void CArray::del(){
 	length = 0;
 	if (array != NULL){
@@ -75,13 +78,13 @@ void CArray::del(){
 	}
 }
 
+
+//Delete all elements in the array
 void CArray::delArray(){
 	if (array != NULL){
 		delete[] array;
 	}
 }
-
-
 
 
 
@@ -130,7 +133,7 @@ int CArray::len(){
 	return length;
 }
 
-
+//Return a given element of the array, the element can be changed
 double& CArray::operator[](int element){
 	if (array == NULL){
 		throw "Array not initialized";
@@ -146,6 +149,8 @@ double& CArray::operator[](int element){
 	}
 }
 
+
+//Get a given element of the array,
 double CArray::get(int element){
 	if (array == NULL){
 		cout << "Array not initialized" << endl;
@@ -166,6 +171,7 @@ double CArray::get(int element){
 
 
 
+//Set a given element of the array,
 void CArray::set(int element,double value){
 	if (element >= length || element < -length) {
 		cout << "Index out of bounds" << endl;
@@ -203,20 +209,8 @@ CArray* CArray::operator+(CArray* inArray){
 	return new CArray(length+inArray->len(),tmp); //<- memory leak
 }
 
-//Something is wrong with this method
+
 //Add two CArrays
-/*CArray* CArray::add(CArray* inArray){
-  double tmp[length+inArray->len()];
-  for (int i =0; i< length;i++) {
-  tmp[i] = array[i];
-  }
-  for (int j =0; j< inArray->len();j++) {
-  tmp[length + j] = inArray->get(j);
-  }
-
-  return new CArray(length+inArray->len(),tmp); //<- memory leak
-  }*/
-
 void CArray::add(CArray* inArray){
 	int oldlength = length;
 
@@ -303,7 +297,6 @@ void CArray::send(int in_processor){
 
 //Recieve a CArray in the master processor from a slave processor
 void CArray::recieve(int in_processor, MPI_Request* Req){
-	//del();
 	delArray();
 
 	array = CMPI::receive_array_master(in_processor, length, Req);
@@ -316,22 +309,24 @@ void CArray::send_slave(){
 	CMPI::send_array_slave(array, length);
 }
 
+
 void CArray::send_slave_modified(int inLength){
 	inLength = inLength+(1+myConstants::constants.HaloSize)*myConstants::constants.MaxHalos;
 
-	double tmpArray [inLength];
+	double* tmpArray = new double [inLength];
 	for (int i = 0; i < length; i++) {
 		tmpArray[i] = array[i];
 	}
+	
 	CMPI::send_array_slave(tmpArray, inLength);
+	delete[] tmpArray;
 }
+
 
 //Recieve a CArray from the master in a slave
 void CArray::recieve_slave(){
 	del();
-	cout << "in carray recieve" << endl;
 	array = CMPI::receive_array_slave(length);
-	cout << "in arrary test"<<length <<endl;
 	dataLength = length + myConstants::constants.ArrayExtraSize;
 }
 
@@ -341,59 +336,3 @@ void CArray::recieve_slave(){
 double* CArray::CArray2array(){
 	return array;
 }
-
-
-
-
-
-
-
-
-//specialized, used for testing purposes only
-CArray* CArray::gather_sum(){
-	int result_length;
-	int size = getSize();
-	double **results = CMPI::receive_array_master_all(result_length);
-	double* resArray = new double [size-1]; // <-- Memory leak
-
-	for (int i = 0;i<size-1;i++){
-		resArray[i] = results[i][0];
-	}
-
-	CArray* sumArray = new CArray(size-1, resArray);//<- memory leak
-	return sumArray;
-}
-
-
-/*double CArray::sum_MPI(int argc,char **argv){
-  CMPI::initialize_CMPI(argc,argv);
-  //Master node
-
-  if (rank == 0) {
-
-  split_array();
-
-  CArray* sumArray = gather_sum();
-
-  return sumArray->sum();
-  delete[] sumArray;
-
-  }
-  else {
-  int slave_length;
-  double *slave_array = CMPI::receive_array_slave(slave_length);
-  double sum = 0;
-
-  for (int i = 0; i<slave_length;i++){
-  sum += slave_array[i];
-  }
-  CMPI::send_array_slave(&sum, 1);
-  delete[] slave_array;
-  }
-
-
-  }*/
-
-
-
-

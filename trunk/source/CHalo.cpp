@@ -9,11 +9,12 @@ struct ParticleAndDistance{
 };
 
 //Sorts Mass and distance from center of halo f after distance from halo
-bool ParticleAndDistanceSortFunc(ParticleAndDistance* a, ParticleAndDistance* b){return a->r < b->r;
+bool ParticleAndDistanceSortFunc(ParticleAndDistance* a, ParticleAndDistance* b){
+	return a->r < b->r;
 }
 
 
-
+//Create an empty CHalo
 CHalo::CHalo(){
 	ParticleSize = myConstants::constants.ParticleSize;
 	NrParticles = 0;
@@ -177,11 +178,9 @@ void CHalo::copy(CHalo* inHalo) {
 //[NrParticles, Mass, Mean position, Mean velocity, standard deviation of position,
 //standard deviation of velocity, ParticleArray 1, ParticleArray 2, ... , ParticleArray N]
 CArray*	 CHalo::Halo2Array(){
-	cout << "hehehehehjejhejh: "<< NrParticles << endl;
 	CArray tmpArray(Halo.Particles2Array()); // Memory leak
 	double* Array = new double [tmpArray.len() + myConstants::constants.HaloSize]; // Memory leak
 
-	
 	Array[0] = NrParticles;
 	Array[1] = Mass;
 	for (int i = 0; i < MeanP.getDimensions(); i++) {
@@ -303,7 +302,7 @@ vector<double>* CHalo::getPhi(){
 }
 
 
-
+//Calculate the Virializati0n mass and radius
 void CHalo::calculateVir(){
 	Rvir = pow((Mass/(16./3.*atan(1)*myConstants::constants.ScaleDensity*myConstants::constants.RhoC)),1./3.);
 	Mvir = 0;
@@ -318,6 +317,8 @@ void CHalo::calculateVir(){
 	}
 }
 
+//Scale the positions by a number
+//mainly used in FOFGrid to scale the halos read in to be between [0,1]
 void CHalo::scalePositions(double scale){
 	for (int i = 0; i < NrParticles; i++) {
 		Halo[i]->setP(Halo[i]->getP()*scale);
@@ -409,10 +410,11 @@ void CHalo::removeParticle(int element){
 void CHalo::addHalo(CHalo* inHalo){
 	Halo.addParticles(inHalo->getParticles());
 	NrParticles += inHalo->getNrParticles();
+	//Add the subhalos of the inhalo to the current halo
 	for (list<CHalo*>::iterator it = inHalo->begin(); it != inHalo->end(); it++) {
 		SubHalos.push_back(*it);
 	}
-	//This might be slow
+	//This might be slow, but needed for later use
 	CalculateStatistics();
 }
 
@@ -571,9 +573,7 @@ void CHalo::savePhi(string Filename){
 	file.open((myConstants::constants.data + Filename).c_str(), ios::out);
 
 	//Saves data for each particle to file
-	//cout << NrParticles << endl;
 	for (int i = 0;i<NrParticles;i++){
-		//cout << "saving i " << i <<endl;
 		file << Phi[i] << " " << r[i] << endl;
 	}
 	file.close();
@@ -589,20 +589,17 @@ void CHalo::save(string Filename, double value){
 	file.close();
 }
 
+//empty content of file Filename
 void CHalo::del(string Filename){
 	fstream file;
 	file.open((myConstants::constants.data + Filename).c_str(), ios::out);
-	//Saves value to Filename
 	file.close();
 }
 
 //Calculate the Phase-Space distance between a halo and a particle
 double CHalo::PhaseSpaceDistanceHalo(CParticle* inParticle){
-	//out << "in PhaseSpaceDistanceHalo" << endl;
 	double rvir2 = pow((Mass/(16./3.*atan(1)*myConstants::constants.ScaleDensity*myConstants::constants.RhoC)),2./3.);
-	//cout << "rvir2: "<<rvir2 << endl;
-	double tmp = sqrt((inParticle->getP() - MeanP).Length2()/rvir2 + (inParticle->getV() - MeanV).Length2()/SigmaV.Length2());
-	//cout << "phasespacedistance: " << tmp << endl;
+	//double tmp = sqrt((inParticle->getP() - MeanP).Length2()/rvir2 + (inParticle->getV() - MeanV).Length2()/SigmaV.Length2());
 	return sqrt((inParticle->getP() - MeanP).Length2()/rvir2 + (inParticle->getV() - MeanV).Length2()/SigmaV.Length2());
 	//return sqrt((inParticle->getP() - MeanP).Length2()/inSigmaP->Length2() +	(inParticle->getV() - MeanV).Length2()/inSigmaV->Length2());
 }
@@ -619,18 +616,15 @@ double CHalo::LinkingLength(){
 
 	//If more than NrLinking particles, set NrLinking particles
 	//as the maximum amount of particles to use
-	//cout << "AA" << endl;
 	if (NrParticles > myConstants::constants.NrLinking) {
 		delta = NrParticles/(double)myConstants::constants.NrLinking;
 		tmpNrParticles = myConstants::constants.NrLinking;
 	}
 
-	//cout << "BB" << endl;
 	vector<double> LinkingLengths (tmpNrParticles);
 	int tmpLinkingLength,prevtmpLinkingLength;
 
 	//Calculate the	 phase space distance between the first particle and the particle closest to this
-	//cout << "CC" << endl;
 	prevtmpLinkingLength = Halo[0]->PhaseSpaceDistance(Halo[1],&SigmaP,&SigmaV);
 	for (double j = delta; j < tmpNrParticles; j+=delta) {
 		tmpLinkingLength = Halo[0]->PhaseSpaceDistance(Halo[(int)j],&SigmaP,&SigmaV);
@@ -638,12 +632,10 @@ double CHalo::LinkingLength(){
 			prevtmpLinkingLength = tmpLinkingLength;
 		}
 	}
-	//cout << "DD" << endl;
+
 	LinkingLengths[0] = prevtmpLinkingLength;
-	
+
 	//Calculate the minimum phase space distance between all the other particles
-	//cout << "EE" << endl;
-	//cout << tmpNrParticles << endl;
 	for (int i = 1; i < tmpNrParticles; i++) {
 		prevtmpLinkingLength = Halo[i]->PhaseSpaceDistance(Halo[0],&SigmaP,&SigmaV);
 		for (int j = 1; j < tmpNrParticles; j++) {
@@ -657,9 +649,7 @@ double CHalo::LinkingLength(){
 
 	//Sort the linking<lengths and return the one where a fraction f of the
 	//particles is linked together woth atleast one other aprticle
-	//cout << "FF" << endl;
 	sort(LinkingLengths.begin(),LinkingLengths.end());
-	//cout << "GG" << endl;
 	return LinkingLengths[(int) LinkingLengths.size()*myConstants::constants.f];
 }
 
@@ -669,13 +659,10 @@ double CHalo::LinkingLength(){
 //is reached or no particles are found being linked together.
 void CHalo::SplitHalo(){
 	if (Halo.getNrParticles() < myConstants::constants.HaloSeed) {
-		//	cout << "Finished with splithalo" << endl;
 		return;
 	}
 
-	//cout << "Before FriendOfFriendPhaseSpace" << endl;
 	FriendOfFriendPhaseSpace();
-	//cout << "After FriendOfFriendPhaseSpace" << endl;
 	clean();
 
 	for (list<CHalo*>::iterator it = SubHalos.begin(); it != SubHalos.end(); it++) {
@@ -689,21 +676,16 @@ void CHalo::SplitHalo(){
 //Calculating Friend of Friend using recursion, in phase space.
 //It scales as N^2
 void CHalo::FriendOfFriendPhaseSpace(){
-	//cout << "In FriendOfFriendPhaseSpace" << endl;
 	CalculateStatistics();
 
 	CHalo tmpHalo;
 	vector<CHalo*> tmpHalos;
 
-	//cout << "A" << endl;
 	searchParticle = Halo[0];
-	//cout << "B" << endl;
 	CParticle* Particle = searchParticle;
-	//cout << "C" << endl;
 	SubHalos.clear();
 
 	//Create a linked list of all particles
-	//cout << "D" << endl;
 	Particle->prev=NULL;
 	for (int i=1; i < NrParticles;i++){
 		Particle->setFlag(0);
@@ -713,28 +695,19 @@ void CHalo::FriendOfFriendPhaseSpace(){
 	}
 	Particle->setFlag(0);
 	Particle->next = NULL;
-	//cout << "E" << endl;
+
 	double L = LinkingLength();
 	//Using recursion to link all particles belonging to a halo
-	//cout << "F" << endl;
 	while (true){
-		//cout << "G" << endl;
 		Particle = nextParticle();
-		//cout << "H" << endl;	
-	if (Particle == NULL) break;
+		if (Particle == NULL) break;
 		else {
-		//cout << "I" << endl;
 			tmpHalo.clear();
-			//cout << "J" << endl;
 			//Calls findNeighbors to find the particles within linking distance
 			Particle->setFlag(1);
-			//cout << "K" << endl;
 			Particle->RemoveFromList();
-			//cout << "L" << endl;
 			findNeighborsPhaseSpace(Particle, &tmpHalo, L);
-			//cout << "M" << endl;
 			if (tmpHalo.getNrParticles() > myConstants::constants.HaloSeed && tmpHalo.getNrParticles() != NrParticles){
-				//cout << "N" << endl;
 				SubHalos.push_back(new CHalo(&tmpHalo));
 			}
 		}
@@ -770,6 +743,7 @@ void CHalo::findNeighborsPhaseSpace(CParticle* inParticle, CHalo* inHalo, int L)
 }
 
 
+
 //Find the next particle to assign to a Halo
 CParticle* CHalo::nextParticle(){
 	while (true){
@@ -783,10 +757,6 @@ CParticle* CHalo::nextParticle(){
 
 	}
 }
-
-
-
-
 
 
 
@@ -927,12 +897,13 @@ void CHalo::mergeStatisticalRec(CHalo* prevHalo, int &flag){
 	//For all subhalos of one halo, check if the subhalos are statisticaly equal
 	//If they are erase one of the subhalos, and add it to the other
 	for (list<CHalo*>::iterator it = prevHalo->begin(); it != prevHalo->end(); it++) {
-		double tmp1= ((MeanP - *((*it)->getMeanP()))/SigmaP).Length2();
-		double tmp2= ((MeanV - *((*it)->getMeanV()))/SigmaV).Length2();
+		double tmp1 = ((MeanP - *((*it)->getMeanP()))/SigmaP).Length2();
+		double tmp2 = ((MeanV - *((*it)->getMeanV()))/SigmaV).Length2();
 
 		if (this != (*it) && NrParticles*(tmp1 + tmp2) < 200) {
 			//cout << "Merging two halos"<<endl;
-			SubHalos.erase(it);
+			//SubHalos.erase(it);
+			SubHalos.remove(*it);
 			addHalo(*it);
 			flag = 0;
 			return;
@@ -947,7 +918,6 @@ void CHalo::mergeStatisticalRec(CHalo* prevHalo, int &flag){
 
 
 void CHalo::SortParticlesDistance(){
-	//cout << "sort distance" << endl;
 	vector<ParticleAndDistance*> data;
 
 	for (int i = 0; i < NrParticles; i++) {
@@ -962,7 +932,6 @@ void CHalo::SortParticlesDistance(){
 	Halo.clear();
 
 	//free up memory
-	//cout << NrParticles << endl;
 	for (int i = 0; i < NrParticles; i++) {
 		Halo.addParticle(data[i]->Particle);
 		r.push_back(data[i]->r);
@@ -977,7 +946,6 @@ void CHalo::SortParticlesDistance(){
 void CHalo::CalculatePhiSpherical(){
 	SortParticlesDistance();
 
-
 	//Move this to the correct place to calulate virialisation stuf. Probably statistics somewhere
 	calculateVir();
 	double M = 0;
@@ -988,9 +956,9 @@ void CHalo::CalculatePhiSpherical(){
 		M+=Halo[i]->getMass();
 		Phi0 += M/(r[i]*r[i])*(r[i]-r[i-1]);
 		//Phi0 += Halo[i]->getMass()/(r[i]*r[i]);
-		}
+	}
 	Phi0 *= -myConstants::constants.G;
-	
+
 	M = 0;
 	Phi.clear();
 	Phi.push_back(Phi0);
@@ -1002,9 +970,9 @@ void CHalo::CalculatePhiSpherical(){
 	}
 
 	/*Phi0 = Phi[NrParticles-1];
-	for (int i = 0; i < NrParticles; i++) {
-		Phi[i] -= Phi0;
-		}*/
+	  for (int i = 0; i < NrParticles; i++) {
+	  Phi[i] -= Phi0;
+	  }*/
 }
 
 
@@ -1013,17 +981,15 @@ void CHalo::CalculatePhiSpherical(){
 //Method for unbinding particles from a single halo
 void CHalo::Unbind(int& count){
 	CalculatePhiSpherical();
-	//cout << "in unbind" << endl;
 
 	vector<int> RemoveIndex;
 	for (int i = 0; i < NrParticles; i++) {
-		//cout <<Halo[i]->getV().Length()<< " " << sqrt(2*abs(Phi[i])) << endl;
-		//cout << Halo[i]->getV().x() << " "<<Halo[i]->getV().y() << ""<< Halo[i]->getV().z() << endl;
 		if (Halo[i]->getV().Length2() > 2*abs(Phi[i])) {
 			RemoveIndex.push_back(i);
 		}
 	}
 	count += RemoveIndex.size();
+
 	//Be carefull, this is gona fuck me up royaly(with the RemoveIndex[i]-i)
 	for (int i = 0; i < RemoveIndex.size(); i++) {
 		removeParticle(RemoveIndex[i]-i);
@@ -1036,11 +1002,9 @@ void CHalo::Unbind(int& count){
 void CHalo::UnbindAll(){
 	int count =0;
 	Unbind(count);
-	cout << "Percentage off particles unbound: " << (count)/(double)NrParticles*100 << endl;
+	//cout << "Percentage off particles unbound: " << (count)/(double)NrParticles*100 << endl;
 	//savePhi(myConstants::constants.outPhi);
-	//cout << myConstants::constants.outBounding << endl;;
 	//save(myConstants::constants.outBounding, (count-1)/(double)NrParticles);
-	//cout << "in unbind all" << endl;
 	for (list<CHalo*>::iterator it = SubHalos.begin(); it != SubHalos.end(); it++) {
 		(*it)->UnbindAll();
 	}
@@ -1052,18 +1016,18 @@ void CHalo::UnbindAll(){
 void CHalo::createSubHalos(){
 	//cout << "In createSubHalos in CHalo" << endl;
 	CParticles allParticles = Halo;
-	//cout << "In createSubHalos in CHalo, before splithalo" << endl;
+	cout << "In createSubHalos in CHalo, before splithalo" << endl;
 	SplitHalo();
-	//cout << "In createSubHalos in CHalo, before assigning particles" << endl;
+	cout << "In createSubHalos in CHalo, before assigning particles" << endl;
 	assignParticles(&allParticles);
-	//cout << "In createSubHalos in CHalo, before merging statistical" << endl;
+	cout << "In createSubHalos in CHalo, before merging statistical" << endl;
 	mergeStatistical();
 	//printSubHalos();
 	//del(myConstants::constants.outBounding);
 	//UnbindAll();
-	//cout << "In createSubHalos in CHalo, before removing halos" << endl;
-	removeEmptySubHalos();
-	//cout << "In createSubHalos in CHalo, finished" << endl;
+	cout << "In createSubHalos in CHalo, before removing halos" << endl;
+	//removeEmptySubHalos();
+	cout << "In createSubHalos in CHalo, finished" << endl;
 	//Unbind();
 }
 
