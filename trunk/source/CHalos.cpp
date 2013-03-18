@@ -26,14 +26,14 @@ CHalos::CHalos(){
 //nr of halos, nr of particles in halo 1, nr of particles in halo 2, ... ,
 //nr of particles of in halo N, halo array 1, halo array 2, ... halo array N]
 CHalos::CHalos(CArray* inArray){
-	
+
 	Halos.clear();
 	NrHalos = inArray->get(0);
 	ParticleSize = myConstants::constants.ParticleSize;
 	int particle_count = 1 + NrHalos;
 	NrParticles = (inArray->len() - 1 - NrHalos - NrHalos*myConstants::constants.HaloSize)/ParticleSize;
 	cout << NrHalos << endl;
-	
+
 	for (int i = 0; i < NrHalos; i++){
 		NrInHalo.push_back(inArray->get(1+i));
 		double* tmpArray = new double [NrInHalo[i]*ParticleSize + myConstants::constants.HaloSize];
@@ -42,7 +42,7 @@ CHalos::CHalos(CArray* inArray){
 			tmpArray[l] = inArray->get(particle_count);
 			particle_count++;
 		}
-		
+
 		for (int j = 0; j < NrInHalo[i];j++){
 			for (int k = 0; k < ParticleSize;k++){
 				tmpArray[j*ParticleSize+k+myConstants::constants.HaloSize] = inArray->get(particle_count);
@@ -408,7 +408,7 @@ void CHalos::loadData(string Filename){
 	Halos.push_back(tmpHalo);
 	double tmpData [ParticleSize];
 	NrParticles = 0;
-	
+
 	if (file.is_open()){
 		while (!file.eof()){
 			getline(file,line);
@@ -430,6 +430,79 @@ void CHalos::loadData(string Filename){
 	NrInHalo.push_back(NrParticles);
 	LinkingLength = pow(1./NrParticles,1./3);
 }
+
+
+
+
+
+
+
+//Load a txt with full halo information
+void CHalos::loadHalos(string Filename){
+	vector<string> strData;
+	cout << "A" << endl;
+	ifstream file((myConstants::constants.data + Filename).c_str());
+	string line;
+	cout << "B" << endl;
+	Halos.clear();
+	NrInHalo.clear();
+	
+	getline(file,line);
+	trim(line);
+	CArray inArray(atof(line.c_str())+1);
+	cout << inArray.len()<< endl;
+	cout << "C" << endl;
+	int i = 0;
+	if (file.is_open()){
+		while (!file.eof()){
+			//cout << i << endl;
+			getline(file,line);
+			trim(line);
+			//split(strData, line, is_any_of(" "));
+
+			inArray[i] = atof(line.c_str());
+			i++;
+		}
+		file.close();
+		cout << i << endl;
+	}
+	cout << "D" << endl;
+	inArray.print();
+	
+	NrHalos = inArray[0];
+	ParticleSize = myConstants::constants.ParticleSize;
+	int particle_count = 1 + NrHalos;
+	NrParticles = (inArray.len() - 1 - NrHalos - NrHalos*myConstants::constants.HaloSize)/ParticleSize;
+	cout << NrHalos << endl;
+
+	for (int i = 0; i < NrHalos; i++){
+		if (i == 173) cout << "E"<<endl;
+		NrInHalo.push_back(inArray[1+i]);
+		double* tmpArray = new double [NrInHalo[i]*ParticleSize + myConstants::constants.HaloSize];
+		if (i == 173) cout << "F"<<endl;
+		for (int l = 0; l < myConstants::constants.HaloSize; l++){
+			tmpArray[l] = inArray[particle_count];
+			particle_count++;
+		}
+		if (i == 173) cout << "G "<< NrInHalo[i] << " sd " <<ParticleSize <<endl;
+		for (int j = 0; j < NrInHalo[i];j++){
+			for (int k = 0; k < ParticleSize;k++){
+				tmpArray[j*ParticleSize+k+myConstants::constants.HaloSize] = inArray[particle_count];
+				particle_count++;
+			}
+		}
+		if (i == 173) cout << "H"<< endl;
+		CArray* tmpCArray = new CArray(NrInHalo[i]*ParticleSize + myConstants::constants.HaloSize, tmpArray);
+		delete[] tmpArray;
+		CHalo* tmpHalo = new CHalo(tmpCArray); // <- Memory leak
+		Halos.push_back(tmpHalo);
+	}
+
+}
+
+
+
+
 
 
 //Scale all positions with a number
@@ -494,13 +567,30 @@ void CHalos::saveSize(string Filename){
 	fstream file;
 	CVector tmpP;
 	file.open((myConstants::constants.data + Filename).c_str(), ios::out);
-	
+
 	//Saves position data for each particle to file
 	for (int i = 0;i < NrHalos; i++){
 		file << NrInHalo[i] << endl;
 	}
 	file.close();
 }
+
+//Save halos into a text file, as a array
+void CHalos::saveHalos(string Filename){
+	fstream file;
+	CArray* tmpArray = Halos2Array();
+	file.open((myConstants::constants.data + Filename).c_str(), ios::out);
+
+	//Saves position data for each particle to file
+	file << tmpArray->len() << endl;
+	for (int i = 0;i < tmpArray->len(); i++){
+		file << tmpArray->get(i) << endl;
+	}
+	file.close();
+	//Memory leak
+	tmpArray->del();
+}
+
 
 
 //Calculate halo statistics for all halos
@@ -739,19 +829,19 @@ void CHalos::findNeighborsGrid(CParticle* inParticle, CHalo* inHalo){
 		if (FriendList.getNrParticles() >= myConstants::constants.NrParticlesDouble) {
 			DoubleLinkinglengthFlag = 1;
 			break;
-			}
-		
+		}
+
 		for (int j=-1;j<=1;j++) {
 			if (FriendList.getNrParticles() >= myConstants::constants.NrParticlesDouble) {
 				DoubleLinkinglengthFlag = 1;
 				break;
-				}
+			}
 
 			for (int k=-1;k<=1;k++) {
 				if (FriendList.getNrParticles() >= myConstants::constants.NrParticlesDouble) {
 					DoubleLinkinglengthFlag = 1;
 					break;
-					}
+				}
 
 				tmpParticle = Grid.getPeriodic(Position.x()+i,Position.y()+j,Position.z()+k);
 				while (tmpParticle != NULL) {
@@ -769,15 +859,15 @@ void CHalos::findNeighborsGrid(CParticle* inParticle, CHalo* inHalo){
 			}
 		}
 	}
-	
+
 	if (DoubleLinkinglengthFlag == 1) {
 		int scale = myConstants::constants.LinkingLenghtScale;
 		L = scale*L;
-		
+
 		for (int i=-scale;i<=scale;i++){
 			for (int j=-scale;j<=scale;j++) {
 				for (int k=-scale;k<=scale;k++) {
-					
+
 					tmpParticle = Grid.getPeriodic(Position.x()+i,Position.y()+j,Position.z()+k);
 					while (tmpParticle != NULL) {
 						next = tmpParticle->nextGrid;
@@ -795,7 +885,7 @@ void CHalos::findNeighborsGrid(CParticle* inParticle, CHalo* inHalo){
 			}
 		}
 	}
-	
+
 	//Finds the neighboring particles for each particle found to be within
 	//the linking length and adds them to the given halo
 	for (int i = 0; i<FriendList.getNrParticles();i++){
@@ -925,7 +1015,7 @@ void CHalos::slave(){
 		CHalos SlaveHalos (&HalosArray);
 
 		SlaveHalos.SplitHalos();
-
+		//SlaveHalos[0]->saveStructure("structure.dat");
 		SlaveHalos.getHalo(0)->SubHalos2Array()->send_slave_modified(tmpLength);
 	}
 }
