@@ -75,7 +75,9 @@ class CHalos{
 	void loadClaudio(string Filename);
 	//Load a text file, with all information about each particle
 	void loadData(string Filename);
-
+	//Load a txt with full halo information
+	void loadHalos(string Filename);
+	
 	//Scale all positions with a number
 	void scalePositions(double scale);
 	
@@ -87,7 +89,8 @@ class CHalos{
 	void saveP(string Filename);
 	//Save the size of all the halos to a txt fil
 	void saveSize(string Filename);
-
+	//Save halos into a text file, as a array
+	void saveHalos(string Filename);
 	//Calculate halo statistics for all halos
 	void CalculateAllStatistics();
 

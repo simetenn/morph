@@ -18,7 +18,8 @@ class CHalo{
 	CHalo(CHalo* inHalo);
 	~CHalo();
 
-
+	void set(CArray* inArray);
+	
 	//Print all particles in halo
 	void print();
 
@@ -49,7 +50,7 @@ class CHalo{
 	//[NrParticles, Mass, Mean position, Mean velocity, standard deviation of position,
 	//standard deviation of velocity, ParticleArray 1, ParticleArray 2, ... , ParticleArray N]
 	CArray* Halo2Array();
-	//Convert all Subahlos to an CArray. On the form:
+	//Convert all Subahalos to an CArray. On the form:
 	//[NrParticles, Mass, Mean position, Mean velocity, standard deviation of position,
 	//standard deviation of velocity, ParticleArray 1, ParticleArray 2, ... , ParticleArray N]
 	CArray* SubHalos2Array();
@@ -57,7 +58,22 @@ class CHalo{
 	//Then recursivly runs for all subhalos
 	void SubHalos2ArrayRec(CArray* inArray,CArray* sizeArray);
 
+	//Convert all Subahlos to an CArray. On the form:
+	//[ID, NrParticles, Mass, Mean position, Mean velocity, standard deviation of position,
+	//standard deviation of velocity, ParticleArray 1, ParticleArray 2, ... , ParticleArray N]
+	CArray* SubHalosStructure2Array();
+	//Adds the subhalo converted to a CArray to the inArray and NrParticles to sizeAray
+	//Then recursivly runs for all subhalos
+	void SubHalosStructure2ArrayRec(CArray* inArray, CArray* sizeArray, int& ID);
 
+	void saveStructure(string Filename);
+	
+	void loadStructure(string Filename);
+	
+	void fromStructureArray(CArray* inArray);
+
+	void fromStructureArrayRec(CHalo* prevHalo, CArray* inArray, int& nrHalo,int& particle_count,int& nextID);
+	
 	//Return the total mass of the halo
 	double getMass();
 	//Get the position of the center of the halo
@@ -89,7 +105,7 @@ class CHalo{
 
 	//Calculate the Virializati0n mass and radius
 	void calculateVir();
-	
+
 	//Scale the positions by a number
 	//mainly used in FOFGrid to scale the halos read in to be between [0,1]
 	void scalePositions(double scale);
@@ -102,6 +118,8 @@ class CHalo{
 	list<CHalo*>::iterator end();
 	//Attach a halo to the subhalo list. At the front position
 	void attachSubHalo(CHalo* inHalo);
+	void attachSubHaloBack(CHalo* inHalo);
+
 	//Remove halo from the subhalo list.
 	void removeSubHalo(CHalo* inHalo);
 
@@ -158,7 +176,7 @@ class CHalo{
 
 	//Calculate the Phase-Space distance between a halo and a particle
 	double PhaseSpaceDistanceHalo(CParticle* inParticle);
-	
+
 	//Calculate the Linking Length for each halo.
 	//The linking length is chosen such that a fraction f of all particles
 	//atleast is linked together with one other particle

@@ -71,7 +71,26 @@ CHalo::~CHalo(){
 }
 
 
+void CHalo::set(CArray* inArray){
+	ParticleSize = myConstants::constants.ParticleSize;
 
+	//read NrParticles, Mass, Mean position, Mean velocity, standard deviation of position,
+	// and standard deviation of velocity
+	NrParticles = inArray->get(0);
+	Mass = inArray->get(1);
+	MeanP.Set(inArray->get(2),inArray->get(3),inArray->get(4));
+	MeanV.Set(inArray->get(5),inArray->get(6),inArray->get(7));
+	SigmaP.Set(inArray->get(8),inArray->get(9),inArray->get(10));
+	SigmaV.Set(inArray->get(11),inArray->get(12),inArray->get(13));
+
+	//Read all the particle information
+	CArray* tmpArray = new CArray (NrParticles*ParticleSize);
+	for (int i = 0; i < NrParticles*ParticleSize; i++) {
+		tmpArray->set(i, inArray->get(i + myConstants::constants.HaloSize));
+	}
+
+	Halo = CParticles(tmpArray);
+}
 
 
 
@@ -216,7 +235,6 @@ CArray* CHalo::SubHalos2Array(){
 	return sizeArray;
 }
 
-
 //Adds the subhalo converted to a CArray to the inArray and NrParticles to sizeAray
 //Then recursivly runs for all subhalos
 void CHalo::SubHalos2ArrayRec(CArray* inArray, CArray* sizeArray){
@@ -228,6 +246,194 @@ void CHalo::SubHalos2ArrayRec(CArray* inArray, CArray* sizeArray){
 		(*it)->SubHalos2ArrayRec(inArray,sizeArray);
 	}
 }
+
+
+
+
+
+
+
+
+//Convert all Subahlos to an CArray. On the form:
+//[ID, NrParticles, Mass, Mean position, Mean velocity, standard deviation of position,
+//standard deviation of velocity, ParticleArray 1, ParticleArray 2, ... , ParticleArray N]
+CArray* CHalo::SubHalosStructure2Array(){
+	CArray* Array = new CArray ();
+	CArray* sizeArray = new CArray (); // Memory leak
+
+	int ID = -1;
+	//Array->front(ID);
+	//adds all data from all subhalos
+	SubHalosStructure2ArrayRec(Array, sizeArray,ID);
+	//Add nr of Halos to the front of SizeArray
+	sizeArray->front(sizeArray->len());
+
+	//Add the Array to sizeArray
+	sizeArray->add(Array);
+
+	return sizeArray;
+}
+
+//Adds the subhalo converted to a CArray to the inArray and NrParticles to sizeAray
+//Then recursivly runs for all subhalos
+void CHalo::SubHalosStructure2ArrayRec(CArray* inArray, CArray* sizeArray,int& ID){
+	ID++;
+	inArray->push_back(ID);
+	inArray->add(Halo2Array());
+	sizeArray->push_back(NrParticles);
+
+	//Recursivly runs through all
+	for (list<CHalo*>::iterator it = SubHalos.begin(); it != SubHalos.end(); it++) {
+		(*it)->SubHalosStructure2ArrayRec(inArray, sizeArray, ID);
+		ID--;
+	}
+
+}
+
+
+
+
+//Save halos into a text file, as a array
+void CHalo::saveStructure(string Filename){
+	fstream file;
+	CArray* tmpArray = SubHalosStructure2Array();
+	file.open((myConstants::constants.data + Filename).c_str(), ios::out);
+
+	//Saves position data for each particle to file
+	file << tmpArray->len() << endl;
+	for (int i = 0;i < tmpArray->len(); i++){
+		file << tmpArray->get(i) << endl;
+	}
+	file.close();
+	//Memory leak
+	tmpArray->del();
+}
+
+
+
+void CHalo::loadStructure(string Filename){
+	ifstream file((myConstants::constants.data + Filename).c_str());
+	string line;
+
+	getline(file,line);
+	trim(line);
+
+	CArray inArray (atof(line.c_str()));
+
+	int i = 0;
+	if (file.is_open()){
+		while (true){
+
+			//cout << i << endl;
+			getline(file,line);
+			trim(line);
+			//split(strData, line, is_any_of(" "));
+			//cout << i << endl;
+			//cout << atof(line.c_str()) << endl;
+			if (file.eof()) break;
+			inArray[i] = atof(line.c_str());
+			i++;
+		}
+		file.close();
+	}
+	cout << "before" << endl;
+	fromStructureArray(&inArray);
+	cout << "after" << endl;
+	//cout << inArray[-1] << endl;
+	//inArray.del();
+
+}
+
+
+
+void CHalo::fromStructureArray(CArray* inArray){
+	clear();
+	int NrHalos = inArray->get(0);
+	ParticleSize = myConstants::constants.ParticleSize;
+
+	int particle_count = 1 + NrHalos;
+	//int totalNrParticles = (inArray->len() - 1 - 2*NrHalos - NrHalos*myConstants::constants.HaloSize)/ParticleSize;
+
+	int nrHalo = 0;
+	NrParticles = inArray->get(1+nrHalo);
+
+	double* tmpArray = new double [NrParticles*ParticleSize + myConstants::constants.HaloSize];
+
+	int ID = inArray->get(particle_count);
+	particle_count++;
+	int nextID = inArray->get(particle_count + NrParticles*ParticleSize + myConstants::constants.HaloSize);
+
+
+	for (int l = 0; l < myConstants::constants.HaloSize; l++){
+		tmpArray[l] = inArray->get(particle_count);
+		particle_count++;
+	}
+
+	for (int j = 0; j < NrParticles;j++){
+		for (int k = 0; k < ParticleSize;k++){
+			tmpArray[j*ParticleSize+k+myConstants::constants.HaloSize] = inArray->get(particle_count);
+			particle_count++;
+		}
+	}
+
+
+	set(new CArray((int)(NrParticles*ParticleSize + myConstants::constants.HaloSize), tmpArray));
+
+
+	while (ID < nextID){
+	fromStructureArrayRec(this, inArray, nrHalo, particle_count,nextID);
+		//cout << nextID << endl;
+	}
+
+}
+
+
+
+
+void CHalo::fromStructureArrayRec(CHalo* prevHalo, CArray* inArray, int& nrHalo,int& particle_count,int& nextID){
+	nrHalo++;
+
+	int tmpNrParticles = inArray->get(1+nrHalo);
+	double* tmpArray = new double [tmpNrParticles*ParticleSize + myConstants::constants.HaloSize];
+
+	int ID = inArray->get(particle_count);
+	particle_count++;
+
+	if (nrHalo >= inArray->get(0)-1) {
+		nextID = -1;
+		//return;
+	}
+	else {
+		nextID = inArray->get(particle_count + tmpNrParticles*ParticleSize + myConstants::constants.HaloSize);
+	}
+
+
+	for (int l = 0; l < myConstants::constants.HaloSize; l++){
+		tmpArray[l] = inArray->get(particle_count);
+		particle_count++;
+	}
+	for (int j = 0; j < tmpNrParticles;j++){
+		for (int k = 0; k < ParticleSize;k++){
+			tmpArray[j*ParticleSize+k+myConstants::constants.HaloSize] = inArray->get(particle_count);
+			particle_count++;
+		}
+	}
+	CArray* tmpCArray = new CArray(tmpNrParticles*ParticleSize + myConstants::constants.HaloSize, tmpArray);
+	delete[] tmpArray;
+	CHalo* tmpHalo = new CHalo(tmpCArray); // <- Memory leak
+	prevHalo->attachSubHaloBack(tmpHalo);
+
+
+
+
+	while (ID < nextID){
+		fromStructureArrayRec(this, inArray, nrHalo, particle_count, nextID);
+	}
+
+
+}
+
+
 
 
 //Return the total mass of the halo
@@ -347,6 +553,11 @@ list<CHalo*>::iterator CHalo::end(){
 //Attach a halo to the subhalo list. At the front position
 void CHalo::attachSubHalo(CHalo* inHalo){
 	SubHalos.push_front(inHalo);
+}
+
+//Attach a halo to the subhalo list. At the front position
+void CHalo::attachSubHaloBack(CHalo* inHalo){
+	SubHalos.push_back(inHalo);
 }
 
 //Remove halo from the subhalo list.
@@ -902,8 +1113,8 @@ void CHalo::mergeStatisticalRec(CHalo* prevHalo, int &flag){
 
 		if (this != (*it) && NrParticles*(tmp1 + tmp2) < 200) {
 			//cout << "Merging two halos"<<endl;
-			//SubHalos.erase(it);
-			SubHalos.remove(*it);
+			SubHalos.erase(it);
+			//SubHalos.remove(*it);
 			addHalo(*it);
 			flag = 0;
 			return;
@@ -1021,9 +1232,9 @@ void CHalo::createSubHalos(){
 	cout << "In createSubHalos in CHalo, before assigning particles" << endl;
 	assignParticles(&allParticles);
 	cout << "In createSubHalos in CHalo, before merging statistical" << endl;
-	mergeStatistical();
+	//mergeStatistical();
 	//printSubHalos();
-	//del(myConstants::constants.outBounding);
+	//del(myConstants::constants.outBoundng);
 	//UnbindAll();
 	cout << "In createSubHalos in CHalo, before removing halos" << endl;
 	//removeEmptySubHalos();
