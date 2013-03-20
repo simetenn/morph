@@ -42,27 +42,34 @@ CHalos::~CHalos(){
 void CHalos::initialize(CArray* inArray){
 	//clear();
 	Halos.clear();
-
+	cout << "A" <<endl;
+	cout << inArray->get(0) << endl;
 	NrHalos = inArray->get(0);
 	ParticleSize = myConstants::constants.ParticleSize;
 	int particle_count = 1 + NrHalos;
 	NrParticles = (inArray->len() - 1 - NrHalos - NrHalos*myConstants::constants.HaloSize)/ParticleSize;
-	
+	cout << "B" <<endl;
 	for (int i = 0; i < NrHalos; i++){
 		NrInHalo.push_back(inArray->get(1+i));
 		double* tmpArray = new double [NrInHalo[i]*ParticleSize + myConstants::constants.HaloSize];
-
+		cout << "C" <<endl;
 		for (int l = 0; l < myConstants::constants.HaloSize; l++){
 			tmpArray[l] = inArray->get(particle_count);
 			particle_count++;
 		}
-
+		cout << "D" <<endl;
+		cout << NrInHalo[i] << endl;
+		cout << NrHalos << endl;
 		for (int j = 0; j < NrInHalo[i];j++){
+			//cout << "E" <<endl;
+			//cout << ParticleSize << endl;
 			for (int k = 0; k < ParticleSize;k++){
+				//cout << "k=" << k<<endl;
 				tmpArray[j*ParticleSize+k+myConstants::constants.HaloSize] = inArray->get(particle_count);
 				particle_count++;
 			}
 		}
+		cout << "F" <<endl;
 		CArray* tmpCArray = new CArray(NrInHalo[i]*ParticleSize + myConstants::constants.HaloSize, tmpArray);
 		delete[] tmpArray;
 		CHalo* tmpHalo = new CHalo(tmpCArray); // <- Memory leak
@@ -77,6 +84,8 @@ void CHalos::clear(){
 	NrInHalo.clear();
 	AllParticles.clear();
 	searchParticle=NULL;
+	NrParticles = 0;
+	NrHalos = 0;
 }
 
 
@@ -168,6 +177,7 @@ void CHalos::addHalos(CArray* inArray){
 
 //Remove halo nr #element from CHalos
 void CHalos::removeHalo(int element){
+	//Halos[element]->~CHalo();
 	NrInHalo.erase(NrInHalo.begin()+element);
 	Halos.erase(Halos.begin() + element);
 }
@@ -1026,18 +1036,23 @@ void CHalos::slave(){
 	int rank = MPI.getRank();
 
 	CParticle tmpParticle;
-	
+	//CHalos SlaveHalos;
 	
 	while (true) {
 		if (MPI.ifEnd() == 1) break;
 		HalosArray.recieve_slave();
 		int tmpLength = HalosArray.len();
-		CHalos SlaveHalos(&HalosArray); // Assured memory leak
+		initialize(&HalosArray);
+		SplitHalos();
+		Halos[0]->SubHalos2Array()->send_slave_modified(tmpLength);
+		clear();
+
+		/*CHalos SlaveHalos(&HalosArray); // Assured memory leak
 		//SlaveHalos.initialize(&HalosArray);
 		SlaveHalos.SplitHalos();
 		//SlaveHalos[0]->saveStructure("structureBig.dat");
 		SlaveHalos.getHalo(0)->SubHalos2Array()->send_slave_modified(tmpLength);
-		SlaveHalos.clear();
+		//SlaveHalos.clear();*/
 	}
 }
 
