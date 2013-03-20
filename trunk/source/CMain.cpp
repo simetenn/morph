@@ -5,14 +5,17 @@ Constants myConstants::constants;
 
 void CMain::master() {
 	CHalos m,n;
-	//CHalo h;
+	CHalo h;
 	//m.loadClaudio(myConstants::constants.inFile);
-	//m.loadData(myConstants::constants.DataFile);
+	m.loadData(myConstants::constants.DataFile);
 	//m.loadData("data.dat");
-	m.loadHalos("splitHalos.dat");
-	//h.loadStructure("structure.dat");
+	//m.loadHalos("splitHalos.dat");
+	//h.loadStructure("structureBig.dat");
 	//h.printSubHalos();
-	//m.print();
+	//h.createSubHalos();
+	//h.printSubHalos();
+	//h.mergeStatistical();
+	//m.printHalos();
 	
 	//cout << m.getNrParticles() << endl;
 	//m.FriendOfFriendGrid();

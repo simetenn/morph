@@ -26,14 +26,28 @@ CHalos::CHalos(){
 //nr of halos, nr of particles in halo 1, nr of particles in halo 2, ... ,
 //nr of particles of in halo N, halo array 1, halo array 2, ... halo array N]
 CHalos::CHalos(CArray* inArray){
+	initialize(inArray);
+}
 
+
+CHalos::~CHalos(){
+	for (int i = 0; i < NrHalos;i++){
+		Halos[i]->~CHalo();
+	}
+	NrInHalo.clear();
+	AllParticles.clear();
+}
+
+
+void CHalos::initialize(CArray* inArray){
+	//clear();
 	Halos.clear();
+
 	NrHalos = inArray->get(0);
 	ParticleSize = myConstants::constants.ParticleSize;
 	int particle_count = 1 + NrHalos;
 	NrParticles = (inArray->len() - 1 - NrHalos - NrHalos*myConstants::constants.HaloSize)/ParticleSize;
-	cout << NrHalos << endl;
-
+	
 	for (int i = 0; i < NrHalos; i++){
 		NrInHalo.push_back(inArray->get(1+i));
 		double* tmpArray = new double [NrInHalo[i]*ParticleSize + myConstants::constants.HaloSize];
@@ -56,10 +70,15 @@ CHalos::CHalos(CArray* inArray){
 	}
 }
 
-
-CHalos::~CHalos(){
-
+void CHalos::clear(){
+	for (int i = 0; i < NrHalos; i++) {
+		Halos[i]->clear();
+	}
+	NrInHalo.clear();
+	AllParticles.clear();
+	searchParticle=NULL;
 }
+
 
 
 
@@ -1007,16 +1026,18 @@ void CHalos::slave(){
 	int rank = MPI.getRank();
 
 	CParticle tmpParticle;
-
+	
+	
 	while (true) {
 		if (MPI.ifEnd() == 1) break;
 		HalosArray.recieve_slave();
 		int tmpLength = HalosArray.len();
-		CHalos SlaveHalos (&HalosArray);
-
+		CHalos SlaveHalos(&HalosArray); // Assured memory leak
+		//SlaveHalos.initialize(&HalosArray);
 		SlaveHalos.SplitHalos();
-		//SlaveHalos[0]->saveStructure("structure.dat");
+		//SlaveHalos[0]->saveStructure("structureBig.dat");
 		SlaveHalos.getHalo(0)->SubHalos2Array()->send_slave_modified(tmpLength);
+		SlaveHalos.clear();
 	}
 }
 
