@@ -35,6 +35,7 @@ class CHalo{
 
 	//Clear and remove all information from a CHalos object
 	void clear();
+	
 	//Clear and remove particle information, but keeping halo information, like position and velocity
 	void clean();
 

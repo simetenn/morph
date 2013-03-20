@@ -17,7 +17,7 @@ CParticle::CParticle(){
 	next = prev = nextGrid = prevGrid = NULL;
 	
 }
-
+ 
 
 //Create a particle from an array on the following form:
 //[HaloID,Mass,Charge,Px,Py,Pz,Vx,Vy,Vz,Ax,Ay,Az]

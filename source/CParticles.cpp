@@ -10,13 +10,14 @@ CParticles::CParticles(){
 }
 
 CParticles::~CParticles(){
-	//for (int i = 0; i < nrParticles;i++){
-	//	delete Particles[i];// <- correct?
-	//}
+	for (int i = 0; i < NrParticles;i++){
+		Particles[i]->~CParticle();// <- correct?
+	}
+	Particles.clear();
 }
 
 
-//Creates CParticles from a CArray on the following form:
+//Creates CParticles øfrom a CArray on the following form:
 //[ParticleArray 1, ParticleArray 2, ParticleArray 3, ... , ParticleArray N]
 CParticles::CParticles(CArray* inArray){
 	ParticleSize = myConstants::constants.ParticleSize;

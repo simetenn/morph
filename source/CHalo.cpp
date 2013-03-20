@@ -68,6 +68,7 @@ CHalo::CHalo(CHalo* inHalo){
 
 
 CHalo::~CHalo(){
+	clear();
 }
 
 
@@ -138,7 +139,7 @@ void CHalo::printSubHalo(int& count){
 
 
 
-//Clear and remove all information from a CHalo object
+/*//Clear and remove all information from a CHalo object
 void CHalo::clear() {
 	Halo.clear();
 	NrParticles = 0;
@@ -148,8 +149,23 @@ void CHalo::clear() {
 	SigmaP.Set(0,0,0);
 	SigmaV.Set(0,0,0);
 	ParticleSize = myConstants::constants.ParticleSize;
-}
+	}*/
 
+void CHalo::clear(){
+	Halo.clear();
+	NrParticles = 0;
+	Mass = 0;
+	MeanP.Set(0,0,0);
+	MeanV.Set(0,0,0);
+	SigmaP.Set(0,0,0);
+	SigmaV.Set(0,0,0);
+	ParticleSize = myConstants::constants.ParticleSize;
+	
+	for (list<CHalo*>::iterator it = SubHalos.begin(); it != SubHalos.end(); it++) {
+		(*it)->clear();
+	}
+	SubHalos.clear();
+}
 
 //Clear and remove particle information, but keeps halo information, like position and velocity
 void CHalo::clean() {
@@ -1083,7 +1099,7 @@ void CHalo::removeEmptyHalos(CHalo* prevHalo){
 	//and remove it from the prevois halos subhalo list
 	if (NrParticles < myConstants::constants.HaloLimit){
 		for (list<CHalo*>::iterator it = SubHalos.begin(); it != SubHalos.end(); it++) {
-			prevHalo->attachSubHalo(*it);
+			prevHalo->attachSubHaloBack(*it);
 		}
 		prevHalo->removeSubHalo(this);
 	}
@@ -1112,7 +1128,7 @@ void CHalo::mergeStatisticalRec(CHalo* prevHalo, int &flag){
 		double tmp2 = ((MeanV - *((*it)->getMeanV()))/SigmaV).Length2();
 
 		if (this != (*it) && NrParticles*(tmp1 + tmp2) < 200) {
-			//cout << "Merging two halos"<<endl;
+			cout << "Merging two halos"<<endl;
 			SubHalos.erase(it);
 			//SubHalos.remove(*it);
 			addHalo(*it);
@@ -1231,8 +1247,9 @@ void CHalo::createSubHalos(){
 	SplitHalo();
 	cout << "In createSubHalos in CHalo, before assigning particles" << endl;
 	assignParticles(&allParticles);
+	saveStructure("structureBig.dat");
 	cout << "In createSubHalos in CHalo, before merging statistical" << endl;
-	//mergeStatistical();
+	mergeStatistical();
 	//printSubHalos();
 	//del(myConstants::constants.outBoundng);
 	//UnbindAll();
