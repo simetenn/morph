@@ -42,24 +42,19 @@ CHalos::~CHalos(){
 void CHalos::initialize(CArray* inArray){
 	//clear();
 	Halos.clear();
-	cout << "A" <<endl;
 	cout << inArray->get(0) << endl;
 	NrHalos = inArray->get(0);
 	ParticleSize = myConstants::constants.ParticleSize;
 	int particle_count = 1 + NrHalos;
 	NrParticles = (inArray->len() - 1 - NrHalos - NrHalos*myConstants::constants.HaloSize)/ParticleSize;
-	cout << "B" <<endl;
 	for (int i = 0; i < NrHalos; i++){
 		NrInHalo.push_back(inArray->get(1+i));
 		double* tmpArray = new double [NrInHalo[i]*ParticleSize + myConstants::constants.HaloSize];
-		cout << "C" <<endl;
 		for (int l = 0; l < myConstants::constants.HaloSize; l++){
 			tmpArray[l] = inArray->get(particle_count);
 			particle_count++;
 		}
-		cout << "D" <<endl;
-		cout << NrInHalo[i] << endl;
-		cout << NrHalos << endl;
+
 		for (int j = 0; j < NrInHalo[i];j++){
 			//cout << "E" <<endl;
 			//cout << ParticleSize << endl;
@@ -69,13 +64,14 @@ void CHalos::initialize(CArray* inArray){
 				particle_count++;
 			}
 		}
-		cout << "F" <<endl;
-		CArray* tmpCArray = new CArray(NrInHalo[i]*ParticleSize + myConstants::constants.HaloSize, tmpArray);
+		CArray tmpCArray(NrInHalo[i]*ParticleSize + myConstants::constants.HaloSize, tmpArray);
 		delete[] tmpArray;
-		CHalo* tmpHalo = new CHalo(tmpCArray); // <- Memory leak
+		CHalo* tmpHalo = new CHalo(&tmpCArray); // <- Memory leak
 		Halos.push_back(tmpHalo);
 	}
 }
+
+
 
 void CHalos::clear(){
 	for (int i = 0; i < NrHalos; i++) {

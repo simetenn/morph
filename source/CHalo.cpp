@@ -59,7 +59,8 @@ CHalo::CHalo(CArray* inArray){
 	}
 
 	Halo = CParticles(tmpArray);
-}
+	delete [] tmpArray;
+ }
 
 //Create a new CHalo from a CHalo
 CHalo::CHalo(CHalo* inHalo){
@@ -1129,7 +1130,7 @@ void CHalo::mergeStatisticalRec(CHalo* prevHalo, int &flag){
 
 		if (this != (*it) && NrParticles*(tmp1 + tmp2) < 200) {
 			cout << "Merging two halos"<<endl;
-			//cout << SubHalos.size()<< endl;
+			cout << SubHalos.size()<< endl;
 			SubHalos.erase(it);
 			//SubHalos.remove(*it);
 			addHalo(*it);
@@ -1249,14 +1250,14 @@ void CHalo::createSubHalos(){
 	cout << "In createSubHalos in CHalo, before assigning particles" << endl;
 	assignParticles(&allParticles);
 	saveStructure("structureBig.dat");
-	exit(0);
+	//exit(0);
 	cout << "In createSubHalos in CHalo, before merging statistical" << endl;
 	//mergeStatistical();
 	//printSubHalos();
 	//del(myConstants::constants.outBoundng);
 	//UnbindAll();
 	cout << "In createSubHalos in CHalo, before removing halos" << endl;
-	//removeEmptySubHalos();
+	removeEmptySubHalos();
 	cout << "In createSubHalos in CHalo, finished" << endl;
 	//Unbind();
 }
