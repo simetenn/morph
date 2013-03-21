@@ -76,6 +76,7 @@ void CHalos::initialize(CArray* inArray){
 void CHalos::clear(){
 	for (int i = 0; i < NrHalos; i++) {
 		Halos[i]->clear();
+		delete Halos[i];
 	}
 	NrInHalo.clear();
 	AllParticles.clear();

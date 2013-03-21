@@ -29,16 +29,17 @@ CParticles::CParticles(CArray* inArray){
 
 	NrParticles = (inArray->len())/ParticleSize;
 
-	for (int i = 0; i<NrParticles;i++){
-		double* tmpArray = new double [ParticleSize];
+	double* tmpArray = new double [ParticleSize];
 
+	for (int i = 0; i<NrParticles;i++){
 		for (int j = 0; j < ParticleSize;j++){
 			tmpArray[j] = inArray->get(ParticleSize*i+j);
 		}
 
-		CParticle * tmpParticle = new CParticle(tmpArray);
+		CParticle * tmpParticle = new CParticle(tmpArray); // <----- kill
 		Particles.push_back(tmpParticle);
 	}
+	delete [] tmpArray;
 }
 
 
@@ -55,17 +56,17 @@ void CParticles::set(CArray* inArray){
 	}
 
 	NrParticles = (inArray->len())/ParticleSize;
+	double* tmpArray = new double [ParticleSize];
 
 	for (int i = 0; i<NrParticles;i++){
-		double* tmpArray = new double [ParticleSize];
-
 		for (int j = 0; j < ParticleSize;j++){
 			tmpArray[j] = inArray->get(ParticleSize*i+j);
 		}
 
-		CParticle * tmpParticle = new CParticle(tmpArray);
+		CParticle * tmpParticle = new CParticle(tmpArray);  // <----- kill
 		Particles.push_back(tmpParticle);
 	}
+	delete [] tmpArray;
 }
 
 
@@ -145,7 +146,7 @@ void CParticles::removeParticle(int element){
 //Convert CParticles to a CArray on the form
 //[ParticleArray 1, ParticleArray 2, ParticleArray 3, ... , ParticleArray N]
 CArray* CParticles::Particles2Array(){
-	double* Array = new double [ParticleSize*NrParticles]; // Memory leak
+	double* Array = new double [ParticleSize*NrParticles]; 
 
 	for (int i = 0; i < NrParticles;i++){
 		double* tmpArray = Particles[i]->Particle2Array();
@@ -153,7 +154,10 @@ CArray* CParticles::Particles2Array(){
 			Array[i*ParticleSize+j] = tmpArray[j];
 		}
 	}
-	return new CArray(ParticleSize*NrParticles,Array); //Memory leak
+
+	delete [] Array;
+	
+	return new CArray(ParticleSize*NrParticles,Array); //<--- kill
 }
 
 

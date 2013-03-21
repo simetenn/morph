@@ -53,13 +53,13 @@ CHalo::CHalo(CArray* inArray){
 	SigmaV.Set(inArray->get(11),inArray->get(12),inArray->get(13));
 
 	//Read all the particle information
-	CArray* tmpArray = new CArray (NrParticles*ParticleSize);
+	CArray* tmpArray = new CArray (NrParticles*ParticleSize); // <-- kill
 	for (int i = 0; i < NrParticles*ParticleSize; i++) {
 		tmpArray->set(i, inArray->get(i + myConstants::constants.HaloSize));
 	}
 
 	Halo = CParticles(tmpArray);
-	delete [] tmpArray;
+	//delete [] tmpArray;
  }
 
 //Create a new CHalo from a CHalo
@@ -86,12 +86,13 @@ void CHalo::set(CArray* inArray){
 	SigmaV.Set(inArray->get(11),inArray->get(12),inArray->get(13));
 
 	//Read all the particle information
-	CArray* tmpArray = new CArray (NrParticles*ParticleSize);
+	CArray* tmpArray = new CArray (NrParticles*ParticleSize); // <--- kill
 	for (int i = 0; i < NrParticles*ParticleSize; i++) {
 		tmpArray->set(i, inArray->get(i + myConstants::constants.HaloSize));
 	}
 
 	Halo = CParticles(tmpArray);
+	//delete [] tmpArray;
 }
 
 
@@ -215,7 +216,7 @@ void CHalo::copy(CHalo* inHalo) {
 //standard deviation of velocity, ParticleArray 1, ParticleArray 2, ... , ParticleArray N]
 CArray*	 CHalo::Halo2Array(){
 	CArray tmpArray(Halo.Particles2Array()); // Memory leak
-	double* Array = new double [tmpArray.len() + myConstants::constants.HaloSize]; // Memory leak
+	double* Array = new double [tmpArray.len() + myConstants::constants.HaloSize];
 
 	Array[0] = NrParticles;
 	Array[1] = Mass;
@@ -229,8 +230,9 @@ CArray*	 CHalo::Halo2Array(){
 	for (int i = 0; i < tmpArray.len(); i++) {
 		Array[i + myConstants::constants.HaloSize] = tmpArray[i];
 	}
-
-	return new CArray(tmpArray.len()+myConstants::constants.HaloSize, Array);
+	CArray* tmpCArray = new CArray(tmpArray.len()+myConstants::constants.HaloSize, Array); //<-- kill
+	delete [] Array;
+	return tmpCArray;
 }
 
 
@@ -239,16 +241,16 @@ CArray*	 CHalo::Halo2Array(){
 //[NrParticles, Mass, Mean position, Mean velocity, standard deviation of position,
 //standard deviation of velocity, ParticleArray 1, ParticleArray 2, ... , ParticleArray N]
 CArray* CHalo::SubHalos2Array(){
-	CArray* Array = new CArray ();
-	CArray* sizeArray = new CArray (); // Memory leak
+	CArray Array; 
+	CArray* sizeArray = new CArray (); // <--- kill
 
 	//adds all data from all subhalos
-	SubHalos2ArrayRec(Array,sizeArray);
+	SubHalos2ArrayRec(&Array,sizeArray);
 	//Add nr of Halos to the front of SizeArray
 	sizeArray->front(sizeArray->len());
 	//Add the Array to sizeArray
-	sizeArray->add(Array);
-
+	sizeArray->add(&Array);
+	//delete [] Array;
 	return sizeArray;
 }
 
@@ -275,18 +277,18 @@ void CHalo::SubHalos2ArrayRec(CArray* inArray, CArray* sizeArray){
 //[ID, NrParticles, Mass, Mean position, Mean velocity, standard deviation of position,
 //standard deviation of velocity, ParticleArray 1, ParticleArray 2, ... , ParticleArray N]
 CArray* CHalo::SubHalosStructure2Array(){
-	CArray* Array = new CArray ();
-	CArray* sizeArray = new CArray (); // Memory leak
+	CArray Array;
+	CArray* sizeArray = new CArray (); // <--- kill
 
 	int ID = -1;
 	//Array->front(ID);
 	//adds all data from all subhalos
-	SubHalosStructure2ArrayRec(Array, sizeArray,ID);
+	SubHalosStructure2ArrayRec(&Array, sizeArray,ID);
 	//Add nr of Halos to the front of SizeArray
 	sizeArray->front(sizeArray->len());
 
 	//Add the Array to sizeArray
-	sizeArray->add(Array);
+	sizeArray->add(&Array);
 
 	return sizeArray;
 }
