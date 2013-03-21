@@ -215,7 +215,7 @@ void CHalo::copy(CHalo* inHalo) {
 //[NrParticles, Mass, Mean position, Mean velocity, standard deviation of position,
 //standard deviation of velocity, ParticleArray 1, ParticleArray 2, ... , ParticleArray N]
 CArray*	 CHalo::Halo2Array(){
-	CArray tmpArray(Halo.Particles2Array()); // Memory leak
+	CArray tmpArray(Halo.Particles2Array());
 	double* Array = new double [tmpArray.len() + myConstants::constants.HaloSize];
 
 	Array[0] = NrParticles;
@@ -395,15 +395,18 @@ void CHalo::fromStructureArray(CArray* inArray){
 		}
 	}
 
+	CArray tmpCArray((int)(NrParticles*ParticleSize + myConstants::constants.HaloSize), tmpArray);
+	set(&tmpCArray);
 
-	set(new CArray((int)(NrParticles*ParticleSize + myConstants::constants.HaloSize), tmpArray));
-
+	delete [] tmpArray;
 
 	while (ID < nextID){
-	fromStructureArrayRec(this, inArray, nrHalo, particle_count,nextID);
+		fromStructureArrayRec(this, inArray, nrHalo, particle_count,nextID);
 		//cout << nextID << endl;
 	}
 
+	
+	
 }
 
 
@@ -437,14 +440,12 @@ void CHalo::fromStructureArrayRec(CHalo* prevHalo, CArray* inArray, int& nrHalo,
 			particle_count++;
 		}
 	}
-	CArray* tmpCArray = new CArray(tmpNrParticles*ParticleSize + myConstants::constants.HaloSize, tmpArray);
+	CArray tmpCArray (tmpNrParticles*ParticleSize + myConstants::constants.HaloSize, tmpArray);
 	delete[] tmpArray;
-	CHalo* tmpHalo = new CHalo(tmpCArray); // <- Memory leak
+	
+	CHalo* tmpHalo = new CHalo(&tmpCArray); // <---- kill
 	prevHalo->attachSubHaloBack(tmpHalo);
-
-
-
-
+	
 	while (ID < nextID){
 		fromStructureArrayRec(this, inArray, nrHalo, particle_count, nextID);
 	}
@@ -799,7 +800,7 @@ void CHalo::saveHaloStatX(fstream& fileName, int& HaloID){
 //save the data for a single halo to file
 void CHalo::savePhi(string Filename){
 	fstream file;
-	double* tmpArray;
+	
 	file.open((myConstants::constants.data + Filename).c_str(), ios::out);
 
 	//Saves data for each particle to file
@@ -938,7 +939,7 @@ void CHalo::FriendOfFriendPhaseSpace(){
 			Particle->RemoveFromList();
 			findNeighborsPhaseSpace(Particle, &tmpHalo, L);
 			if (tmpHalo.getNrParticles() > myConstants::constants.HaloSeed && tmpHalo.getNrParticles() != NrParticles){
-				SubHalos.push_back(new CHalo(&tmpHalo));
+				SubHalos.push_back(new CHalo(&tmpHalo)); // <-- kill
 			}
 		}
 	}
