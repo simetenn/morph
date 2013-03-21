@@ -66,8 +66,8 @@ void CHalos::initialize(CArray* inArray){
 		}
 		CArray tmpCArray(NrInHalo[i]*ParticleSize + myConstants::constants.HaloSize, tmpArray);
 		delete[] tmpArray;
-		CHalo* tmpHalo = new CHalo(&tmpCArray); // <- Memory leak
-		Halos.push_back(tmpHalo);
+		
+		Halos.push_back(new CHalo(&tmpCArray));//kill
 	}
 }
 
@@ -116,7 +116,9 @@ CArray*	 CHalos::Halos2Array(){
 			}
 		}
 	}
-	return new CArray(ParticleSize*NrParticles+NrHalos+1,Array); //Memory leak
+	CArray* tmpCArray = new CArray(ParticleSize*NrParticles+NrHalos+1,Array); // <--- kill
+	delete [] Array;
+	return tmpCArray;
 }
 
 
@@ -163,8 +165,8 @@ void CHalos::addHalos(CArray* inArray){
 				particle_count++;
 			}
 		}
-		CArray* tmpCArray = new CArray(tmpNrInHalo[i]*ParticleSize + myConstants::constants.HaloSize, tmpArray);
-		CHalo* tmpHalo = new CHalo(tmpCArray); // <- Memory leak
+		CArray tmpCArray (tmpNrInHalo[i]*ParticleSize + myConstants::constants.HaloSize, tmpArray);
+		CHalo* tmpHalo = new CHalo(&tmpCArray); // <--- kill
 		Halos.push_back(tmpHalo);
 
 		delete[] tmpArray;
@@ -202,7 +204,7 @@ CHalos CHalos::operator+(CHalos* inCHalo){
 	int inNrHalos = inCHalo->getNrHalos();
 	int particle_count = NrHalos+inNrHalos+1;
 
-	CArray* resHalos = new CArray(ParticleSize*(NrParticles+inNrParticles)+NrHalos+inNrHalos+1);
+	CArray resHalos (ParticleSize*(NrParticles+inNrParticles)+NrHalos+inNrHalos+1);
 	double tmpArray[ParticleSize];
 
 	resHalos[0]=NrParticles+inNrParticles;
@@ -232,7 +234,7 @@ CHalos CHalos::operator+(CHalos* inCHalo){
 			particle_count++;
 		}
 	}
-	return CHalos(resHalos);
+	return CHalos(&resHalos);
 }
 
 
@@ -331,7 +333,7 @@ void CHalos::loadBin(string Filename){
 	NrInHalo.clear();
 	NrHalos = 1;
 
-	CHalo* tmpHalo = new CHalo();
+	CHalo* tmpHalo = new CHalo(); // <---- kill
 	Halos.push_back(tmpHalo);
 
 	cout << "Copying data ..." << endl;
@@ -388,7 +390,7 @@ void CHalos::loadClaudio(string Filename){
 	NrInHalo.clear();
 	NrHalos = 1;
 
-	CHalo* tmpHalo = new CHalo();
+	CHalo* tmpHalo = new CHalo(); // <--- kill
 	Halos.push_back(tmpHalo);
 
 	cout << "Copying data ..." << endl;
@@ -397,8 +399,9 @@ void CHalos::loadClaudio(string Filename){
 	//Saving data into existing structure
 	//Saving all Particles into the first halo in Halos, get with Halos[0]
 	AllParticles.resize(count);
+	CParticle* tmpParticle;
 	for (int i=0;i<count;i++) {
-		CParticle* tmpParticle = &AllParticles[i];
+		tmpParticle = &AllParticles[i];
 
 		tmpParticle->setPosition(block[i].P.x,block[i].P.y,block[i].P.z);
 		tmpParticle->setVelocity(block[i].V.x,block[i].V.y,block[i].V.z);
@@ -430,11 +433,13 @@ void CHalos::loadData(string Filename){
 	NrInHalo.clear();
 	NrHalos = 1;
 
-	CHalo* tmpHalo = new CHalo();
+	CHalo* tmpHalo = new CHalo(); // <--- kill
 	Halos.push_back(tmpHalo);
 	double tmpData [ParticleSize];
 	NrParticles = 0;
 
+
+	CParticle tmpParticle;
 	if (file.is_open()){
 		while (!file.eof()){
 			getline(file,line);
@@ -444,8 +449,8 @@ void CHalos::loadData(string Filename){
 			for (int i = 0; i < ParticleSize; i++){
 				tmpData[i] = atof(strData[i].c_str());
 			}
-
-			tmpHalo->addParticle(new CParticle(tmpData));
+			tmpParticle = CParticle(tmpData);
+			tmpHalo->addParticle(&tmpParticle);
 			NrParticles++;
 
 		}
@@ -464,7 +469,7 @@ void CHalos::loadData(string Filename){
 
 
 //Load a txt with full halo information
-void CHalos::loadHalos(string Filename){
+/*void CHalos::loadHalos(string Filename){
 	vector<string> strData;
 	cout << "A" << endl;
 	ifstream file((myConstants::constants.data + Filename).c_str());
@@ -524,7 +529,7 @@ void CHalos::loadHalos(string Filename){
 		Halos.push_back(tmpHalo);
 	}
 
-}
+	}*/
 
 
 
