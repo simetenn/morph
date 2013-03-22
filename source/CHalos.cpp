@@ -31,9 +31,7 @@ CHalos::CHalos(CArray* inArray){
 
 
 CHalos::~CHalos(){
-	for (int i = 0; i < NrHalos;i++){
-		Halos[i]->~CHalo();
-	}
+	//kill();
 	NrInHalo.clear();
 	AllParticles.clear();
 }
@@ -72,11 +70,19 @@ void CHalos::initialize(CArray* inArray){
 }
 
 
+void CHalos::kill(){
+	for (int i = 0; i < NrHalos;i++){
+		delete Halos[i];
+	}
+
+}
+
+
 
 void CHalos::clear(){
 	for (int i = 0; i < NrHalos; i++) {
 		Halos[i]->clear();
-		delete Halos[i];
+		//delete Halos[i];
 	}
 	NrInHalo.clear();
 	AllParticles.clear();
@@ -1044,7 +1050,7 @@ void CHalos::slave(){
 		initialize(&HalosArray);
 		SplitHalos();
 		Halos[0]->SubHalos2Array()->send_slave_modified(tmpLength);
-		clear();
+		//clear();
 
 		/*CHalos SlaveHalos(&HalosArray); // Assured memory leak
 		//SlaveHalos.initialize(&HalosArray);

@@ -23,6 +23,9 @@ class CHalos{
 
 
 	void initialize(CArray* inArray);
+
+	void kill();
+
 	void clear();
 
 	
