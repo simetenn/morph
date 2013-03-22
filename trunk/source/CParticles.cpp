@@ -11,7 +11,7 @@ CParticles::CParticles(){
 
 CParticles::~CParticles(){
 	for (int i = 0; i < NrParticles;i++){
-		//delete Particles[i];// <- correct?
+		Particles[i]->~CParticle();// <- correct?
 	}
 	Particles.clear();
 }
