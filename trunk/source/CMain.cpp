@@ -6,9 +6,9 @@ Constants myConstants::constants;
 void CMain::master() {
 	CHalos m,n;
 	//CHalo h;
-	//m.loadClaudio(myConstants::constants.inFile);
+	m.loadClaudio(myConstants::constants.inFile);
 	//m.loadData(myConstants::constants.DataFile);
-	m.loadData("data.dat");
+	//m.loadData("data.dat");
 	//m.loadHalos("splitHalos.dat");
 
 	//h.loadStructure("structureBig.dat");
@@ -19,12 +19,12 @@ void CMain::master() {
 	
 	
 	//cout << m.getNrParticles() << endl;
-	//m.FriendOfFriendGrid();
+	m.FriendOfFriendGrid();
 	//m.saveP("positionsFOF.dat");
 	//m.save(myConstants::constants.DataFile,myConstants::constants.NrParticles2File);
 	//m.FriendOfFriendN2();
-	m.CalculateAllStatistics();
-	m.printHalos();
+	//m.CalculateAllStatistics();
+	//m.printHalos();
 	
 	/*m[5]->saveHalo("velocity0.dat");
 	m[6]->saveHalo("velocity1.dat");

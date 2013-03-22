@@ -71,10 +71,19 @@ CHalo::CHalo(CHalo* inHalo){
 
 
 CHalo::~CHalo(){
-	for (list<CHalo*>::iterator it = SubHalos.begin(); it != SubHalos.end(); it++) {
+	kill();
+	//clear();
+}
+
+
+void CHalo::kill(){
+	/*for (list<CHalo*>::iterator it = SubHalos.begin(); it != SubHalos.end(); it++) {
 		delete (*it);
+		}*/
+	for (int i = 0; i < NrParticles; i++) {
+		delete Halo[i];
 	}
-	clear();
+	
 }
 
 
@@ -220,10 +229,8 @@ void CHalo::copy(CHalo* inHalo) {
 //[NrParticles, Mass, Mean position, Mean velocity, standard deviation of position,
 //standard deviation of velocity, ParticleArray 1, ParticleArray 2, ... , ParticleArray N]
 CArray*	 CHalo::Halo2Array(){
-	cout << "here" << endl;
-	CArray tmpArray(Halo.Particles2Array());
-	double* Array = new double [tmpArray.len() + myConstants::constants.HaloSize];
-
+	CArray* tmpArray = Halo.Particles2Array();
+	double* Array = new double [tmpArray->len() + myConstants::constants.HaloSize];
 	Array[0] = NrParticles;
 	Array[1] = Mass;
 	for (int i = 0; i < MeanP.getDimensions(); i++) {
@@ -232,12 +239,15 @@ CArray*	 CHalo::Halo2Array(){
 		Array[8+i] = SigmaP[i];
 		Array[11+i] = SigmaV[i];
 	}
-
-	for (int i = 0; i < tmpArray.len(); i++) {
-		Array[i + myConstants::constants.HaloSize] = tmpArray[i];
+	for (int i = 0; i < tmpArray->len(); i++) {
+		Array[i + myConstants::constants.HaloSize] = tmpArray->get(i);
 	}
-	CArray* tmpCArray = new CArray(tmpArray.len()+myConstants::constants.HaloSize, Array); //<-- kill
+	
+	CArray* tmpCArray = new CArray(tmpArray->len()+myConstants::constants.HaloSize, Array); //<-- kill
+
 	delete [] Array;
+	delete tmpArray;
+
 	return tmpCArray;
 }
 
