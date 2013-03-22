@@ -133,8 +133,8 @@ void CHalos::addHalo(CHalo* inHalo){
 
 //Add halos to the existing ones
 void CHalos::addHalos(CArray* inArray){
-	int oldNrHalos = NrHalos;
-	int oldNrParticles = NrParticles;
+	//int oldNrHalos = NrHalos;
+	//int oldNrParticles = NrParticles;
 
 	int newNrHalos = inArray->get(0);
 	NrHalos += newNrHalos;
@@ -205,7 +205,7 @@ CHalos CHalos::operator+(CHalos* inCHalo){
 	int particle_count = NrHalos+inNrHalos+1;
 
 	CArray resHalos (ParticleSize*(NrParticles+inNrParticles)+NrHalos+inNrHalos+1);
-	double tmpArray[ParticleSize];
+	//double tmpArray[ParticleSize];
 
 	resHalos[0]=NrParticles+inNrParticles;
 
@@ -288,7 +288,6 @@ void CHalos::print(){
 
 //Print out all halos, together with some information
 void CHalos::printHalos(){
-	cout << "in printhalos" << endl;
 	cout << "__________________________________" << endl;
 	for (int i = 0;i < NrHalos; i++){
 		cout << "								   " << endl;
@@ -665,7 +664,7 @@ void CHalos::FriendOfFriendN2(){
 
 		if (Particle == NULL) break;
 		else {
-			CHalo* tmpHalo = new CHalo();
+			CHalo* tmpHalo = new CHalo(); // <--- kill
 			tmpHalos.push_back(tmpHalo);
 
 			//Calls findNeighbors to find the particles within linking distance
@@ -806,7 +805,7 @@ void CHalos::FriendOfFriendGrid(){
 			//Only saving halos that has more than HaloLimit particles, updating NrInHalos
 			//count += tmpHalo.getNrParticles();
 			if (tmpHalo.getNrParticles() >= myConstants::constants.HaloLimit) {
-				Halos.push_back(new CHalo(&tmpHalo));
+				Halos.push_back(new CHalo(&tmpHalo)); // <--- kill
 				NrInHalo.push_back(tmpHalo.getNrParticles());
 			}
 		}
@@ -954,7 +953,7 @@ CHalos* CHalos::master(){
 	int count = 0;
 	int processor;
 	int size = MPI.getSize();
-	CHalos* FinalHalos = new CHalos();
+	CHalos* FinalHalos = new CHalos(); // <--- kill
 	MPI_Request Req [size-1];
 	vector<CArray*> Array (size-1);
 	CParticle tmpParticle;
@@ -971,6 +970,7 @@ CHalos* CHalos::master(){
 		//and that it only is one halo to the CArray
 		cout << "before reverting to array" << endl;
 		Array[p-1] = Halos[count]->Halo2Array();
+		cout << "after reverting" << endl;
 		Array[p-1]->front(NrInHalo[count]);
 		Array[p-1]->front(1);
 		MPI.End(p,0);
@@ -1034,9 +1034,6 @@ void CHalos::slave(){
 
 	CArray HalosArray;
 	CMPI MPI;
-	int flag;
-	int rank = MPI.getRank();
-
 	CParticle tmpParticle;
 	//CHalos SlaveHalos;
 	
