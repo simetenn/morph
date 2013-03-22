@@ -54,8 +54,10 @@ CHalo::CHalo(CArray* inArray){
 
 	//Read all the particle information
 	CArray* tmpArray = new CArray (NrParticles*ParticleSize); // <-- kill
+	//CArray tmpArray (NrParticles*ParticleSize);
 	for (int i = 0; i < NrParticles*ParticleSize; i++) {
 		tmpArray->set(i, inArray->get(i + myConstants::constants.HaloSize));
+		//tmpArray.set(i, inArray->get(i + myConstants::constants.HaloSize));
 	}
 
 	Halo = CParticles(tmpArray);
@@ -69,6 +71,9 @@ CHalo::CHalo(CHalo* inHalo){
 
 
 CHalo::~CHalo(){
+	for (list<CHalo*>::iterator it = SubHalos.begin(); it != SubHalos.end(); it++) {
+		delete (*it);
+	}
 	clear();
 }
 
@@ -215,6 +220,7 @@ void CHalo::copy(CHalo* inHalo) {
 //[NrParticles, Mass, Mean position, Mean velocity, standard deviation of position,
 //standard deviation of velocity, ParticleArray 1, ParticleArray 2, ... , ParticleArray N]
 CArray*	 CHalo::Halo2Array(){
+	cout << "here" << endl;
 	CArray tmpArray(Halo.Particles2Array());
 	double* Array = new double [tmpArray.len() + myConstants::constants.HaloSize];
 
