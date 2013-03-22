@@ -42,7 +42,7 @@ CHalos::~CHalos(){
 void CHalos::initialize(CArray* inArray){
 	//clear();
 	Halos.clear();
-	cout << inArray->get(0) << endl;
+	
 	NrHalos = inArray->get(0);
 	ParticleSize = myConstants::constants.ParticleSize;
 	int particle_count = 1 + NrHalos;
