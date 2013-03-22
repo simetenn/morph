@@ -37,6 +37,21 @@ CHalos::~CHalos(){
 }
 
 
+void CHalos::kill(){
+	for (int i = 0; i < NrHalos;i++){
+		delete Halos[i];
+	}
+	AllParticles.clear();
+	searchParticle=NULL;
+	NrParticles = 0;
+	NrHalos = 0;
+	NrInHalo.clear();
+	AllParticles.clear();
+}
+
+
+
+
 void CHalos::initialize(CArray* inArray){
 	//clear();
 	Halos.clear();
@@ -70,19 +85,11 @@ void CHalos::initialize(CArray* inArray){
 }
 
 
-void CHalos::kill(){
-	for (int i = 0; i < NrHalos;i++){
-		delete Halos[i];
-	}
-
-}
-
-
 
 void CHalos::clear(){
 	for (int i = 0; i < NrHalos; i++) {
 		Halos[i]->clear();
-		//delete Halos[i];
+		delete Halos[i];
 	}
 	NrInHalo.clear();
 	AllParticles.clear();
@@ -347,8 +354,9 @@ void CHalos::loadBin(string Filename){
 	//Saving data into existing structure
 	//Saving all Particles into the first halo in Halos, get with Halos[0]
 	AllParticles.resize(count);
+	CParticle* tmpParticle = NULL;
 	for (int i=0;i<count;i++) {
-		CParticle* tmpParticle = &AllParticles[i];
+		tmpParticle = &AllParticles[i];
 
 		tmpParticle->setPosition(block[i].P.x,block[i].P.y,block[i].P.z);
 		tmpParticle->setVelocity(block[i].V.x,block[i].V.y,block[i].V.z);
@@ -423,6 +431,7 @@ void CHalos::loadClaudio(string Filename){
 	NrParticles = count;
 	NrInHalo.push_back(NrParticles);
 	LinkingLength = pow(1./NrParticles,1./3);
+	AllParticles.clear();
 }
 
 
@@ -1050,8 +1059,10 @@ void CHalos::slave(){
 		initialize(&HalosArray);
 		SplitHalos();
 		Halos[0]->SubHalos2Array()->send_slave_modified(tmpLength);
-		//clear();
-
+		//kill();
+		clear();
+		
+		
 		/*CHalos SlaveHalos(&HalosArray); // Assured memory leak
 		//SlaveHalos.initialize(&HalosArray);
 		SlaveHalos.SplitHalos();

@@ -27,7 +27,7 @@ class CHalos{
 	void kill();
 
 	void clear();
-
+	
 	
 	//Sort halos by NrParticles
 	void HaloSort();
