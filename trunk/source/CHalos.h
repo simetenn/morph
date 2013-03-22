@@ -23,11 +23,8 @@ class CHalos{
 
 
 	void initialize(CArray* inArray);
-
-	void kill();
-
 	void clear();
-	
+
 	
 	//Sort halos by NrParticles
 	void HaloSort();

@@ -155,9 +155,10 @@ CArray* CParticles::Particles2Array(){
 		}
 	}
 
+	CArray* tmpCArray = new CArray (ParticleSize*NrParticles,Array);  //<--- kill
 	delete [] Array;
 	
-	return new CArray(ParticleSize*NrParticles,Array); //<--- kill
+	return tmpCArray;
 }
 
 
