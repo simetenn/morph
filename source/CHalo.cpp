@@ -53,7 +53,7 @@ CHalo::CHalo(CArray* inArray){
 	SigmaV.Set(inArray->get(11),inArray->get(12),inArray->get(13));
 
 	//Read all the particle information
-	CArray* tmpArray = new CArray (NrParticles*ParticleSize); // <-- kill
+	CArray* tmpArray = new CArray (NrParticles*ParticleSize); 
 	//CArray tmpArray (NrParticles*ParticleSize);
 	for (int i = 0; i < NrParticles*ParticleSize; i++) {
 		tmpArray->set(i, inArray->get(i + myConstants::constants.HaloSize));
@@ -61,7 +61,7 @@ CHalo::CHalo(CArray* inArray){
 	}
 
 	Halo = CParticles(tmpArray);
-	//delete [] tmpArray;
+	delete tmpArray;
  }
 
 //Create a new CHalo from a CHalo
@@ -1253,20 +1253,20 @@ void CHalo::UnbindAll(){
 void CHalo::createSubHalos(){
 	//cout << "In createSubHalos in CHalo" << endl;
 	CParticles allParticles = Halo;
-	cout << "In createSubHalos in CHalo, before splithalo" << endl;
+	//cout << "In createSubHalos in CHalo, before splithalo" << endl;
 	SplitHalo();
-	cout << "In createSubHalos in CHalo, before assigning particles" << endl;
+	//cout << "In createSubHalos in CHalo, before assigning particles" << endl;
 	assignParticles(&allParticles);
-	saveStructure("structureBig.dat");
+	//saveStructure("structureBig.dat");
 	//exit(0);
-	cout << "In createSubHalos in CHalo, before merging statistical" << endl;
+	//cout << "In createSubHalos in CHalo, before merging statistical" << endl;
 	//mergeStatistical();
 	//printSubHalos();
 	//del(myConstants::constants.outBoundng);
 	//UnbindAll();
-	cout << "In createSubHalos in CHalo, before removing halos" << endl;
+	//cout << "In createSubHalos in CHalo, before removing halos" << endl;
 	removeEmptySubHalos();
-	cout << "In createSubHalos in CHalo, finished" << endl;
+	//cout << "In createSubHalos in CHalo, finished" << endl;
 	//Unbind();
 }
 

@@ -10,9 +10,10 @@ CParticles::CParticles(){
 }
 
 CParticles::~CParticles(){
-	for (int i = 0; i < NrParticles;i++){
-		Particles[i]->~CParticle();// <- correct?
-	}
+	/*for (int i = 0; i < NrParticles;i++){
+		if ( Particles[i] != NULL)
+			delete Particles[i]; // <- correct?
+			}*/
 	Particles.clear();
 }
 
@@ -146,19 +147,16 @@ void CParticles::removeParticle(int element){
 //Convert CParticles to a CArray on the form
 //[ParticleArray 1, ParticleArray 2, ParticleArray 3, ... , ParticleArray N]
 CArray* CParticles::Particles2Array(){
-	double* Array = new double [ParticleSize*NrParticles]; 
-
+	CArray* Array = new CArray (ParticleSize*NrParticles); // <--- kill
+	double* tmpArray;
 	for (int i = 0; i < NrParticles;i++){
-		double* tmpArray = Particles[i]->Particle2Array();
+		tmpArray = Particles[i]->Particle2Array();
 		for (int j = 0; j < ParticleSize;j++){
-			Array[i*ParticleSize+j] = tmpArray[j];
+			Array->set(i*ParticleSize+j, tmpArray[j]);
 		}
 	}
 
-	CArray* tmpCArray = new CArray (ParticleSize*NrParticles,Array);  //<--- kill
-	delete [] Array;
-	
-	return tmpCArray;
+	return Array;
 }
 
 
