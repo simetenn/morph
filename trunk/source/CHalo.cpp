@@ -53,7 +53,7 @@ CHalo::CHalo(CArray* inArray){
 	SigmaV.Set(inArray->get(11),inArray->get(12),inArray->get(13));
 
 	//Read all the particle information
-	CArray* tmpArray = new CArray (NrParticles*ParticleSize); 
+	CArray* tmpArray = new CArray (NrParticles*ParticleSize);
 	//CArray tmpArray (NrParticles*ParticleSize);
 	for (int i = 0; i < NrParticles*ParticleSize; i++) {
 		tmpArray->set(i, inArray->get(i + myConstants::constants.HaloSize));
@@ -97,7 +97,7 @@ void CHalo::set(CArray* inArray){
 	}
 
 	Halo = CParticles(tmpArray);
-	//delete [] tmpArray;
+	delete tmpArray;
 }
 
 
@@ -158,8 +158,10 @@ void CHalo::clear() {
 	ParticleSize = myConstants::constants.ParticleSize;
 	}*/
 
+
 void CHalo::clear(){
-	Halo.clear();
+	
+	//delete Halo();
 	NrParticles = 0;
 	Mass = 0;
 	MeanP.Set(0,0,0);
@@ -172,11 +174,12 @@ void CHalo::clear(){
 		(*it)->clear();
 	}
 	SubHalos.clear();
+	Halo.clear();
 }
 
 //Clear and remove particle information, but keeps halo information, like position and velocity
 void CHalo::clean() {
-	Halo.clear();
+	Halo.clean();
 	NrParticles = 0;
 	ParticleSize = myConstants::constants.ParticleSize;
 }
@@ -919,8 +922,11 @@ void CHalo::FriendOfFriendPhaseSpace(){
 
 	searchParticle = Halo[0];
 	CParticle* Particle = searchParticle;
+	for (list<CHalo*>::iterator it = SubHalos.begin(); it != SubHalos.end(); it++) {
+		(*it)->clear();
+	}
 	SubHalos.clear();
-
+	
 	//Create a linked list of all particles
 	Particle->prev=NULL;
 	for (int i=1; i < NrParticles;i++){
@@ -938,7 +944,7 @@ void CHalo::FriendOfFriendPhaseSpace(){
 		Particle = nextParticle();
 		if (Particle == NULL) break;
 		else {
-			tmpHalo.clear();
+			tmpHalo.clean();
 			//Calls findNeighbors to find the particles within linking distance
 			Particle->setFlag(1);
 			Particle->RemoveFromList();
@@ -1156,17 +1162,16 @@ void CHalo::mergeStatisticalRec(CHalo* prevHalo, int &flag){
 
 void CHalo::SortParticlesDistance(){
 	vector<ParticleAndDistance*> data;
-
 	for (int i = 0; i < NrParticles; i++) {
 		ParticleAndDistance* tmpData = new ParticleAndDistance;
-		tmpData->r= (MeanP - Halo[i]->getP()).Length();
+		tmpData->r = (MeanP - Halo[i]->getP()).Length();
 		tmpData->Particle = Halo[i];
 		data.push_back(tmpData);
 	}
 
 	sort(data.begin(),data.end(),&ParticleAndDistanceSortFunc);
 
-	Halo.clear();
+	Halo.clean();
 
 	//free up memory
 	for (int i = 0; i < NrParticles; i++) {

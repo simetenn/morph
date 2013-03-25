@@ -41,8 +41,8 @@ CHalos::~CHalos(){
 
 
 void CHalos::initialize(CArray* inArray){
-	//clear();
-	Halos.clear();
+	clear();
+	//Halos.clear();
 	
 	NrHalos = inArray->get(0);
 	ParticleSize = myConstants::constants.ParticleSize;
@@ -78,9 +78,11 @@ void CHalos::initialize(CArray* inArray){
 
 void CHalos::clear(){
 	for (int i = 0; i < NrHalos; i++) {
-		Halos[i]->clear();
-		delete Halos[i];
+		//Halos[i]->clear();
+		//if (Halos[i] != NULL)
+		//	delete Halos[i];
 	}
+	Halos.clear();
 	NrInHalo.clear();
 	AllParticles.clear();
 	searchParticle=NULL;
@@ -88,6 +90,19 @@ void CHalos::clear(){
 	NrHalos = 0;
 }
 
+
+void CHalos::clean(){
+	for (int i = 0; i < NrHalos; i++) {
+		Halos[i]->clean();
+		//delete Halos[i];
+	}
+	Halos.clear();
+	NrInHalo.clear();
+	AllParticles.clear();
+	searchParticle=NULL;
+	NrParticles = 0;
+	NrHalos = 0;
+}
 
 
 
@@ -317,6 +332,7 @@ void CHalos::CalculatePhiSpherical(){
 
 //Load a binary file from a N-body simulation into memory. Our format
 void CHalos::loadBin(string Filename){
+	clear();
 	ifstream file((myConstants::constants.data + Filename).c_str(), ios::in | ios::binary);
 
 	cout << "---------------------------------" << endl;
@@ -331,8 +347,8 @@ void CHalos::loadBin(string Filename){
 
 	double ParticleMass = myConstants::constants.RhoC*myConstants::constants.OmegaD*pow(myConstants::constants.BoxSize,3)/count;
 
-	Halos.clear();
-	NrInHalo.clear();
+	//Halos.clear();
+	//NrInHalo.clear();
 	NrHalos = 1;
 
 	CHalo* tmpHalo = new CHalo(); // <---- kill
@@ -369,6 +385,7 @@ void CHalos::loadBin(string Filename){
 
 //Load a binary file from a N-body simulation into memory. Claudio's format, converted from ramses file
 void CHalos::loadClaudio(string Filename){
+	clear();
 	ifstream file((myConstants::constants.data + Filename).c_str(), ios::in | ios::binary | ios::ate);
 
 	cout << "---------------------------------" << endl;
@@ -388,8 +405,8 @@ void CHalos::loadClaudio(string Filename){
 
 	double ParticleMass = myConstants::constants.RhoC*myConstants::constants.OmegaD*pow(myConstants::constants.BoxSize,3)/count;
 
-	Halos.clear();
-	NrInHalo.clear();
+	//Halos.clear();
+	//NrInHalo.clear();
 	NrHalos = 1;
 
 	CHalo* tmpHalo = new CHalo(); // <--- kill
@@ -426,13 +443,14 @@ void CHalos::loadClaudio(string Filename){
 
 //Load a text file, with all information about each particle
 void CHalos::loadData(string Filename){
+	clear();
 	vector<string> strData;
 
 	ifstream file((myConstants::constants.data + Filename).c_str());
 	string line;
 
-	Halos.clear();
-	NrInHalo.clear();
+	//Halos.clear();
+	//NrInHalo.clear();
 	NrHalos = 1;
 
 	CHalo* tmpHalo = new CHalo(); // <--- kill
@@ -788,13 +806,16 @@ void CHalos::FriendOfFriendGrid(){
 	//Using recursion to link all particles belonging to a halo
 	CHalo tmpHalo;
 
-	Halos.clear();
-	NrInHalo.clear();
+	clean();
+	//Halos.clear();
+	//NrInHalo.clear();
 
 	//int count = 0;
-
+	
 	while (true){
+		cout << "here" << endl;
 		Particle = findParticle();
+		cout << "here" << endl;
 		if (Particle == NULL) break;
 		else {
 			//Calls findNeighbors to find the particles within

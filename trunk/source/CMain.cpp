@@ -17,7 +17,7 @@ void CMain::master() {
 	//h.printSubHalos();
 	//h.mergeStatistical();
 	
-	
+	//m.print();
 	//cout << m.getNrParticles() << endl;
 	m.FriendOfFriendGrid();
 	//m.saveP("positionsFOF.dat");
@@ -38,7 +38,7 @@ void CMain::master() {
 	m[14]->saveHalo("velocity9.dat");*/
 	
 	//m.printHalos();
-	n = *m.master();
+	//n = *m.master();
 	//n.saveHalos("splitHalos.dat");
 	//n.CalculateAllStatistics();
 	/*n.HaloSort();
@@ -51,13 +51,13 @@ void CMain::master() {
 	n[64]->savePhi("Phi6.dat");	
 	n[128]->savePhi("Phi7.dat");*/
 	
-	n.saveSize(myConstants::constants.outSize);
+	//n.saveSize(myConstants::constants.outSize);
 	//n.saveP(myConstants::constants.outPosition);
 
 }
 
 void CMain::slave(){
 	CHalos s;
-	s.slave();
+	//s.slave();
 }
 

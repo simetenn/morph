@@ -14,7 +14,7 @@ CParticles::~CParticles(){
 		if ( Particles[i] != NULL)
 			delete Particles[i]; // <- correct?
 			}*/
-	Particles.clear();
+	clear();
 }
 
 
@@ -195,8 +195,23 @@ void CParticles::copy(CParticles& p) {
 
 //Clear and remove all information from CParticles
 void CParticles::clear(){
+	/*for (int i = 0; i < NrParticles; i++) {
+		if (Particles[i] != NULL)
+			delete Particles[i];
+			}*/
+	
 	Particles.clear();
 	NrParticles = 0;
 	flag = 1;
 	ParticleSize = myConstants::constants.ParticleSize;
 }
+
+//Clear and remove all information from CParticles, keeping the information in memory
+void CParticles::clean(){
+	Particles.clear();
+	NrParticles = 0;
+	flag = 1;
+	ParticleSize = myConstants::constants.ParticleSize;
+}
+
+
