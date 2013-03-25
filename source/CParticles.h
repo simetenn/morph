@@ -66,6 +66,7 @@ class CParticles{
 	//Clear and remove all information from CParticles
 	void clear();
 
+	void clean();
 	
  protected:
 	vector<CParticle*> Particles;
