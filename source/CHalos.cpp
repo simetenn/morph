@@ -31,11 +31,12 @@ CHalos::CHalos(CArray* inArray){
 
 
 CHalos::~CHalos(){
-	for (int i = 0; i < NrHalos;i++){
-		Halos[i]->~CHalo();
+	clear();
+	/*for (int i = 0; i < NrHalos;i++){
+		delete Halos[i];
 	}
 	NrInHalo.clear();
-	AllParticles.clear();
+	AllParticles.clear();*/
 }
 
 
@@ -70,6 +71,8 @@ void CHalos::initialize(CArray* inArray){
 		Halos.push_back(new CHalo(&tmpCArray));//kill
 	}
 }
+
+
 
 
 
@@ -931,10 +934,10 @@ void CHalos::findNeighborsGrid(CParticle* inParticle, CHalo* inHalo){
 //Runs the splitting routine for all halos to split each into several subhalos
 void CHalos::SplitHalos(){
 	for (int i = 0; i < NrHalos; i++) {
-		cout << "-------------------------------------------------" << endl;
+		/*cout << "-------------------------------------------------" << endl;
 		cout << "Splitting halo in phase space" << endl;
 		cout << "Splitting halo: " << i << endl;
-		cout << "-------------------------------------------------" << endl;
+		cout << "-------------------------------------------------" << endl;*/
 		Halos[i]->createSubHalos();
 	}
 }
