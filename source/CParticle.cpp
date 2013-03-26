@@ -20,7 +20,7 @@ CParticle::CParticle(){
  
 
 //Create a particle from an array on the following form:
-//[HaloID,Mass,Charge,Px,Py,Pz,Vx,Vy,Vz,Ax,Ay,Az]
+//[HaloID,Mass,Px,Py,Pz,Vx,Vy,Vz]
 CParticle::CParticle(double* inArray){
 	//Some way to test if length of the array is equal to particle size
 	//Generate_ID();
@@ -42,6 +42,21 @@ CParticle::~CParticle(){
 }
 
 
+void CParticle::initialize(double* inArray){
+		//Some way to test if length of the array is equal to particle size
+	//Generate_ID();
+
+	ParticleSize =  myConstants::constants.ParticleSize;
+
+	HaloID = inArray[0];
+	Mass = inArray[1];
+	//Charge = inArray[2];
+	P.Set(inArray[2],inArray[3],inArray[4]);
+	V.Set(inArray[5],inArray[6],inArray[7]);
+	//A.Set(inArray[9],inArray[10],inArray[11]);
+
+	next = prev = nextGrid = prevGrid = NULL;
+}
 
 
 //Removes the particle from a linked list
