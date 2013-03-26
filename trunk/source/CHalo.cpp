@@ -159,7 +159,7 @@ void CHalo::clear() {
 	}*/
 
 
-void CHalo::clear(){
+void CHalo::clear (){
 	
 	//delete Halo();
 	NrParticles = 0;

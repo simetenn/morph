@@ -10,6 +10,7 @@ CParticles::CParticles(){
 }
 
 CParticles::~CParticles(){
+	
 	/*for (int i = 0; i < NrParticles;i++){
 		if ( Particles[i] != NULL)
 			delete Particles[i]; // <- correct?
@@ -18,7 +19,7 @@ CParticles::~CParticles(){
 }
 
 
-//Creates CParticles øfrom a CArray on the following form:
+//Creates CParticles from a CArray on the following form:
 //[ParticleArray 1, ParticleArray 2, ParticleArray 3, ... , ParticleArray N]
 CParticles::CParticles(CArray* inArray){
 	ParticleSize = myConstants::constants.ParticleSize;
@@ -50,6 +51,7 @@ CParticles::CParticles(CArray* inArray){
 //[ParticleArray 1, ParticleArray 2, ParticleArray 3, ... , ParticleArray N]
 //Similar to the constructor
 void CParticles::set(CArray* inArray){
+	clear();
 	ParticleSize = myConstants::constants.ParticleSize;
 
 	if ((inArray->len()) % ParticleSize != 0) {
@@ -195,10 +197,10 @@ void CParticles::copy(CParticles& p) {
 
 //Clear and remove all information from CParticles
 void CParticles::clear(){
-	/*for (int i = 0; i < NrParticles; i++) {
-		if (Particles[i] != NULL)
-			delete Particles[i];
-			}*/
+	for (int i = 0; i < NrParticles; i++) {
+		//if (Particles[i] != NULL)
+		//	delete Particles[i];
+	}  
 	
 	Particles.clear();
 	NrParticles = 0;
