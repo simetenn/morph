@@ -69,6 +69,7 @@ class CParticles{
 	void clean();
 	
  protected:
+	vector<CParticle> ParticleData;
 	vector<CParticle*> Particles;
 	int NrParticles,ParticleSize,flag;
 };
