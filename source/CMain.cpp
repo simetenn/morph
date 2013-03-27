@@ -54,7 +54,8 @@ void CMain::master() {
 	
 	n->saveSize(myConstants::constants.outSize);
 	//n.saveP(myConstants::constants.outPosition);
-	//delete n;
+	n->kill();
+	delete n;
 }
 
 void CMain::slave(){
