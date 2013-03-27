@@ -379,7 +379,7 @@ void CHalo::loadStructure(string Filename){
 }
 
 
-
+//If this is used I need to manally kill the halos stored in it.
 void CHalo::fromStructureArray(CArray* inArray){
 	clear();
 	int NrHalos = inArray->get(0);
@@ -411,10 +411,10 @@ void CHalo::fromStructureArray(CArray* inArray){
 	}
 
 	CArray tmpCArray((int)(NrParticles*ParticleSize + myConstants::constants.HaloSize), tmpArray);
-	set(&tmpCArray);
+	set(&tmpCArray); // <--- kill!
 
 	delete [] tmpArray;
-
+	
 	while (ID < nextID){
 		fromStructureArrayRec(this, inArray, nrHalo, particle_count,nextID);
 		//cout << nextID << endl;
@@ -1263,7 +1263,8 @@ void CHalo::UnbindAll(){
 //Do the splitting of halos, assigning particles to all halos, and merge statisticaly equal halos
 void CHalo::createSubHalos(){
 	//cout << "In createSubHalos in CHalo" << endl;
-	CParticles allParticles = Halo;
+	CParticles allParticles;
+	allParticles.copy(Halo);
 	//cout << "In createSubHalos in CHalo, before splithalo" << endl;
 	SplitHalo();
 	//cout << "In createSubHalos in CHalo, before assigning particles" << endl;
