@@ -18,6 +18,8 @@ class CHalo{
 	CHalo(CHalo* inHalo);
 	~CHalo();
 
+	void kill();
+
 	void set(CArray* inArray);
 	
 	//Print all particles in halo
