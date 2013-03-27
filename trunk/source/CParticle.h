@@ -31,13 +31,9 @@ class CParticle{
 	//Create a particle from an array on the following form:
 	//[HaloID,Mass,Charge,Px,Py,Pz,Vx,Vy,Vz,Ax,Ay,Az]
 	CParticle(double* inArray);
-	
-	
+
 	~CParticle();
 
-	void initialize(double* inArray);
-
-	
 	void attachParticle(CParticle* p){
 		//CParticle* oldNext = nextGrid;
 		p->nextGrid = nextGrid;

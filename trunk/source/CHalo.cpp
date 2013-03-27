@@ -53,7 +53,7 @@ CHalo::CHalo(CArray* inArray){
 	SigmaV.Set(inArray->get(11),inArray->get(12),inArray->get(13));
 
 	//Read all the particle information
-	CArray* tmpArray = new CArray (NrParticles*ParticleSize);
+	CArray* tmpArray = new CArray (NrParticles*ParticleSize); 
 	//CArray tmpArray (NrParticles*ParticleSize);
 	for (int i = 0; i < NrParticles*ParticleSize; i++) {
 		tmpArray->set(i, inArray->get(i + myConstants::constants.HaloSize));
@@ -74,6 +74,15 @@ CHalo::~CHalo(){
 	for (list<CHalo*>::iterator it = SubHalos.begin(); it != SubHalos.end(); it++) {
 		delete (*it);
 	}
+	clear();
+	//kill();
+}
+
+void CHalo::kill(){
+	for (list<CHalo*>::iterator it = SubHalos.begin(); it != SubHalos.end(); it++) {
+		(*it)->kill();
+	}
+	Halo.kill();
 	clear();
 }
 
@@ -97,7 +106,7 @@ void CHalo::set(CArray* inArray){
 	}
 
 	Halo = CParticles(tmpArray);
-	delete tmpArray;
+	//delete [] tmpArray;
 }
 
 
@@ -158,10 +167,8 @@ void CHalo::clear() {
 	ParticleSize = myConstants::constants.ParticleSize;
 	}*/
 
-
-void CHalo::clear (){
-	
-	//delete Halo();
+void CHalo::clear(){
+	Halo.clear();
 	NrParticles = 0;
 	Mass = 0;
 	MeanP.Set(0,0,0);
@@ -174,12 +181,11 @@ void CHalo::clear (){
 		(*it)->clear();
 	}
 	SubHalos.clear();
-	Halo.clear();
 }
 
 //Clear and remove particle information, but keeps halo information, like position and velocity
 void CHalo::clean() {
-	Halo.clean();
+	Halo.clear();
 	NrParticles = 0;
 	ParticleSize = myConstants::constants.ParticleSize;
 }
@@ -333,7 +339,8 @@ void CHalo::saveStructure(string Filename){
 	}
 	file.close();
 	//Memory leak
-	tmpArray->del();
+	delete tmpArray;
+	//tmpArray->del();
 }
 
 
@@ -734,8 +741,9 @@ void CHalo::saveHalo(string Filename){
 		for (int j = 0; j < ParticleSize; j++) {
 			file << tmpArray[j] << " ";
 		}
-
+		delete tmpArray;
 		if (i != NrParticles-1) file << endl;
+		
 	}
 	file.close();
 }
@@ -922,11 +930,8 @@ void CHalo::FriendOfFriendPhaseSpace(){
 
 	searchParticle = Halo[0];
 	CParticle* Particle = searchParticle;
-	for (list<CHalo*>::iterator it = SubHalos.begin(); it != SubHalos.end(); it++) {
-		(*it)->clear();
-	}
 	SubHalos.clear();
-	
+
 	//Create a linked list of all particles
 	Particle->prev=NULL;
 	for (int i=1; i < NrParticles;i++){
@@ -944,7 +949,7 @@ void CHalo::FriendOfFriendPhaseSpace(){
 		Particle = nextParticle();
 		if (Particle == NULL) break;
 		else {
-			tmpHalo.clean();
+			tmpHalo.clear();
 			//Calls findNeighbors to find the particles within linking distance
 			Particle->setFlag(1);
 			Particle->RemoveFromList();
@@ -1162,16 +1167,17 @@ void CHalo::mergeStatisticalRec(CHalo* prevHalo, int &flag){
 
 void CHalo::SortParticlesDistance(){
 	vector<ParticleAndDistance*> data;
+
 	for (int i = 0; i < NrParticles; i++) {
 		ParticleAndDistance* tmpData = new ParticleAndDistance;
-		tmpData->r = (MeanP - Halo[i]->getP()).Length();
+		tmpData->r= (MeanP - Halo[i]->getP()).Length();
 		tmpData->Particle = Halo[i];
 		data.push_back(tmpData);
 	}
 
 	sort(data.begin(),data.end(),&ParticleAndDistanceSortFunc);
 
-	Halo.clean();
+	Halo.clear();
 
 	//free up memory
 	for (int i = 0; i < NrParticles; i++) {
@@ -1265,7 +1271,7 @@ void CHalo::createSubHalos(){
 	//saveStructure("structureBig.dat");
 	//exit(0);
 	//cout << "In createSubHalos in CHalo, before merging statistical" << endl;
-	//mergeStatistical();
+	mergeStatistical();
 	//printSubHalos();
 	//del(myConstants::constants.outBoundng);
 	//UnbindAll();

@@ -66,10 +66,9 @@ class CParticles{
 	//Clear and remove all information from CParticles
 	void clear();
 
-	void clean();
+	void kill();
 	
  protected:
-	vector<CParticle> ParticleData;
 	vector<CParticle*> Particles;
 	int NrParticles,ParticleSize,flag;
 };

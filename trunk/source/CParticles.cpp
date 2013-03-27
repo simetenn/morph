@@ -10,16 +10,16 @@ CParticles::CParticles(){
 }
 
 CParticles::~CParticles(){
-	
 	/*for (int i = 0; i < NrParticles;i++){
 		if ( Particles[i] != NULL)
 			delete Particles[i]; // <- correct?
 			}*/
 	clear();
+	//Particles.clear();
 }
 
 
-//Creates CParticles from a CArray on the following form:
+//Creates CParticles øfrom a CArray on the following form:
 //[ParticleArray 1, ParticleArray 2, ParticleArray 3, ... , ParticleArray N]
 CParticles::CParticles(CArray* inArray){
 	ParticleSize = myConstants::constants.ParticleSize;
@@ -31,18 +31,17 @@ CParticles::CParticles(CArray* inArray){
 
 	NrParticles = (inArray->len())/ParticleSize;
 
-	double tmpArray [ParticleSize];
-	ParticleData.resize(NrParticles);
-	
+	double* tmpArray = new double [ParticleSize];
+
 	for (int i = 0; i<NrParticles;i++){
 		for (int j = 0; j < ParticleSize;j++){
 			tmpArray[j] = inArray->get(ParticleSize*i+j);
 		}
 
-		//CParticle * tmpParticle = new CParticle(tmpArray); // <----- kill
-		ParticleData[i].initialize(tmpArray);
-		Particles.push_back(&ParticleData[i]);
+		CParticle * tmpParticle = new CParticle(tmpArray); // <----- kill
+		Particles.push_back(tmpParticle);
 	}
+	delete [] tmpArray;
 }
 
 
@@ -52,30 +51,6 @@ CParticles::CParticles(CArray* inArray){
 //[ParticleArray 1, ParticleArray 2, ParticleArray 3, ... , ParticleArray N]
 //Similar to the constructor
 void CParticles::set(CArray* inArray){
-	clear();
-
-	ParticleSize = myConstants::constants.ParticleSize;
-
-
-	if (inArray->len() % ParticleSize != 0) {
-		cout << "Warning: Length of array not compatible with ParticleSize"<< endl;
-	}
-
-	NrParticles = (inArray->len())/ParticleSize;
-
-	double tmpArray [ParticleSize];
-	ParticleData.resize(NrParticles);
-	
-	for (int i = 0; i<NrParticles;i++){
-		for (int j = 0; j < ParticleSize;j++){
-			tmpArray[j] = inArray->get(ParticleSize*i+j);
-		}
-
-		//CParticle * tmpParticle = new CParticle(tmpArray); // <----- kill
-		ParticleData[i].initialize(tmpArray);
-		Particles.push_back(&ParticleData[i]);
-	}
-	/*
 	ParticleSize = myConstants::constants.ParticleSize;
 
 	if ((inArray->len()) % ParticleSize != 0) {
@@ -93,7 +68,7 @@ void CParticles::set(CArray* inArray){
 		CParticle * tmpParticle = new CParticle(tmpArray);  // <----- kill
 		Particles.push_back(tmpParticle);
 	}
-	delete [] tmpArray;*/
+	delete [] tmpArray;
 }
 
 
@@ -221,23 +196,18 @@ void CParticles::copy(CParticles& p) {
 
 //Clear and remove all information from CParticles
 void CParticles::clear(){
+	Particles.clear();
+	NrParticles = 0;
+	flag = 1;
+	ParticleSize = myConstants::constants.ParticleSize;
+}
+
+void CParticles::kill(){
 	for (int i = 0; i < NrParticles; i++) {
-		//if (Particles[i] != NULL)
-		//	delete Particles[i];
-	}  
-	
+		delete Particles[i];
+	}
 	Particles.clear();
 	NrParticles = 0;
 	flag = 1;
 	ParticleSize = myConstants::constants.ParticleSize;
 }
-
-//Clear and remove all information from CParticles, keeping the information in memory
-void CParticles::clean(){
-	Particles.clear();
-	NrParticles = 0;
-	flag = 1;
-	ParticleSize = myConstants::constants.ParticleSize;
-}
-
-
