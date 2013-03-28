@@ -28,7 +28,7 @@ class CGrid{
 	}
 	
  protected:
-	vector<vector<vector<CParticle* > > > Grid;
+	vector<CParticle*> Grid;
 	int Width,NrParticles,NrGridBoxes,NrHalos;
 	CVector Min, Max, Delta;
 };

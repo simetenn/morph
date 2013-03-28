@@ -19,12 +19,6 @@ CGrid::~CGrid(){
 }
 
 void CGrid::clear(){
-	for (int i = 0; i < Width; i++){
-		for (int j = 0;j < Width;j++){
-			Grid[i][j].clear();
-		}
-		Grid[i].clear();
-	}
 	Grid.clear();
 }
 
@@ -35,16 +29,10 @@ void CGrid::initialize(CVector* inMin, CVector* inMax, int inWidth){
 
 	Delta = (Max-Min)/(double)Width;
 	Grid.clear();
-	Grid.resize(Width);
-	for (int i = 0; i < Width; i++){
-		Grid[i].resize(Width);
-		for (int j = 0;j < Width;j++){
-			Grid[i][j].resize(Width);
-			for (int k = 0;k<Width;k++){
-				Grid[i][j][k] = NULL;
-			}
-		}
-	}
+	Grid.resize(Width*Width*Width);
+	/*for (int i = 0; i < Width*Width*Width; i++) {
+		Grid[i] = NULL;
+		}*/
 }
 
 
@@ -74,12 +62,17 @@ void CGrid::addParticle(CParticle* inParticle){
 	//tmpPosition.print();
 	//cout << p << endl;
 	//p->print();//->addParticle(inParticle);
+
+	int x = (int)tmpPosition.x() % Width;
+	int y = (int)tmpPosition.y() % Width;
+	int z = (int)tmpPosition.z() % Width;
+
 	inParticle->setFlag(0);
-	if (Grid[tmpPosition.x()][tmpPosition.y()][tmpPosition.z()] == NULL){
-		Grid[tmpPosition.x()][tmpPosition.y()][tmpPosition.z()] = inParticle;
+	if (Grid[x + y*Width + z*Width*Width] == NULL){
+		Grid[x + y*Width + z*Width*Width] = inParticle;
 	}
 	else{
-		Grid[tmpPosition.x()][tmpPosition.y()][tmpPosition.z()]->attachParticle(inParticle);
+		Grid[x + y*Width + z*Width*Width]->attachParticle(inParticle);
 	}
 	//cout << "there" << endl;
 	//tmpPosition.print();
@@ -95,7 +88,7 @@ CParticle* CGrid::get(int x, int y, int z) {
 	z = z % Width;
 
 
-	return Grid[x][y][z];
+	return Grid[x + y*Width + z*Width*Width];
 }
 
 CParticle* CGrid::getPeriodic(int x, int y, int z) {
@@ -105,7 +98,7 @@ CParticle* CGrid::getPeriodic(int x, int y, int z) {
 	z = z % Width;
 
 
-	return Grid[x][y][z];
+	return Grid[x + y*Width + z*Width*Width];
 }
 
 /*void CGrid::print(){
