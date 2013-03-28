@@ -9,6 +9,8 @@ class CGrid{
 	CGrid(CVector* inMin, CVector* inMax, int inWidth);
 	~CGrid();
 
+	void clear();
+	
 	void initialize(CVector* inMin, CVector* inMax, int inWidth);
 
 	CVector getPosition(CParticle* inParticle);

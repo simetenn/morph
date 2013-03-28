@@ -229,8 +229,9 @@ void CHalo::copy(CHalo* inHalo) {
 //[NrParticles, Mass, Mean position, Mean velocity, standard deviation of position,
 //standard deviation of velocity, ParticleArray 1, ParticleArray 2, ... , ParticleArray N]
 CArray*	 CHalo::Halo2Array(){
-	CArray tmpArray(Halo.Particles2Array());
-	double* Array = new double [tmpArray.len() + myConstants::constants.HaloSize];
+	//CArray tmpArray(Halo.Particles2Array());
+	CArray* tmpArray = Halo.Particles2Array();
+	double* Array = new double [tmpArray->len() + myConstants::constants.HaloSize];
 
 	Array[0] = NrParticles;
 	Array[1] = Mass;
@@ -241,11 +242,12 @@ CArray*	 CHalo::Halo2Array(){
 		Array[11+i] = SigmaV[i];
 	}
 
-	for (int i = 0; i < tmpArray.len(); i++) {
-		Array[i + myConstants::constants.HaloSize] = tmpArray[i];
+	for (int i = 0; i < tmpArray->len(); i++) {
+		Array[i + myConstants::constants.HaloSize] = tmpArray->get(i);
 	}
-	CArray* tmpCArray = new CArray(tmpArray.len()+myConstants::constants.HaloSize, Array); //<-- kill
+	CArray* tmpCArray = new CArray(tmpArray->len()+myConstants::constants.HaloSize, Array); //<-- kill
 	delete [] Array;
+	delete tmpArray;
 	return tmpCArray;
 }
 
@@ -271,7 +273,9 @@ CArray* CHalo::SubHalos2Array(){
 //Adds the subhalo converted to a CArray to the inArray and NrParticles to sizeAray
 //Then recursivly runs for all subhalos
 void CHalo::SubHalos2ArrayRec(CArray* inArray, CArray* sizeArray){
-	inArray->add(Halo2Array());
+	CArray* tmpArray = Halo2Array();
+	inArray->add(tmpArray);
+	delete tmpArray;
 	sizeArray->push_back(NrParticles);
 
 	//Recursivly runs through all
@@ -312,7 +316,9 @@ CArray* CHalo::SubHalosStructure2Array(){
 void CHalo::SubHalosStructure2ArrayRec(CArray* inArray, CArray* sizeArray,int& ID){
 	ID++;
 	inArray->push_back(ID);
-	inArray->add(Halo2Array());
+	CArray* tmpArray = Halo2Array();
+	inArray->add(tmpArray);
+	delete tmpArray;
 	sizeArray->push_back(NrParticles);
 
 	//Recursivly runs through all
@@ -414,7 +420,7 @@ void CHalo::fromStructureArray(CArray* inArray){
 	set(&tmpCArray); // <--- kill!
 
 	delete [] tmpArray;
-	
+	//delete tmpCArray;
 	while (ID < nextID){
 		fromStructureArrayRec(this, inArray, nrHalo, particle_count,nextID);
 		//cout << nextID << endl;

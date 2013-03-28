@@ -15,8 +15,18 @@ CGrid::CGrid(CVector* inMin, CVector* inMax, int inWidth){
 
 
 CGrid::~CGrid(){
+	//clear();
 }
 
+void CGrid::clear(){
+	for (int i = 0; i < Width; i++){
+		for (int j = 0;j < Width;j++){
+			Grid[i][j].clear();
+		}
+		Grid[i].clear();
+	}
+	Grid.clear();
+}
 
 void CGrid::initialize(CVector* inMin, CVector* inMax, int inWidth){
 	Width = inWidth;
