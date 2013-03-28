@@ -30,9 +30,9 @@ void CGrid::initialize(CVector* inMin, CVector* inMax, int inWidth){
 	Delta = (Max-Min)/(double)Width;
 	Grid.clear();
 	Grid.resize(Width*Width*Width);
-	/*for (int i = 0; i < Width*Width*Width; i++) {
+	for (int i = 0; i < Width*Width*Width; i++) {
 		Grid[i] = NULL;
-		}*/
+	}
 }
 
 
