@@ -28,7 +28,7 @@ VPATH = .
 # -----------------------------------------------------------
 
 
-PROJECT    = mybody-mpi
+PROJECT    = MORPH
 
 TARGET = LINUX #OS_X
 # Home directory of the acw program

@@ -406,6 +406,7 @@ void CHalos::loadClaudio(string Filename){
 	Halos.clear();
 	NrInHalo.clear();
 	NrHalos = 1;
+	
 
 	CHalo* tmpHalo = new CHalo(); // <--- kill
 	Halos.push_back(tmpHalo);
@@ -415,7 +416,9 @@ void CHalos::loadClaudio(string Filename){
 
 	//Saving data into existing structure
 	//Saving all Particles into the first halo in Halos, get with Halos[0]
+	
 	AllParticles.resize(count);
+	
 	CParticle* tmpParticle;
 	for (int i=0;i<count;i++) {
 		tmpParticle = &AllParticles[i];
@@ -431,7 +434,7 @@ void CHalos::loadClaudio(string Filename){
 	cout << "---------------------------------" << endl;
 	file.close();
 	delete[] block;
-
+	
 	NrParticles = count;
 	NrInHalo.push_back(NrParticles);
 	LinkingLength = pow(1./NrParticles,1./3);
@@ -761,7 +764,7 @@ void CHalos::FriendOfFriendGrid(){
 	allParticles = *Halos[0]->getParticles();
 	searchParticle = allParticles[0];
 	CParticle* Particle = searchParticle;
-
+	
 	//Create a linked list of all particles
 	Particle->prev=NULL;
 	for (int i=1; i < NrParticles;i++){
@@ -787,12 +790,12 @@ void CHalos::FriendOfFriendGrid(){
 
 	//Uncomment to manually set the linking length
 	//LinkingLength = myConstants::constants.LinkingLength;
-
-
+	
 	int Width = (int) (2./LinkingLength);
 	Grid.initialize(&min,&max,Width);
 	Grid.Populate(Halos[0]->getParticles());
-
+	
+	
 	cout << "Finished initializing grid" << endl;
 	cout << "---------------------------------" << endl;
 	cout << "Calculating Friend of Friend Grid" << endl;
@@ -830,6 +833,7 @@ void CHalos::FriendOfFriendGrid(){
 	}
 	NrHalos = Halos.size();
 
+	Grid.clear();
 
 	//cout << "Have all particles survived?: "<< count << endl;
 
@@ -1063,12 +1067,11 @@ void CHalos::slave(){
 		HalosArray.recieve_slave();
 		int tmpLength = HalosArray.len();
 		initialize(&HalosArray);
-
+		
 		SplitHalos();
-
 		tmpArray = Halos[0]->SubHalos2Array();
 		tmpArray->send_slave_modified(tmpLength);
-
+		//HalosArray.send_slave_modified(tmpLength);
 		delete tmpArray;
 		kill();
 

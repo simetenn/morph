@@ -38,7 +38,7 @@ CParticles::CParticles(CArray* inArray){
 			tmpArray[j] = inArray->get(ParticleSize*i+j);
 		}
 
-		CParticle * tmpParticle = new CParticle(tmpArray); // <----- kill
+		CParticle * tmpParticle = new CParticle(tmpArray); // <----- kill -Checked
 		Particles.push_back(tmpParticle);
 	}
 	delete [] tmpArray;
@@ -155,6 +155,7 @@ CArray* CParticles::Particles2Array(){
 		for (int j = 0; j < ParticleSize;j++){
 			Array->set(i*ParticleSize+j, tmpArray[j]);
 		}
+		delete tmpArray;
 	}
 
 	return Array;
