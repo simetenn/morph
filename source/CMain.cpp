@@ -7,9 +7,9 @@ void CMain::master() {
 	CHalos m;
 	CHalos* n;
 	//CHalo h;
-	m.loadClaudio(myConstants::constants.inFile);
+	//m.loadClaudio(myConstants::constants.inFile);
 	//m.loadData(myConstants::constants.DataFile);
-	//m.loadData("data.dat");
+	m.loadData("data.dat");
 	//m.loadHalos("splitHalos.dat");
 
 	//h.loadStructure("structureBig.dat");
@@ -20,7 +20,7 @@ void CMain::master() {
 	
 	
 	//cout << m.getNrParticles() << endl;
-	m.FriendOfFriendGrid();
+	//m.FriendOfFriendGrid();
 	//m.saveP("positionsFOF.dat");
 	//m.save(myConstants::constants.DataFile,myConstants::constants.NrParticles2File);
 	//m.FriendOfFriendN2();
@@ -52,7 +52,7 @@ void CMain::master() {
 	n[64]->savePhi("Phi6.dat");	
 	n[128]->savePhi("Phi7.dat");*/
 	
-	n->saveSize(myConstants::constants.outSize);
+	//n->saveSize(myConstants::constants.outSize);
 	//n.saveP(myConstants::constants.outPosition);
 	//n->kill();
 	delete n;
