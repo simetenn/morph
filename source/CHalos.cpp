@@ -1068,10 +1068,10 @@ void CHalos::slave(){
 		int tmpLength = HalosArray.len();
 		initialize(&HalosArray);
 		
-		SplitHalos();
+		//SplitHalos();
 		tmpArray = Halos[0]->SubHalos2Array();
-		tmpArray->send_slave_modified(tmpLength);
-		//HalosArray.send_slave_modified(tmpLength);
+		//tmpArray->send_slave_modified(tmpLength);
+		HalosArray.send_slave_modified(tmpLength);
 		delete tmpArray;
 		kill();
 
