@@ -41,7 +41,14 @@ data = numpy.array(data[:-1])
 t = numpy.array(t[:-1])
 legend = []
 
-for i in xrange(N):
+pylab.figure(1)
+pylab.plot(t,data[:,0])
+pylab.xlabel("Time [s]")
+pylab.ylabel("% Memory usage")
+pylab.savefig("master.png")
+
+pylab.figure(2)
+for i in xrange(1,N):
     pylab.plot(t,data[:,i])
     legend.append("Processor nr: " + str(i))
 
@@ -50,4 +57,5 @@ pylab.legend(legend,loc=2)
 
 pylab.xlabel("Time [s]")
 pylab.ylabel("% Memory usage")
-pylab.show()
+pylab.savefig("slaves.png")
+
