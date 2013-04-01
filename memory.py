@@ -41,6 +41,10 @@ data = numpy.array(data[:-1])
 t = numpy.array(t[:-1])
 legend = []
 
+numpy.save("memory", data)
+numpy.save("time", t)
+
+
 pylab.figure(1)
 pylab.plot(t,data[:,0])
 pylab.xlabel("Time [s]")
