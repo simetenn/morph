@@ -1278,7 +1278,7 @@ void CHalo::createSubHalos(){
 	//saveStructure("structureBig.dat");
 	//exit(0);
 	//cout << "In createSubHalos in CHalo, before merging statistical" << endl;
-	//mergeStatistical();
+	mergeStatistical();
 	//printSubHalos();
 	//del(myConstants::constants.outBoundng);
 	//UnbindAll();
