@@ -232,8 +232,10 @@ void CArray::add(CArray* inArray){
 		tmp[i] = array[i];
 	}
 
-	if (array != NULL) delete [] array;
-	array = tmp;
+	if (array != NULL) {
+		delete [] array;
+		array = tmp;
+	}
 
 	for (int j =0; j< inArray->len();j++) {
 		array[oldlength + j] = inArray->get(j);
@@ -253,16 +255,17 @@ void CArray::push_back(double in_value){
 	dataLength = length + myConstants::constants.ArrayExtraSize;
 
 	double* tmp = new double [dataLength];
-	
+
 	for (int i = 0;i < length-1;i++){
 		tmp[i] = array[i];
 	}
 	tmp[length-1] = in_value;
 
-	if (array != NULL) delete [] array;
-	array = tmp;
+	if (array != NULL) {
+		delete [] array;
+		array = tmp;
+	}
 }
-
 
 
 //Add an element to CArray in the front
@@ -282,11 +285,12 @@ void CArray::front(double in_value){
 		tmp[i] = array[i-1];
 	}
 	tmp[0] = in_value;
-	
-	if (array != NULL) delete[] array;
-	array = tmp;
-}
 
+	if (array != NULL) {
+		delete[] array;
+		array = tmp;
+	}
+}
 
 
 
@@ -319,9 +323,12 @@ void CArray::send_slave_modified(int inLength){
 	for (int i = 0; i < length; i++) {
 		tmpArray[i] = array[i];
 	}
-	
+
 	CMPI::send_array_slave(tmpArray, inLength);
-	if(tmpArray != NULL) delete [] tmpArray;
+	if(tmpArray != NULL) {
+		delete [] tmpArray;
+		tmpArray = NULL;
+	}
 }
 
 
