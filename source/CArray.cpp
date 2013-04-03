@@ -75,6 +75,7 @@ void CArray::del(){
 	length = 0;
 	if (array != NULL){
 		delete[] array;
+		array = NULL;
 	}
 }
 
@@ -83,6 +84,7 @@ void CArray::del(){
 void CArray::delArray(){
 	if (array != NULL){
 		delete[] array;
+		array = NULL;
 	}
 }
 
