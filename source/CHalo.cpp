@@ -61,7 +61,7 @@ CHalo::CHalo(CArray* inArray){
 	}
 
 	Halo = CParticles(tmpArray);
-	delete tmpArray;
+	if (tmpArray != NULL ) delete tmpArray;
  }
 
 //Create a new CHalo from a CHalo
@@ -72,7 +72,7 @@ CHalo::CHalo(CHalo* inHalo){
 
 CHalo::~CHalo(){
 	for (list<CHalo*>::iterator it = SubHalos.begin(); it != SubHalos.end(); it++) {
-		delete (*it);
+		if ((*it) != NULL ) delete (*it);
 	}
 	clear();
 	//kill();
@@ -107,6 +107,7 @@ void CHalo::set(CArray* inArray){
 
 	Halo = CParticles(tmpArray);
 	//delete [] tmpArray;
+	if (tmpArray != NULL ) delete tmpArray;
 }
 
 
@@ -246,8 +247,8 @@ CArray*	 CHalo::Halo2Array(){
 		Array[i + myConstants::constants.HaloSize] = tmpArray->get(i);
 	}
 	CArray* tmpCArray = new CArray(tmpArray->len()+myConstants::constants.HaloSize, Array); //<-- kill
-	delete [] Array;
-	delete tmpArray;
+	if (Array != NULL) delete [] Array;
+	if (tmpArray != NULL) delete tmpArray;
 	return tmpCArray;
 }
 
@@ -275,7 +276,7 @@ CArray* CHalo::SubHalos2Array(){
 void CHalo::SubHalos2ArrayRec(CArray* inArray, CArray* sizeArray){
 	CArray* tmpArray = Halo2Array();
 	inArray->add(tmpArray);
-	delete tmpArray;
+	if (tmpArray != NULL) delete tmpArray;
 	sizeArray->push_back(NrParticles);
 
 	//Recursivly runs through all
@@ -318,7 +319,7 @@ void CHalo::SubHalosStructure2ArrayRec(CArray* inArray, CArray* sizeArray,int& I
 	inArray->push_back(ID);
 	CArray* tmpArray = Halo2Array();
 	inArray->add(tmpArray);
-	delete tmpArray;
+	if (tmpArray != NULL) delete tmpArray;
 	sizeArray->push_back(NrParticles);
 
 	//Recursivly runs through all
@@ -345,7 +346,7 @@ void CHalo::saveStructure(string Filename){
 	}
 	file.close();
 	//Memory leak
-	delete tmpArray;
+	if (tmpArray != NULL) delete tmpArray;
 	//tmpArray->del();
 }
 
@@ -419,7 +420,7 @@ void CHalo::fromStructureArray(CArray* inArray){
 	CArray tmpCArray((int)(NrParticles*ParticleSize + myConstants::constants.HaloSize), tmpArray);
 	set(&tmpCArray); // <--- kill!
 
-	delete [] tmpArray;
+	if (tmpArray != NULL) delete [] tmpArray;
 	//delete tmpCArray;
 	while (ID < nextID){
 		fromStructureArrayRec(this, inArray, nrHalo, particle_count,nextID);
@@ -462,7 +463,7 @@ void CHalo::fromStructureArrayRec(CHalo* prevHalo, CArray* inArray, int& nrHalo,
 		}
 	}
 	CArray tmpCArray (tmpNrParticles*ParticleSize + myConstants::constants.HaloSize, tmpArray);
-	delete[] tmpArray;
+	if (tmpArray != NULL)	delete[] tmpArray;
 	
 	CHalo* tmpHalo = new CHalo(&tmpCArray); // <---- kill
 	prevHalo->attachSubHaloBack(tmpHalo);
@@ -747,7 +748,7 @@ void CHalo::saveHalo(string Filename){
 		for (int j = 0; j < ParticleSize; j++) {
 			file << tmpArray[j] << " ";
 		}
-		delete tmpArray;
+		if (tmpArray != NULL) delete tmpArray;
 		if (i != NrParticles-1) file << endl;
 		
 	}
@@ -1189,7 +1190,7 @@ void CHalo::SortParticlesDistance(){
 	for (int i = 0; i < NrParticles; i++) {
 		Halo.addParticle(data[i]->Particle);
 		r.push_back(data[i]->r);
-		delete data[i];
+		if (data[i] != NULL) delete data[i];
 	}
 	//delete ParticleAndDistance;
 }

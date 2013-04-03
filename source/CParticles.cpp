@@ -37,11 +37,11 @@ CParticles::CParticles(CArray* inArray){
 		for (int j = 0; j < ParticleSize;j++){
 			tmpArray[j] = inArray->get(ParticleSize*i+j);
 		}
-
+		
 		CParticle * tmpParticle = new CParticle(tmpArray); // <----- kill -Checked
 		Particles.push_back(tmpParticle);
 	}
-	delete [] tmpArray;
+	if (tmpArray != NULL) delete [] tmpArray;
 }
 
 
@@ -68,7 +68,8 @@ void CParticles::set(CArray* inArray){
 		CParticle * tmpParticle = new CParticle(tmpArray);  // <----- kill
 		Particles.push_back(tmpParticle);
 	}
-	delete [] tmpArray;
+	
+	if (tmpArray != NULL) delete [] tmpArray;
 }
 
 
@@ -155,7 +156,7 @@ CArray* CParticles::Particles2Array(){
 		for (int j = 0; j < ParticleSize;j++){
 			Array->set(i*ParticleSize+j, tmpArray[j]);
 		}
-		delete tmpArray;
+		if (tmpArray != NULL) delete tmpArray;
 	}
 
 	return Array;
@@ -205,7 +206,7 @@ void CParticles::clear(){
 
 void CParticles::kill(){
 	for (int i = 0; i < NrParticles; i++) {
-		delete Particles[i];
+		if (Particles[i] != NULL) delete Particles[i];
 	}
 	Particles.clear();
 	NrParticles = 0;

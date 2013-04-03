@@ -230,7 +230,7 @@ void CArray::add(CArray* inArray){
 		tmp[i] = array[i];
 	}
 
-	delete[] array;
+	if (array != NULL) delete [] array;
 	array = tmp;
 
 	for (int j =0; j< inArray->len();j++) {
@@ -257,7 +257,7 @@ void CArray::push_back(double in_value){
 	}
 	tmp[length-1] = in_value;
 
-	delete[] array;
+	if (array != NULL) delete [] array;
 	array = tmp;
 }
 
@@ -281,7 +281,7 @@ void CArray::front(double in_value){
 	}
 	tmp[0] = in_value;
 	
-	delete[] array;
+	if (array != NULL) delete[] array;
 	array = tmp;
 }
 
@@ -319,7 +319,7 @@ void CArray::send_slave_modified(int inLength){
 	}
 	
 	CMPI::send_array_slave(tmpArray, inLength);
-	delete[] tmpArray;
+	if(tmpArray != NULL) delete [] tmpArray;
 }
 
 

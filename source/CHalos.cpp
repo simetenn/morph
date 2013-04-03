@@ -67,7 +67,7 @@ void CHalos::initialize(CArray* inArray){
 			}
 		}
 		CArray tmpCArray(NrInHalo[i]*ParticleSize + myConstants::constants.HaloSize, tmpArray);
-		delete[] tmpArray;
+		if (tmpArray != NULL) delete[] tmpArray;
 
 		Halos.push_back(new CHalo(&tmpCArray));//kill
 	}
@@ -80,7 +80,7 @@ void CHalos::initialize(CArray* inArray){
 void CHalos::clear(){
 	for (int i = 0; i < NrHalos; i++) {
 		//Halos[i]->clear();
-		delete Halos[i];
+		if (Halos[i] != NULL) delete Halos[i];
 	}
 	NrInHalo.clear();
 	AllParticles.clear();
@@ -92,7 +92,7 @@ void CHalos::clear(){
 void CHalos::kill(){
 	for (int i = 0; i < NrHalos; i++) {
 		Halos[i]->kill();
-		delete Halos[i];
+		if (Halos[i] != NULL) delete Halos[i];
 	}
 
 	NrInHalo.clear();
@@ -129,11 +129,11 @@ CArray*	 CHalos::Halos2Array(){
 				Array[particle_count] = tmpArray[k];
 				particle_count++;
 			}
-			delete tmpArray;
+			if (tmpArray != NULL) delete tmpArray;
 		}
 	}
 	CArray* tmpCArray = new CArray(ParticleSize*NrParticles+NrHalos+1,Array); // <--- kill	-checked
-	delete [] Array;
+	if (Array != NULL) delete [] Array;
 	return tmpCArray;
 }
 
@@ -185,7 +185,7 @@ void CHalos::addHalos(CArray* inArray){
 		CHalo* tmpHalo = new CHalo(&tmpCArray); // <--- kill
 		Halos.push_back(tmpHalo);
 
-		delete[] tmpArray;
+		if (tmpArray != NULL) delete [] tmpArray;
 	}
 }
 
@@ -193,7 +193,7 @@ void CHalos::addHalos(CArray* inArray){
 //Remove halo nr #element from CHalos
 void CHalos::removeHalo(int element){
 	//Halos[element]->~CHalo();
-	delete Halos[element];
+	if (Halos[element] != NULL) delete Halos[element];
 	NrInHalo.erase(NrInHalo.begin()+element);
 	Halos.erase(Halos.begin() + element);
 }
@@ -208,7 +208,7 @@ void CHalos::removeEmptyHalos(){
 		}
 	}
 	for (int i = 0; i < RemoveIndex.size(); i++) {
-		delete Halos[RemoveIndex[i] - i];
+		if (Halos[RemoveIndex[i] - i]  != NULL) delete Halos[RemoveIndex[i] - i];
 		Halos.erase(Halos.begin() + RemoveIndex[i] - i);
 		NrInHalo.erase(NrInHalo.begin() + RemoveIndex[i] - i);
 		NrHalos--;
@@ -372,7 +372,7 @@ void CHalos::loadBin(string Filename){
 	cout << "Done loading!" << endl;
 	cout << "---------------------------------" << endl;
 	file.close();
-	delete[] block;
+	if (block != NULL) delete[] block;
 
 	NrParticles = count;
 	NrInHalo.push_back(NrParticles);
@@ -433,7 +433,7 @@ void CHalos::loadClaudio(string Filename){
 	cout << "Done loading!" << endl;
 	cout << "---------------------------------" << endl;
 	file.close();
-	delete[] block;
+	if (block != NULL) delete[] block;
 	
 	NrParticles = count;
 	NrInHalo.push_back(NrParticles);
@@ -586,7 +586,7 @@ void CHalos::save(string Filename, int NrParticles2File){
 		for (int j = 0; j < ParticleSize; j++) {
 			file << tmpArray[j] << " ";
 		}
-		delete tmpArray;
+		if (tmpArray != NULL) delete tmpArray;
 		if (i != delta*NrParticles2File) file << endl;
 	}
 	file.close();
@@ -639,7 +639,7 @@ void CHalos::saveHalos(string Filename){
 	}
 	file.close();
 	//Memory leak
-	delete tmpArray;
+	if (tmpArray != NULL) delete tmpArray;
 	//tmpArray->del();
 }
 
@@ -1012,7 +1012,7 @@ CHalos* CHalos::master(){
 		//cout << "-------------------------------------------------" << endl;
 		processor = MPI.listener(Req);
 		FinalHalos->addHalos(Array[processor-1]);
-		delete Array[processor-1];
+		if (Array[processor - 1] != NULL) delete Array[processor-1];
 		Array[processor-1] =  Halos[count]->Halo2Array();
 
 		MPI.End(processor,0);
@@ -1035,7 +1035,7 @@ CHalos* CHalos::master(){
 
 	for (int i = 0; i < size-1;i++){
 		FinalHalos->addHalos(Array[i]);
-		delete Array[i];
+		if (Array[i] != NULL) delete Array[i];
 	}
 	cout << "Finished" << endl;
 
@@ -1072,7 +1072,7 @@ void CHalos::slave(){
 		tmpArray = Halos[0]->SubHalos2Array();
 		tmpArray->send_slave_modified(tmpLength);
 		//HalosArray.send_slave_modified(tmpLength);
-		delete tmpArray;
+		if (tmpArray != NULL) delete tmpArray;
 		kill();
 
 		//clear();
