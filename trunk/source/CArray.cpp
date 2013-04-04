@@ -12,7 +12,7 @@ CArray::CArray(){
 	length = 0;
 	dataLength = myConstants::constants.ArrayExtraSize;
 	array = new double [dataLength];
-	CMPI();
+	//CMPI();
 }
 
 
@@ -21,7 +21,7 @@ CArray::CArray(int in_length){
 	length = in_length;
 	dataLength = in_length + myConstants::constants.ArrayExtraSize;
 	array = new double [dataLength]; //<- memory leak
-	CMPI();
+	//CMPI();
 }
 
 
@@ -234,9 +234,11 @@ void CArray::add(CArray* inArray){
 
 	if (array != NULL) {
 		delete [] array;
-		array = tmp;
 	}
+	array = tmp;
 
+
+	
 	for (int j =0; j< inArray->len();j++) {
 		array[oldlength + j] = inArray->get(j);
 	}
@@ -263,8 +265,8 @@ void CArray::push_back(double in_value){
 
 	if (array != NULL) {
 		delete [] array;
-		array = tmp;
 	}
+	array = tmp;
 }
 
 
@@ -288,8 +290,8 @@ void CArray::front(double in_value){
 
 	if (array != NULL) {
 		delete[] array;
-		array = tmp;
 	}
+	array = tmp;
 }
 
 
