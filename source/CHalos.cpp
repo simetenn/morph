@@ -1012,33 +1012,10 @@ CHalos* CHalos::master(){
 	vector<CArray*> Array (size-1);
 	CParticle tmpParticle;
 
-	CArray* tmpCArray = new CArray ();
-	
 	cout << "------------------------"<< endl;
 	cout << "NrHalos: " << NrHalos << endl;
 	cout << "------------------------"<< endl;
-	for (int i = 0; i < NrHalos; i++) {
-		cout << "Calculating for halo nr: " << i << "/" << NrHalos << endl;
-		tmpCArray = Halos[i]->Halo2Array();
-		//Add how many particles in halo to be sent
-		//and that it only is one halo to the CArray
-		//cout << "before reverting to array" << endl;
-		//cout << "after reverting" << endl;
-		tmpCArray->front(NrInHalo[i]);
-		tmpCArray->front(1);
-		MPI.End(1,0);
-		tmpCArray->send(1);
-		tmpCArray->recieve(1, &Req[0]);
-		
-		FinalHalos->addHalos(tmpCArray);
-		if (tmpCArray != NULL){
-			delete tmpCArray;
-			tmpCArray = NULL;
-		}
-	}
-	MPI.End(1,1);
-	
-	/*	
+
 	//Initialize, sending one halo to each processor
 	for (int p = 1; p < size; p++){
 		cout << "Initializing for halo nr: " << p-1 << endl;
@@ -1098,14 +1075,13 @@ CHalos* CHalos::master(){
 			Array[i] = NULL;
 		}
 	}
-	
 	cout << "Finished" << endl;
 
 	//Send end signal to all processors
 	for (int p = 1;p < size;p++){
 		MPI.End(p,1);
 	}
-	*/
+
 
 	FinalHalos->removeEmptyHalos();
 	return FinalHalos;
