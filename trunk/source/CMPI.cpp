@@ -75,7 +75,7 @@ double* CMPI::receive_array_master(int processor, int& master_length, MPI_Reques
 	double* master_receive_array = new double [master_length]; //<- Memory leak
 
 	//Recieve the array, non blocking
-	MPI_Recv(master_receive_array,master_length, MPI_DOUBLE,processor,processor+3*size,MPI_COMM_WORLD,&Stat);
+	MPI_Irecv(master_receive_array,master_length, MPI_DOUBLE,processor,processor+3*size,MPI_COMM_WORLD, Req);
 	return master_receive_array;
 }
 
