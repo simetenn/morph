@@ -1004,7 +1004,7 @@ void CHalos::SplitHalos(){
 //then sends out new data as soon as a processor finishes its task
 CHalos* CHalos::master(){
 	CMPI MPI;
-	int count = 62;
+	int count = 100;
 	int processor;
 	int size = MPI.getSize();
 	CHalos* FinalHalos = new CHalos(); // <--- kill
@@ -1018,7 +1018,7 @@ CHalos* CHalos::master(){
 
 	//Initialize, sending one halo to each processor
 	for (int p = 1; p < size; p++){
-		cout << "Initializing for halo nr: " << p-1 << endl;
+		cout << "Initializing for halo nr: " << count << endl;
 
 		//Add how many particles in halo to be sent
 		//and that it only is one halo to the CArray
