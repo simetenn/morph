@@ -1004,7 +1004,7 @@ void CHalos::SplitHalos(){
 //then sends out new data as soon as a processor finishes its task
 CHalos* CHalos::master(){
 	CMPI MPI;
-	int count = 0;
+	int count = 62;
 	int processor;
 	int size = MPI.getSize();
 	CHalos* FinalHalos = new CHalos(); // <--- kill
