@@ -13,18 +13,19 @@ void CMain::master() {
 	m.loadData("halo61.dat");
 	
 	//h.loadStructure("structureBig.dat");
-	m.printHalos();
-	exit(1);
+	
+	//exit(1);
 	//h.createSubHalos();
 	//h.printSubHalos();
 	//h.mergeStatistical();
 
 	//cout << m.getNrParticles() << endl;
-	m.FriendOfFriendGrid();
+	//m.FriendOfFriendGrid();
 	//m.saveP("positionsFOF.dat");
 	//m.save(myConstants::constants.DataFile,myConstants::constants.NrParticles2File);
 	//m.FriendOfFriendN2();
-	//m.CalculateAllStatistics();
+	m.CalculateAllStatistics();
+	m.printHalos();
 	//m.printHalos();
 	//m.saveHalos("splitHalos.dat");
 	//exit(0);
