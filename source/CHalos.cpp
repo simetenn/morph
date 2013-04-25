@@ -125,28 +125,33 @@ void CHalos::HaloSort(){
 CArray*	 CHalos::Halos2Array(){
 	double* Array = new double [ParticleSize*NrParticles+NrHalos+1+myConstants::constants.HaloSize]; // Memory leak
 	int particle_count = 1+NrHalos;
-	double* tmpArray;
+	CArray* tmpArray;
 	Array[0] = NrHalos;
+
+
 
 	for (int i = 0; i<NrHalos;i++){
 		Array[i+1] = NrInHalo[i];
-		for (int j=0;j<NrInHalo[i];j++){
-			tmpArray = Halos[i]->get(j)->Particle2Array();
-			for (int k = 0; k < ParticleSize;k++){
-				Array[particle_count] = tmpArray[k];
-				particle_count++;
-			}
-			if (tmpArray != NULL){
-				delete tmpArray;
-				tmpArray = NULL;
-			}
+		tmpArray = Halos[i]->Halo2Array();
+		for (int j = 0; j < tmpArray->len();j++){
+			Array[particle_count] = tmpArray->get(j);
+			particle_count++;
 		}
+		
+		if (tmpArray != NULL){
+			delete tmpArray;
+			tmpArray = NULL;
+		}
+
 	}
-	CArray* tmpCArray = new CArray(ParticleSize*NrParticles+NrHalos+1,Array); // <--- kill	-checked
+
+	CArray* tmpCArray = new CArray(ParticleSize*NrParticles+NrHalos+1+myConstants::constants.HaloSize,Array); // <--- kill	-checked
+	
 	if (Array != NULL){
 		delete [] Array;
 		Array = NULL;
 	}
+	
 	return tmpCArray;
 }
 
@@ -430,7 +435,7 @@ void CHalos::loadClaudio(string Filename){
 	Halos.clear();
 	NrInHalo.clear();
 	NrHalos = 1;
-	
+
 
 	CHalo* tmpHalo = new CHalo(); // <--- kill
 	Halos.push_back(tmpHalo);
@@ -440,9 +445,9 @@ void CHalos::loadClaudio(string Filename){
 
 	//Saving data into existing structure
 	//Saving all Particles into the first halo in Halos, get with Halos[0]
-	
+
 	AllParticles.resize(count);
-	
+
 	CParticle* tmpParticle;
 	for (int i=0;i<count;i++) {
 		tmpParticle = &AllParticles[i];
@@ -459,7 +464,7 @@ void CHalos::loadClaudio(string Filename){
 	file.close();
 	if (block != NULL) {
 		delete[] block;
-	block = NULL;
+		block = NULL;
 	}
 	NrParticles = count;
 	NrInHalo.push_back(NrParticles);
@@ -515,67 +520,61 @@ void CHalos::loadData(string Filename){
 
 
 //Load a txt with full halo information
-/*void CHalos::loadHalos(string Filename){
-  vector<string> strData;
-  cout << "A" << endl;
-  ifstream file((myConstants::constants.data + Filename).c_str());
-  string line;
-  cout << "B" << endl;
-  Halos.clear();
-  NrInHalo.clear();
+void CHalos::loadHalos(string Filename){
+	vector<string> strData;
+	ifstream file((myConstants::constants.data + Filename).c_str());
+	string line;
+	Halos.clear();
+	NrInHalo.clear();
 
-  getline(file,line);
-  trim(line);
-  CArray inArray(atof(line.c_str())+1);
-  cout << inArray.len()<< endl;
-  cout << "C" << endl;
-  int i = 0;
-  if (file.is_open()){
-  while (!file.eof()){
-  //cout << i << endl;
-  getline(file,line);
-  trim(line);
-  //split(strData, line, is_any_of(" "));
+	getline(file,line);
+	trim(line);
+	CArray inArray(atof(line.c_str())+1);
 
-  inArray[i] = atof(line.c_str());
-  i++;
-  }
-  file.close();
-  cout << i << endl;
-  }
-  cout << "D" << endl;
-  inArray.print();
+	int i = 0;
+	if (file.is_open()){
+		while (!file.eof()){
+			getline(file,line);
+			trim(line);
+			
+			inArray[i] = atof(line.c_str());
+			i++;
+		}
+		file.close();
+		cout << i << endl;
+	}
 
-  NrHalos = inArray[0];
-  ParticleSize = myConstants::constants.ParticleSize;
-  int particle_count = 1 + NrHalos;
-  NrParticles = (inArray.len() - 1 - NrHalos - NrHalos*myConstants::constants.HaloSize)/ParticleSize;
-  cout << NrHalos << endl;
+	NrHalos = inArray[0];
+	ParticleSize = myConstants::constants.ParticleSize;
+	int particle_count = 1 + NrHalos;
+	NrParticles = (inArray.len() - 1 - NrHalos - NrHalos*myConstants::constants.HaloSize)/ParticleSize;
 
-  for (int i = 0; i < NrHalos; i++){
-  if (i == 173) cout << "E"<<endl;
-  NrInHalo.push_back(inArray[1+i]);
-  double* tmpArray = new double [NrInHalo[i]*ParticleSize + myConstants::constants.HaloSize];
-  if (i == 173) cout << "F"<<endl;
-  for (int l = 0; l < myConstants::constants.HaloSize; l++){
-  tmpArray[l] = inArray[particle_count];
-  particle_count++;
-  }
-  if (i == 173) cout << "G "<< NrInHalo[i] << " sd " <<ParticleSize <<endl;
-  for (int j = 0; j < NrInHalo[i];j++){
-  for (int k = 0; k < ParticleSize;k++){
-  tmpArray[j*ParticleSize+k+myConstants::constants.HaloSize] = inArray[particle_count];
-  particle_count++;
-  }
-  }
-  if (i == 173) cout << "H"<< endl;
-  CArray* tmpCArray = new CArray(NrInHalo[i]*ParticleSize + myConstants::constants.HaloSize, tmpArray);
-  delete[] tmpArray;
-  CHalo* tmpHalo = new CHalo(tmpCArray); // <- Memory leak
-  Halos.push_back(tmpHalo);
-  }
 
-  }*/
+
+	for (int i = 0; i < NrHalos; i++){
+		NrInHalo.push_back(inArray[1+i]);
+		double* tmpArray = new double [NrInHalo[i]*ParticleSize + myConstants::constants.HaloSize];
+
+		for (int l = 0; l < myConstants::constants.HaloSize; l++){
+			tmpArray[l] = inArray[particle_count];
+			particle_count++;
+		}
+
+		for (int j = 0; j < NrInHalo[i];j++){
+			for (int k = 0; k < ParticleSize;k++){
+				tmpArray[j*ParticleSize+k+myConstants::constants.HaloSize] = inArray[particle_count];
+				particle_count++;
+			}
+		}
+
+		CArray* tmpCArray = new CArray(NrInHalo[i]*ParticleSize + myConstants::constants.HaloSize, tmpArray);
+		delete[] tmpArray;
+
+		CHalo* tmpHalo = new CHalo(tmpCArray); // <- Memory leak
+		Halos.push_back(tmpHalo);
+	}
+
+}
 
 
 
@@ -796,7 +795,7 @@ void CHalos::FriendOfFriendGrid(){
 	allParticles = *Halos[0]->getParticles();
 	searchParticle = allParticles[0];
 	CParticle* Particle = searchParticle;
-	
+
 	//Create a linked list of all particles
 	Particle->prev=NULL;
 	for (int i=1; i < NrParticles;i++){
@@ -822,12 +821,12 @@ void CHalos::FriendOfFriendGrid(){
 
 	//Uncomment to manually set the linking length
 	//LinkingLength = myConstants::constants.LinkingLength;
-	
+
 	int Width = (int) (2./LinkingLength);
 	Grid.initialize(&min,&max,Width);
 	Grid.Populate(Halos[0]->getParticles());
-	
-	
+
+
 	cout << "Finished initializing grid" << endl;
 	cout << "---------------------------------" << endl;
 	cout << "Calculating Friend of Friend Grid" << endl;
@@ -1004,7 +1003,7 @@ void CHalos::SplitHalos(){
 //then sends out new data as soon as a processor finishes its task
 CHalos* CHalos::master(){
 	CMPI MPI;
-	int count = 60;
+	int count = 0;
 	int processor;
 	int size = MPI.getSize();
 	CHalos* FinalHalos = new CHalos(); // <--- kill
@@ -1105,7 +1104,7 @@ void CHalos::slave(){
 		HalosArray.recieve_slave();
 		int tmpLength = HalosArray.len();
 		initialize(&HalosArray);
-		
+
 		SplitHalos();
 		tmpArray = Halos[0]->SubHalos2Array();
 		tmpArray->send_slave_modified(tmpLength);

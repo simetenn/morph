@@ -7,18 +7,18 @@ void CMain::master() {
 	CHalos m;
 	CHalos* n;
 	//CHalo h;
-	m.loadClaudio(myConstants::constants.inFile);
+	//m.loadClaudio(myConstants::constants.inFile);
 	//m.loadData(myConstants::constants.DataFile);
 	//m.loadData("data.dat");
-	//m.loadHalos("splitHalos.dat");
-
+	m.loadData("halo61.dat");
+	
 	//h.loadStructure("structureBig.dat");
-	//h.printSubHalos();
+	m.printHalos();
+	exit(1);
 	//h.createSubHalos();
 	//h.printSubHalos();
 	//h.mergeStatistical();
-	
-	
+
 	//cout << m.getNrParticles() << endl;
 	m.FriendOfFriendGrid();
 	//m.saveP("positionsFOF.dat");
@@ -26,7 +26,8 @@ void CMain::master() {
 	//m.FriendOfFriendN2();
 	//m.CalculateAllStatistics();
 	//m.printHalos();
-	
+	//m.saveHalos("splitHalos.dat");
+	//exit(0);
 	/*m[5]->saveHalo("velocity0.dat");
 	m[6]->saveHalo("velocity1.dat");
 	m[7]->saveHalo("velocity2.dat");
