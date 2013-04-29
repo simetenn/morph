@@ -10,10 +10,10 @@ void CMain::master() {
 	//m.loadClaudio(myConstants::constants.inFile);
 	//m.loadData(myConstants::constants.DataFile);
 	//m.loadData("data.dat");
-	m.loadData("halo4.dat");
-	//m.loadHalos("splitHalos.dat");
+	//m.loadData("halo4.dat");
+	m.loadHalos("splitHalos.bin");
 	//h.loadStructure("structureBig.dat");
-	
+	//m.printHalos();
 	//exit(1);
 	//h.createSubHalos();
 	//h.printSubHalos();
@@ -25,9 +25,9 @@ void CMain::master() {
 	//m.save(myConstants::constants.DataFile,myConstants::constants.NrParticles2File);
 	//m.FriendOfFriendN2();
 	m.CalculateAllStatistics();
-	m.printHalos();
 	//m.printHalos();
-	//m.saveHalos("splitHalos.dat");
+	
+	//m.saveHalos("splitHalos.bin");
 	//exit(0);
 	/*m[5]->saveHalo("velocity0.dat");
 	m[6]->saveHalo("velocity1.dat");
