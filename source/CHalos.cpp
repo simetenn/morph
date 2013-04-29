@@ -533,14 +533,13 @@ void CHalos::loadHalos(string Filename){
 	Halos.clear();
 	NrInHalo.clear();
 
-	int size = file.tellg();
+	long size = file.tellg();
 	char* buffer = new char [size];
 	file.seekg (0, ios::beg);
 	file.read(buffer, size);
 
 	double* tmpArray = (double*)(buffer);
 	size = size / sizeof(double);
-
 	CArray inArray(size,tmpArray);
 
 	delete [] tmpArray;
