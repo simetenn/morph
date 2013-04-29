@@ -137,7 +137,7 @@ CArray*	 CHalos::Halos2Array(){
 			Array[particle_count] = tmpArray->get(j);
 			particle_count++;
 		}
-		
+
 		if (tmpArray != NULL){
 			delete tmpArray;
 			tmpArray = NULL;
@@ -146,12 +146,12 @@ CArray*	 CHalos::Halos2Array(){
 	}
 
 	CArray* tmpCArray = new CArray(ParticleSize*NrParticles+NrHalos+1+myConstants::constants.HaloSize,Array); // <--- kill	-checked
-	
+
 	if (Array != NULL){
 		delete [] Array;
 		Array = NULL;
 	}
-	
+
 	return tmpCArray;
 }
 
@@ -478,12 +478,13 @@ void CHalos::loadData(string Filename){
 	vector<string> strData;
 
 	ifstream file((myConstants::constants.data + Filename).c_str());
+
+
 	string line;
 
 	Halos.clear();
 	NrInHalo.clear();
 	NrHalos = 1;
-
 	CHalo* tmpHalo = new CHalo(); // <--- kill
 	Halos.push_back(tmpHalo);
 	double tmpData [ParticleSize];
@@ -521,35 +522,32 @@ void CHalos::loadData(string Filename){
 
 //Load a txt with full halo information
 void CHalos::loadHalos(string Filename){
+
+	cout << "---------------------------------" << endl;
+	cout << "Reading file " << Filename << endl;
+
 	vector<string> strData;
-	ifstream file((myConstants::constants.data + Filename).c_str());
+	ifstream file((myConstants::constants.data + Filename).c_str(), ios::in | ios::binary | ios::ate);
+
 	string line;
 	Halos.clear();
 	NrInHalo.clear();
 
-	getline(file,line);
-	trim(line);
-	CArray inArray(atof(line.c_str())+1);
+	int size = file.tellg();
+	char* buffer = new char [size];
+	file.seekg (0, ios::beg);
+	file.read(buffer, size);
 
-	int i = 0;
-	if (file.is_open()){
-		while (!file.eof()){
-			getline(file,line);
-			trim(line);
-			
-			inArray[i] = atof(line.c_str());
-			i++;
-		}
-		file.close();
-		cout << i << endl;
-	}
+	double* tmpArray = (double*)(buffer);
+	size = size / sizeof(double);
 
+	CArray inArray(size,tmpArray);
+
+	delete [] tmpArray;
 	NrHalos = inArray[0];
 	ParticleSize = myConstants::constants.ParticleSize;
 	int particle_count = 1 + NrHalos;
 	NrParticles = (inArray.len() - 1 - NrHalos - NrHalos*myConstants::constants.HaloSize)/ParticleSize;
-
-
 
 	for (int i = 0; i < NrHalos; i++){
 		NrInHalo.push_back(inArray[1+i]);
@@ -574,6 +572,8 @@ void CHalos::loadHalos(string Filename){
 		Halos.push_back(tmpHalo);
 	}
 
+	cout << "Finished loading particles from file" << endl;
+	cout << "---------------------------------" << endl;
 }
 
 
@@ -658,13 +658,10 @@ void CHalos::saveSize(string Filename){
 void CHalos::saveHalos(string Filename){
 	fstream file;
 	CArray* tmpArray = Halos2Array();
-	file.open((myConstants::constants.data + Filename).c_str(), ios::out);
+	file.open((myConstants::constants.data + Filename).c_str(), ios::out | ios::binary);
 
 	//Saves position data for each particle to file
-	file << tmpArray->len() << endl;
-	for (int i = 0;i < tmpArray->len(); i++){
-		file << tmpArray->get(i) << endl;
-	}
+	file.write((char*)tmpArray->CArray2array(),tmpArray->len()*sizeof(double));
 	file.close();
 	//Memory leak
 	if (tmpArray != NULL) {
