@@ -13,8 +13,8 @@ void CMain::master() {
 	//m.loadData("halo4.dat");
 	m.loadHalos("splitHalos.bin");
 	//h.loadStructure("structureBig.dat");
-	//m.printHalos();
-	//exit(1);
+	m.printHalos();
+	exit(1);
 	//h.createSubHalos();
 	//h.printSubHalos();
 	//h.mergeStatistical();
@@ -27,8 +27,8 @@ void CMain::master() {
 	//m.CalculateAllStatistics();
 	//m.printHalos();
 	
-	//m.saveHalos("splitHalos.bin");
-	//exit(0);
+	m.saveHalos("splitHalos.bin");
+	exit(0);
 	/*m[5]->saveHalo("velocity0.dat");
 	m[6]->saveHalo("velocity1.dat");
 	m[7]->saveHalo("velocity2.dat");
