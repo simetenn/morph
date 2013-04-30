@@ -123,6 +123,8 @@ void CHalos::HaloSort(){
 //nr of halos, nr of particles in halo 1, nr of particles in halo 2, ... ,
 //nr of particles of in halo N, halo array 1, halo array 2, ... halo array N]
 CArray*	 CHalos::Halos2Array(){
+	NrHalos = 100;
+	
 	double* Array = new double [ParticleSize*NrParticles+NrHalos+1+myConstants::constants.HaloSize]; // Memory leak
 	int particle_count = 1+NrHalos;
 	CArray* tmpArray;
