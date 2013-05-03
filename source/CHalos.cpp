@@ -124,16 +124,22 @@ void CHalos::HaloSort(){
 //nr of particles of in halo N, halo array 1, halo array 2, ... halo array N]
 CArray*	 CHalos::Halos2Array(){
 	NrHalos = 100;
+	NrParticles = 0;
+	int startHaloIndex = 100;
+	int endHaloIndex = startHaloIndex + NrHalos;
 	
-	double* Array = new double [ParticleSize*NrParticles+NrHalos+1+myConstants::constants.HaloSize]; // Memory leak
+	for (int i = startHaloIndex; i < endHaloIndex; i++) {
+		NrParticles += NrInHalo[i];
+	}
+	
+	double* Array = new double [ParticleSize*NrParticles+NrHalos+1+NrHalos*myConstants::constants.HaloSize]; // Memory leak
 	int particle_count = 1+NrHalos;
 	CArray* tmpArray;
 	Array[0] = NrHalos;
 
-
-
-	for (int i = 0; i<NrHalos;i++){
-		Array[i+1] = NrInHalo[i];
+	for (int i = startHaloIndex; i<endHaloIndex;i++){
+		Array[i+1-startHaloIndex] = NrInHalo[i];
+		
 		tmpArray = Halos[i]->Halo2Array();
 		for (int j = 0; j < tmpArray->len();j++){
 			Array[particle_count] = tmpArray->get(j);
@@ -144,11 +150,13 @@ CArray*	 CHalos::Halos2Array(){
 			delete tmpArray;
 			tmpArray = NULL;
 		}
-
+		
 	}
 
-	CArray* tmpCArray = new CArray(ParticleSize*NrParticles+NrHalos+1+myConstants::constants.HaloSize,Array); // <--- kill	-checked
+	CArray* tmpCArray = new CArray(ParticleSize*NrParticles+NrHalos+1+NrHalos*myConstants::constants.HaloSize,Array); // <--- kill	-checked
 
+	tmpCArray->print();
+	
 	if (Array != NULL){
 		delete [] Array;
 		Array = NULL;
