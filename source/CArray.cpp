@@ -44,6 +44,8 @@ CArray::CArray(int in_length){
 
 //create a CArray from an array
 CArray::CArray(int in_length, double* in_array){
+	//del();
+	//length=0;
 	length = in_length;
 	dataLength = in_length + myConstants::constants.ArrayExtraSize;
 
@@ -57,6 +59,8 @@ CArray::CArray(int in_length, double* in_array){
 
 //Create an CArray from CArray
 CArray::CArray(CArray* inCArray){
+	//del();
+
 	length = inCArray->len();
 	dataLength = length + myConstants::constants.ArrayExtraSize;
 	array = inCArray->CArray2array();
@@ -208,7 +212,7 @@ CArray* CArray::operator+(CArray* inArray){
 		tmp[length + j] = inArray->get(j);
 	}
 
-	return new CArray(length+inArray->len(),tmp); //<- memory leak
+	return new CArray(length+inArray->len(),tmp); // <- memory leak
 }
 
 
@@ -282,7 +286,9 @@ void CArray::front(double in_value){
 	}
 
 	dataLength = length + myConstants::constants.ArrayExtraSize;
+
 	double* tmp = new double [dataLength];
+
 	for (int i = length; i > 0; i--) {
 		tmp[i] = array[i-1];
 	}
@@ -291,6 +297,7 @@ void CArray::front(double in_value){
 	if (array != NULL) {
 		delete[] array;
 	}
+	
 	array = tmp;
 }
 
@@ -326,7 +333,13 @@ void CArray::send_slave_modified(int inLength){
 		tmpArray[i] = array[i];
 	}
 
+	for (int i = length; i < inLength; i++) {
+		tmpArray[i] = 0;
+	}
+
+	
 	CMPI::send_array_slave(tmpArray, inLength);
+
 	if(tmpArray != NULL) {
 		delete [] tmpArray;
 		tmpArray = NULL;

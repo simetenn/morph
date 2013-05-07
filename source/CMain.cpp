@@ -7,13 +7,13 @@ void CMain::master() {
 	CHalos m;
 	CHalos* n;
 	//CHalo h;
-	//m.loadClaudio(myConstants::constants.inFile);
+	m.loadClaudio(myConstants::constants.inFile);
 	//m.loadData(myConstants::constants.DataFile);
 	//m.loadData("data.dat");
 	//m.loadData("halo4.dat");
-	m.loadHalos("splitHalos.bin");
-	m.printHalos();
-	exit(1);
+	//m.loadHalos("splitHalos2.bin");
+	//m.printHalos();
+	//exit(1);
 	//h.createSubHalos();
 	//h.printSubHalos();
 	//h.mergeStatistical();
@@ -26,8 +26,8 @@ void CMain::master() {
 	//m.CalculateAllStatistics();
 	//m.printHalos();
 	
-	m.saveHalos("splitHalos.bin");
-	exit(0);
+	//m.saveHalos("splitHalos.bin");
+	//exit(0);
 	/*m[5]->saveHalo("velocity0.dat");
 	m[6]->saveHalo("velocity1.dat");
 	m[7]->saveHalo("velocity2.dat");
