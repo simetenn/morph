@@ -293,7 +293,7 @@ void CHalo::SubHalos2ArrayRec(CArray* inArray, CArray* sizeArray){
 	CArray* tmpArray = Halo2Array();
 	inArray->add(tmpArray);
 	//return;
-
+	
 	if (tmpArray != NULL) {
 		delete tmpArray;
 		tmpArray = NULL;
@@ -1328,9 +1328,9 @@ void CHalo::createSubHalos(){
 }
 
 void CHalo::createMockSubHalos(){
-	int NrSubHalos = 3;
+	int NrSubHalos = 6;
 	int NrParticlesSubHalo = 100;
-	int MaxDepth = 3;
+	int MaxDepth = 6;
 
 	
 	int depth = 0;

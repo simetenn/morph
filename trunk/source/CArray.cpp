@@ -229,11 +229,11 @@ CArray* CArray::operator+(CArray* inArray){
 void CArray::add(CArray* inArray){
 	int oldlength = length;
 
-	cout << "inArray length "<< inArray->len() << endl;
+	//cout << "inArray length "<< inArray->len() << endl;
 
-	cout << "datalength, length " << dataLength << " "<< length << endl;  
+	//cout << "datalength, length " << dataLength << " "<< length << endl;  
 	if (inArray->len() < dataLength-length){
-		cout << "A" << endl;
+		//cout << "A" << endl;
 		for (int i = 0; i < inArray->len(); i++){
 			array[length+i] = inArray->get(i);
 		}
@@ -291,7 +291,7 @@ void CArray::push_back(double in_value){
 //Add an element to CArray in the front
 void CArray::front(double in_value){
 	length++;
-	if (dataLength-length >= 0) {
+	if (dataLength-length > 0) {
 		for (int i = length; i > 0; i--) {
 			array[i] = array[i-1];
 		}
