@@ -3,15 +3,49 @@
 Constants myConstants::constants;
 
 
+void CMain::testCArray(){
+	CArray a (10);
+
+	for (int i = 0; i < 10; i++) {
+		a[i] = i;
+	}
+	for (int i = 0; i < 20; i++) {
+		a.push_back(i+10);
+	}
+	
+	
+	for (int i = 0; i < 3; i++) {
+		CArray* tmp = new CArray ((1+i));
+		a.add(tmp);
+	}
+	a.print();
+	
+	
+}
+
 void CMain::master() {
 	CHalos m;
 	CHalos* n;
+
+
+	//testCArray();
+	//exit(0);
+
+ 	
+
+
+
+
+
+
+
+	
 	//CHalo h;
-	m.loadClaudio(myConstants::constants.inFile);
+	//m.loadClaudio(myConstants::constants.inFile);
 	//m.loadData(myConstants::constants.DataFile);
 	//m.loadData("data.dat");
 	//m.loadData("halo4.dat");
-	//m.loadHalos("splitHalos2.bin");
+	m.loadHalos("splitHalosRamses.bin");
 	//m.printHalos();
 	//exit(1);
 	//h.createSubHalos();
@@ -19,14 +53,14 @@ void CMain::master() {
 	//h.mergeStatistical();
 
 	//cout << m.getNrParticles() << endl;
-	m.FriendOfFriendGrid();
+	//m.FriendOfFriendGrid();
 	//m.saveP("positionsFOF.dat");
 	//m.save(myConstants::constants.DataFile,myConstants::constants.NrParticles2File);
 	//m.FriendOfFriendN2();
 	//m.CalculateAllStatistics();
 	//m.printHalos();
 	
-	//m.saveHalos("splitHalos.bin");
+	//m.saveHalos("splitHalosRamses.bin");
 	//exit(0);
 	/*m[5]->saveHalo("velocity0.dat");
 	m[6]->saveHalo("velocity1.dat");
