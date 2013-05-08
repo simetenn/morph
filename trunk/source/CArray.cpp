@@ -12,6 +12,11 @@ CArray::CArray(){
 	length = 0;
 	dataLength = myConstants::constants.ArrayExtraSize;
 	array = new double [dataLength];
+
+	for (int i = 0; i < dataLength; i++) {
+		array[i] = -1;
+	}
+	
 	//CMPI();
 }
 
@@ -21,6 +26,10 @@ CArray::CArray(int in_length){
 	length = in_length;
 	dataLength = in_length + myConstants::constants.ArrayExtraSize;
 	array = new double [dataLength]; //<- memory leak
+
+	for (int i = 0; i < dataLength; i++) {
+		array[i] = -1;
+	}
 	//CMPI();
 }
 
@@ -111,7 +120,7 @@ void CArray::linspace(double start, double end, int in_length){
 
 //Print CArray line by line
 void CArray::print(){
-	for (int i = 0; i < 20; i++) {
+	for (int i = 0; i < length; i++) {
 		cout << array[i] << endl;
 	}
 }
@@ -220,10 +229,15 @@ CArray* CArray::operator+(CArray* inArray){
 void CArray::add(CArray* inArray){
 	int oldlength = length;
 
+	cout << "inArray length "<< inArray->len() << endl;
+
+	cout << "datalength, length " << dataLength << " "<< length << endl;  
 	if (inArray->len() < dataLength-length){
+		cout << "A" << endl;
 		for (int i = 0; i < inArray->len(); i++){
 			array[length+i] = inArray->get(i);
 		}
+		length += inArray->len();
 		return;
 	}
 
@@ -251,7 +265,7 @@ void CArray::add(CArray* inArray){
 
 //Add an element to CArray at the end
 void CArray::push_back(double in_value){
-	if (dataLength-length >= 1) {
+	if (dataLength-length > 0) {
 		array[length] = in_value;
 		length++;
 		return;

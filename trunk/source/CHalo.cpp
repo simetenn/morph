@@ -1328,9 +1328,9 @@ void CHalo::createSubHalos(){
 }
 
 void CHalo::createMockSubHalos(){
-	int NrSubHalos = 6;
+	int NrSubHalos = 3;
 	int NrParticlesSubHalo = 100;
-	int MaxDepth = 6;
+	int MaxDepth = 3;
 
 	
 	int depth = 0;
@@ -1358,8 +1358,7 @@ void CHalo::createMockSubHalos(){
 	NrParticles = Halo.getNrParticles();
 	CalculateAllStatistics();
 
-	printSubHalos();
-	exit(1);
+	//printSubHalos();
 }
 
 void CHalo::createMockSubHalosRec(int NrSubHalos, int NrParticlesSubHalo, int MaxDepth, int &depth, CParticles& inHalo){
