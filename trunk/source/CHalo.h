@@ -228,7 +228,8 @@ class CHalo{
 
 	//Do the splitting of halos, assigning particles to all halos, and merge statisticaly equal halos
 	void createSubHalos();
-
+	void createMockSubHalos();
+	void createMockSubHalosRec(int NrSubHalos,int NrParticlesSubHalo,CParticles& inHalo);
 
  protected:
 	CParticles Halo;

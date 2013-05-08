@@ -240,7 +240,7 @@ void CArray::add(CArray* inArray){
 		delete [] array;
 	}
 	array = tmp;
-
+	
 
 	
 	for (int j =0; j< inArray->len();j++) {

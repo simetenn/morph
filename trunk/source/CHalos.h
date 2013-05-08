@@ -121,7 +121,9 @@ class CHalos{
 
 	//Runs the splitting routine for all halos to split each into several subhalos
 	void SplitHalos();
-
+	void SplitMockHalos();
+	
+	
 	//A routine to be run in the master process to do calulations on each halo in parallel.
 	//It sends the data from each halo to all available processors,
 	//then sends out new data as soon as a processor finishes its task
