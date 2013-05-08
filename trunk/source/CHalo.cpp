@@ -323,7 +323,7 @@ CArray* CHalo::SubHalosStructure2Array(){
 	int ID = -1;
 	//Array->front(ID);
 	//adds all data from all subhalos
-	SubHalosStructure2ArrayRec(&Array, sizeArray,ID);
+	SubHalosStructure2ArrayRec(&Array, sizeArray, ID);
 	//Add nr of Halos to the front of SizeArray
 	sizeArray->front(sizeArray->len());
 
@@ -1328,47 +1328,60 @@ void CHalo::createSubHalos(){
 }
 
 void CHalo::createMockSubHalos(){
-	int NrSubHalos = 3;
-	int NrParticlesSubHalo = 2000;
-	CHalo tmpHalo;
-	//CParticles allParticles;
-	//allParticles.copy(Halo);
+	int NrSubHalos = 6;
+	int NrParticlesSubHalo = 100;
+	int MaxDepth = 6;
+
 	
+	int depth = 0;
+	CHalo tmpHalo;
 	
 	
 	for (int i = 0; i < NrSubHalos; i++) {
 		for (int j = 0; j < NrParticlesSubHalo; j++) {
-			if (NrParticles <= 0) return;
+			if (NrParticles <= 1) break;
 			tmpHalo.addParticle(Halo[0]);
 			Halo.removeParticle(0);
 			NrParticles--;
 		}
-		SubHalos.push_back(new CHalo(&tmpHalo));
+		if (tmpHalo.getNrParticles() > 0) SubHalos.push_back(new CHalo(&tmpHalo));
 		tmpHalo.clear();
+		
 	}
 	
 	
 	for (list<CHalo*>::iterator it = SubHalos.begin(); it != SubHalos.end(); it++) {
-		(*it)->createMockSubHalosRec(NrSubHalos,NrParticlesSubHalo,Halo);
-		}
+		(*it)->createMockSubHalosRec(NrSubHalos,NrParticlesSubHalo, MaxDepth, depth, Halo);
+		depth--;
+	}
 	
 	NrParticles = Halo.getNrParticles();
 	CalculateAllStatistics();
+
+	printSubHalos();
+	exit(1);
 }
 
-void CHalo::createMockSubHalosRec(int NrSubHalos,int NrParticlesSubHalo,CParticles& inHalo){
+void CHalo::createMockSubHalosRec(int NrSubHalos, int NrParticlesSubHalo, int MaxDepth, int &depth, CParticles& inHalo){
+	depth++;
+	if (depth >= MaxDepth) return;
 	CHalo tmpHalo;
 	
 	for (int i = 0; i < NrSubHalos; i++) {
 		for (int j = 0; j < NrParticlesSubHalo; j++) {
-			if (inHalo.getNrParticles() <= 0) return;
+			if (inHalo.getNrParticles() <= 1) break;
 			tmpHalo.addParticle(inHalo[0]);
 			inHalo.removeParticle(0);
 		}
-		SubHalos.push_back(new CHalo(&tmpHalo));
+		if (tmpHalo.getNrParticles() >0) SubHalos.push_back(new CHalo(&tmpHalo));
 		tmpHalo.clear();
+		
 	}
-	/*for (list<CHalo*>::iterator it = SubHalos.begin(); it != SubHalos.end(); it++) {
-		(*it)->createMockSubHalosRec(count,NrSubHalos,NrParticlesSubHalo);
-		}*/
+	
+	for (list<CHalo*>::iterator it = SubHalos.begin(); it != SubHalos.end(); it++) {
+		(*it)->createMockSubHalosRec(NrSubHalos,NrParticlesSubHalo, MaxDepth, depth, inHalo);
+		depth--;
+	}
+	
+	
 }
