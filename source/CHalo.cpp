@@ -187,9 +187,10 @@ void CHalo::clear(){
 	SigmaV.Set(0,0,0);
 	ParticleSize = myConstants::constants.ParticleSize;
 
-	for (list<CHalo*>::iterator it = SubHalos.begin(); it != SubHalos.end(); it++) {
-		(*it)->clear();
-	}
+	/*for (list<CHalo*>::iterator it = SubHalos.begin(); it != SubHalos.end(); it++) {
+	  (*it)->clear();
+	  }*/
+
 	SubHalos.clear();
 }
 
@@ -291,6 +292,8 @@ CArray* CHalo::SubHalos2Array(){
 void CHalo::SubHalos2ArrayRec(CArray* inArray, CArray* sizeArray){
 	CArray* tmpArray = Halo2Array();
 	inArray->add(tmpArray);
+	//return;
+
 	if (tmpArray != NULL) {
 		delete tmpArray;
 		tmpArray = NULL;
@@ -1324,3 +1327,48 @@ void CHalo::createSubHalos(){
 	//Unbind();
 }
 
+void CHalo::createMockSubHalos(){
+	int NrSubHalos = 3;
+	int NrParticlesSubHalo = 2000;
+	CHalo tmpHalo;
+	//CParticles allParticles;
+	//allParticles.copy(Halo);
+	
+	
+	
+	for (int i = 0; i < NrSubHalos; i++) {
+		for (int j = 0; j < NrParticlesSubHalo; j++) {
+			if (NrParticles <= 0) return;
+			tmpHalo.addParticle(Halo[0]);
+			Halo.removeParticle(0);
+			NrParticles--;
+		}
+		SubHalos.push_back(new CHalo(&tmpHalo));
+		tmpHalo.clear();
+	}
+	
+	
+	for (list<CHalo*>::iterator it = SubHalos.begin(); it != SubHalos.end(); it++) {
+		(*it)->createMockSubHalosRec(NrSubHalos,NrParticlesSubHalo,Halo);
+		}
+	
+	NrParticles = Halo.getNrParticles();
+	CalculateAllStatistics();
+}
+
+void CHalo::createMockSubHalosRec(int NrSubHalos,int NrParticlesSubHalo,CParticles& inHalo){
+	CHalo tmpHalo;
+	
+	for (int i = 0; i < NrSubHalos; i++) {
+		for (int j = 0; j < NrParticlesSubHalo; j++) {
+			if (inHalo.getNrParticles() <= 0) return;
+			tmpHalo.addParticle(inHalo[0]);
+			inHalo.removeParticle(0);
+		}
+		SubHalos.push_back(new CHalo(&tmpHalo));
+		tmpHalo.clear();
+	}
+	/*for (list<CHalo*>::iterator it = SubHalos.begin(); it != SubHalos.end(); it++) {
+		(*it)->createMockSubHalosRec(count,NrSubHalos,NrParticlesSubHalo);
+		}*/
+}

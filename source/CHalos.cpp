@@ -1005,7 +1005,12 @@ void CHalos::SplitHalos(){
 	}
 }
 
-
+void CHalos::SplitMockHalos(){
+		for (int i = 0; i < NrHalos; i++) {
+			
+		Halos[i]->createMockSubHalos();
+	}
+}
 
 
 
@@ -1116,17 +1121,17 @@ void CHalos::slave(){
 		if (MPI.ifEnd() == 1) break;
 		HalosArray.recieve_slave();
 		int tmpLength = HalosArray.len();
-		//initialize(&HalosArray);
+		initialize(&HalosArray);
 
 		//SplitHalos();
-		//tmpArray = Halos[0]->SubHalos2Array();
-		//tmpArray->send_slave_modified(tmpLength);
-		HalosArray.send_slave_modified(tmpLength);
+		SplitMockHalos();
+		tmpArray = Halos[0]->SubHalos2Array();
+		tmpArray->send_slave_modified(tmpLength);
 		//HalosArray.send_slave_modified(tmpLength);
-		/*if (tmpArray != NULL) {
+		if (tmpArray != NULL) {
 			delete tmpArray;
 			tmpArray = NULL;
-			}*/
+		}
 		kill();
 
 		//clear();
