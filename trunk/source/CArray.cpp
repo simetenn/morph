@@ -4,7 +4,6 @@
 #include <iostream>
 #include <stdlib.h>
 
-
 using namespace std;
 
 
@@ -16,7 +15,7 @@ CArray::CArray(){
 	for (int i = 0; i < dataLength; i++) {
 		array[i] = -1;
 	}
-	
+
 	//CMPI();
 }
 
@@ -59,6 +58,9 @@ CArray::CArray(int in_length, double* in_array){
 	dataLength = in_length + myConstants::constants.ArrayExtraSize;
 
 	array = new double [dataLength];
+
+	memcpy(array,in_array,sizeof(double)*(length));
+
 	for (int i = 0; i < length; i++) {
 		array[i] = in_array[i];
 	}
@@ -150,38 +152,38 @@ int CArray::len(){
 
 //Return a given element of the array, the element can be changed
 double& CArray::operator[](int element){
-	if (array == NULL){
-		throw "Array not initialized";
-	}
-	else if (element >= length || element < -length) {
-		throw "Index out of bounds";
-	}
-	else if (element < 0){
-		return array[length+element];
-	}
-	else {
-		return array[element];
-	}
+	/*if (array == NULL){
+	  throw "Array not initialized";
+	  }
+	  else if (element >= length || element < -length) {
+	  throw "Index out of bounds";
+	  }
+	  else if (element < 0){
+	  return array[length+element];
+	  }
+	  else {*/
+	return array[element];
+	//}
 }
 
 
 //Get a given element of the array,
 double CArray::get(int element){
-	if (array == NULL){
-		cout << "Array not initialized" << endl;
-		throw "Array not initialized";
-	}
-	else if (element >= length || element < -length) {
-		cout << "Index out of bounds" << endl;
-		throw "Index out of bounds";
+	/*if (array == NULL){
+	  cout << "Array not initialized" << endl;
+	  throw "Array not initialized";
+	  }
+	  else if (element >= length || element < -length) {
+	  cout << "Index out of bounds" << endl;
+	  throw "Index out of bounds";
 
-	}
-	else if (element < 0){
-		return array[length+element];
-	}
-	else {
-		return array[element];
-	}
+	  }
+	  else if (element < 0){
+	  return array[length+element];
+	  }
+	  else {*/
+	return array[element];
+	//}
 }
 
 
@@ -213,9 +215,7 @@ CArray CArray::operator+(double number){
 CArray* CArray::operator+(CArray* inArray){
 	double tmp[length+inArray->len()];
 
-	for (int i =0; i< length;i++) {
-		tmp[i] = array[i];
-	}
+	memcpy(tmp,array,sizeof(double)*(length));
 
 	for (int j =0; j< inArray->len();j++) {
 		tmp[length + j] = inArray->get(j);
@@ -229,11 +229,7 @@ CArray* CArray::operator+(CArray* inArray){
 void CArray::add(CArray* inArray){
 	int oldlength = length;
 
-	//cout << "inArray length "<< inArray->len() << endl;
-
-	//cout << "datalength, length " << dataLength << " "<< length << endl;  
 	if (inArray->len() < dataLength-length){
-		//cout << "A" << endl;
 		for (int i = 0; i < inArray->len(); i++){
 			array[length+i] = inArray->get(i);
 		}
@@ -246,17 +242,15 @@ void CArray::add(CArray* inArray){
 
 	double* tmp = new double [dataLength];
 
-	for (int i = 0;i < oldlength;i++){
-		tmp[i] = array[i];
-	}
+	memcpy(tmp,array,sizeof(double)*(oldlength));
 
 	if (array != NULL) {
 		delete [] array;
 	}
 	array = tmp;
-	
 
-	
+
+
 	for (int j =0; j< inArray->len();j++) {
 		array[oldlength + j] = inArray->get(j);
 	}
@@ -276,9 +270,8 @@ void CArray::push_back(double in_value){
 
 	double* tmp = new double [dataLength];
 
-	for (int i = 0;i < length-1;i++){
-		tmp[i] = array[i];
-	}
+	memcpy(tmp,array,sizeof(double)*(length-1));
+
 	tmp[length-1] = in_value;
 
 	if (array != NULL) {
@@ -303,15 +296,13 @@ void CArray::front(double in_value){
 
 	double* tmp = new double [dataLength];
 
-	for (int i = length; i > 0; i--) {
-		tmp[i] = array[i-1];
-	}
+	memcpy(&tmp[1],array,sizeof(double)*(length));
 	tmp[0] = in_value;
 
 	if (array != NULL) {
 		delete[] array;
 	}
-	
+
 	array = tmp;
 }
 
@@ -343,15 +334,14 @@ void CArray::send_slave_modified(int inLength){
 	inLength = inLength+(1+myConstants::constants.HaloSize)*myConstants::constants.MaxHalos;
 
 	double* tmpArray = new double [inLength];
-	for (int i = 0; i < length; i++) {
-		tmpArray[i] = array[i];
-	}
+
+	memcpy(tmpArray,array,sizeof(double)*(length));
 
 	for (int i = length; i < inLength; i++) {
 		tmpArray[i] = 0;
 	}
 
-	
+
 	CMPI::send_array_slave(tmpArray, inLength);
 
 	if(tmpArray != NULL) {

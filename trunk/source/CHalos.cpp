@@ -1123,11 +1123,11 @@ void CHalos::slave(){
 		int tmpLength = HalosArray.len();
 		initialize(&HalosArray);
 
-		//SplitHalos();
-		SplitMockHalos();
+		SplitHalos();
+		//SplitMockHalos();
 		tmpArray = Halos[0]->SubHalos2Array();
-		//tmpArray->send_slave_modified(tmpLength);
-		HalosArray.send_slave_modified(tmpLength);
+		tmpArray->send_slave_modified(tmpLength);
+		//HalosArray.send_slave_modified(tmpLength);
 		if (tmpArray != NULL) {
 			delete tmpArray;
 			tmpArray = NULL;
