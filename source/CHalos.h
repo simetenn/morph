@@ -3,13 +3,29 @@
 #include "CHalo.h"
 #include "CGrid.h"
 
-//Particle save structure, keeps only P and V.
+//Particle save structure, keeps only P and V. Used to read from Claudio's format
 struct particle_save {
 	CVector_bare P, V;
 	unsigned int halo;
 };
 
-
+// Gadget 2.0 data file header
+struct gadget_header {
+	int      npart[6];
+    double   mass[6];//10^10 Msun/h, load routine converts to Msun/h
+    double   time;
+    double   redshift;
+    int      flag_sfr;
+    int      flag_feedback;
+    int      npartTotal[6];
+    int      flag_cooling;
+    int      num_files;
+    double   BoxSize;//kpc/h, load routine converts to Mpc/h
+    double   Omega0;
+    double   OmegaLambda;
+    double   HubbleParam;
+    char     fill[256- 6*4- 6*8- 2*8- 2*4- 6*4- 2*4 - 4*8];  /* fills to 256 Bytes */
+};
 
 
 class CHalos{
@@ -82,6 +98,9 @@ class CHalos{
 	void loadData(string Filename);
 	//Load a txt with full halo information
 	void loadHalos(string Filename);
+
+	void loadGadget(string Filename);
+
 	
 	//Scale all positions with a number
 	void scalePositions(double scale);

@@ -27,53 +27,15 @@ void CMain::master() {
 	CHalos m;
 	CHalos* n;
 
-
-	//testCArray();
-	//exit(0);
-
- 	
-
-
-
-
-
-
-
-	
-	//CHalo h;
-	//m.loadClaudio(myConstants::constants.inFile);
-	//m.loadData(myConstants::constants.DataFile);
-	//m.loadData("data.dat");
-	//m.loadData("halo4.dat");
-	m.loadHalos("splitHalosRamses.bin");
-	//m.printHalos();
-	//exit(1);
-	//h.createSubHalos();
-	//h.printSubHalos();
-	//h.mergeStatistical();
-
-	//cout << m.getNrParticles() << endl;
-	//m.FriendOfFriendGrid();
-	//m.saveP("positionsFOF.dat");
-	//m.save(myConstants::constants.DataFile,myConstants::constants.NrParticles2File);
-	//m.FriendOfFriendN2();
+	m.loadClaudio(myConstants::constants.inFile);
+	//m.loadHalos("splitHalosRamses.bin");
+	//m.loadGadget("halo_plum");
 	//m.CalculateAllStatistics();
 	//m.printHalos();
-	
-	//m.saveHalos("splitHalosRamses.bin");
+	//exit(1);
+	m.FriendOfFriendGrid();
+	//m.saveHalos("splitHalosPlum.bin");
 	//exit(0);
-	/*m[5]->saveHalo("velocity0.dat");
-	m[6]->saveHalo("velocity1.dat");
-	m[7]->saveHalo("velocity2.dat");
-	m[8]->saveHalo("velocity3.dat");
-	m[9]->saveHalo("velocity4.dat");
-	m[10]->saveHalo("velocity5.dat");
-	m[11]->saveHalo("velocity6.dat");
-	m[12]->saveHalo("velocity7.dat");
-	m[13]->saveHalo("velocity8.dat");
-	m[14]->saveHalo("velocity9.dat");*/
-	
-	//m.printHalos();
 	n = m.master();
 	//n.saveHalos("splitHalos.dat");
 	//n.CalculateAllStatistics();
@@ -86,10 +48,8 @@ void CMain::master() {
 	n[32]->savePhi("Phi5.dat");
 	n[64]->savePhi("Phi6.dat");	
 	n[128]->savePhi("Phi7.dat");*/
-	
+	//n->printHalos();
 	n->saveSize(myConstants::constants.outSize);
-	//n.saveP(myConstants::constants.outPosition);
-	//n->kill();
 	delete n;
 }
 

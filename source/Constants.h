@@ -12,6 +12,7 @@ class Constants {
 	int LinkingLenghtScale, ArrayExtraSize;
 	double b,PhaseDistance,f,LinkingLength,rhovir, HaloSeed, BoxSize;
 	double ScaleDensity, RhoC, OmegaD, Mass, G;
+	double convMass, convDistance, convVelocity;
 	string inFile, outFile,haloFile, DataFile;
 	string source, data,outSize,outPosition,outPhi, outBounding;
 	
@@ -52,6 +53,9 @@ class Constants {
 		OmegaD = IniFile.getdouble("OmegaD");
 		Mass = IniFile.getdouble("Mass");
 		G = IniFile.getdouble("G");
+		convMass = IniFile.getdouble("convMass");
+		convDistance = IniFile.getdouble("convDistance");
+		convVelocity = IniFile.getdouble("convVelocity");
 		
 		//Load strings
 		inFile = IniFile.getstring("inFile");
