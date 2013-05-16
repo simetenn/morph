@@ -221,9 +221,10 @@ void CParticles::kill(){
 	for (int i = 0; i < NrParticles; i++) {
 		if (Particles[i] != NULL) {
 			delete Particles[i];
-			Particles[i] = NULL;
+			//Particles[i] = NULL;
 		}
 	}
+
 	Particles.clear();
 	NrParticles = 0;
 	flag = 1;
