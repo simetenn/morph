@@ -74,23 +74,24 @@ CHalo::CHalo(CHalo* inHalo){
 
 
 CHalo::~CHalo(){
-	for (list<CHalo*>::iterator it = SubHalos.begin(); it != SubHalos.end(); it++) {
+	/*for (list<CHalo*>::iterator it = SubHalos.begin(); it != SubHalos.end(); it++) {
 		if ((*it) != NULL ) {
 			delete (*it);
 			(*it) = NULL;
 		}
 	}
-	clear();
-	//kill();
+	clear();*/
+	kill();
 }
 
 
 //Kill all halos and subhalos and delete the particles from memory
 void CHalo::kill(){
 	for (list<CHalo*>::iterator it = SubHalos.begin(); it != SubHalos.end(); it++) {
-		(*it)->kill();
+		delete (*it);
+		(*it) = NULL;
 	}
-	Halo.kill();
+	//delete Halo;
 	clear();
 }
 

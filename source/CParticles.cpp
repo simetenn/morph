@@ -14,8 +14,8 @@ CParticles::~CParticles(){
 	  if ( Particles[i] != NULL)
 	  delete Particles[i]; // <- correct?
 	  }*/
-	//kill();
-	clear();
+	kill();
+	//clear();
 	//Particles.clear();
 }
 
@@ -221,7 +221,7 @@ void CParticles::kill(){
 	for (int i = 0; i < NrParticles; i++) {
 		if (Particles[i] != NULL) {
 			delete Particles[i];
-			//Particles[i] = NULL;
+			Particles[i] = NULL;
 		}
 	}
 
