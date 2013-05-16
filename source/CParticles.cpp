@@ -14,12 +14,13 @@ CParticles::~CParticles(){
 	  if ( Particles[i] != NULL)
 	  delete Particles[i]; // <- correct?
 	  }*/
+	//kill();
 	clear();
 	//Particles.clear();
 }
 
 
-//Creates CParticles øfrom a CArray on the following form:
+//Creates CParticles from a CArray on the following form:
 //[ParticleArray 1, ParticleArray 2, ParticleArray 3, ... , ParticleArray N]
 CParticles::CParticles(CArray* inArray){
 	ParticleSize = myConstants::constants.ParticleSize;
@@ -38,7 +39,7 @@ CParticles::CParticles(CArray* inArray){
 			tmpArray[j] = inArray->get(ParticleSize*i+j);
 		}
 
-		CParticle * tmpParticle = new CParticle(tmpArray); // <----- kill -Checked
+		CParticle* tmpParticle = new CParticle(tmpArray); // <----- kill -Checked
 		Particles.push_back(tmpParticle);
 	}
 	if (tmpArray != NULL) {
