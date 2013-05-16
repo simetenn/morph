@@ -31,8 +31,8 @@ CHalos::CHalos(CArray* inArray){
 
 
 CHalos::~CHalos(){
-	clear();
-	//kill();
+	//clear();
+	kill();
 	//NrInHalo.clear();
 	//AllParticles.clear();
 }
@@ -1242,8 +1242,8 @@ void CHalos::slave(){
 			delete tmpArray;
 			tmpArray = NULL;
 		}
-		//kill();
-		clear();
+		kill();
+		//clear();
 		/*CHalos SlaveHalos(&HalosArray); // Assured memory leak
 		//SlaveHalos.initialize(&HalosArray);
 		SlaveHalos.SplitHalos();
