@@ -26,7 +26,7 @@ void CMain::testCArray(){
 void CMain::master() {
 	CHalos m;
 	CHalos* n;
-
+	
 	m.loadClaudio(myConstants::constants.inFile);
 	//m.loadHalos("splitHalosRamses.bin");
 	//m.loadGadget("halo_plum");
@@ -38,7 +38,7 @@ void CMain::master() {
 	//exit(0);
 	
 	n = m.master();
-	cout << n->outsideVir()<<endl;
+	/*cout << n->outsideVir()<<endl;
 	cout << n->getNrParticles() << endl;
 	
 	//n.saveHalos("splitHalos.dat");
@@ -53,7 +53,7 @@ void CMain::master() {
 	n->getHalo(56)->savePhi("Phi5.dat");
 	n->getHalo(5)->savePhi("Phi6.dat");
 	n->getHalo(9)->savePhi("Phi7.dat");
-	//n->printHalos();
+	//n->printHalos();*/
 	n->saveSize(myConstants::constants.outSize);
 	delete n;
 }
