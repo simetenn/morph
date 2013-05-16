@@ -38,7 +38,7 @@ void CMain::master() {
 	//exit(0);
 	
 	n = m.master();
-	m.clear();
+	//m.clear();
 	/*cout << n->outsideVir()<<endl;
 	cout << n->getNrParticles() << endl;
 	
@@ -56,7 +56,7 @@ void CMain::master() {
 	n->getHalo(9)->savePhi("Phi7.dat");
 	//n->printHalos();*/
 	n->saveSize(myConstants::constants.outSize);
-	n->clear();
+	//n->clear();
 	delete n;
 }
 
