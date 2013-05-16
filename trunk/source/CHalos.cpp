@@ -32,7 +32,7 @@ CHalos::CHalos(CArray* inArray){
 
 CHalos::~CHalos(){
 	//clear();
-	kill();
+	//kill();
 	//NrInHalo.clear();
 	//AllParticles.clear();
 }
@@ -99,7 +99,7 @@ void CHalos::clear(){
 //Remove all data from CHalos, also deletes all loaded particles from memory
 void CHalos::kill(){
 	for (int i = 0; i < NrHalos; i++) {
-		Halos[i]->kill();
+		//Halos[i]->kill();
 		if (Halos[i] != NULL) {
 			delete Halos[i];
 			Halos[i] = NULL;
