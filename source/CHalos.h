@@ -37,9 +37,15 @@ class CHalos{
 	CHalos(CArray* inArray);
 	~CHalos();
 
-
+	
+	//Initializes all values in CHalos from an in array on the form:
+	//nr of halos, nr of particles in halo 1, nr of particles in halo 2, ... ,
+	//nr of particles of in halo N, halo array 1, halo array 2, ... halo array N]
+	//When this is used kill() needs to be called explecitly
 	void initialize(CArray* inArray);
+	//Remove all data from CHalos, withouth removing the loaded particles from memory
 	void clear();
+	//Remove all data from CHalos, also deletes all loaded particles from memory
 	void kill();
 	
 	//Sort halos by NrParticles
@@ -98,7 +104,7 @@ class CHalos{
 	void loadData(string Filename);
 	//Load a txt with full halo information
 	void loadHalos(string Filename);
-
+	//Load a Gadget 2 formated binary file.
 	void loadGadget(string Filename);
 
 	
@@ -139,9 +145,12 @@ class CHalos{
 
 
 	//Runs the splitting routine for all halos to split each into several subhalos
-	void SplitHalos();
+	void SplitHalos(int& count);
+	//A splitting routine that split the halos into fake halos with equal size and several subhalos each
 	void SplitMockHalos();
-	
+
+	int outsideVir();
+		
 	
 	//A routine to be run in the master process to do calulations on each halo in parallel.
 	//It sends the data from each halo to all available processors,

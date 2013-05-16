@@ -84,6 +84,8 @@ CHalo::~CHalo(){
 	//kill();
 }
 
+
+//Kill all halos and subhalos and delete the particles from memory
 void CHalo::kill(){
 	for (list<CHalo*>::iterator it = SubHalos.begin(); it != SubHalos.end(); it++) {
 		(*it)->kill();
@@ -93,7 +95,11 @@ void CHalo::kill(){
 }
 
 
+//Set the values of a CHalo object from an array on the form:
+//[NrParticles, Mass, Mean position, Mean velocity, standard deviation of position,
+//standard deviation of velocity, ParticleArray 1, ParticleArray 2, ... , ParticleArray N]
 void CHalo::set(CArray* inArray){
+	clear();
 	ParticleSize = myConstants::constants.ParticleSize;
 
 	//read NrParticles, Mass, Mean position, Mean velocity, standard deviation of position,
@@ -112,7 +118,7 @@ void CHalo::set(CArray* inArray){
 	}
 
 	Halo = CParticles(tmpArray);
-	//delete [] tmpArray;
+
 	if (tmpArray != NULL ){
 		delete tmpArray;
 		tmpArray = NULL;
@@ -293,7 +299,7 @@ void CHalo::SubHalos2ArrayRec(CArray* inArray, CArray* sizeArray){
 	CArray* tmpArray = Halo2Array();
 	inArray->add(tmpArray);
 	//return;
-	
+
 	if (tmpArray != NULL) {
 		delete tmpArray;
 		tmpArray = NULL;
@@ -313,7 +319,7 @@ void CHalo::SubHalos2ArrayRec(CArray* inArray, CArray* sizeArray){
 
 
 
-//Convert all Subahlos to an CArray. On the form:
+//Convert all Subahlos to an CArray that keeps subhalo information. On the form:
 //[ID, NrParticles, Mass, Mean position, Mean velocity, standard deviation of position,
 //standard deviation of velocity, ParticleArray 1, ParticleArray 2, ... , ParticleArray N]
 CArray* CHalo::SubHalosStructure2Array(){
@@ -321,19 +327,17 @@ CArray* CHalo::SubHalosStructure2Array(){
 	CArray* sizeArray = new CArray (); // <--- kill
 
 	int ID = -1;
-	//Array->front(ID);
 	//adds all data from all subhalos
 	SubHalosStructure2ArrayRec(&Array, sizeArray, ID);
 	//Add nr of Halos to the front of SizeArray
 	sizeArray->front(sizeArray->len());
-
 	//Add the Array to sizeArray
 	sizeArray->add(&Array);
 
 	return sizeArray;
 }
 
-//Adds the subhalo converted to a CArray to the inArray and NrParticles to sizeAray
+//Adds the ID and the subhalo converted to a CArray to the inArray and NrParticles to sizeAray
 //Then recursivly runs for all subhalos
 void CHalo::SubHalosStructure2ArrayRec(CArray* inArray, CArray* sizeArray,int& ID){
 	ID++;
@@ -346,7 +350,7 @@ void CHalo::SubHalosStructure2ArrayRec(CArray* inArray, CArray* sizeArray,int& I
 	}
 	sizeArray->push_back(NrParticles);
 
-	//Recursivly runs through all
+	//Recursivly runs through all subhalos
 	for (list<CHalo*>::iterator it = SubHalos.begin(); it != SubHalos.end(); it++) {
 		(*it)->SubHalosStructure2ArrayRec(inArray, sizeArray, ID);
 		ID--;
@@ -368,17 +372,17 @@ void CHalo::saveStructure(string Filename){
 	for (int i = 0;i < tmpArray->len(); i++){
 		file << tmpArray->get(i) << endl;
 	}
+
 	file.close();
-	//Memory leak
+
 	if (tmpArray != NULL) {
 		delete tmpArray;
 		tmpArray = NULL;
 	}
-	//tmpArray->del();
 }
 
 
-
+//Load halos from a text file
 void CHalo::loadStructure(string Filename){
 	ifstream file((myConstants::constants.data + Filename).c_str());
 	string line;
@@ -391,29 +395,23 @@ void CHalo::loadStructure(string Filename){
 	int i = 0;
 	if (file.is_open()){
 		while (true){
-
-			//cout << i << endl;
 			getline(file,line);
 			trim(line);
-			//split(strData, line, is_any_of(" "));
-			//cout << i << endl;
-			//cout << atof(line.c_str()) << endl;
 			if (file.eof()) break;
 			inArray[i] = atof(line.c_str());
 			i++;
 		}
 		file.close();
 	}
-	cout << "before" << endl;
 	fromStructureArray(&inArray);
-	cout << "after" << endl;
-	//cout << inArray[-1] << endl;
-	//inArray.del();
-
 }
 
 
-//If this is used I need to manally kill the halos stored in it.
+//Create Halos and subhalos from an array on the form:
+//[ID, NrParticles, Mass, Mean position, Mean velocity, standard deviation of position,
+//standard deviation of velocity, ParticleArray 1, ParticleArray 2, ... , ParticleArray N]
+//This recreates the halo structire from SubHalosStructure2Array()
+//If this is used I need to manually kill the halos stored in it.
 void CHalo::fromStructureArray(CArray* inArray){
 	clear();
 	int NrHalos = inArray->get(0);
@@ -451,19 +449,14 @@ void CHalo::fromStructureArray(CArray* inArray){
 		delete [] tmpArray;
 		tmpArray = NULL;
 	}
-	//delete tmpCArray;
+
 	while (ID < nextID){
 		fromStructureArrayRec(this, inArray, nrHalo, particle_count,nextID);
-		//cout << nextID << endl;
 	}
-
-
-
 }
 
 
-
-
+//Recursivly creates subhalos from the array
 void CHalo::fromStructureArrayRec(CHalo* prevHalo, CArray* inArray, int& nrHalo,int& particle_count,int& nextID){
 	nrHalo++;
 
@@ -475,7 +468,6 @@ void CHalo::fromStructureArrayRec(CHalo* prevHalo, CArray* inArray, int& nrHalo,
 
 	if (nrHalo >= inArray->get(0)-1) {
 		nextID = -1;
-		//return;
 	}
 	else {
 		nextID = inArray->get(particle_count + tmpNrParticles*ParticleSize + myConstants::constants.HaloSize);
@@ -503,8 +495,6 @@ void CHalo::fromStructureArrayRec(CHalo* prevHalo, CArray* inArray, int& nrHalo,
 	while (ID < nextID){
 		fromStructureArrayRec(this, inArray, nrHalo, particle_count, nextID);
 	}
-
-
 }
 
 
@@ -590,12 +580,72 @@ void CHalo::calculateVir(){
 	//cout << NrParticles << endl;
 	for (int i = 0; i < NrParticles; i++) {
 		if(r[i] > Rvir) {
-			//cout << i << endl;
 			break;
 		}
 		Mvir += Halo[i]->getMass();
 	}
 }
+
+void CHalo::calculateVirBeta(){
+	int maxR = r[NrParticles-1];
+
+	
+
+	
+}
+
+double CHalo::Beta(double R){
+	return (2*Tr(R) - Es(R))/Wr(R) + 1;
+
+}
+
+double CHalo::Volume(double R){
+	return 16*atan(1)/3.*0.488*pow(R,3);
+}
+
+
+double CHalo::Ps(double R){
+	int tmpPs = 0;
+	for (int i = 0; i < NrParticles; i++) {
+		if(r[i] > R) break;
+		tmpPs += Halo[i]->getMass()*pow(Halo[i]->getV().Length(),2);
+	}
+	return tmpPs/3/Volume(R);
+}
+
+double CHalo::Es(double R){
+	return 16*atan(1)*0.729*pow(R,3)*Ps(R);
+}
+
+double CHalo::Tr(double R){
+	int tmpTr = 0;
+	for (int i = 0; i < NrParticles; i++) {
+		if(r[i] > R) break;
+		tmpTr += getMass()*pow(Halo[i]->getV().Length(),2);
+	}
+	return tmpTr/2;
+}
+
+double CHalo::Wr(double R){
+	int tmpWr = 0;
+	for (int i = 0; i < NrParticles; i++) {
+		if(r[i] > R) break;
+		tmpWr += getMass()*Phi[i];
+	}
+	return tmpWr;
+}
+
+
+
+int CHalo::ParticlesOutsideVir(){
+	int i;
+	for (i = 0; i < NrParticles; i++) {
+		if(r[i] > Rvir) break;
+	}
+	//cout << "NrParticles " << NrParticles << " Particles inside Rvir " << i <<endl;
+	return NrParticles-i-1;
+}
+
 
 //Scale the positions by a number
 //mainly used in FOFGrid to scale the halos read in to be between [0,1]
@@ -1206,7 +1256,7 @@ void CHalo::mergeStatisticalRec(CHalo* prevHalo, int &flag){
 
 
 
-
+//Sorts the particles in the halo after distance from the center of the halo,
 void CHalo::SortParticlesDistance(){
 	vector<ParticleAndDistance*> data;
 
@@ -1221,7 +1271,6 @@ void CHalo::SortParticlesDistance(){
 
 	Halo.clear();
 
-	//free up memory
 	for (int i = 0; i < NrParticles; i++) {
 		Halo.addParticle(data[i]->Particle);
 		r.push_back(data[i]->r);
@@ -1230,16 +1279,15 @@ void CHalo::SortParticlesDistance(){
 			data[i] = NULL;
 		}
 	}
-	//delete ParticleAndDistance;
 }
 
 
 
-
+//Calculate the gravitational potential using a spherical approximation
 void CHalo::CalculatePhiSpherical(){
 	SortParticlesDistance();
 
-	//Move this to the correct place to calulate virialisation stuf. Probably statistics somewhere
+	//Move this to the correct place to calulate virialisation stuff. Probably statistics somewhere
 	calculateVir();
 	double M = 0;
 	double Phi0 = Mvir/Rvir;
@@ -1270,6 +1318,19 @@ void CHalo::CalculatePhiSpherical(){
 
 
 
+//Unbind particles for the halo and all subhalos
+void CHalo::UnbindAll(int& count){
+	Unbind(count);
+	//cout << "Percentage off particles unbound: " << (count)/(double)NrParticles*100 << endl;
+	//savePhi(myConstants::constants.outPhi);
+	//save(myConstants::constants.outBounding, (count-1)/(double)NrParticles);
+	for (list<CHalo*>::iterator it = SubHalos.begin(); it != SubHalos.end(); it++) {
+		(*it)->UnbindAll(count);
+	}
+}
+
+
+
 
 //Method for unbinding particles from a single halo
 void CHalo::Unbind(int& count){
@@ -1281,6 +1342,7 @@ void CHalo::Unbind(int& count){
 			RemoveIndex.push_back(i);
 		}
 	}
+
 	count += RemoveIndex.size();
 
 	//Be carefull, this is gona fuck me up royaly(with the RemoveIndex[i]-i)
@@ -1292,51 +1354,35 @@ void CHalo::Unbind(int& count){
 }
 
 
-void CHalo::UnbindAll(){
-	int count =0;
-	Unbind(count);
-	//cout << "Percentage off particles unbound: " << (count)/(double)NrParticles*100 << endl;
-	//savePhi(myConstants::constants.outPhi);
-	//save(myConstants::constants.outBounding, (count-1)/(double)NrParticles);
-	for (list<CHalo*>::iterator it = SubHalos.begin(); it != SubHalos.end(); it++) {
-		(*it)->UnbindAll();
-	}
-}
-
 
 
 //Do the splitting of halos, assigning particles to all halos, and merge statisticaly equal halos
-void CHalo::createSubHalos(){
-	//cout << "In createSubHalos in CHalo" << endl;
+void CHalo::createSubHalos(int& count){
 	CParticles allParticles;
 	allParticles.copy(Halo);
-	//cout << "In createSubHalos in CHalo, before splithalo" << endl;
 	SplitHalo();
-	//cout << "In createSubHalos in CHalo, before assigning particles" << endl;
 	assignParticles(&allParticles);
 	//saveStructure("structureBig.dat");
-	//exit(0);
-	//cout << "In createSubHalos in CHalo, before merging statistical" << endl;
 	mergeStatistical();
-	//printSubHalos();
-	//del(myConstants::constants.outBoundng);
-	//UnbindAll();
-	//cout << "In createSubHalos in CHalo, before removing halos" << endl;
+	UnbindAll(count);
 	removeEmptySubHalos();
-	//cout << "In createSubHalos in CHalo, finished" << endl;
 	//Unbind();
 }
 
+
+//A splitting routine that split the halos into fake halos with equal size.
+//Each (sub)halo has #NrSubHalos subhalos each and there are #MaxDepth levels of subhalos
+//This is used for debugging purposes
 void CHalo::createMockSubHalos(){
 	int NrSubHalos = 6;
 	int NrParticlesSubHalo = 100;
 	int MaxDepth = 6;
 
-	
+
 	int depth = 0;
 	CHalo tmpHalo;
-	
-	
+
+
 	for (int i = 0; i < NrSubHalos; i++) {
 		for (int j = 0; j < NrParticlesSubHalo; j++) {
 			if (NrParticles <= 1) break;
@@ -1346,26 +1392,26 @@ void CHalo::createMockSubHalos(){
 		}
 		if (tmpHalo.getNrParticles() > 0) SubHalos.push_back(new CHalo(&tmpHalo));
 		tmpHalo.clear();
-		
+
 	}
-	
-	
+
+
 	for (list<CHalo*>::iterator it = SubHalos.begin(); it != SubHalos.end(); it++) {
 		(*it)->createMockSubHalosRec(NrSubHalos,NrParticlesSubHalo, MaxDepth, depth, Halo);
 		depth--;
 	}
-	
+
 	NrParticles = Halo.getNrParticles();
 	CalculateAllStatistics();
-
-	//printSubHalos();
 }
 
+
+//A recursive routine that creates the mock subhalos
 void CHalo::createMockSubHalosRec(int NrSubHalos, int NrParticlesSubHalo, int MaxDepth, int &depth, CParticles& inHalo){
 	depth++;
 	if (depth >= MaxDepth) return;
 	CHalo tmpHalo;
-	
+
 	for (int i = 0; i < NrSubHalos; i++) {
 		for (int j = 0; j < NrParticlesSubHalo; j++) {
 			if (inHalo.getNrParticles() <= 1) break;
@@ -1374,13 +1420,11 @@ void CHalo::createMockSubHalosRec(int NrSubHalos, int NrParticlesSubHalo, int Ma
 		}
 		if (tmpHalo.getNrParticles() >0) SubHalos.push_back(new CHalo(&tmpHalo));
 		tmpHalo.clear();
-		
+
 	}
-	
+
 	for (list<CHalo*>::iterator it = SubHalos.begin(); it != SubHalos.end(); it++) {
 		(*it)->createMockSubHalosRec(NrSubHalos,NrParticlesSubHalo, MaxDepth, depth, inHalo);
 		depth--;
 	}
-	
-	
 }

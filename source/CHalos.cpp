@@ -431,7 +431,7 @@ void CHalos::loadGadget(string Filename) {
 	file.read((char *)&dummy, sizeof(dummy));
 	file.read((char *)&header, sizeof(gadget_header));
 	file.read((char *)&dummy, sizeof(dummy));
-	
+
 	int NrParticles = 0;
 	for (int i=0;i<6;i++) {
 		NrParticles+=header.npartTotal[i];
@@ -473,29 +473,29 @@ void CHalos::loadGadget(string Filename) {
 			pos++;
 		}
 	}
-	
+
 	/*file.read((char *)&dummy, sizeof(dummy));
-	pos = 0;
-	for(int k=0;k<6;k++) {
-		for(int n=0;n<header.npart[k];n++) {
-			file.read((char *)&dummy, sizeof(int));
-			//objects[pos].V = CVector(P[0],P[1],P[2])/(Cosmology->UniverseSize*1000);// - CVector(0.5,0.5,0.5);
-		}
-	}
-	file.read((char *)&dummy, sizeof(dummy));
-	float mass;
-	for(int k=0;k<6;k++) {
-		for(int n=0;n<header.npart[k];n++) {
-			file.read((char *)&mass, sizeof(float));
-			//objects[pos].V = CVector(P[0],P[1],P[2])/(Cosmology->UniverseSize*1000);// - CVector(0.5,0.5,0.5);
-			tmpHalo[0][pos]->setMass(mass*1e10);
-			//cout << mass << endl;
-			pos++;
-		}
-		}*/
+	  pos = 0;
+	  for(int k=0;k<6;k++) {
+	  for(int n=0;n<header.npart[k];n++) {
+	  file.read((char *)&dummy, sizeof(int));
+	  //objects[pos].V = CVector(P[0],P[1],P[2])/(Cosmology->UniverseSize*1000);// - CVector(0.5,0.5,0.5);
+	  }
+	  }
+	  file.read((char *)&dummy, sizeof(dummy));
+	  float mass;
+	  for(int k=0;k<6;k++) {
+	  for(int n=0;n<header.npart[k];n++) {
+	  file.read((char *)&mass, sizeof(float));
+	  //objects[pos].V = CVector(P[0],P[1],P[2])/(Cosmology->UniverseSize*1000);// - CVector(0.5,0.5,0.5);
+	  tmpHalo[0][pos]->setMass(mass*1e10);
+	  //cout << mass << endl;
+	  pos++;
+	  }
+	  }*/
 
 
-	
+
 	file.close();
 
 	scalePositions(1./1000.);
@@ -1083,11 +1083,13 @@ void CHalos::findNeighborsGrid(CParticle* inParticle, CHalo* inHalo){
 
 
 //Runs the splitting routine for all halos to split each into several subhalos
-void CHalos::SplitHalos(){
+void CHalos::SplitHalos(int& count){
 	for (int i = 0; i < NrHalos; i++) {
-		Halos[i]->createSubHalos();
+		Halos[i]->createSubHalos(count);
 	}
+
 }
+
 
 //A splitting routine that split the halos into fake halos with equal size and several subhalos each
 void CHalos::SplitMockHalos(){
@@ -1097,7 +1099,15 @@ void CHalos::SplitMockHalos(){
 }
 
 
-
+int CHalos::outsideVir(){
+	int count = 0;
+	for (int i = 0; i < NrHalos; i++) {
+		Halos[i]->SortParticlesDistance();
+		Halos[i]->calculateVir();
+		count += Halos[i]->ParticlesOutsideVir();
+	}
+	return count;
+}
 
 
 //A routine to be run in the master process to do calulations on each halo in parallel.
@@ -1184,6 +1194,19 @@ CHalos* CHalos::master(){
 	}
 
 
+	//int* tmpIntArray = new int [size];
+	long tmpIntArray[size];
+	count = 0;
+	int send [1] = {count};
+	MPI_Gather(&count, 1, MPI_LONG, tmpIntArray, size, MPI_LONG, 0, MPI_COMM_WORLD);
+
+	int sum = 0;
+	for (int i = 0; i < size; i++) {
+		sum += tmpIntArray[i];
+		//cout << tmpIntArray[i] << endl;
+	}
+
+	//cout << "Total number of unbound particles: " << sum << endl;
 	FinalHalos->removeEmptyHalos();
 	return FinalHalos;
 }
@@ -1200,7 +1223,8 @@ void CHalos::slave(){
 	CMPI MPI;
 	CParticle tmpParticle;
 	//CHalos SlaveHalos;
-
+	int count = 0;
+	int size = MPI.getSize();
 
 
 	while (true) {
@@ -1209,7 +1233,7 @@ void CHalos::slave(){
 		int tmpLength = HalosArray.len();
 		initialize(&HalosArray);
 
-		SplitHalos();
+		SplitHalos(count);
 		//SplitMockHalos();
 		tmpArray = Halos[0]->SubHalos2Array();
 		tmpArray->send_slave_modified(tmpLength);
@@ -1227,6 +1251,11 @@ void CHalos::slave(){
 		SlaveHalos.getHalo(0)->SubHalos2Array()->send_slave_modified(tmpLength);
 		//SlaveHalos.clear();*/
 	}
+
+	long tmpIntArray[size];
+	//int send [1] = {count};
+	MPI_Gather(&count, 1, MPI_LONG, tmpIntArray, size, MPI_LONG, 0, MPI_COMM_WORLD);
+	cout << count << endl;
 }
 
 

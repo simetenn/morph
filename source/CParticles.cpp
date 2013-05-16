@@ -11,9 +11,9 @@ CParticles::CParticles(){
 
 CParticles::~CParticles(){
 	/*for (int i = 0; i < NrParticles;i++){
-		if ( Particles[i] != NULL)
-			delete Particles[i]; // <- correct?
-			}*/
+	  if ( Particles[i] != NULL)
+	  delete Particles[i]; // <- correct?
+	  }*/
 	clear();
 	//Particles.clear();
 }
@@ -37,7 +37,7 @@ CParticles::CParticles(CArray* inArray){
 		for (int j = 0; j < ParticleSize;j++){
 			tmpArray[j] = inArray->get(ParticleSize*i+j);
 		}
-		
+
 		CParticle * tmpParticle = new CParticle(tmpArray); // <----- kill -Checked
 		Particles.push_back(tmpParticle);
 	}
@@ -68,13 +68,13 @@ void CParticles::set(CArray* inArray){
 			tmpArray[j] = inArray->get(ParticleSize*i+j);
 		}
 
-		CParticle * tmpParticle = new CParticle(tmpArray);  // <----- kill
+		CParticle * tmpParticle = new CParticle(tmpArray);	// <----- kill
 		Particles.push_back(tmpParticle);
 	}
-	
+
 	if (tmpArray != NULL) {
 		delete [] tmpArray;
-	tmpArray = NULL;
+		tmpArray = NULL;
 	}
 }
 
@@ -205,7 +205,7 @@ void CParticles::copy(CParticles& p) {
 	ParticleSize = myConstants::constants.ParticleSize;
 }
 
-//Clear and remove all information from CParticles
+//Clear and remove all information from CParticles, it does not delete particles from the memory
 void CParticles::clear(){
 	Particles.clear();
 	NrParticles = 0;
@@ -213,6 +213,9 @@ void CParticles::clear(){
 	ParticleSize = myConstants::constants.ParticleSize;
 }
 
+
+
+//Delete all information from CParticles, also deletes particles from the memory
 void CParticles::kill(){
 	for (int i = 0; i < NrParticles; i++) {
 		if (Particles[i] != NULL) {
