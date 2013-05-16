@@ -296,7 +296,11 @@ void CArray::front(double in_value){
 
 	double* tmp = new double [dataLength];
 
-	memcpy(&tmp[1],array,sizeof(double)*(length));
+	for (int i = length; i > 0; i--) {
+		tmp[i] = array[i-1];
+	}
+	
+	//	memcpy(&tmp[1],array,sizeof(double)*(length));
 	tmp[0] = in_value;
 
 	if (array != NULL) {
