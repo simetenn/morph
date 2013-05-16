@@ -193,9 +193,9 @@ void CHalo::clear(){
 	SigmaV.Set(0,0,0);
 	ParticleSize = myConstants::constants.ParticleSize;
 
-	/*for (list<CHalo*>::iterator it = SubHalos.begin(); it != SubHalos.end(); it++) {
-	  (*it)->clear();
-	  }*/
+	for (list<CHalo*>::iterator it = SubHalos.begin(); it != SubHalos.end(); it++) {
+		(*it)->clear();
+	}
 
 	SubHalos.clear();
 }
@@ -588,7 +588,7 @@ void CHalo::calculateVir(){
 
 void CHalo::calculateVirBeta(){
 	int maxR = r[NrParticles-1];
-
+	
 	
 
 	
@@ -596,7 +596,6 @@ void CHalo::calculateVirBeta(){
 
 double CHalo::Beta(double R){
 	return (2*Tr(R) - Es(R))/Wr(R) + 1;
-
 }
 
 double CHalo::Volume(double R){
