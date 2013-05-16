@@ -34,6 +34,7 @@ class CParticle{
 
 	~CParticle();
 
+	//Attatch a particle to the particle list
 	void attachParticle(CParticle* p){
 		//CParticle* oldNext = nextGrid;
 		p->nextGrid = nextGrid;
@@ -112,11 +113,11 @@ class CParticle{
 
 
 	//put this private, and get the code to work in some way.
-	CVector P,V;//,A;
+	
 
  protected:
 	//static int ID_Generator;
-	
+	CVector P,V;//,A;
 	int HaloID,ParticleSize,flag;
 	double Mass;
 

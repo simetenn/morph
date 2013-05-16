@@ -3,7 +3,6 @@
 #include "CParticles.h"
 
 
-
 class CHalo{
 
  public:
@@ -18,10 +17,13 @@ class CHalo{
 	CHalo(CHalo* inHalo);
 	~CHalo();
 
+	//Kill all halos and subhalos and delete the particles from memory
 	void kill();
-
+	//Set the values of a CHalo object from an array on the form:
+	//[NrParticles, Mass, Mean position, Mean velocity, standard deviation of position,
+	//standard deviation of velocity, ParticleArray 1, ParticleArray 2, ... , ParticleArray N]
 	void set(CArray* inArray);
-	
+
 	//Print all particles in halo
 	void print();
 
@@ -37,7 +39,7 @@ class CHalo{
 
 	//Clear and remove all information from a CHalos object
 	void clear();
-	
+
 	//Clear and remove particle information, but keeping halo information, like position and velocity
 	void clean();
 
@@ -48,14 +50,13 @@ class CHalo{
 	//Copy a CHalos object
 	void copy(CHalo* inHalo);
 
-
 	//Convert from one halo to an CArray. On the form:
 	//[NrParticles, Mass, Mean position, Mean velocity, standard deviation of position,
 	//standard deviation of velocity, ParticleArray 1, ParticleArray 2, ... , ParticleArray N]
 	CArray* Halo2Array();
 	//Convert all Subahalos to an CArray. On the form:
 	//[NrParticles, Mass, Mean position, Mean velocity, standard deviation of position,
-	//standard deviation of velocity, ParticleArray 1, ParticleArray 2, ... , ParticleArray N]
+	//standard deviation of velocity, ParticleArray 1, ParticleArray 2, ... , PartileArray N]
 	CArray* SubHalos2Array();
 	//Adds the subhalo converted to a CArray to the inArray and NrParticles to sizeAray
 	//Then recursivly runs for all subhalos
@@ -65,18 +66,24 @@ class CHalo{
 	//[ID, NrParticles, Mass, Mean position, Mean velocity, standard deviation of position,
 	//standard deviation of velocity, ParticleArray 1, ParticleArray 2, ... , ParticleArray N]
 	CArray* SubHalosStructure2Array();
-	//Adds the subhalo converted to a CArray to the inArray and NrParticles to sizeAray
+	//Adds the ID and the subhalo converted to a CArray to the inArray and NrParticles to sizeAray
 	//Then recursivly runs for all subhalos
 	void SubHalosStructure2ArrayRec(CArray* inArray, CArray* sizeArray, int& ID);
 
+	//Save halos into a text file, as a array
 	void saveStructure(string Filename);
-	
+	//Load halos from a text file
 	void loadStructure(string Filename);
-	
-	void fromStructureArray(CArray* inArray);
 
+	//Create Halos and subhalos from an array on the form:
+	//[ID, NrParticles, Mass, Mean position, Mean velocity, standard deviation of position,
+	//standard deviation of velocity, ParticleArray 1, ParticleArray 2, ... , ParticleArray N]
+	//This recreates the halo structire from SubHalosStructure2Array()
+	//If this is used I need to manually kill the halos stored in it.
+	void fromStructureArray(CArray* inArray);
+	//Recursivly creates subhalos from the array
 	void fromStructureArrayRec(CHalo* prevHalo, CArray* inArray, int& nrHalo,int& particle_count,int& nextID);
-	
+
 	//Return the total mass of the halo
 	double getMass();
 	//Get the position of the center of the halo
@@ -108,7 +115,16 @@ class CHalo{
 
 	//Calculate the Virializati0n mass and radius
 	void calculateVir();
+	void calculateVirBeta();
+	double Beta(double R);
+	double Volume(double R);
+	double Ps(double R);
+	double Es(double R);
+	double Tr(double R);
+	double Wr(double R);
 
+	int ParticlesOutsideVir();
+	
 	//Scale the positions by a number
 	//mainly used in FOFGrid to scale the halos read in to be between [0,1]
 	void scalePositions(double scale);
@@ -208,6 +224,7 @@ class CHalo{
 	//Find the halo a particle is closest too and add the particle to that halo
 	void findHalo(CParticle* inParticle,CHalo* inHalo);
 
+	//Remove Subhalos that has fewer than HaloLimit particles
 	void removeEmptySubHalos();
 	//Remove halos that has fewer than HaloLimit particles
 	void removeEmptyHalos(CHalo* prevHalo);
@@ -219,16 +236,24 @@ class CHalo{
 	void mergeStatisticalRec(CHalo* mergeHalo, int &flag);
 
 
-
+	//Sorts the particles in the halo after distance from the center of the halo,
 	void SortParticlesDistance();
+	//Calculate the gravitational potential using a spherical approximation
 	void CalculatePhiSpherical();
-	//Method for unbinding particles from a halo
+
+	//Unbind particles for the halo and all subhalos
+	void UnbindAll(int& count);
+	//Method for unbinding particles from a single halo
 	void Unbind(int& count);
-	void UnbindAll();
 
 	//Do the splitting of halos, assigning particles to all halos, and merge statisticaly equal halos
-	void createSubHalos();
+	void createSubHalos(int& count);
+
+	//A splitting routine that split the halos into fake halos with equal size.
+	//Each (sub)halo has #NrSubHalos subhalos each and there are #MaxDepth levels of subhalos
+	//This is used for debugging purposes
 	void createMockSubHalos();
+	//A recursive routine that creates the mock subhalos
 	void createMockSubHalosRec(int NrSubHalos, int NrParticlesSubHalo, int MaxDepth, int &depth, CParticles& inHalo);
 
  protected:

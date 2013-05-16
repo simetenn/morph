@@ -63,9 +63,10 @@ class CParticles{
 	
 	//Copy a CParticles to a new CParticles object
 	void copy(CParticles& p); 
-	//Clear and remove all information from CParticles
+	//Clear and remove all information from CParticles, it does not delete particles from the memory
 	void clear();
 
+	//Delete all information from CParticles, also deletes particles from the memory
 	void kill();
 	
  protected:
