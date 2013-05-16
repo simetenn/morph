@@ -1252,6 +1252,7 @@ void CHalos::slave(){
 		//SlaveHalos.clear();*/
 	}
 
+	kill();
 	long tmpIntArray[size];
 	//int send [1] = {count};
 	MPI_Gather(&count, 1, MPI_LONG, tmpIntArray, size, MPI_LONG, 0, MPI_COMM_WORLD);
