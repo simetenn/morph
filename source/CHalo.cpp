@@ -67,6 +67,7 @@ CHalo::CHalo(CArray* inArray){
 	}
 }
 
+
 //Create a new CHalo from a CHalo
 CHalo::CHalo(CHalo* inHalo){
 	copy(inHalo);
@@ -91,8 +92,18 @@ void CHalo::kill(){
 		delete (*it);
 		(*it) = NULL;
 	}
+
+	NrParticles = 0;
+	Mass = 0;
+	MeanP.Set(0,0,0);
+	MeanV.Set(0,0,0);
+	SigmaP.Set(0,0,0);
+	SigmaV.Set(0,0,0);
+	ParticleSize = myConstants::constants.ParticleSize;
+
+	SubHalos.clear();
 	//delete Halo;
-	clear();
+	//clear();
 }
 
 
