@@ -47,6 +47,8 @@ class CArray : public CMPI {
 	double get(int element);
 	double& operator[](int element);
 
+	
+	
 	//Add a number to each element of a CArray
 	CArray operator+(double number);
 	//Add two CArrays
@@ -75,6 +77,8 @@ class CArray : public CMPI {
 	//Return the pointer to the array in CArray
 	double* CArray2array();
 
+	void save(string Filename);
+	
  protected:
 	int length, dataLength;
 	double* array;

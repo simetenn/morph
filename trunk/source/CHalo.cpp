@@ -74,24 +74,37 @@ CHalo::CHalo(CHalo* inHalo){
 
 
 CHalo::~CHalo(){
-	for (list<CHalo*>::iterator it = SubHalos.begin(); it != SubHalos.end(); it++) {
-		if ((*it) != NULL ) {
-			delete (*it);
-			(*it) = NULL;
-		}
-	}
-	clear();
-	//kill();
+	/*for (list<CHalo*>::iterator it = SubHalos.begin(); it != SubHalos.end(); it++) {
+	  if ((*it) != NULL ) {
+	  delete (*it);
+	  (*it) = NULL;
+	  }
+	  }*/
+	//clear();
+	kill();
 }
 
 
 //Kill all halos and subhalos and delete the particles from memory
 void CHalo::kill(){
 	for (list<CHalo*>::iterator it = SubHalos.begin(); it != SubHalos.end(); it++) {
-		(*it)->kill();
+		if ((*it) != NULL ) {
+			delete (*it);
+			(*it) = NULL;
+		}
 	}
+
+	Halo.clear();
+	NrParticles = 0;
+	Mass = 0;
+	MeanP.Set(0,0,0);
+	MeanV.Set(0,0,0);
+	SigmaP.Set(0,0,0);
+	SigmaV.Set(0,0,0);
+	ParticleSize = myConstants::constants.ParticleSize;
+
+	SubHalos.clear();
 	Halo.kill();
-	clear();
 }
 
 
@@ -587,11 +600,24 @@ void CHalo::calculateVir(){
 }
 
 void CHalo::calculateVirBeta(){
-	int maxR = r[NrParticles-1];
+	CalculatePhiSpherical();
+	double maxR = r[NrParticles-1];
+	int Shells;
+	if (myConstants::constants.NrShells > NrParticles) {
+		Shells = NrParticles;
+	}
+	else {
+		Shells = myConstants::constants.NrShells;
+	}
+		
 	
-	
-
-	
+	CArray BetaR(Shells);
+	double R;
+	for (int n = 1; n <= Shells; n++) {
+		R = maxR/(double)Shells*n;
+		BetaR[n] = Beta(R);
+	}
+	BetaR.save("beta.dat");
 }
 
 double CHalo::Beta(double R){
@@ -605,11 +631,17 @@ double CHalo::Volume(double R){
 
 double CHalo::Ps(double R){
 	int tmpPs = 0;
-	for (int i = 0; i < NrParticles; i++) {
-		if(r[i] > R) break;
-		tmpPs += Halo[i]->getMass()*pow(Halo[i]->getV().Length(),2);
+	int Nr;
+
+	for (Nr = 0; Nr < NrParticles; Nr++) {
+		if(r[Nr] > R) break;
 	}
-	return tmpPs/3/Volume(R);
+	
+	for (int i = (int)(Nr*0.8); i < Nr; i++) {
+		tmpPs += Halo[i]->getMass()*Halo[i]->getV().Length2();
+	}
+	//cout << tmpPs/3./Volume(R) << endl;
+	return tmpPs/3./Volume(R);
 }
 
 double CHalo::Es(double R){
@@ -620,7 +652,7 @@ double CHalo::Tr(double R){
 	int tmpTr = 0;
 	for (int i = 0; i < NrParticles; i++) {
 		if(r[i] > R) break;
-		tmpTr += getMass()*pow(Halo[i]->getV().Length(),2);
+		tmpTr += getMass()*Halo[i]->getV().Length2();
 	}
 	return tmpTr/2;
 }
