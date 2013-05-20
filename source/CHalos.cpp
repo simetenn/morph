@@ -31,8 +31,8 @@ CHalos::CHalos(CArray* inArray){
 
 
 CHalos::~CHalos(){
-	//clear();
-	kill();
+	clear();
+	//kill();
 	//NrInHalo.clear();
 	//AllParticles.clear();
 }
@@ -99,7 +99,7 @@ void CHalos::clear(){
 //Remove all data from CHalos, also deletes all loaded particles from memory
 void CHalos::kill(){
 	for (int i = 0; i < NrHalos; i++) {
-		//Halos[i]->kill();
+		Halos[i]->kill();
 		if (Halos[i] != NULL) {
 			delete Halos[i];
 			Halos[i] = NULL;
@@ -1242,8 +1242,8 @@ void CHalos::slave(){
 			delete tmpArray;
 			tmpArray = NULL;
 		}
-		//kill();
-		//clear();
+		kill();
+
 		/*CHalos SlaveHalos(&HalosArray); // Assured memory leak
 		//SlaveHalos.initialize(&HalosArray);
 		SlaveHalos.SplitHalos();
@@ -1252,6 +1252,7 @@ void CHalos::slave(){
 		//SlaveHalos.clear();*/
 	}
 
+	kill();
 	long tmpIntArray[size];
 	//int send [1] = {count};
 	MPI_Gather(&count, 1, MPI_LONG, tmpIntArray, size, MPI_LONG, 0, MPI_COMM_WORLD);
