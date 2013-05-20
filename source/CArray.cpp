@@ -368,3 +368,15 @@ void CArray::recieve_slave(){
 double* CArray::CArray2array(){
 	return array;
 }
+
+
+void CArray::save(string Filename){
+	fstream file;
+	file.open((myConstants::constants.data + Filename).c_str(), ios::out);
+
+	//Saves data to file
+	for (int i = 0; i < length;i++){
+		file << array[i] << endl;
+	}
+	file.close();
+}

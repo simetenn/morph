@@ -28,15 +28,20 @@ void CMain::master() {
 	CHalos* n;
 	
 	m.loadClaudio(myConstants::constants.inFile);
-	//m.loadHalos("splitHalosRamses.bin");
+	m.loadHalos("testHalos.dat");
 	//m.loadGadget("halo_plum");
 	//m.CalculateAllStatistics();
 	//m.printHalos();
 	//exit(1);
-	m.FriendOfFriendGrid();
+
+	//m.FriendOfFriendGrid();
+	
 	//m.saveHalos("splitHalosPlum.bin");
 	//exit(0);
-	
+	m.HaloSort();
+	//m.saveHalos("testHalos.dat");
+	m.getHalo(0)->calculateVirBeta();
+	exit(1);
 	n = m.master();
 	//m.clear();
 	/*cout << n->outsideVir()<<endl;
@@ -55,6 +60,9 @@ void CMain::master() {
 	n->getHalo(5)->savePhi("Phi6.dat");
 	n->getHalo(9)->savePhi("Phi7.dat");
 	//n->printHalos();*/
+	n->HaloSort();
+	n->saveHalos("testHalos.dat");
+	n->getHalo(10)->calculateVirBeta();
 	n->saveSize(myConstants::constants.outSize);
 	//n->clear();
 	delete n;

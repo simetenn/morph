@@ -12,7 +12,7 @@ class Constants {
 	int LinkingLenghtScale, ArrayExtraSize;
 	double b,PhaseDistance,f,LinkingLength,rhovir, HaloSeed, BoxSize;
 	double ScaleDensity, RhoC, OmegaD, Mass, G;
-	double convMass, convDistance, convVelocity;
+	double convMass, convDistance, convVelocity, NrShells;
 	string inFile, outFile,haloFile, DataFile;
 	string source, data,outSize,outPosition,outPhi, outBounding;
 	
@@ -56,6 +56,7 @@ class Constants {
 		convMass = IniFile.getdouble("convMass");
 		convDistance = IniFile.getdouble("convDistance");
 		convVelocity = IniFile.getdouble("convVelocity");
+		NrShells = IniFile.getdouble("NrShells");
 		
 		//Load strings
 		inFile = IniFile.getstring("inFile");
