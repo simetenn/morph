@@ -615,12 +615,16 @@ void CHalo::calculateVirBeta(){
 	double R;
 	for (int n = 1; n <= Shells; n++) {
 		R = maxR/(double)Shells*n;
-		BetaR[n] = Beta(R);
+		BetaR[n-1] = Beta(R);
 	}
 	BetaR.save("beta.dat");
 }
 
 double CHalo::Beta(double R){
+	cout <<Tr(R) << endl;
+	cout << Es(R)<< endl;
+	cout << Wr(R)<< endl;
+	cout << (2*Tr(R) - Es(R))/Wr(R) + 1 << endl;
 	return (2*Tr(R) - Es(R))/Wr(R) + 1;
 }
 

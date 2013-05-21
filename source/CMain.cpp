@@ -27,7 +27,7 @@ void CMain::master() {
 	CHalos m;
 	CHalos* n;
 	
-	m.loadClaudio(myConstants::constants.inFile);
+	//m.loadClaudio(myConstants::constants.inFile);
 	m.loadHalos("testHalos.dat");
 	//m.loadGadget("halo_plum");
 	//m.CalculateAllStatistics();
@@ -40,7 +40,7 @@ void CMain::master() {
 	//exit(0);
 	m.HaloSort();
 	//m.saveHalos("testHalos.dat");
-	m.getHalo(0)->calculateVirBeta();
+	m.getHalo(11)->calculateVirBeta();
 	exit(1);
 	n = m.master();
 	//m.clear();
