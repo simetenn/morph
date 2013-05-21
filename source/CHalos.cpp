@@ -390,6 +390,7 @@ void CHalos::loadBin(string Filename){
 
 		tmpParticle->setPosition(block[i].P.x,block[i].P.y,block[i].P.z);
 		tmpParticle->setVelocity(block[i].V.x,block[i].V.y,block[i].V.z);
+		tmpParticle->setAcceleration(0,0,0);
 		tmpParticle->setMass(ParticleMass);
 
 		tmpHalo->addParticle(tmpParticle);
@@ -470,6 +471,7 @@ void CHalos::loadGadget(string Filename) {
 		for(int n=0;n<header.npart[k];n++) {
 			file.read((char *)&P, sizeof(float)*3);
 			tmpHalo[0][pos]->setVelocity(P[0]/myConstants::constants.convVelocity,P[1]/myConstants::constants.convVelocity,P[2]/myConstants::constants.convVelocity);
+			tmpHalo[0][pos]->setAcceleration(0,0,0);
 			pos++;
 		}
 	}
@@ -551,6 +553,7 @@ void CHalos::loadClaudio(string Filename){
 
 		tmpParticle->setPosition(block[i].P.x,block[i].P.y,block[i].P.z);
 		tmpParticle->setVelocity(block[i].V.x,block[i].V.y,block[i].V.z);
+		tmpParticle->setAcceleration(0,0,0);
 		tmpParticle->setMass(ParticleMass);
 
 		tmpHalo->addParticle(tmpParticle);

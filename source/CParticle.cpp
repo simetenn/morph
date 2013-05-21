@@ -13,6 +13,9 @@ CParticle::CParticle(){
 	Mass = 1;
 	//Charge = 0;
 	//Generate_ID();
+	P.Set(0,0,0);
+	V.Set(0,0,0);
+	A.Set(0,0,0);
 	HaloID = -1;
 	next = prev = nextGrid = prevGrid = NULL;
 	
@@ -20,7 +23,7 @@ CParticle::CParticle(){
  
 
 //Create a particle from an array on the following form:
-//[HaloID,Mass,Charge,Px,Py,Pz,Vx,Vy,Vz,Ax,Ay,Az]
+//[HaloID,Mass,Px,Py,Pz,Vx,Vy,Vz,Ax,Ay,Az]
 CParticle::CParticle(double* inArray){
 	//Some way to test if length of the array is equal to particle size
 	//Generate_ID();
@@ -32,7 +35,7 @@ CParticle::CParticle(double* inArray){
 	//Charge = inArray[2];
 	P.Set(inArray[2],inArray[3],inArray[4]);
 	V.Set(inArray[5],inArray[6],inArray[7]);
-	//A.Set(inArray[9],inArray[10],inArray[11]);
+	A.Set(inArray[8],inArray[9],inArray[10]);
 
 	next = prev = nextGrid = prevGrid = NULL;
 }
@@ -96,9 +99,9 @@ void CParticle::setVelocity(double Vx, double Vy, double Vz){
 }
 
 
-/*void CParticle::setAcceleration(double Ax, double Ay, double Az){
+void CParticle::setAcceleration(double Ax, double Ay, double Az){
 	A.Set(Ax,Ay,Az);
-	}*/
+}
 
 void CParticle::setData(vector<double> data){
 	HaloID = data[0];
@@ -108,7 +111,7 @@ void CParticle::setData(vector<double> data){
 	for (int i = 0;i<P.getDimensions();i++){
 		P[i] = data[i+2];
 		V[i] = data[i+5];
-		//A[i] = data[i+9];
+		A[i] = data[i+8];
 	}
 }
 
@@ -148,9 +151,9 @@ CVector& CParticle::getV(){
 }
 
 
-/*CVector& CParticle::getA(){
+CVector& CParticle::getA(){
 	return A;
-	}*/
+}
 
 
 int CParticle::getParticleSize(){
@@ -184,7 +187,7 @@ double* CParticle::Particle2Array(){
 	for (int i = 0;i<P.getDimensions();i++){
 		tmpArray[i+2] = P[i];
 		tmpArray[i+5] = V[i];
-		//tmpArray[i+9] = A[i];
+		tmpArray[i+8] = A[i];
 	}
 
 	return tmpArray;
@@ -197,7 +200,7 @@ double* CParticle::Particle2Array(){
 void CParticle::Move(double dt){
 	for (int i = 0; i < P.getDimensions(); i++) {
 		P[i] += V[i]*dt;
-		//V[i] += A[i]*dt;
+		V[i] += A[i]*dt;
 	}
 }
 
@@ -230,8 +233,8 @@ void CParticle::print(){
 	P.print();
 	cout << "Velocity:	   ";
 	V.print();
-	//cout << "Acceleration: ";
-	//A.print();
+	cout << "Acceleration: ";
+	A.print();
 	cout << "------------------------------------" << endl;
 }
 

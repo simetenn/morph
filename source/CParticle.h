@@ -59,7 +59,7 @@ class CParticle{
 	//void setCharge(double in_C);
 	void setPosition(double Px, double Py, double Pz);
 	void setVelocity(double Vx, double Vy, double Vz);
-	//void setAcceleration(double Ax, double Ay, double Az);
+	void setAcceleration(double Ax, double Ay, double Az);
 
 	//Set all data, given by a vector
 	void setData(vector<double> data);
@@ -74,7 +74,7 @@ class CParticle{
 	double getMass();
 	CVector& getP();
 	CVector& getV();
-	//CVector& getA();
+	CVector& getA();
 	int getParticleSize();
 
 
@@ -117,7 +117,7 @@ class CParticle{
 
  protected:
 	//static int ID_Generator;
-	CVector P,V;//,A;
+	CVector P,V,A;
 	int HaloID,ParticleSize,flag;
 	double Mass;
 
