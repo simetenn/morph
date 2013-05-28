@@ -609,7 +609,7 @@ void CHalo::calculateVirBeta(){
 	else {
 		Shells = myConstants::constants.NrShells;
 	}
-		
+	Shells = NrParticles;
 	
 	CArray BetaR(Shells);
 	double R;
@@ -621,10 +621,10 @@ void CHalo::calculateVirBeta(){
 }
 
 double CHalo::Beta(double R){
-	cout <<Tr(R) << endl;
-	cout << Es(R)<< endl;
-	cout << Wr(R)<< endl;
-	cout << (2*Tr(R) - Es(R))/Wr(R) + 1 << endl;
+	//cout <<Tr(R) << endl;
+	//cout << Es(R)<< endl;
+	//cout << Wr(R)<< endl;
+	//cout << (2*Tr(R) - Es(R))/Wr(R) + 1 << endl;
 	return (2*Tr(R) - Es(R))/Wr(R) + 1;
 }
 
