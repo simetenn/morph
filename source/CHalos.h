@@ -115,7 +115,7 @@ class CHalos{
 	void loadHalos(string Filename);
 	//Load a Gadget 2 formated binary file.
 	void loadGadget(string Filename);
-
+	void loadMax(string Filename);
 	
 	//Scale all positions with a number
 	void scalePositions(double scale);
