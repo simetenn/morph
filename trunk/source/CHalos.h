@@ -7,7 +7,16 @@
 struct particle_save {
 	CVector_bare P, V;
 	unsigned int halo;
+	
 };
+
+struct particle_max {
+	CVector_bare P, V;
+	double ID, Phi;
+	CVector_bare An,A5;
+	double Density;
+};
+
 
 // Gadget 2.0 data file header
 struct gadget_header {
