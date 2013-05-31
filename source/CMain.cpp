@@ -38,10 +38,10 @@ void CMain::master() {
 	
 	//m.saveHalos("splitHalos.dat");
 	//exit(0);
-	m.HaloSort();
+	//m.HaloSort();
 	//m.saveHalos("testHalos.dat");
-	m.getHalo(10)->calculateVirBeta();
-	exit(1);
+	//m.getHalo(125)->calculateVirBeta();
+	//exit(1);
 	n = m.master();
 	//m.clear();
 	/*cout << n->outsideVir()<<endl;
@@ -61,8 +61,9 @@ void CMain::master() {
 	n->getHalo(9)->savePhi("Phi7.dat");
 	//n->printHalos();*/
 	//n->HaloSort();
-	//n->saveHalos("testHalos.dat");
-	//n->getHalo(10)->calculateVirBeta();
+	//n->saveHalos("splitHalos.dat");
+	//n->getHalo(10)->calculateVirBeta ();
+	cout << n->getNrParticles() << endl;
 	n->saveSize(myConstants::constants.outSize);
 	//n->clear();
 	delete n;

@@ -572,6 +572,69 @@ void CHalos::loadClaudio(string Filename){
 }
 
 
+//Load a binary file from a N-body simulation into memory. Claudio's format, converted from ramses file
+void CHalos::loadMax(string Filename){
+	ifstream file((myConstants::constants.data + Filename).c_str(), ios::in | ios::binary | ios::ate);
+
+	cout << "---------------------------------" << endl;
+	cout << "Reading file " << Filename << endl;
+
+	unsigned int count = -1;
+
+	ifstream::pos_type size;
+	//Reading binary file into memory
+	size = file.tellg();
+	file.seekg (0, ios::beg);
+
+	count = (int)(size/ (double)sizeof(particle_max));
+
+	particle_save* block = new particle_max[count];
+	file.read((char *)block, sizeof(particle_max)*count);
+
+	double ParticleMass = myConstants::constants.RhoC*myConstants::constants.OmegaD*pow(myConstants::constants.BoxSize,3)/count;
+
+	Halos.clear();
+	NrInHalo.clear();
+	NrHalos = 1;
+
+
+	CHalo* tmpHalo = new CHalo(); // <--- kill
+	Halos.push_back(tmpHalo);
+
+	cout << "Copying data ..." << endl;
+	cout << "Nr of particles: "<< count << endl;
+
+	//Saving data into existing structure
+	//Saving all Particles into the first halo in Halos, get with Halos[0]
+
+	AllParticles.resize(count);
+
+	CParticle* tmpParticle;
+	for (int i=0;i<count;i++) {
+		tmpParticle = &AllParticles[i];
+
+		tmpParticle->setPosition(block[i].P.x,block[i].P.y,block[i].P.z);
+		tmpParticle->setVelocity(block[i].V.x,block[i].V.y,block[i].V.z);
+		tmpParticle->setAcceleration(block[i].An.x + block[i].A5.x,block[i].An.y + block[i].A5.y,block[i].An.z + block[i].A5.z);
+		tmpParticle->setMass(ParticleMass);
+
+		tmpHalo->addParticle(tmpParticle);
+	}
+
+	cout << "Done loading!" << endl;
+	cout << "---------------------------------" << endl;
+	file.close();
+	if (block != NULL) {
+		delete[] block;
+		block = NULL;
+	}
+	NrParticles = count;
+	NrInHalo.push_back(NrParticles);
+	LinkingLength = pow(1./NrParticles,1./3);
+}
+
+
+
 
 //Load a text file, with all information about each particle
 void CHalos::loadData(string Filename){

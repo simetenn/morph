@@ -113,7 +113,7 @@ class CHalo{
 	//Retturn gravitational potential, sorted as distance from center
 	vector<double>* getPhi();
 
-	//Calculate the Virializati0n mass and radius
+	//Calculate the Virialization mass and radius
 	void calculateVir();
 	void calculateVirBeta();
 	double Beta(double R);
