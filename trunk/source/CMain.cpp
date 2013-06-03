@@ -2,27 +2,6 @@
 
 Constants myConstants::constants;
 
-
-void CMain::testCArray(){
-	CArray a (10);
-
-	for (int i = 0; i < 10; i++) {
-		a[i] = i;
-	}
-	for (int i = 0; i < 20; i++) {
-		a.push_back(i+10);
-	}
-	
-	
-	for (int i = 0; i < 3; i++) {
-		CArray* tmp = new CArray ((1+i));
-		a.add(tmp);
-	}
-	a.print();
-	
-	
-}
-
 void CMain::master() {
 	CHalos m;
 	CHalos* n;

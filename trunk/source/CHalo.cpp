@@ -629,6 +629,7 @@ void CHalo::calculateVirBeta(){
 		BetaR[i] = Beta(r[i]);
 		}*/
 	Rvir = -1;
+	int test = -1;
 	for (int n = 1; n <= Shells; n++) {
 		R = r[n*ParticlesShell];//maxR/(double)Shells*n;//
 		//cout << n*ParticlesShell << endl;
@@ -636,16 +637,17 @@ void CHalo::calculateVirBeta(){
 		BetaR[n-1] = Beta(R);
 		if (BetaR[n-1] <= 0) {
 			Rvir = R;
-			//test = 1;
-			break;
+			test = 1;
+			//break;
 		}
 	}
 		//BetaR.save("beta.dat");
-	/*if (test == 1) {
+	if (test == 1) {
 		BetaR.save("beta.dat");
-		}*/
+		//exit(1);
+	}
 	if (Rvir == -1) {
-		Rvir = pow((Mass/(16./3.*atan(1)*myConstants::constants.ScaleDensity*myConstants::constants.RhoC)),1./3.);
+		//Rvir = pow((Mass/(16./3.*atan(1)*myConstants::constants.ScaleDensity*myConstants::constants.RhoC)),1./3.);
 	}
 	/*else {
 		cout << "fund new Rvir" << endl;
@@ -1321,8 +1323,6 @@ void CHalo::mergeStatisticalRec(CHalo* prevHalo, int &flag){
 		double tmp2 = ((MeanV - *((*it)->getMeanV()))/SigmaV).Length2();
 
 		if (this != (*it) && NrParticles*(tmp1 + tmp2) < 200) {
-			cout << "Merging two halos"<<endl;
-			cout << SubHalos.size()<< endl;
 			SubHalos.erase(it);
 			//SubHalos.remove(*it);
 			addHalo(*it);
