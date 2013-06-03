@@ -1217,7 +1217,7 @@ CHalos* CHalos::master(){
 	//Send halo to processor as soon as a processor finishes
 	while (count < NrHalos) {
 		//cout << "-------------------------------------------------" << endl;
-		cout << "Calculating for halo nr: " << count << "/" << NrHalos << endl;
+		cout << "Calculating for halo nr: " << count << "/" << NrHalos << "\r" << flush;
 		//cout << "-------------------------------------------------" << endl;
 		processor = MPI.listener(Req);
 		FinalHalos->addHalos(Array[processor-1]);
@@ -1264,7 +1264,7 @@ CHalos* CHalos::master(){
 	long tmpIntArray[size];
 	count = 0;
 	int send [1] = {count};
-	MPI_Gather(&count, 1, MPI_LONG, tmpIntArray, size, MPI_LONG, 0, MPI_COMM_WORLD);
+	//MPI_Gather(&count, 1, MPI_LONG, tmpIntArray, size, MPI_LONG, 0, MPI_COMM_WORLD);
 
 	int sum = 0;
 	for (int i = 0; i < size; i++) {
@@ -1321,8 +1321,8 @@ void CHalos::slave(){
 	kill();
 	long tmpIntArray[size];
 	//int send [1] = {count};
-	MPI_Gather(&count, 1, MPI_LONG, tmpIntArray, size, MPI_LONG, 0, MPI_COMM_WORLD);
-	cout << count << endl;
+	//MPI_Gather(&count, 1, MPI_LONG, tmpIntArray, size, MPI_LONG, 0, MPI_COMM_WORLD);
+	//cout << count << endl;
 }
 
 
