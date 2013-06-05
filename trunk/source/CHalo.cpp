@@ -638,7 +638,7 @@ void CHalo::calculateVirBeta(){
 		if (BetaR[n-1] <= 0) {
 			Rvir = R;
 			test = 1;
-			//break;
+			break;
 		}
 	}
 		//BetaR.save("beta.dat");

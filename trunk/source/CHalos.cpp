@@ -1303,6 +1303,7 @@ void CHalos::slave(){
 		//SplitMockHalos();
 		tmpArray = Halos[0]->SubHalos2Array();
 		tmpArray->send_slave_modified(tmpLength);
+		cout << "Halos found: " << tmpArray->get(0) << endl;
 		//HalosArray.send_slave_modified(tmpLength);
 		if (tmpArray != NULL) {
 			delete tmpArray;
