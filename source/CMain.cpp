@@ -7,13 +7,13 @@ void CMain::master() {
 	CHalos* n;
 	
 	//m.loadClaudio(myConstants::constants.inFile);
-	m.loadHalos("splitHalos.dat");
-	//m.loadGadget("halo_plum");
+	//m.loadHalos("splitHalos.dat");
+	m.loadGadget("multisubhalo_nfw.bin");
 	//m.CalculateAllStatistics();
 	//m.printHalos();
 	//exit(1);
 
-	//m.FriendOfFriendGrid();
+	m.FriendOfFriendGrid();
 	
 	//m.saveHalos("splitHalos.dat");
 	//exit(0);
@@ -52,4 +52,3 @@ void CMain::slave(){
 	CHalos s;
 	s.slave();
 }
-
