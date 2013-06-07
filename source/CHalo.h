@@ -263,6 +263,7 @@ class CHalo{
 	int ParticleSize, NrParticles;
 	CParticle* searchParticle;
 	list<CHalo*> SubHalos;
+	list<CParticle*> linkParticles;
 	//New values, needs to be added support for the relevant MPI send/recieve routines
 	vector<double> r, Phi;
 	double Mvir,Rvir;

@@ -378,7 +378,7 @@ void CHalo::SubHalosStructure2ArrayRec(CArray* inArray, CArray* sizeArray,int& I
 void CHalo::saveStructure(string Filename){
 	fstream file;
 	CArray* tmpArray = SubHalosStructure2Array();
-	file.open((myConstants::constants.data + Filename).c_str(), ios::out);
+	file.open((myConstants::constants.inData + Filename).c_str(), ios::out);
 
 	//Saves position data for each particle to file
 	file << tmpArray->len() << endl;
@@ -397,7 +397,7 @@ void CHalo::saveStructure(string Filename){
 
 //Load halos from a text file
 void CHalo::loadStructure(string Filename){
-	ifstream file((myConstants::constants.data + Filename).c_str());
+	ifstream file((myConstants::constants.inData + Filename).c_str());
 	string line;
 
 	getline(file,line);
@@ -626,8 +626,8 @@ void CHalo::calculateVirBeta(){
 	CArray BetaR(Shells);
 	double R;
 	/*for (int i = 0; i < NrParticles/ParticlesShell; i++) {
-		BetaR[i] = Beta(r[i]);
-		}*/
+	  BetaR[i] = Beta(r[i]);
+	  }*/
 	Rvir = -1;
 	int test = -1;
 	for (int n = 1; n <= Shells; n++) {
@@ -641,7 +641,7 @@ void CHalo::calculateVirBeta(){
 			break;
 		}
 	}
-		//BetaR.save("beta.dat");
+	//BetaR.save("beta.dat");
 	if (test == 1) {
 		BetaR.save("beta.dat");
 		//exit(1);
@@ -650,8 +650,8 @@ void CHalo::calculateVirBeta(){
 		//Rvir = pow((Mass/(16./3.*atan(1)*myConstants::constants.ScaleDensity*myConstants::constants.RhoC)),1./3.);
 	}
 	/*else {
-		cout << "fund new Rvir" << endl;
-		}*/
+	  cout << "fund new Rvir" << endl;
+	  }*/
 	//cout << "here"<< endl;
 	Mvir = 0;
 	for (int i = 0; i < NrParticles; i++) {
@@ -684,7 +684,7 @@ double CHalo::Ps(double R){
 	for (Nr = 0; Nr < NrParticles; Nr++) {
 		if(r[Nr] > R) break;
 	}
-	
+
 	for (int i = (int)(Nr*0.8); i < Nr; i++) {
 		tmpPs += Halo[i]->getMass()*Halo[i]->getV().Length2();
 	}
@@ -863,9 +863,9 @@ void CHalo::CalculateStatistics(){
 		SigmaP = SigmaP.sqrt()/(NrParticles-1);
 		SigmaV = SigmaV.sqrt()/(NrParticles-1);
 	}
-	
+
 	calculateVirBeta();
-	
+
 }
 
 
@@ -903,7 +903,7 @@ void CHalo::printStatistics(){
 void CHalo::saveHalo(string Filename){
 	fstream file;
 	double* tmpArray;
-	file.open((myConstants::constants.data + Filename).c_str(), ios::out);
+	file.open((myConstants::constants.inData + Filename).c_str(), ios::out);
 
 	//Saves data for each particle to file
 	for (int i = 0;i<NrParticles;i++){
@@ -928,7 +928,7 @@ void CHalo::saveP(string Filename){
 	fstream file;
 	int HaloID = 0;
 
-	file.open((myConstants::constants.data + Filename).c_str(), ios::out);
+	file.open((myConstants::constants.outData + Filename).c_str(), ios::out);
 
 	//Saves position data for each particle to file
 	cout << "Saving positional data" << endl;
@@ -965,7 +965,7 @@ void CHalo::saveStatX(string Filename){
 	fstream file;
 	int HaloID = 0;
 
-	file.open((myConstants::constants.data + Filename).c_str(), ios::out);
+	file.open((myConstants::constants.inData + Filename).c_str(), ios::out);
 
 	//Saves position data for each particle to file
 	cout << "Saving statistical data" << endl;
@@ -991,7 +991,7 @@ void CHalo::saveHaloStatX(fstream& fileName, int& HaloID){
 void CHalo::savePhi(string Filename){
 	fstream file;
 
-	file.open((myConstants::constants.data + Filename).c_str(), ios::out);
+	file.open((myConstants::constants.outData + Filename).c_str(), ios::out);
 
 	//Saves data for each particle to file
 	for (int i = 0;i<NrParticles;i++){
@@ -1004,7 +1004,7 @@ void CHalo::savePhi(string Filename){
 //save the data for a single halo to file
 void CHalo::save(string Filename, double value){
 	fstream file;
-	file.open((myConstants::constants.data + Filename).c_str(), ios::out | ios::app);
+	file.open((myConstants::constants.outData + Filename).c_str(), ios::out | ios::app);
 	//Saves value to Filename
 	file << value << endl;
 	file.close();
@@ -1013,7 +1013,7 @@ void CHalo::save(string Filename, double value){
 //empty content of file Filename
 void CHalo::del(string Filename){
 	fstream file;
-	file.open((myConstants::constants.data + Filename).c_str(), ios::out);
+	file.open((myConstants::constants.outData + Filename).c_str(), ios::out);
 	file.close();
 }
 
@@ -1104,34 +1104,37 @@ void CHalo::FriendOfFriendPhaseSpace(){
 	vector<CHalo*> tmpHalos;
 
 	searchParticle = Halo[0];
-	CParticle* Particle = searchParticle;
+	//CParticle* Particle = searchParticle;
 	SubHalos.clear();
 
 	//Create a linked list of all particles
-	Particle->prev=NULL;
+	//Particle->prev=NULL;
 	for (int i=1; i < NrParticles;i++){
-		Particle->setFlag(0);
+		linkParticles.push_back(Halo[i]);
+
+		/*Particle->setFlag(0);
 		Particle->next = Halo[i];
 		Particle->next->prev = Particle;
-		Particle = Particle->next;
+		Particle = Particle->next;*/
 	}
-	Particle->setFlag(0);
-	Particle->next = NULL;
+	/*Particle->setFlag(0);
+	  Particle->next = NULL;*/
+
+
+
 
 	double L = LinkingLength();
+	list<CParticle*>::iterator Particle;
 	//Using recursion to link all particles belonging to a halo
-	while (true){
-		Particle = nextParticle();
-		if (Particle == NULL) break;
-		else {
-			tmpHalo.clear();
-			//Calls findNeighbors to find the particles within linking distance
-			Particle->setFlag(1);
-			Particle->RemoveFromList();
-			findNeighborsPhaseSpace(Particle, &tmpHalo, L);
-			if (tmpHalo.getNrParticles() > myConstants::constants.HaloSeed && tmpHalo.getNrParticles() != NrParticles){
-				SubHalos.push_back(new CHalo(&tmpHalo)); // <-- kill
-			}
+	while (!linkParticles.empty()){
+		Particle = linkParticles.begin();
+		linkParticles.erase(Particle);
+		tmpHalo.clear();
+		//Calls findNeighbors to find the particles within linking distance
+
+		findNeighborsPhaseSpace(*Particle, &tmpHalo, L);
+		if (tmpHalo.getNrParticles() > myConstants::constants.HaloSeed && tmpHalo.getNrParticles() != NrParticles){
+			SubHalos.push_back(new CHalo(&tmpHalo)); // <-- kill
 		}
 	}
 }
@@ -1144,19 +1147,22 @@ void CHalo::findNeighborsPhaseSpace(CParticle* inParticle, CHalo* inHalo, int L)
 	inHalo->addParticle(inParticle);
 
 	CHalo FriendList;
+
 	//Loops through all particles and finds the ones
 	//within the linking length not assigned to a halo. Then adds them to a temporary halo
-	for (int i = 0; i<NrParticles;i++){
-		if (Halo[i]->getFlag()==0){
-			double distance = inParticle->PhaseSpaceDistance(Halo[i],&SigmaP,&SigmaV);
-			if (distance < L){
-				Halo[i]->setFlag(1);
-				FriendList.addParticle(Halo[i]);
-				Halo[i]->RemoveFromList();
-			}
+	list<CParticle*>::iterator itKeep;
+	for (list<CParticle*>::iterator it = linkParticles.begin(); it != linkParticles.end();) {
+		itKeep = it;
+		itKeep++;
+		double distance = inParticle->PhaseSpaceDistance(*it,&SigmaP,&SigmaV);
+		if (distance < L){
+			FriendList.addParticle(*it);
+			linkParticles.erase(it);
 		}
+		it = itKeep;
 	}
 
+	
 	//Finds the neighboring particles for each particle found to be within
 	//the linking length and adds them to the given halo
 	for (int i = 0; i<FriendList.getNrParticles();i++){
@@ -1188,7 +1194,6 @@ void CHalo::assignParticles(CParticles* allParticles){
 	for (int i = 0; i < allParticles->getNrParticles(); i++) {
 		findHalo(allParticles->get(i),this);
 	}
-
 	removeEmptySubHalos();
 }
 
@@ -1231,39 +1236,6 @@ void CHalo::removeEmptySubHalos(){
 	//if (NrParticles < myConstants::constants.HaloLimit){
 	//	cout << "WARNING: Host halo has to few particles. I need to do stuff!" << endl;
 
-	//Find the largest subhalo to use as a new hosthalo
-	/*double tmpNrParticles;
-	  double SubHaloNrParticles = -1;
-	  int count = 0;
-	  list<CHalo*>::iterator itKeep;
-	  cout << "0" <<endl;
-	  for (list<CHalo*>::iterator it = SubHalos.begin()++; it != SubHalos.end();it++) {
-	  tmpNrParticles = (*it)->getNrParticles();
-	  cout << "sdfsdfsdfsdf: " <<tmpNrParticles << endl;
-	  if (tmpNrParticles > SubHaloNrParticles){
-	  cout << "Do I ever get here?" << endl;
-	  SubHaloNrParticles = tmpNrParticles;
-	  itKeep = it;
-	  }
-	  count++;
-	  }
-	  if (count > 0){
-	  list<CHalo*> otherSubHalos = SubHalos;
-	  //otherSubHalos.remove(*itKeep);
-	  //Copy over the information from the largest subhalo to this halo
-	  cout << "1.3" <<endl;
-
-	  copy(*itKeep);
-	  cout << "1.5" <<endl;
-	  //Add the other subhalos as subhalos of the same subhalo
-	  for (list<CHalo*>::iterator it = SubHalos.begin(); it != SubHalos.end();it++) {
-	  if (it != itKeep){
-	  SubHalos.push_back(*it);
-	  }
-	  }
-	  }
-	  cout << "2" <<endl;*/
-	//}
 
 	//Remove halos that has fewer than HaloLimit particles
 	list<CHalo*>::iterator itKeep;
@@ -1332,6 +1304,7 @@ void CHalo::mergeStatisticalRec(CHalo* prevHalo, int &flag){
 	}
 	//It completes withouth merging any halos
 	flag = 1;
+	return;
 }
 
 

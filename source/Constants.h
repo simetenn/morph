@@ -14,7 +14,7 @@ class Constants {
 	double ScaleDensity, RhoC, OmegaD, Mass, G;
 	double convMass, convDistance, convVelocity;
 	string inFile, outFile,haloFile, DataFile;
-	string source, data,outSize,outPosition,outPhi, outBounding;
+	string source, inData, outData, outSize,outPosition,outPhi, outBounding;
 	
 	Constants() {
 		//Load ini-file
@@ -58,13 +58,15 @@ class Constants {
 		convVelocity = IniFile.getdouble("convVelocity");
 		NrShells = IniFile.getdouble("NrShells");
 		minParticlesShell= IniFile.getdouble("minParticlesShell");
+
 		//Load strings
 		inFile = IniFile.getstring("inFile");
 		outFile = IniFile.getstring("outFile");
 		haloFile = IniFile.getstring("haloFile");
 		DataFile = IniFile.getstring("DataFile");
 		source = IniFile.getstring("source");
-		data = IniFile.getstring("data");
+		inData = IniFile.getstring("inData");
+		outData = IniFile.getstring("outData");
 		outSize = IniFile.getstring("outSize");
 		outPosition = IniFile.getstring("outPosition");
 		outPhi = IniFile.getstring("outPhi");

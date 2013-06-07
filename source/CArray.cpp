@@ -372,7 +372,7 @@ double* CArray::CArray2array(){
 
 void CArray::save(string Filename){
 	fstream file;
-	file.open((myConstants::constants.data + Filename).c_str(), ios::out);
+	file.open((myConstants::constants.inData + Filename).c_str(), ios::out);
 
 	//Saves data to file
 	for (int i = 0; i < length;i++){

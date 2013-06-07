@@ -358,7 +358,7 @@ void CHalos::CalculatePhiSpherical(){
 
 //Load a binary file from a N-body simulation into memory. Our format
 void CHalos::loadBin(string Filename){
-	ifstream file((myConstants::constants.data + Filename).c_str(), ios::in | ios::binary);
+	ifstream file((myConstants::constants.inData + Filename).c_str(), ios::in | ios::binary);
 
 	cout << "---------------------------------" << endl;
 	cout << "Reading file " << Filename << endl;
@@ -414,7 +414,7 @@ void CHalos::loadBin(string Filename){
 
 //Load a Gadget 2 formated binary file.
 void CHalos::loadGadget(string Filename) {
-	fstream file((myConstants::constants.data + Filename).c_str(), ios::in | ios::binary);
+	fstream file((myConstants::constants.inData + Filename).c_str(), ios::in | ios::binary);
 	unsigned int dummy;
 
 
@@ -512,7 +512,7 @@ void CHalos::loadGadget(string Filename) {
 
 //Load a binary file from a N-body simulation into memory. Claudio's format, converted from ramses file
 void CHalos::loadClaudio(string Filename){
-	ifstream file((myConstants::constants.data + Filename).c_str(), ios::in | ios::binary | ios::ate);
+	ifstream file((myConstants::constants.inData + Filename).c_str(), ios::in | ios::binary | ios::ate);
 
 	cout << "---------------------------------" << endl;
 	cout << "Reading file " << Filename << endl;
@@ -574,7 +574,7 @@ void CHalos::loadClaudio(string Filename){
 
 //Load a binary file from a N-body simulation into memory. Claudio's format, converted from ramses file
 void CHalos::loadMax(string Filename){
-	ifstream file((myConstants::constants.data + Filename).c_str(), ios::in | ios::binary | ios::ate);
+	ifstream file((myConstants::constants.inData + Filename).c_str(), ios::in | ios::binary | ios::ate);
 
 	cout << "---------------------------------" << endl;
 	cout << "Reading file " << Filename << endl;
@@ -640,7 +640,7 @@ void CHalos::loadMax(string Filename){
 void CHalos::loadData(string Filename){
 	vector<string> strData;
 
-	ifstream file((myConstants::constants.data + Filename).c_str());
+	ifstream file((myConstants::constants.inData + Filename).c_str());
 
 
 	string line;
@@ -690,7 +690,7 @@ void CHalos::loadHalos(string Filename){
 	cout << "Reading file " << Filename << endl;
 
 	vector<string> strData;
-	ifstream file((myConstants::constants.data + Filename).c_str(), ios::in | ios::binary | ios::ate);
+	ifstream file((myConstants::constants.inData + Filename).c_str(), ios::in | ios::binary | ios::ate);
 
 	string line;
 	Halos.clear();
@@ -765,7 +765,7 @@ void CHalos::scalePositions(double scale){
 void CHalos::save(string Filename, int NrParticles2File){
 	fstream file;
 	double* tmpArray;// = double[ParticleSize];
-	file.open((myConstants::constants.data + Filename).c_str(), ios::out);
+	file.open((myConstants::constants.inData + Filename).c_str(), ios::out);
 
 	cout << "---------------------------------" << endl;
 	cout << "Saving "<< NrParticles2File <<" particles to file" << endl;
@@ -798,7 +798,7 @@ void CHalos::save(string Filename, int NrParticles2File){
 void CHalos::saveP(string Filename){
 	fstream file;
 	CVector tmpP;
-	file.open((myConstants::constants.data + Filename).c_str(), ios::out);
+	file.open((myConstants::constants.outData + Filename).c_str(), ios::out);
 
 	//Saves position data for each particle to file
 	for (int i = 0;i<NrHalos;i++){
@@ -815,7 +815,7 @@ void CHalos::saveP(string Filename){
 void CHalos::saveSize(string Filename){
 	fstream file;
 	CVector tmpP;
-	file.open((myConstants::constants.data + Filename).c_str(), ios::out);
+	file.open((myConstants::constants.outData + Filename).c_str(), ios::out);
 
 	//Saves position data for each particle to file
 	for (int i = 0;i < NrHalos; i++){
@@ -828,7 +828,7 @@ void CHalos::saveSize(string Filename){
 void CHalos::saveHalos(string Filename){
 	fstream file;
 	CArray* tmpArray = Halos2Array();
-	file.open((myConstants::constants.data + Filename).c_str(), ios::out | ios::binary);
+	file.open((myConstants::constants.inData + Filename).c_str(), ios::out | ios::binary);
 
 	//Saves position data for each particle to file
 	file.write((char*)tmpArray->CArray2array(),tmpArray->len()*sizeof(double));
@@ -998,7 +998,7 @@ void CHalos::FriendOfFriendGrid(){
 	cout << "---------------------------------" << endl;
 	cout << "Calculating Friend of Friend Grid" << endl;
 	cout << "." << endl;
-	cout << ".." << endl;
+	cout << ".." << endl;	
 	cout << "..." << endl;
 
 	//Using recursion to link all particles belonging to a halo
@@ -1009,8 +1009,10 @@ void CHalos::FriendOfFriendGrid(){
 
 	//int count = 0;
 
+	//cout << "A" << endl;
 	while (true){
 		Particle = findParticle();
+		//cout << "B" << endl;
 		if (Particle == NULL) break;
 		else {
 			//Calls findNeighbors to find the particles within
@@ -1019,6 +1021,7 @@ void CHalos::FriendOfFriendGrid(){
 			Particle->RemoveFromListGrid();
 			Particle->setFlag(1);
 			//int depth = 0;
+			
 			findNeighborsGrid(Particle, &tmpHalo);
 
 			//Only saving halos that has more than HaloLimit particles, updating NrInHalos
@@ -1029,6 +1032,7 @@ void CHalos::FriendOfFriendGrid(){
 			}
 		}
 	}
+	//cout << "C" << endl;
 	NrHalos = Halos.size();
 
 	Grid.clear();
@@ -1050,7 +1054,6 @@ void CHalos::FriendOfFriendGrid(){
 
 	cout << "Finished calculating Halo statistics" << endl;
 	cout << "---------------------------------" << endl;
-
 
 
 	//Sort the halos from biggest to smalest for maximum speed during the parallelisation
