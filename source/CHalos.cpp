@@ -436,7 +436,7 @@ void CHalos::loadGadget(string Filename) {
 	int NrParticles = 0;
 	for (int i=0;i<6;i++) {
 		NrParticles+=header.npartTotal[i];
-		cout << header.mass[i] << endl;
+		//cout << header.mass[i] << endl;
 	}
 
 	header.BoxSize = header.BoxSize/myConstants::constants.convDistance;
