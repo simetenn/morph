@@ -6,9 +6,9 @@ void CMain::master() {
 	CHalos m;
 	CHalos* n;
 	
-	m.loadClaudio(myConstants::constants.inFile);
+	//m.loadClaudio(myConstants::constants.inFile);
 	//m.loadHalos("splitHalos.dat");
-	//m.loadGadget("multisubhalo_nfw.bin");
+	m.loadGadget("multisubhalo_nfw.bin");
 	//m.CalculateAllStatistics();
 	//m.printHalos();
 	//exit(1);
