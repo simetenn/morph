@@ -9,7 +9,7 @@ except:
     #name = "positions_all.dat"
 #print "Using file: " + name 
 
-path = "/home/simen/Master/mybody-mpi/data/"
+path = "/home/simen/Master/mybody-mpi/outData/"
     
     
 particles = [] 
@@ -24,8 +24,9 @@ with open(path+name, "r") as infile:
     
 
 particles = p.array(particles,float)
+print len(particles[:,1])
+#particles = particles[::5,:]
 
-particles = particles[::25,:]
 """
 p.scatter(particles[:,0],particles[:,1], c=particles[:,-1])
 p.show()
@@ -40,5 +41,6 @@ ax.scatter(particles[index,0],particles[index,1],particles[index,2], s=1,c=parti
 ax.set_xlabel('X-position [Mpc/h]')
 ax.set_ylabel('Y-position [Mpc/h]')
 ax.set_zlabel('Z-position [Mpc/h]')
+ax.set_title("Positions")
 p.show()
 
