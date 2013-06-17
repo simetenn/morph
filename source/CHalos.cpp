@@ -1304,8 +1304,11 @@ void CHalos::slave(){
 
 		SplitHalos(count);
 		//SplitMockHalos();
+		//Halos[0]->saveHalo("VelocitySplit1.dat");
+		//exit(1);
 		tmpArray = Halos[0]->SubHalos2Array();
 		tmpArray->send_slave_modified(tmpLength);
+		
 		cout << "Halos found: " << tmpArray->get(0) << endl;
 		//HalosArray.send_slave_modified(tmpLength);
 		if (tmpArray != NULL) {
