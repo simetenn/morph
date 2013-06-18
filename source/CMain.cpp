@@ -6,18 +6,18 @@ void CMain::master() {
 	CHalos m;
 	CHalos* n;
 	
-	m.loadClaudio(myConstants::constants.inFile);
-	m.saveP("Halos.dat");
-	//m.loadHalos("splitHalos.dat");
+	//m.loadClaudio(myConstants::constants.inFile);
+	//m.saveP("Halos.dat");
+	m.loadHalos("singleHalo.dat");
 	//m.loadGadget("multisubhalo_nfw.bin");
 	//m.CalculateAllStatistics();
 	//m.printHalos();
 	//exit(1);
 
-	m.FriendOfFriendGrid();
-	m.saveP("HalosFOF.dat");
-	m.getHalo(1)->saveHalo("Velocity1.dat");
-	//m.saveHalos("splitHalos.dat");
+	//m.FriendOfFriendGrid();
+	//m.saveP("HalosFOF.dat");
+	//m.getHalo(1)->saveHalo("Velocity1.dat");
+	//m[22]->saveHaloBin("singleHalo.dat");
 	//exit(0);
 	//m.HaloSort();
 	//m.saveHalos("testHalos.dat");
@@ -48,7 +48,7 @@ void CMain::master() {
 	//n->getHalo(10)->calculateVirBeta ();
 	cout << n->getNrParticles() << endl;
 	n->saveSize(myConstants::constants.outSize);
-	n->saveP("HalosSplit.dat");
+	//n->saveP("HalosSplit.dat");
 	//n->clear();
 	delete n;
 }

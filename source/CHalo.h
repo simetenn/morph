@@ -171,6 +171,9 @@ class CHalo{
 
 	//save the data for a single halo to file
 	void saveHalo(string Filename);
+	//Save halos into a text file, as a array, as a binary file
+	void saveHaloBin(string Filename);
+
 	//Save position data to file for all subhalos
 	void saveP(string Filename);
 	//Recursivly goes trough all subhalos and write the position data to file
