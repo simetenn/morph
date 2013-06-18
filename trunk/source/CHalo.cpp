@@ -922,6 +922,27 @@ void CHalo::saveHalo(string Filename){
 	file.close();
 }
 
+//Save halos into a text file, as a array, as a binary file
+void CHalo::saveHaloBin(string Filename){
+	fstream file;
+	CArray* tmpArray = Halo2Array();
+
+	tmpArray->front(NrParticles);
+	tmpArray->front(1);
+
+	file.open((myConstants::constants.inData + Filename).c_str(), ios::out | ios::binary);
+
+	//Saves position data for each particle to file
+	file.write((char*)tmpArray->CArray2array(),tmpArray->len()*sizeof(double));
+	file.close();
+	//Memory leak
+	if (tmpArray != NULL) {
+		delete tmpArray;
+		tmpArray = NULL;
+	}
+	//tmpArray->del();
+}
+
 
 //Save position data to file for all subhalos
 void CHalo::saveP(string Filename){

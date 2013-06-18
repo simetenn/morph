@@ -121,7 +121,7 @@ class CHalos{
 	void scalePositions(double scale);
 	
 	
-	//Save NrParticles2File evenly distributed particles to file
+	//Save #NrParticles2File evenly distributed particles to file
 	//Mainly used to create smaller datasets
 	void save(string Filename, int NrParticles2File);
 	//save the positions of each particle together with the halo it belongs to to file
