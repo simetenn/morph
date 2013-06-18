@@ -1,6 +1,6 @@
 import pylab as p
 import sys
-path = "/home/simen/Master/mybody-mpi/outData/"
+path = "./outData/"
 filename = sys.argv[1]
 
 data = p.loadtxt(path + filename)
