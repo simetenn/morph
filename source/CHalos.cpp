@@ -591,7 +591,8 @@ void CHalos::loadMax(string Filename){
 	particle_max* block = new particle_max[count];
 	file.read((char *)block, sizeof(particle_max)*count);
 
-	double ParticleMass = myConstants::constants.RhoC*myConstants::constants.OmegaD*pow(myConstants::constants.BoxSize,3)/count;
+	double ParticleMass = myConstants::constants.Mass;
+	//myConstants::constants.RhoC*myConstants::constants.OmegaD*pow(myConstants::constants.BoxSize,3)/count;
 
 	Halos.clear();
 	NrInHalo.clear();

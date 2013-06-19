@@ -1,11 +1,15 @@
 import pylab as p
 
-path = "/home/simen/Master/mybody-mpi/data/"
-filename = "Phi6.dat"
+path = "./outData/"
+filename = "tmpPhi"
 
-data = p.loadtxt(path + filename)
 
 #for x in data[:,0]:
  #   print x
-p.plot(data[:,1],data[:,0])
+#Revert these two
+for i in range(0,3):
+    data = p.loadtxt(path + filename + str(i))
+    p.figure(1)
+    p.plot(data[:,0], data[:,1])
+    p.hold("on")
 p.show()
