@@ -8,10 +8,11 @@ void CMain::master() {
 	
 	//m.loadClaudio(myConstants::constants.inFile);
 	//m.saveP("Halos.dat");
-	m.loadHalos("singleHalo.dat");
+	m.loadHalos("singleHalo2.dat");
 	//m.loadGadget("multisubhalo_nfw.bin");
 	//m.CalculateAllStatistics();
-	//m.printHalos();
+	//cout << m.getNrParticles() << endl;
+	//m.print();
 	//exit(1);
 
 	//m.FriendOfFriendGrid();
