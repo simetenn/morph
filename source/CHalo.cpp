@@ -1409,7 +1409,8 @@ void CHalo::CalculatePhiSpherical(){
 //Unbind particles for the halo and all subhalos
 void CHalo::UnbindAll(int& count){
 	count = 0;
-	cout << "Mass: " << Halo[0]->getMass() << endl;
+	//Halo[0];
+	//cout << "Mass: " << Halo[0]->getMass() << endl;
 	cout << "NrParticles: " << NrParticles;
 	Unbind(count);
 	//cout << "Percentage off particles unbound: " << (count)/(double)NrParticles*100 << endl;
@@ -1437,8 +1438,8 @@ void CHalo::Unbind(int& count){
 		}
 	}
 
-	count += RemoveIndex.size();
-	//count++;
+	//count += RemoveIndex.size();
+	count++;
 	//Be carefull, this is gona fuck me up royaly(with the RemoveIndex[i]-i)
 	for (int i = 0; i < RemoveIndex.size(); i++) {
 		removeParticle(RemoveIndex[i]-i);
