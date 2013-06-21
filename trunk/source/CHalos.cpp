@@ -566,6 +566,7 @@ void CHalos::loadClaudio(string Filename){
 		delete[] block;
 		block = NULL;
 	}
+	
 	NrParticles = count;
 	NrInHalo.push_back(NrParticles);
 	LinkingLength = pow(1./NrParticles,1./3);
@@ -616,7 +617,8 @@ void CHalos::loadMax(string Filename){
 
 		tmpParticle->setPosition(block[i].P.x,block[i].P.y,block[i].P.z);
 		tmpParticle->setVelocity(block[i].V.x/myConstants::constants.convVelocity,block[i].V.y/myConstants::constants.convVelocity,block[i].V.z/myConstants::constants.convVelocity);
-		tmpParticle->setAcceleration(block[i].An.x + block[i].A5.x,block[i].An.y + block[i].A5.y,block[i].An.z + block[i].A5.z);
+		//tmpParticle->setAcceleration(block[i].An.x + block[i].A5.x,block[i].An.y + block[i].A5.y,block[i].An.z + block[i].A5.z);
+		tmpParticle->setAcceleration(block[i].Phi,block[i].An.y + block[i].A5.y,block[i].An.z + block[i].A5.z);
 		tmpParticle->setMass(ParticleMass);
 
 		tmpHalo->addParticle(tmpParticle);

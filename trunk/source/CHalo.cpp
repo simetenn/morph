@@ -1377,6 +1377,8 @@ void CHalo::CalculatePhiSpherical(){
 	
 	//Move this to the correct place to calulate virialisation stuff. Probably statistics somewhere
 	calculateVir();
+	//Mvir = Mass;
+	//Rvir = r[NrParticles-1];
 	double M = 0;
 	double Phi0 = Mvir/Rvir;
 
@@ -1395,7 +1397,7 @@ void CHalo::CalculatePhiSpherical(){
 	for (int i = 1; i < NrParticles; i++) {
 		//Phi.push_back(myConstants::constants.G*Halo[i]->getMass()/(r[i]*r[i])+Phi[i-1]);
 		M += Halo[i]->getMass();
-		Phi.push_back((myConstants::constants.G*M/(r[i]*r[i]))*(r[i]-r[i-1])+Phi[i-1]);
+		Phi.push_back(-(myConstants::constants.G*M/(r[i]*r[i]))*(r[i]-r[i-1])+Phi[i-1]);
 	}
 
 	/*Phi0 = Phi[NrParticles-1];
@@ -1433,19 +1435,20 @@ void CHalo::Unbind(int& count){
 	//cout << "------------"<< count << "--------------" << endl;
 	for (int i = 0; i < NrParticles; i++) {
 		//cout << r[i] << " " << Phi[i] << endl;
+		//cout  << Halo[i]->getV().Length2() << " " << 2*Phi[i] << endl;
 		if (Halo[i]->getV().Length2() > 2*abs(Phi[i])) {
 			RemoveIndex.push_back(i);
 		}
 	}
 
-	//count += RemoveIndex.size();
-	count++;
+	count += RemoveIndex.size();
+	//count++;
 	//Be carefull, this is gona fuck me up royaly(with the RemoveIndex[i]-i)
 	for (int i = 0; i < RemoveIndex.size(); i++) {
 		removeParticle(RemoveIndex[i]-i);
 	}
 
-	//if (RemoveIndex.size() > 0 and NrParticles >= myConstants::constants.HaloLimit) Unbind(count);
+	if (RemoveIndex.size() > 0 and NrParticles >= myConstants::constants.HaloLimit) Unbind(count);
 }
 
 
