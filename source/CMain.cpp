@@ -6,16 +6,16 @@ void CMain::master() {
 	CHalos m;
 	CHalos* n;
 	
-	//m.loadClaudio(myConstants::constants.inFile);
+	m.loadClaudio(myConstants::constants.inFile);
 	//m.saveP("Halos.dat");
-	m.loadHalos("singleHalo2.dat");
+	//m.loadHalos("singleHalo2.dat");
 	//m.loadGadget("multisubhalo_nfw.bin");
 	//m.CalculateAllStatistics();
 	//cout << m.getNrParticles() << endl;
 	//m.print();
 	//exit(1);
 
-	//m.FriendOfFriendGrid();
+	m.FriendOfFriendGrid();
 	//m.saveP("HalosFOF.dat");
 	//m.getHalo(1)->saveHalo("Velocity1.dat");
 	//m[22]->saveHaloBin("singleHalo.dat");
