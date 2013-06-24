@@ -1383,11 +1383,12 @@ void CHalo::CalculatePhiSpherical(){
 	double resPhi0 = Mvir/Rvir;
 	double prevPhi0 = resPhi0;
 	double Phi0;
-	for (int i = 1; i < NrParticles; i++) {
+	for (int i = 1; i < NrParticles-1; i++) {
 		if(r[i] > Rvir) break;
 		M+=Halo[i]->getMass();
 		Phi0 = M/(r[i]*r[i]);
-		resPhi0 += (Phi0  + 0.5*abs(Phi0 - prevPhi0))*(r[i]-r[i-1]);
+		resPhi0 += 0.5*(3*Phi0 - prevPhi0)*(r[i]-r[i-1]);
+		//Phi0 = M/(r[i]*r[i])*(r[i]-r[i-1]);
 		prevPhi0 = Phi0;
 		//Phi0 += Halo[i]->getMass()/(r[i]*r[i]);
 	}
@@ -1405,8 +1406,9 @@ void CHalo::CalculatePhiSpherical(){
 	for (int i = 1; i < NrParticles; i++) {
 		//Phi.push_back(myConstants::constants.G*Halo[i]->getMass()/(r[i]*r[i])+Phi[i-1]);
 		M += Halo[i]->getMass();
+		//Phi[i] = (Phi0  + 0.5*abs(Phi0 - prevPhi0))*(r[i]-r[i-1]) + Phi[i-1];
 		nowPhi = myConstants::constants.G*M/(r[i]*r[i]);
-		Phi[i] = (Phi0  + 0.5*abs(Phi0 - prevPhi0))*(r[i]-r[i-1]) + Phi[i-1];
+		Phi[i] = 0.5*(3*nowPhi - prevPhi)*(r[i]-r[i-1]) + Phi[i-1];
 		prevPhi = nowPhi;
 	}
 
@@ -1446,7 +1448,7 @@ void CHalo::Unbind(int& count){
 	for (int i = 0; i < NrParticles; i++) {
 		//cout << r[i] << " " << Phi[i] << endl;
 		//cout  << Halo[i]->getV().Length2() << " " << 2*abs(Halo[i]->getA()[0]*1.045e-12) << endl;
-		//cout  << Phi[i] << " " << (Halo[i]->getA()[0]*1.045e-12) << endl;
+		cout  << Phi[i] << " " << (Halo[i]->getA()[0]*1.045e-12) << endl;
 		//if (Halo[i]->getV().Length2() > 2*abs(Halo[i]->getA()[0]*1.045e-12)) {
 		if (Halo[i]->getV().Length2() > 2*abs(Phi[i])) {
 			RemoveIndex.push_back(i);
