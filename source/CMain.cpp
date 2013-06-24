@@ -28,13 +28,13 @@ void CMain::master() {
 	
 
 	//m.clear();
-	/*cout << n->outsideVir()<<endl;
-	cout << n->getNrParticles() << endl;
+	//cout << n->outsideVir()<<endl;
+	//cout << n->getNrParticles() << endl;
 	
 	//n.saveHalos("splitHalos.dat");
 	//n.CalculateAllStatistics();
 	
-	n->HaloSort();
+	/*n->HaloSort();
 	n->CalculatePhiSpherical();
 	n->getHalo(1)->savePhi("Phi1.dat");
 	n->getHalo(10)->savePhi("Phi2.dat");
@@ -42,8 +42,8 @@ void CMain::master() {
 	n->getHalo(41)->savePhi("Phi4.dat");
 	n->getHalo(56)->savePhi("Phi5.dat");
 	n->getHalo(5)->savePhi("Phi6.dat");
-	n->getHalo(9)->savePhi("Phi7.dat");
-	//n->printHalos();*/
+	n->getHalo(9)->savePhi("Phi7.dat");*/
+	//n->printHalos();
 	//n->HaloSort();
 	//n->saveHalos("splitHalos.dat");
 	//n->getHalo(10)->calculateVirBeta ();
