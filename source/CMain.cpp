@@ -8,7 +8,7 @@ void CMain::master() {
 	
 	m.loadClaudio(myConstants::constants.inFile);
 	//m.saveP("Halos.dat");
-	//m.loadHalos("singleHalo2.dat");
+	//m.loadHalos("singleHaloWithPhi2.bin");
 	//m.loadGadget("multisubhalo_nfw.bin");
 	//m.CalculateAllStatistics();
 	//cout << m.getNrParticles() << endl;
