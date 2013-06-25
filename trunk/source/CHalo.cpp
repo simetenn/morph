@@ -1388,25 +1388,30 @@ void CHalo::CalculatePhiSpherical(){
 		M+=Halo[i]->getMass();
 		Phi0 = M/(r[i]*r[i]);
 		resPhi0 += 0.5*(3*Phi0 - prevPhi0)*(r[i]-r[i-1]);
-		//Phi0 = M/(r[i]*r[i])*(r[i]-r[i-1]);
+		//Phi0 += M/(r[i]*r[i])*(r[i]-r[i-1]);
 		prevPhi0 = Phi0;
 		//Phi0 += Halo[i]->getMass()/(r[i]*r[i]);
 	}
+	//resPhi0 +=  Mvir/Rvir;
 	resPhi0 *= -myConstants::constants.G;
 
+	//cout << "--------------------" <<endl;
+	//cout << resPhi0 << endl;
+	//cout << "--------------------" <<endl;
 	
 	M = 0;
 	Phi.clear();
-	//Phi.push_back(Phi0);
 	Phi.resize(NrParticles);
 	Phi[0] = resPhi0;
 	double prevPhi = resPhi0;
 	double nowPhi;
+	//nowPhi = myConstants::constants.G*M/(r[1]*r[1]);
+	//prevPhi = 0.5*(3*nowPhi - prevPhi)*(r[i+1]-r[i]) + Phi[i-1];
 	//Phi.push_back(myConstants::constants.G*Halo[1]->getMass()/(r[1]*r[1])*(r[1]-r[0]));
 	for (int i = 1; i < NrParticles; i++) {
 		//Phi.push_back(myConstants::constants.G*Halo[i]->getMass()/(r[i]*r[i])+Phi[i-1]);
 		M += Halo[i]->getMass();
-		//Phi[i] = (Phi0  + 0.5*abs(Phi0 - prevPhi0))*(r[i]-r[i-1]) + Phi[i-1];
+		//Phi[i] = myConstants::constants.G*M/(r[i]*r[i])*(r[i]-r[i-1]) + Phi[i-1];
 		nowPhi = myConstants::constants.G*M/(r[i]*r[i]);
 		Phi[i] = 0.5*(3*nowPhi - prevPhi)*(r[i]-r[i-1]) + Phi[i-1];
 		prevPhi = nowPhi;
@@ -1425,10 +1430,10 @@ void CHalo::UnbindAll(int& count){
 	count = 0;
 	//Halo[0];
 	//cout << "Mass: " << Halo[0]->getMass() << endl;
-	cout << "NrParticles: " << NrParticles;
+	//cout << "NrParticles: " << NrParticles;
 	Unbind(count);
 	//cout << "Percentage off particles unbound: " << (count)/(double)NrParticles*100 << endl;
-	cout << " Nr unbound particles: " <<count << endl;
+	//cout << " Nr unbound particles: " <<count << endl;
 	//savePhi(myConstants::constants.outPhi);
 	//save(myConstants::constants.outBounding, (count-1)/(double)NrParticles);
 	for (list<CHalo*>::iterator it = SubHalos.begin(); it != SubHalos.end(); it++) {
@@ -1448,7 +1453,7 @@ void CHalo::Unbind(int& count){
 	for (int i = 0; i < NrParticles; i++) {
 		//cout << r[i] << " " << Phi[i] << endl;
 		//cout  << Halo[i]->getV().Length2() << " " << 2*abs(Halo[i]->getA()[0]*1.045e-12) << endl;
-		cout  << Phi[i] << " " << (Halo[i]->getA()[0]*1.045e-12) << endl;
+		//cout  << Phi[i] << " " << (Halo[i]->getA()[0]*1.045e-12) << endl;
 		//if (Halo[i]->getV().Length2() > 2*abs(Halo[i]->getA()[0]*1.045e-12)) {
 		if (Halo[i]->getV().Length2() > 2*abs(Phi[i])) {
 			RemoveIndex.push_back(i);

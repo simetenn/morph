@@ -41,8 +41,8 @@ void CMain::master() {
 	n->getHalo(21)->savePhi("Phi3.dat");
 	n->getHalo(41)->savePhi("Phi4.dat");
 	n->getHalo(56)->savePhi("Phi5.dat");
-	n->getHalo(5)->savePhi("Phi6.dat");
-	n->getHalo(9)->savePhi("Phi7.dat");*/
+	n->getHalo(130)->savePhi("Phi6.dat");
+	n->getHalo(450)->savePhi("Phi7.dat");*/
 	//n->printHalos();
 	//n->HaloSort();
 	//n->saveHalos("splitHalos.dat");

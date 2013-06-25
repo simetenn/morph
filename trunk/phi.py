@@ -1,7 +1,7 @@
 import pylab as p
 
 path = "./outData/"
-filename = "Phi6.dat"
+filename = "Phi7.dat"
 
 
 #for x in data[:,0]:
