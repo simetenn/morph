@@ -37,7 +37,7 @@ CHalo::CHalo(CParticles* inParticles){
 	SigmaV.Set(0,0,0);
 }
 
-//Creates CParticles from a CArra yon the following form:
+//Creates CParticles from a CArray on the following form:
 //[NrParticles, Mass, Mean position, Mean velocity, standard deviation of position,
 //standard deviation of velocity, ParticleArray 1, ParticleArray 2, ... , ParticleArray N]
 CHalo::CHalo(CArray* inArray){
@@ -1455,6 +1455,7 @@ void CHalo::Unbind(int& count){
 		//cout  << Halo[i]->getV().Length2() << " " << 2*abs(Halo[i]->getA()[0]*1.045e-12) << endl;
 		//cout  << Phi[i] << " " << (Halo[i]->getA()[0]*1.045e-12) << endl;
 		//if (Halo[i]->getV().Length2() > 2*abs(Halo[i]->getA()[0]*1.045e-12)) {
+		//cout << Halo[i]->getV().Length() << endl;;
 		if (Halo[i]->getV().Length2() > 2*abs(Phi[i])) {
 			RemoveIndex.push_back(i);
 		}

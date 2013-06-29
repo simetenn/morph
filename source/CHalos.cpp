@@ -443,6 +443,8 @@ void CHalos::loadGadget(string Filename) {
 
 	//double ParticleMass = myConstants::constants.RhoC*myConstants::constants.OmegaD*pow(BoxSize,3)/count;
 
+	cout << header.BoxSize << endl;
+
 	cout << "Copying data ..." << endl;
 	cout << "Nr of particles: "<< NrParticles << endl;
 

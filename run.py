@@ -53,7 +53,40 @@ def run(ScaleDensity,b,f):
     name = "MassFunction_ScaleDensity="+ str(ScaleDensity) + "_b=" + str(b) + "_f="+str(f)
     p.savefig(savepath+name+".png")
 
+    
+def runTime(Particle,Scale):
+    import pylab as p
+    import shutil, subprocess, time
+    
+    path = "/home/simen/Master/mybody-mpi/data/"
+    savepath = "/home/simen/Master/mybody-mpi/"
+    inifilename = "mybody.ini"
+    
+    inifile = open(inifilename, 'r')
+    tmpinifile = open(inifilename + ".tmp", "w")
 
+    for line in inifile:
+    
+        if line[0:21] == "LinkingLenghtScale = ":
+            line = "LinkingLenghtScale = "+ str(Scale)+"\n "
+        if line[0:20] == "NrParticlesDouble = ":
+            line = "NrParticlesDouble = " + str(Particle)+"\n " 
+       
+        tmpinifile.write(line)
+    
+    inifile.close()
+    tmpinifile.close()
+    shutil.move(inifilename + ".tmp", inifilename)
+
+    #Run my halofinder
+    #print "Running for: " +"ScaleDensity="+ str(ScaleDensity) + " b=" + str(b) + " f="+str(f)
+    t1 = time.clock();
+    subprocess.call(["mpirun","-n","2", "./main"])
+    t2 = time.clock();
+    
+    return t2-t1
+
+"""
 ScaleDensity = [360]#range(300,400,20)
 b = p.linspace(0.2,0.3,12)
 f = p.linspace(0.5,0.9,4)
@@ -70,5 +103,25 @@ for i in ScaleDensity:
             print "__________________________________________"
             run(i,j,k)
             count += 1
-            
+"""
+
+Scales = range(1,7)#range(300,400,20)
+Particles = range(10,51,5)
+runs = len(Scales)*len(Particles)
+count = 1.
+results = p.zeros((3,runs))
+print "__________________________________________"
+
+f = open("times.dat","w")
+f.write("Nr   Scale   Time\n")
+
+for i in Particles:
+    for j in Scales:
+        print str(count/runs*100)+"%"
+        string = str(i) + "   " + str(j) + "   " + str(0)+"\n"
+        f.write(string)
+        count += 1
+print "__________________________________________"
+
+f.close()
 #run(ScaleDensity[0],b[0],f[0])
