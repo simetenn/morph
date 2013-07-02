@@ -1429,7 +1429,7 @@ void CHalo::removeEmptySeedHalos(){
 
 //Unbind particles for the halo and all subhalos
 void CHalo::UnbindSeed(int& count){
-	count = 0;
+	//count = 0;
 	//Halo[0];
 	//cout << "Mass: " << Halo[0]->getMass() << endl;
 	//cout << "NrParticles: " << NrParticles;
@@ -1438,15 +1438,18 @@ void CHalo::UnbindSeed(int& count){
 	//cout << " Nr unbound particles: " <<count << endl;
 	//savePhi(myConstants::constants.outPhi);
 	//save(myConstants::constants.outBounding, (count-1)/(double)NrParticles);
+	
 	for (list<CHalo*>::iterator it = SeedHalos.begin(); it != SeedHalos.end(); it++) {
 		//cout << "Before unbind" << endl;
-		//cout << (*it)->getNrParticles() << endl;;
+		cout << "Nr of particles in halo: " << (*it)->getNrParticles() << endl;;
+		count = 0;
 		(*it)->Unbind(count);
 		//cout << (*it)->getNrParticles() << endl;;
 		//cout << "after unbind" << endl;
 		(*it)->CalculateStatistics();
+		cout << "Nr of Particles unbounded " << count << endl;
 	}
-	cout << "Nr of Particles unbounded " << count << endl;
+	
 }
 
 
