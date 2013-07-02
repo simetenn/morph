@@ -7,10 +7,10 @@ void CMain::master() {
 	CHalos m;
 	CHalos* n;
 
-	m.loadClaudio(myConstants::constants.inFile);
+	//m.loadClaudio(myConstants::constants.inFile);
 	
 	//m.saveP("Halos.dat");
-	//m.loadHalos("singleHaloWithPhi2.bin");
+	m.loadHalos("singleHaloWithPhi1.bin");
 	//m.loadHalos("singleHalo.dat");
 	//m.loadHalos("testHalos.bin");
 	//m.loadGadget("multisubhalo_nfw.bin");
@@ -21,7 +21,7 @@ void CMain::master() {
 	//exit(1);
 
 	
-	m.FriendOfFriendGrid();
+	//m.FriendOfFriendGrid();
 	//m[0]->saveP("HaloSingle.dat");
 	//m.getHalo(1)->saveHalo("Velocity1.dat");
 	//m[0]->saveHaloBin("singleHalo.dat");
