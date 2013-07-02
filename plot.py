@@ -24,13 +24,14 @@ with open(path+name, "r") as infile:
     
 
 particles = p.array(particles,float)
-print len(particles[:,1])
-#particles = particles[::5,:]
+#print len(particles[:,1])
+##particles = particles[::5,:]
 
 """
 p.scatter(particles[:,0],particles[:,1], c=particles[:,-1])
 p.show()
 """
+
 
 index = p.where(particles[:,-1] >= 0)
 

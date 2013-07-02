@@ -47,6 +47,12 @@ class CHalo{
 	//Does it recursivly for all SubHalos
 	void cleanSubHalos();
 
+
+	void cleanAll();
+	void cleanSubHalosAll();
+
+
+	
 	//Copy a CHalos object
 	void copy(CHalo* inHalo);
 
@@ -221,7 +227,16 @@ class CHalo{
 	//Find the next particle to assign to a Halo
 	CParticle* nextParticle();
 
-
+	
+	void createSeedHalos();
+	void createSeedHalosRec(int& count,list<CHalo*>* Seeds);
+	void mergeStatisticalSeed();
+	int mergeStatisticalSeedRec();
+	void assignParticlesSeed(CParticles* allParticles);
+	void removeEmptySeedHalos();
+	void UnbindSeed(int &count);
+	CArray* SeedHalos2Array();
+	
 	//Assign all the particles contained in the subhalos to the correct seed halo
 	void assignParticles(CParticles* allParticles);
 	//Find the halo a particle is closest too and add the particle to that halo
@@ -265,7 +280,7 @@ class CHalo{
 	double Mass;
 	int ParticleSize, NrParticles;
 	CParticle* searchParticle;
-	list<CHalo*> SubHalos;
+	list<CHalo*> SubHalos, SeedHalos;
 	list<CParticle*> linkParticles;
 	//New values, needs to be added support for the relevant MPI send/recieve routines
 	vector<double> r, Phi;

@@ -1,55 +1,70 @@
 #include "CMain.h"
+#include <sstream>
 
 Constants myConstants::constants;
 
 void CMain::master() {
 	CHalos m;
 	CHalos* n;
-	
+
 	m.loadClaudio(myConstants::constants.inFile);
+	
 	//m.saveP("Halos.dat");
 	//m.loadHalos("singleHaloWithPhi2.bin");
+	//m.loadHalos("singleHalo.dat");
+	//m.loadHalos("testHalos.bin");
 	//m.loadGadget("multisubhalo_nfw.bin");
 	//m.CalculateAllStatistics();
+	//m.printHalos();
 	//cout << m.getNrParticles() << endl;
 	//m.print();
 	//exit(1);
 
+	
 	m.FriendOfFriendGrid();
-	//m.saveP("HalosFOF.dat");
+	//m[0]->saveP("HaloSingle.dat");
 	//m.getHalo(1)->saveHalo("Velocity1.dat");
-	//m[22]->saveHaloBin("singleHalo.dat");
+	//m[0]->saveHaloBin("singleHalo.dat");
+
 	//exit(0);
 	//m.HaloSort();
-	//m.saveHalos("testHalos.dat");
+	//m.saveHalos("testHalos.bin");
 	//m.getHalo(125)->calculateVirBeta();
 	//exit(1);
 	n = m.master();
 	
 
 	//m.clear();
-	//cout << n->outsideVir()<<endl;
+	//cout << n->outsideVir() << endl;
 	//cout << n->getNrParticles() << endl;
 	
 	//n.saveHalos("splitHalos.dat");
-	//n.CalculateAllStatistics();
+	n->CalculateAllStatistics();
 	
-	/*n->HaloSort();
+	n->HaloSort();
+	/*cout <<"---------Here--------------" << endl;
 	n->CalculatePhiSpherical();
-	n->getHalo(1)->savePhi("Phi1.dat");
-	n->getHalo(10)->savePhi("Phi2.dat");
-	n->getHalo(21)->savePhi("Phi3.dat");
-	n->getHalo(41)->savePhi("Phi4.dat");
-	n->getHalo(56)->savePhi("Phi5.dat");
-	n->getHalo(130)->savePhi("Phi6.dat");
-	n->getHalo(450)->savePhi("Phi7.dat");*/
+	
+	for (int i = 0; i < n->getNrHalos(); i++) {
+		ostringstream save;
+		save << "Phi"<< i << ".dat"; 
+		n->getHalo(i)->savePhi(save.str());
+		}*/
+	
+	//n->getHalo(1)->savePhi("Phi1.dat");
+	//n->getHalo(10)->savePhi("Phi2.dat");
+	//n->getHalo(21)->savePhi("Phi3.dat");
+	//n->getHalo(41)->savePhi("Phi4.dat");
+	//n->getHalo(56)->savePhi("Phi5.dat");
+	//n->getHalo(130)->savePhi("Phi6.dat");
+	//n->getHalo(450)->savePhi("Phi7.dat");
 	//n->printHalos();
 	//n->HaloSort();
 	//n->saveHalos("splitHalos.dat");
 	//n->getHalo(10)->calculateVirBeta ();
-	cout << n->getNrParticles() << endl;
+	//cout << n->getNrParticles() << endl;
 	n->saveSize(myConstants::constants.outSize);
-	//n->saveP("HalosSplit.dat");
+	//n->saveP("HalosSingleSplit.dat");
 	//n->clear();
 	delete n;
 }
