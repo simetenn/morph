@@ -223,8 +223,10 @@ void CHalos::removeHalo(int element){
 
 //Remove Halos with fewer particles than HaloLimit
 void CHalos::removeEmptyHalos(){
+	
 	vector<int> RemoveIndex;
 	for (int i = 0; i < NrInHalo.size(); i++) {
+		//cout << NrInHalo[i] << endl;
 		if (NrInHalo[i] < myConstants::constants.HaloLimit){
 			RemoveIndex.push_back(i);
 		}
@@ -236,8 +238,9 @@ void CHalos::removeEmptyHalos(){
 		}
 		Halos.erase(Halos.begin() + RemoveIndex[i] - i);
 		NrInHalo.erase(NrInHalo.begin() + RemoveIndex[i] - i);
-		NrHalos--;
 	}
+	NrHalos -= RemoveIndex.size();
+	//cout << "In remveempty: " << NrHalos << endl;
 }
 
 
@@ -1228,7 +1231,10 @@ CHalos* CHalos::master(){
 		cout << "Calculating for halo nr: " << count << "/" << NrHalos << "\r" << flush;
 		//cout << "-------------------------------------------------" << endl;
 		processor = MPI.listener(Req);
+		//cout << "Adding halo" << endl;
+		
 		FinalHalos->addHalos(Array[processor-1]);
+		//cout << "B" << endl;
 		if (Array[processor - 1] != NULL){
 			delete Array[processor-1];
 			Array[processor - 1] = NULL;
@@ -1243,6 +1249,7 @@ CHalos* CHalos::master(){
 		Array[processor-1]->front(1);
 
 		//Send the array and start listening for the response
+		
 		Array[processor-1]->send(processor);
 		//cout << "Listening for processor to finish" << endl;
 		Array[processor-1]->recieve(processor,&Req[processor-1]);
@@ -1255,6 +1262,7 @@ CHalos* CHalos::master(){
 
 	for (int i = 0; i < size-1;i++){
 		FinalHalos->addHalos(Array[i]);
+		cout << "Halos found in master: " << Array[i]->get(0) << endl;
 		if (Array[i] != NULL) {
 			delete Array[i];
 			Array[i] = NULL;
@@ -1279,9 +1287,10 @@ CHalos* CHalos::master(){
 		sum += tmpIntArray[i];
 		//cout << tmpIntArray[i] << endl;
 	}
-
 	//cout << "Total number of unbound particles: " << sum << endl;
 	FinalHalos->removeEmptyHalos();
+	
+	
 	return FinalHalos;
 }
 
@@ -1303,15 +1312,19 @@ void CHalos::slave(){
 
 	while (true) {
 		if (MPI.ifEnd() == 1) break;
+		//cout << "at start" << endl;
 		HalosArray.recieve_slave();
 		int tmpLength = HalosArray.len();
 		initialize(&HalosArray);
-
 		SplitHalos(count);
+		//cout << "finshed with splitting" << endl;
 		//SplitMockHalos();
 		//Halos[0]->saveHalo("VelocitySplit1.dat");
 		//exit(1);
-		tmpArray = Halos[0]->SubHalos2Array();
+		tmpArray = Halos[0]->SeedHalos2Array();
+		//tmpArray->print();
+		//exit(1);
+		//cout << "finshed with array" << endl;
 		tmpArray->send_slave_modified(tmpLength);
 		
 		cout << "Halos found: " << tmpArray->get(0) << endl;
@@ -1328,10 +1341,11 @@ void CHalos::slave(){
 		//SlaveHalos[0]->saveStructure("structureBig.dat");
 		SlaveHalos.getHalo(0)->SubHalos2Array()->send_slave_modified(tmpLength);
 		//SlaveHalos.clear();*/
+		//cout << "ready for a new iteration" << endl;
 	}
 
 	kill();
-	long tmpIntArray[size];
+	//long tmpIntArray[size];
 	//int send [1] = {count};
 	//MPI_Gather(&count, 1, MPI_LONG, tmpIntArray, size, MPI_LONG, 0, MPI_COMM_WORLD);
 	//cout << count << endl;
