@@ -1228,7 +1228,8 @@ CHalos* CHalos::master(){
 	//Send halo to processor as soon as a processor finishes
 	while (count < NrHalos) {
 		//cout << "-------------------------------------------------" << endl;
-		cout << "Calculating for halo nr: " << count << "/" << NrHalos << "\r" << flush;
+		cout << "Calculating for halo nr: " << count << "/" << NrHalos  << endl;
+		//cout << "Calculating for halo nr: " << count << "/" << NrHalos << "\r" << flush;
 		//cout << "-------------------------------------------------" << endl;
 		processor = MPI.listener(Req);
 		//cout << "Adding halo" << endl;
