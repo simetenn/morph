@@ -8,9 +8,9 @@ void CMain::master() {
 	CHalos* n;
 
 	m.loadClaudio(myConstants::constants.inFile);
-	exit(1);
+	//exit(1);
 	//m.saveP("Halos.dat");
-	m.loadHalos("singleHaloWithPhi1.bin");
+	//m.loadHalos("singleHaloWithPhi2.bin");
 	//m.loadHalos("singleHalo.dat");
 	//m.loadHalos("testHalos.bin");
 	//m.loadGadget("multisubhalo_nfw.bin");
@@ -21,7 +21,7 @@ void CMain::master() {
 	//exit(1);
 
 	
-	//m.FriendOfFriendGrid();
+	m.FriendOfFriendGrid();
 	//m[0]->saveP("HaloSingle.dat");
 	//m.getHalo(1)->saveHalo("Velocity1.dat");
 	//m[0]->saveHaloBin("singleHalo.dat");
@@ -39,9 +39,9 @@ void CMain::master() {
 	//cout << n->getNrParticles() << endl;
 	
 	//n.saveHalos("splitHalos.dat");
-	n->CalculateAllStatistics();
+	//n->CalculateAllStatistics();
 	
-	n->HaloSort();
+	//n->HaloSort();
 	/*cout <<"---------Here--------------" << endl;
 	n->CalculatePhiSpherical();
 	
@@ -63,7 +63,8 @@ void CMain::master() {
 	//n->saveHalos("splitHalos.dat");
 	//n->getHalo(10)->calculateVirBeta ();
 	//cout << n->getNrParticles() << endl;
-	n->saveSize(myConstants::constants.outSize);
+	//n->saveSize(myConstants::constants.outSize);
+	n->saveMass("mass.dat");
 	//n->saveP("HalosSingleSplit.dat");
 	//n->clear();
 	delete n;
