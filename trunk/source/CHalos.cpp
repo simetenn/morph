@@ -558,7 +558,7 @@ void CHalos::loadClaudio(string Filename){
 
 		tmpParticle->setPosition(block[i].P.x,block[i].P.y,block[i].P.z);
 		tmpParticle->setVelocity(block[i].V.x,block[i].V.y,block[i].V.z);
-		cout << block[i].V.x*987.5 << endl;
+		//cout << block[i].V.x*987.5 << endl;
 		tmpParticle->setAcceleration(0,0,0);
 		tmpParticle->setMass(ParticleMass);
 
@@ -830,6 +830,20 @@ void CHalos::saveSize(string Filename){
 	//Saves position data for each particle to file
 	for (int i = 0;i < NrHalos; i++){
 		file << NrInHalo[i] << endl;
+	}
+	file.close();
+}
+
+
+//Save the size of all the halos to a txt fil
+void CHalos::saveMass(string Filename){
+	fstream file;
+	CVector tmpP;
+	file.open((myConstants::constants.outData + Filename).c_str(), ios::out);
+
+	//Saves position data for each particle to file
+	for (int i = 0;i < NrHalos; i++){
+		file << Halos[i]->getMass() << endl;
 	}
 	file.close();
 }
@@ -1324,7 +1338,7 @@ void CHalos::slave(){
 		//SplitMockHalos();
 		//Halos[0]->saveHalo("VelocitySplit1.dat");
 		//exit(1);
-		tmpArray = Halos[0]->SeedHalos2Array();
+		tmpArray = Halos[0]->SubHalos2Array();
 		//tmpArray->print();
 		//exit(1);
 		//cout << "finshed with array" << endl;

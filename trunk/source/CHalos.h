@@ -128,6 +128,7 @@ class CHalos{
 	void saveP(string Filename);
 	//Save the size of all the halos to a txt fil
 	void saveSize(string Filename);
+	void saveMass(string Filename);
 	//Save halos into a text file, as a array
 	void saveHalos(string Filename);
 	//Calculate halo statistics for all halos

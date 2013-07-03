@@ -47,6 +47,8 @@ class CHalo{
 	//Does it recursivly for all SubHalos
 	void cleanSubHalos();
 
+	void eraseSubHalos();
+
 
 	void cleanAll();
 	void cleanSubHalosAll();
@@ -204,6 +206,8 @@ class CHalo{
 
 	//Calculate the Phase-Space distance between a halo and a particle
 	double PhaseSpaceDistanceHalo(CParticle* inParticle);
+	double PhaseSpaceDistanceHaloHalo(CHalo* inHalo);
+
 
 	//Calculate the Linking Length for each halo.
 	//The linking length is chosen such that a fraction f of all particles
@@ -233,7 +237,9 @@ class CHalo{
 	void mergeStatisticalSeed();
 	int mergeStatisticalSeedRec();
 	void assignParticlesSeed(CParticles* allParticles);
+	void calculateMass();
 	void removeEmptySeedHalos();
+	void generateSubstructure();
 	void UnbindSeed(int &count);
 	CArray* SeedHalos2Array();
 	
