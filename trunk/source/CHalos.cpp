@@ -558,6 +558,7 @@ void CHalos::loadClaudio(string Filename){
 
 		tmpParticle->setPosition(block[i].P.x,block[i].P.y,block[i].P.z);
 		tmpParticle->setVelocity(block[i].V.x,block[i].V.y,block[i].V.z);
+		cout << block[i].V.x*987.5 << endl;
 		tmpParticle->setAcceleration(0,0,0);
 		tmpParticle->setMass(ParticleMass);
 

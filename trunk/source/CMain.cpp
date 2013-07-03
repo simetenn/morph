@@ -7,8 +7,8 @@ void CMain::master() {
 	CHalos m;
 	CHalos* n;
 
-	//m.loadClaudio(myConstants::constants.inFile);
-	
+	m.loadClaudio(myConstants::constants.inFile);
+	exit(1);
 	//m.saveP("Halos.dat");
 	m.loadHalos("singleHaloWithPhi1.bin");
 	//m.loadHalos("singleHalo.dat");
