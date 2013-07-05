@@ -8,7 +8,7 @@ class Constants {
  public:
 
 	int ParticleSize, HaloLimit,Width,NrLinking;
-	int HaloSize,NrParticles2File, MaxHalos, NrParticlesDouble;
+	int HaloSize,NrParticles2File, MaxHalos, NrParticlesDouble, minUnbind;
 	int LinkingLenghtScale, ArrayExtraSize, NrShells, minParticlesShell;
 	double b,PhaseDistance,f,LinkingLength,rhovir, HaloSeed, BoxSize;
 	double ScaleDensity, RhoC, OmegaD, Mass, G;
@@ -40,6 +40,7 @@ class Constants {
 		NrParticlesDouble  = IniFile.getdouble("NrParticlesDouble");
 		LinkingLenghtScale = IniFile.getdouble("LinkingLenghtScale");
 		ArrayExtraSize = IniFile.getdouble("ArrayExtraSize");
+		minUnbind = IniFile.getdouble("minUnbind");
 		
 		//Load doubles
 		b = IniFile.getdouble("b");
