@@ -123,6 +123,7 @@ class CHalo{
 
 	//Calculate the Virialization mass and radius
 	void calculateVir();
+	void calculateVir2();
 	void calculateVirBeta();
 	double Beta(double R);
 	double Volume(double R);

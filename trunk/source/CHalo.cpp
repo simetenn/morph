@@ -277,7 +277,7 @@ void CHalo::copy(CHalo* inHalo) {
 	Phi = *inHalo->getPhi();
 	Mvir = inHalo->getMvir();
 	Rvir = inHalo->getRvir();
-	
+
 	SubHalos = (inHalo->getSubHalos());
 }
 
@@ -296,6 +296,7 @@ CArray*	 CHalo::Halo2Array(){
 
 	Array[0] = NrParticles;
 	Array[1] = Mass;
+	//Array[1] = Mvir;
 	for (int i = 0; i < MeanP.getDimensions(); i++) {
 		Array[2+i] = MeanP[i];
 		Array[5+i] = MeanV[i];
@@ -630,7 +631,23 @@ void CHalo::calculateVir(){
 	}
 }
 
-
+void CHalo::calculateVir2(){
+	SortParticlesDistance();
+	Rvir = pow((Mass/(16./3.*atan(1)*myConstants::constants.ScaleDensity*myConstants::constants.RhoC)),1./3.);
+	Mvir = 0;
+	
+	for (list<CHalo*>::iterator it = SubHalos.begin(); it != SubHalos.end(); it++) {
+		(*it)->calculateVir2();
+		Mvir += (*it)->getMvir();
+	}
+	
+	for (int i = 0; i < NrParticles; i++) {
+		if(r[i] > Rvir) {
+			break;
+		}
+		Mvir += Halo[i]->getMass();
+	}
+}
 
 
 void CHalo::calculateVirBeta(){
@@ -879,7 +896,7 @@ void CHalo::CalculateStatistics(){
 	SigmaV = 0;
 
 	NrParticles = Halo.getNrParticles();
-	
+
 	if(NrParticles != 0){
 		for (int i = 0; i < NrParticles; i++) {
 			Mass += Halo[i]->getMass();
@@ -1257,7 +1274,7 @@ CParticle* CHalo::nextParticle(){
 void CHalo::assignParticles(CParticles* allParticles){
 	//Find the halo each particle is closest to and assign the particle to that halo
 	for (int i = 0; i < allParticles->getNrParticles(); i++) {
-				findHalo(allParticles->get(i),this);
+		findHalo(allParticles->get(i),this);
 	}
 	removeEmptySubHalos();
 }
@@ -1309,13 +1326,13 @@ void CHalo::createSeedHalos(){
 		//cout << (*it)->getNrParticles() << endl;
 	}
 	/*SeedHalos.clear();
-	for (int i = 0; i < test.size(); i++) {
-		SeedHalos.push_back(test[i]);
-		}*/
+	  for (int i = 0; i < test.size(); i++) {
+	  SeedHalos.push_back(test[i]);
+	  }*/
 
-	
+
 	//cout << "Number of seedhalos found: " << SeedHalos.size() << endl;
-	
+
 	mergeStatisticalSeed();
 }
 
@@ -1324,7 +1341,7 @@ void CHalo::createSeedHalosRec(int& count, list<CHalo*>* Seeds){
 	for (list<CHalo*>::iterator it = SubHalos.begin(); it != SubHalos.end(); it++) {
 		(*it)->createSeedHalosRec(count, Seeds);
 	}
-	
+
 	if (SubHalos.size() == 0) {
 		count++;
 		Seeds->push_back(this);
@@ -1378,48 +1395,25 @@ void CHalo::assignParticlesSeed(CParticles* allParticles){
 	//Find the halo each particle is closest to and assign the particle to that halo
 	for (list<CHalo*>::iterator it = SeedHalos.begin(); it != SeedHalos.end(); it++) {
 		(*it)->cleanSubHalosAll();
-		//cout << (*it)->getNrParticles() << endl;
 	}
-	//exit(1);
 	vector<double> distances (SeedHalos.size());
 	CParticle* tmpParticle;
 	int j;
-	//cout << allParticles->getNrParticles() << endl;
 	for (int i = 0; i < allParticles->getNrParticles(); i++) {
-		//cout << i << endl;
-		//if (i == 6817) cout << "A "<< endl;;
 		tmpParticle = allParticles->get(i);
 		j = 0;
-		//if (i == 6817) cout << "B" << endl;;
 		for (list<CHalo*>::iterator it = SeedHalos.begin(); it != SeedHalos.end(); it++) {
 			distances[j] = (*it)->PhaseSpaceDistanceHalo(tmpParticle);
-			//cout << distances[j] << endl;
 			j++;
 		}
 
-		//if (i == 6817) cout << "C"<< endl;;
 		int min_index = min_element(distances.begin(), distances.end()) - distances.begin();
-		//cout << min_index << endl;
 		list<CHalo*>::iterator it = SeedHalos.begin();
 		advance(it, min_index);
 		(*it)->addParticle(tmpParticle);
-		//if (i == 6817) cout << "D"<< endl;;
-	}
-
-	
-	//cout << "A" << endl;
-	//cout << SeedHalos.size() << endl;
-	for (list<CHalo*>::iterator it = SeedHalos.begin(); it != SeedHalos.end();it++) {
-		//cout << (*it)->getNrParticles() << endl;
 	}
 
 	removeEmptySeedHalos();
-
-	for (list<CHalo*>::iterator it = SeedHalos.begin(); it != SeedHalos.end();it++) {
-		//cout << (*it)->getNrParticles() << endl;
-	}
-
-	//cout << "B" << endl;
 }
 
 
@@ -1440,7 +1434,7 @@ void CHalo::generateSubstructure(){
 		return;
 	}
 
-	
+
 	int i;
 	list<CHalo*>::iterator lastIt;
 	for (list<CHalo*>::iterator it = SeedHalos.begin(); it != SeedHalos.end();it++) {
@@ -1460,7 +1454,7 @@ void CHalo::generateSubstructure(){
 		}
 
 		lastIt = it;
-		
+
 	}
 	copy(*lastIt);
 	SeedHalos.clear();
@@ -1472,16 +1466,14 @@ void CHalo::calculateMass(){
 	for (list<CHalo*>::iterator it = SubHalos.begin(); it != SubHalos.end(); it++) {
 		(*it)->calculateMass();
 		Mass += (*it)->getMass();
-		
+
 	}
-	cout << "Subhalo mass: " << Mass  << " ";
 	for (int i = 0; i < NrParticles; i++) {
 		Mass += Halo[i]->getMass();
 	}
-	cout << "total mass: " << Mass <<endl;
 }
 
-				   
+
 void CHalo::removeEmptySeedHalos(){
 	//Remove halos that has fewer than HaloLimit particles
 	//int count = 0;
@@ -1501,9 +1493,9 @@ void CHalo::removeEmptySeedHalos(){
 	//cout << "2" << endl;
 	//Calculate the new statistics
 	/*for (list<CHalo*>::iterator it = SeedHalos.begin(); it != SeedHalos.end();it++) {
-		(*it)->CalculateStatistics();
-		//cout << (*it)->getNrParticles() << endl;
-		}*/
+	  (*it)->CalculateStatistics();
+	  //cout << (*it)->getNrParticles() << endl;
+	  }*/
 	//cout << "3" << endl;
 }
 
@@ -1519,7 +1511,7 @@ void CHalo::UnbindSeed(int& count){
 	//cout << " Nr unbound particles: " <<count << endl;
 	//savePhi(myConstants::constants.outPhi);
 	//save(myConstants::constants.outBounding, (count-1)/(double)NrParticles);
-	
+
 	for (list<CHalo*>::iterator it = SeedHalos.begin(); it != SeedHalos.end(); it++) {
 		//cout << "Before unbind" << endl;
 		cout << "Nr of particles in halo: " << (*it)->getNrParticles() << endl;;
@@ -1530,7 +1522,7 @@ void CHalo::UnbindSeed(int& count){
 		//(*it)->CalculateStatistics();
 		cout << "Nr of Particles unbounded " << count << endl;
 	}
-	
+
 }
 
 
@@ -1732,7 +1724,7 @@ void CHalo::CalculatePhiSpherical(){
 	double resPhi0 = Mvir/Rvir;
 	double prevPhi0 = resPhi0;
 	double Phi0;// = Mvir/Rvir;
-	
+
 	for (int i = 1; i < NrParticles-1; i++) {
 		if(r[i] > Rvir) break;
 		M += Halo[i]->getMass();
@@ -1747,7 +1739,7 @@ void CHalo::CalculatePhiSpherical(){
 	//Phi0 *= -myConstants::constants.G;
 	//cout << Mvir << " " << Rvir <<endl;
 	//cout << "Phi0: " << resPhi0 << endl;
-	
+
 	//cout << "--------------------" <<endl;
 	//cout << resPhi0 << endl;
 	//cout << "--------------------" <<endl;
@@ -1769,7 +1761,7 @@ void CHalo::CalculatePhiSpherical(){
 		Phi[i] = 0.5*(3*nowPhi - prevPhi)*(r[i]-r[i-1]) + Phi[i-1];
 		prevPhi = nowPhi;
 	}
-	
+
 	//cout << "PhiTot: " << Phi[NrParticles-1] << endl;
 	/*Phi0 = Phi[NrParticles-1];
 	  for (int i = 0; i < NrParticles; i++) {
@@ -1809,7 +1801,7 @@ void CHalo::Unbind(int& count){
 		//cout << Halo[i]->getV().Length2() << " " << 2*abs(Halo[i]->getA()[0]*1.045e-12) << endl;
 		//cout << Halo[i]->getV().Length2() << " " << Phi[i] << endl;
 		//cout << Phi[i] << " " << (Halo[i]->getA()[0]*1.045e-12) << endl;
-		
+
 		//if (Halo[i]->getV().Length2() > 2*abs(Halo[i]->getA()[0]*1.045e-12)) {
 		//cout << Halo[i]->getV().Length() << endl;;
 		if (Halo[i]->getV().Length2() > 2*abs(Phi[i])) {
@@ -1824,7 +1816,7 @@ void CHalo::Unbind(int& count){
 		removeParticle(RemoveIndex[i]-i);
 	}
 
-	if (RemoveIndex.size() > 0 and NrParticles >= myConstants::constants.HaloLimit) Unbind(count);
+	if (RemoveIndex.size() > myConstants::constants.minUnbind and NrParticles >= myConstants::constants.HaloLimit) Unbind(count);
 }
 
 
@@ -1841,6 +1833,8 @@ void CHalo::createSubHalos(int& count){
 	assignParticlesSeed(&allParticles);
 	generateSubstructure();
 	calculateMass();
+	//calculateVir2();
+	//calculateVirBeta();
 	//CalculateAllStatistics();
 	UnbindAll(count);
 	//removeEmptySubHalos();

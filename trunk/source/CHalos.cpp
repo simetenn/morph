@@ -558,7 +558,7 @@ void CHalos::loadClaudio(string Filename){
 
 		tmpParticle->setPosition(block[i].P.x,block[i].P.y,block[i].P.z);
 		tmpParticle->setVelocity(block[i].V.x,block[i].V.y,block[i].V.z);
-		//cout << block[i].V.x*987.5 << endl;
+		cout << block[i].V.x << endl;
 		tmpParticle->setAcceleration(0,0,0);
 		tmpParticle->setMass(ParticleMass);
 
@@ -624,6 +624,7 @@ void CHalos::loadMax(string Filename){
 		tmpParticle->setPosition(block[i].P.x,block[i].P.y,block[i].P.z);
 		cout << block[i].V.x << endl;
 		tmpParticle->setVelocity(block[i].V.x/myConstants::constants.convVelocity,block[i].V.y/myConstants::constants.convVelocity,block[i].V.z/myConstants::constants.convVelocity);
+		tmpParticle->getV().print();
 		//tmpParticle->setAcceleration(block[i].An.x + block[i].A5.x,block[i].An.y + block[i].A5.y,block[i].An.z + block[i].A5.z);
 		tmpParticle->setAcceleration(block[i].Phi,block[i].An.y + block[i].A5.y,block[i].An.z + block[i].A5.z);
 		tmpParticle->setMass(ParticleMass);
@@ -1244,8 +1245,8 @@ CHalos* CHalos::master(){
 	//Send halo to processor as soon as a processor finishes
 	while (count < NrHalos) {
 		//cout << "-------------------------------------------------" << endl;
-		cout << "Calculating for halo nr: " << count << "/" << NrHalos  << endl;
-		//cout << "Calculating for halo nr: " << count << "/" << NrHalos << "\r" << flush;
+		//cout << "Calculating for halo nr: " << count << "/" << NrHalos  << endl;
+		cout << "Calculating for halo nr: " << count << "/" << NrHalos << "\r" << flush;
 		//cout << "-------------------------------------------------" << endl;
 		processor = MPI.listener(Req);
 		//cout << "Adding halo" << endl;
@@ -1279,7 +1280,7 @@ CHalos* CHalos::master(){
 
 	for (int i = 0; i < size-1;i++){
 		FinalHalos->addHalos(Array[i]);
-		cout << "Halos found in master: " << Array[i]->get(0) << endl;
+		//cout << "Halos found in master: " << Array[i]->get(0) << endl;
 		if (Array[i] != NULL) {
 			delete Array[i];
 			Array[i] = NULL;
@@ -1344,7 +1345,7 @@ void CHalos::slave(){
 		//cout << "finshed with array" << endl;
 		tmpArray->send_slave_modified(tmpLength);
 		
-		cout << "Halos found: " << tmpArray->get(0) << endl;
+		//out << "Halos found: " << tmpArray->get(0) << endl;
 		//HalosArray.send_slave_modified(tmpLength);
 		if (tmpArray != NULL) {
 			delete tmpArray;

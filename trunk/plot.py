@@ -1,6 +1,7 @@
 import pylab as p
 import sys
 from mpl_toolkits.mplot3d import Axes3D
+import matplotlib.cm as cm
 
 try:
     name = str(sys.argv[1])
@@ -10,7 +11,7 @@ except:
 #print "Using file: " + name 
 
 path = "/home/simen/Master/mybody-mpi/outData/"
-    
+savepath = "/home/simen/Master/mybody-mpi/plots/compare/"
     
 particles = [] 
 with open(path+name, "r") as infile:
@@ -31,17 +32,20 @@ particles = p.array(particles,float)
 p.scatter(particles[:,0],particles[:,1], c=particles[:,-1])
 p.show()
 """
+for i in xrange(int(max(particles[:,-1]))+1):
+    print i
+    index = p.where(particles[:,-1] == i)
 
-
-index = p.where(particles[:,-1] >= 0)
-
-fig = p.figure()
-ax = fig.add_subplot(111, projection='3d')
+    fig = p.figure()
+    ax = fig.add_subplot(111, projection='3d')
 #ax.scatter(particles[:,0],particles[:,1],particles[:,2], s=1,c=particles[:,-1],linewidths=0.1)
-ax.scatter(particles[index,0],particles[index,1],particles[index,2], s=1,c=particles[index,-1],linewidths=0.1)
-ax.set_xlabel('X-position [Mpc/h]')
-ax.set_ylabel('Y-position [Mpc/h]')
-ax.set_zlabel('Z-position [Mpc/h]')
-ax.set_title("Positions")
-p.show()
+    ax.scatter(particles[index,0],particles[index,1],particles[index,2], s=10,c=particles[index,-1],linewidths=0.1)
+    #print particles[index,-1]
+    ax.set_xlabel('X-position [Mpc/h]')
+    ax.set_ylabel('Y-position [Mpc/h]')
+    ax.set_zlabel('Z-position [Mpc/h]')
+    ax.set_title("Positions")
+    name = "SingleHalo"+ str(i)
+    p.savefig(savepath+name+".png")
+    #p.show()
 
