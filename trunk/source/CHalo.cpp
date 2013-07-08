@@ -919,6 +919,40 @@ void CHalo::CalculateStatistics(){
 
 }
 
+//Calculate all the statistics relevant for a halo, such as:
+//mean P, mean V, sigma P, sigma V and mass
+void CHalo::CalculateStatisticsNoMass(){
+	MeanP = 0;
+	MeanV = 0;
+	SigmaP = 0;
+	SigmaV = 0;
+
+	NrParticles = Halo.getNrParticles();
+
+	if(NrParticles != 0){
+		for (int i = 0; i < NrParticles; i++) {
+			MeanP = MeanP + Halo[i]->getP();
+			MeanV = MeanV + Halo[i]->getV();
+		}
+		MeanP = MeanP/NrParticles;
+		MeanV = MeanV/NrParticles;
+
+		for (int i = 0; i < NrParticles; i++) {
+			SigmaP = SigmaP + (Halo[i]->getP() - MeanP).pow(2);
+			SigmaV = SigmaP + (Halo[i]->getV() - MeanV).pow(2);
+		}
+
+		SigmaP = SigmaP.sqrt()/(NrParticles-1);
+		SigmaV = SigmaV.sqrt()/(NrParticles-1);
+	}
+
+	for (list<CHalo*>::iterator it = SubHalos.begin(); it != SubHalos.end(); it++) {
+		(*it)->CalculateStatisticsNoMass();
+	}
+	//calculateVirBeta();
+
+}
+
 
 //Calculate all the statistics relevant for all subhalos
 void CHalo::CalculateAllStatistics(){
@@ -1773,7 +1807,7 @@ void CHalo::CalculatePhiSpherical(){
 
 //Unbind particles for the halo and all subhalos
 void CHalo::UnbindAll(int& count){
-	count = 0;
+	//count = 0;
 	//Halo[0];
 	//cout << "Mass: " << Halo[0]->getMass() << endl;
 	//cout << "NrParticles: " << NrParticles;
@@ -1799,12 +1833,12 @@ void CHalo::Unbind(int& count){
 	for (int i = 0; i < NrParticles; i++) {
 		//cout << r[i] << " " << Phi[i] << endl;
 		//cout << Halo[i]->getV().Length2() << " " << 2*abs(Halo[i]->getA()[0]*1.045e-12) << endl;
-		//cout << Halo[i]->getV().Length2() << " " << Phi[i] << endl;
+		//cout << (Halo[i]->getV() - MeanV).Length2() << " " << Phi[i] << endl;
 		//cout << Phi[i] << " " << (Halo[i]->getA()[0]*1.045e-12) << endl;
 
 		//if (Halo[i]->getV().Length2() > 2*abs(Halo[i]->getA()[0]*1.045e-12)) {
 		//cout << Halo[i]->getV().Length() << endl;;
-		if (Halo[i]->getV().Length2() > 2*abs(Phi[i])) {
+		if ((Halo[i]->getV() - MeanV).Length2() > 2*abs(Phi[i])) {
 			RemoveIndex.push_back(i);
 		}
 	}
@@ -1833,15 +1867,11 @@ void CHalo::createSubHalos(int& count){
 	assignParticlesSeed(&allParticles);
 	generateSubstructure();
 	calculateMass();
+	CalculateStatisticsNoMass();
+	UnbindAll(count);
+	CalculateStatisticsNoMass();
 	//calculateVir2();
 	//calculateVirBeta();
-	//CalculateAllStatistics();
-	UnbindAll(count);
-	//removeEmptySubHalos();
-	//cout << "Nr of SubHalos: " << getNrSubHalos() << endl;
-	//cout << "Undbinding" << endl;
-	//UnbindSeed(count);
-	//cout << "finished in creatin subhalos" << endl;
 	/*assignParticles(&allParticles);
 	//saveStructure("structureBig.dat");ha
 	mergeStatistical();

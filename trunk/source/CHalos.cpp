@@ -1297,19 +1297,23 @@ CHalos* CHalos::master(){
 
 
 	//int* tmpIntArray = new int [size];
-	long tmpIntArray[size];
-	count = 0;
-	int send [1] = {count};
-	//MPI_Gather(&count, 1, MPI_LONG, tmpIntArray, size, MPI_LONG, 0, MPI_COMM_WORLD);
-
-	int sum = 0;
-	for (int i = 0; i < size; i++) {
+	//int tmpIntArray[size-1];
+	//tmpIntArray[0] = -1;
+	//cout << tmpIntArray[0] << endl;
+	//count = -2;
+	//int dummy[1];
+	//MPI_Gather(tmpIntArray, 1, MPI_INT, tmpIntArray, size-1, MPI_INT, 0, MPI_COMM_WORLD);
+	//cout << tmpIntArray[0] << endl;
+	//cout << count << endl;
+	/*int sum = 0;
+	for (int i = 0; i < size-1; i++) {
 		sum += tmpIntArray[i];
-		//cout << tmpIntArray[i] << endl;
+		cout << tmpIntArray[i] << endl;
 	}
-	//cout << "Total number of unbound particles: " << sum << endl;
+	cout << "Total number of unbound particles: " << sum << endl;*/
 	FinalHalos->removeEmptyHalos();
-	
+
+	cout << "Total number of particles: " << FinalHalos->getNrParticles() << endl;
 	
 	return FinalHalos;
 }
@@ -1364,11 +1368,12 @@ void CHalos::slave(){
 		//cout << "ready for a new iteration" << endl;
 	}
 
-	kill();
-	//long tmpIntArray[size];
+	/*kill();
+	int tmpIntArray[size-1];
 	//int send [1] = {count};
-	//MPI_Gather(&count, 1, MPI_LONG, tmpIntArray, size, MPI_LONG, 0, MPI_COMM_WORLD);
-	//cout << count << endl;
+	count = 2;
+	MPI_Gather(&count, 1, MPI_INT, &count, size-1, MPI_INT, 0, MPI_COMM_WORLD);*/
+	cout << "Number of unbounded particles: " << count << endl;
 }
 
 
