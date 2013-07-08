@@ -171,7 +171,9 @@ class CHalo{
 
 	//Calculate all the statistics relevant for a halo, such as:
 	//mean P, mean V, sigma P, sigma V and mass
+
 	void CalculateStatistics();
+	void CalculateStatisticsNoMass();
 	//Calculate all the statistics relevant for all subhalos
 	void CalculateAllStatistics();
 	//Printing out the statistics for one halo
