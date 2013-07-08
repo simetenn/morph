@@ -342,8 +342,12 @@ void CHalos::printHalos(){
 		cout << "Mass: " << Halos[i]->getMass() << endl;
 		cout << "Position of halo: ";
 		Halos[i]->getMeanP()->print();
+		cout << "Sigma Position: ";
+		Halos[i]->getSigmaP()->print();
 		cout << "Velocity of halo: ";
 		Halos[i]->getMeanV()->print();
+		cout << "Sigma Velocity: ";
+		Halos[i]->getSigmaV()->print();
 		cout << "__________________________________" << endl;
 	}
 }
@@ -558,7 +562,6 @@ void CHalos::loadClaudio(string Filename){
 
 		tmpParticle->setPosition(block[i].P.x,block[i].P.y,block[i].P.z);
 		tmpParticle->setVelocity(block[i].V.x,block[i].V.y,block[i].V.z);
-		cout << block[i].V.x << endl;
 		tmpParticle->setAcceleration(0,0,0);
 		tmpParticle->setMass(ParticleMass);
 
@@ -622,9 +625,8 @@ void CHalos::loadMax(string Filename){
 		tmpParticle = &AllParticles[i];
 
 		tmpParticle->setPosition(block[i].P.x,block[i].P.y,block[i].P.z);
-		cout << block[i].V.x << endl;
 		tmpParticle->setVelocity(block[i].V.x/myConstants::constants.convVelocity,block[i].V.y/myConstants::constants.convVelocity,block[i].V.z/myConstants::constants.convVelocity);
-		tmpParticle->getV().print();
+		//tmpParticle->getV().print();
 		//tmpParticle->setAcceleration(block[i].An.x + block[i].A5.x,block[i].An.y + block[i].A5.y,block[i].An.z + block[i].A5.z);
 		tmpParticle->setAcceleration(block[i].Phi,block[i].An.y + block[i].A5.y,block[i].An.z + block[i].A5.z);
 		tmpParticle->setMass(ParticleMass);
