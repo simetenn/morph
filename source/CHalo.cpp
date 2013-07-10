@@ -1759,7 +1759,7 @@ void CHalo::CalculatePhiSpherical(){
 	double prevPhi0 = resPhi0;
 	double Phi0;// = Mvir/Rvir;
 
-	for (int i = 1; i < NrParticles-1; i++) {
+	for (int i = 1; i < NrParticles; i++) {
 		if(r[i] > Rvir) break;
 		M += Halo[i]->getMass();
 		Phi0 = M/(r[i]*r[i]);
@@ -1861,15 +1861,21 @@ void CHalo::createSubHalos(int& count){
 	CParticles allParticles;
 	allParticles.copy(Halo);
 	SplitHalo();
-	//cout << "Creating seed halos" << endl;
+	cout << "Creating seed halos" << endl;
 	createSeedHalos();
-	//cout << "Assigning particles to seed halos" << endl;
+	cout << "Assigning particles to seed halos" << endl;
 	assignParticlesSeed(&allParticles);
+	cout << "Generating substructure" << endl;
 	generateSubstructure();
+	cout << "calculating mass" << endl;
 	calculateMass();
+	cout << "Calculating statistics, no mass" << endl;
 	CalculateStatisticsNoMass();
-	UnbindAll(count);
+	cout << "Unbinding particles" << endl;
+	UnbindAll(count);	
+	cout << "Calculating statistics, no mass" << endl;
 	CalculateStatisticsNoMass();
+	cout << "Finished creating subhalos"
 	//calculateVir2();
 	//calculateVirBeta();
 	/*assignParticles(&allParticles);
