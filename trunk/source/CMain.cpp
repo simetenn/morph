@@ -26,13 +26,14 @@ void CMain::master() {
 	m.FriendOfFriendGrid();
 	//m[0]->saveP("HaloSingle.dat");
 	//m.getHalo(1)->saveHalo("Velocity1.dat");
-	//m[0]->saveHaloBin("singleHalo.dat");
-
+	m[11869]->saveHaloBin("problemHalo.bin");
+	m[11870]->saveHaloBin("problemHalo2.bin");
+	m[11868]->saveHaloBin("problemHalo3.bin");
 	//exit(0);
 	//m.HaloSort();
-	//m.saveHalos("Halos.bin");
+	m.saveHalos("lcdm1Halos.bin");
 	//m.getHalo(125)->calculateVirBeta();
-	//exit(1);
+	exit(1);
 	n = m.master();
 	
 
