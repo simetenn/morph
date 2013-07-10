@@ -1340,15 +1340,18 @@ void CHalos::slave(){
 		HalosArray.recieve_slave();
 		int tmpLength = HalosArray.len();
 		initialize(&HalosArray);
+		cout << "Splitting halos" << endl;
 		SplitHalos(count);
 		//cout << "finshed with splitting" << endl;
 		//SplitMockHalos();
 		//Halos[0]->saveHalo("VelocitySplit1.dat");
 		//exit(1);
+		cout << "creating array" << endl;
 		tmpArray = Halos[0]->SubHalos2Array();
 		//tmpArray->print();
 		//exit(1);
 		//cout << "finshed with array" << endl;
+		cout << "sending array" << endl;
 		tmpArray->send_slave_modified(tmpLength);
 		
 		//out << "Halos found: " << tmpArray->get(0) << endl;
@@ -1358,7 +1361,7 @@ void CHalos::slave(){
 			tmpArray = NULL;
 		}
 		kill();
-
+		cout << "finished sending" << endl;
 		/*CHalos SlaveHalos(&HalosArray); // Assured memory leak
 		//SlaveHalos.initialize(&HalosArray);
 		SlaveHalos.SplitHalos();
