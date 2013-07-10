@@ -21,11 +21,7 @@ class Constants {
 		CIniFile IniFile;
 
 		#ifndef UIO
-		IniFile.load("mybody.ini");
-		#endif
-		
-		#ifdef UIO
-		IniFile.load("mybodyUiO.ini");
+		IniFile.load("MORPH.ini");
 		#endif
 		
 		//Load ints

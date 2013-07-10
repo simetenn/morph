@@ -7,10 +7,11 @@ void CMain::master() {
 	CHalos m;
 	CHalos* n;
 
-	m.loadClaudio(myConstants::constants.inFile);
+	//m.loadClaudio(myConstants::constants.inFile);
 	//exit(1);
 	//m.saveP("Halos.dat");
 	//m.loadHalos("singleHaloWithPhi2.bin");
+	m.loadMax("lcdm1.bin");
 	//m.printHalos();
 	//m.loadHalos("Halos.bin");
 	//m.loadHalos("singleHalo.dat");
@@ -43,16 +44,16 @@ void CMain::master() {
 	//n->CalculateAllStatistics();
 	
 	//n->HaloSort();
-	/*cout <<"---------Here--------------" << endl;
-	n->CalculatePhiSpherical();
+	//cout <<"---------Here--------------" << endl;
+	//n->CalculatePhiSpherical();
 	
-	for (int i = 0; i < n->getNrHalos(); i++) {
+	/*for (int i = 0; i < n->getNrHalos(); i++) {
 		ostringstream save;
 		save << "Phi"<< i << ".dat"; 
 		n->getHalo(i)->savePhi(save.str());
 		}*/
 	
-	//n->getHalo(1)->savePhi("Phi1.dat");
+	//n->getHalo(0)->savePhi("Phi0.dat");
 	//n->getHalo(10)->savePhi("Phi2.dat");
 	//n->getHalo(21)->savePhi("Phi3.dat");
 	//n->getHalo(41)->savePhi("Phi4.dat");
