@@ -1867,15 +1867,15 @@ void CHalo::createSubHalos(int& count){
 	assignParticlesSeed(&allParticles);
 	cout << "Generating substructure" << endl;
 	generateSubstructure();
-	//cout << "calculating mass" << endl;
+	cout << "calculating mass" << endl;
 	calculateMass();
-	//cout << "Calculating statistics, no mass" << endl;
+	cout << "Calculating statistics, no mass" << endl;
 	CalculateStatisticsNoMass();
-	//cout << "Unbinding particles" << endl;
+	cout << "Unbinding particles" << endl;
 	UnbindAll(count);	
-	//cout << "Calculating statistics, no mass" << endl;
+	cout << "Calculating statistics, no mass" << endl;
 	CalculateStatisticsNoMass();
-	cout << "Finished creating subhalos" << endl;
+	cout << "Finished creating subhalos" << endl
 	//calculateVir2();
 	//calculateVirBeta();
 	/*assignParticles(&allParticles);
