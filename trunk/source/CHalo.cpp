@@ -1875,7 +1875,7 @@ void CHalo::createSubHalos(int& count){
 	UnbindAll(count);	
 	cout << "Calculating statistics, no mass" << endl;
 	CalculateStatisticsNoMass();
-	cout << "Finished creating subhalos" << endl
+	cout << "Finished creating subhalos" << endl;
 	//calculateVir2();
 	//calculateVirBeta();
 	/*assignParticles(&allParticles);
