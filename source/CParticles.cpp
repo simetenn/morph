@@ -11,11 +11,12 @@ CParticles::CParticles(){
 
 CParticles::~CParticles(){
 	/*for (int i = 0; i < NrParticles;i++){
-	  if ( Particles[i] != NULL)
-	  delete Particles[i]; // <- correct?
-	  }*/
-	//kill();
-	clear();
+		if ( Particles[i] != NULL)
+			delete Particles[i]; // <- correct?
+			}*/
+	//cout << "ever get here?" << endl;
+	kill();
+	//clear();
 	//Particles.clear();
 }
 
@@ -168,7 +169,6 @@ CArray* CParticles::Particles2Array(){
 			tmpArray = NULL;
 		}
 	}
-
 	return Array;
 }
 
