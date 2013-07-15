@@ -85,7 +85,7 @@ CHalo::~CHalo(){
 	  }
 	  }*/
 	//clear();
-	kill();
+	//kill();
 }
 
 
@@ -99,7 +99,7 @@ void CHalo::kill(){
 	}
 
 	//Halo.clear();
-	Halo.kill();
+	//Halo.kill();
 	NrParticles = 0;
 	Mass = 0;
 	MeanP.Set(0,0,0);
@@ -118,7 +118,7 @@ void CHalo::kill(){
 //standard deviation of velocity, ParticleArray 1, ParticleArray 2, ... , ParticleArray N]
 void CHalo::set(CArray* inArray){
 	//clear();
-	kill();
+	//kill();
 	ParticleSize = myConstants::constants.ParticleSize;
 
 	//read NrParticles, Mass, Mean position, Mean velocity, standard deviation of position,
@@ -221,8 +221,8 @@ void CHalo::clear(){
 
 //Clear and remove particle information, but keeps halo information, like position and velocity
 void CHalo::clean() {
-	//Halo.clear();
-	Halo.kill();
+	Halo.clear();
+	//Halo.kill();
 	//NrParticles = 0;
 	ParticleSize = myConstants::constants.ParticleSize;
 }
