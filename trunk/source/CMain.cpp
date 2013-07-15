@@ -7,13 +7,13 @@ void CMain::master() {
 	CHalos m;
 	CHalos* n;
 
-	m.loadClaudio(myConstants::constants.inFile);
+	//m.loadClaudio(myConstants::constants.inFile);
 	//exit(1);
 	//m.saveP("Halos.dat");
 	//m.loadHalos("singleHaloWithPhi2.bin");
 	//m.loadMax("lcdm1.bin");
 	//m.printHalos();
-	//m.loadHalos("Halos.bin");
+	m.loadHalos("Halos.bin");
 	//m.loadHalos("singleHalo.dat");
 	//m.loadGadget("multisubhalo_nfw.bin");
 	//m.CalculateAllStatistics();
@@ -23,7 +23,7 @@ void CMain::master() {
 	//exit(1);
 
 	
-	m.FriendOfFriendGrid();
+	//m.FriendOfFriendGrid();
 	//m[0]->saveP("HaloSingle.dat");
 	//m.getHalo(1)->saveHalo("Velocity1.dat");
 	/*m[11869]->saveHaloBin("problemHalo.bin");
@@ -31,7 +31,7 @@ void CMain::master() {
 	m[11868]->saveHaloBin("problemHalo3.bin");*/
 	//exit(0);
 	//m.HaloSort();
-	//m.saveHalos("lcdm1Halos.bin");
+	//m.saveHalos("subsetHalos.bin");
 	//m.getHalo(125)->calculateVirBeta();
 	//exit(1);
 	n = m.master();

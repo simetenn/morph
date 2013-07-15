@@ -31,8 +31,8 @@ CHalos::CHalos(CArray* inArray){
 
 
 CHalos::~CHalos(){
-	clear();
-	//kill();
+	//clear();
+	kill();
 	//NrInHalo.clear();
 	//AllParticles.clear();
 }
@@ -43,8 +43,8 @@ CHalos::~CHalos(){
 //nr of particles of in halo N, halo array 1, halo array 2, ... halo array N]
 //When this is used kill() needs to be called explecitly
 void CHalos::initialize(CArray* inArray){
-	Halos.clear();
-
+	//Halos.clear();
+	kill();
 	NrHalos = inArray->get(0);
 	ParticleSize = myConstants::constants.ParticleSize;
 	int particle_count = 1 + NrHalos;
@@ -84,10 +84,11 @@ void CHalos::initialize(CArray* inArray){
 //Remove all data from CHalos, withouth removing the loaded particles from memory
 void CHalos::clear(){
 	for (int i = 0; i < NrHalos; i++) {
-		if (Halos[i] != NULL) {
+		Halos[i]->clear();
+		/*if (Halos[i] != NULL) {
 			delete Halos[i];
 			Halos[i] = NULL;
-		}
+			}*/
 	}
 	NrInHalo.clear();
 	AllParticles.clear();
@@ -99,7 +100,7 @@ void CHalos::clear(){
 //Remove all data from CHalos, also deletes all loaded particles from memory
 void CHalos::kill(){
 	for (int i = 0; i < NrHalos; i++) {
-		Halos[i]->kill();
+		//Halos[i]->kill();
 		if (Halos[i] != NULL) {
 			delete Halos[i];
 			Halos[i] = NULL;
@@ -130,7 +131,6 @@ CArray*	 CHalos::Halos2Array(){
 	int particle_count = 1 + NrHalos;
 	CArray* tmpArray;
 	Array[0] = NrHalos;
-
 	for (int i = 0; i < NrHalos;i++){
 		Array[i+1] = NrInHalo[i];
 
@@ -1229,14 +1229,16 @@ CHalos* CHalos::master(){
 
 		//Add how many particles in halo to be sent
 		//and that it only is one halo to the CArray
-		//cout << "before reverting to array" << endl;
+		cout << "before reverting to array" << endl;
+		//Halos[count]->printHalo(count);
 		Array[p-1] = Halos[count]->Halo2Array();
-		//cout << "after reverting" << endl;
+		cout << "after reverting" << endl;
 		Array[p-1]->front(NrInHalo[count]);
 		Array[p-1]->front(1);
 		MPI.End(p,0);
 		Array[p-1]->send(p);
 		Array[p-1]->recieve(p,&Req[p-1]);
+		cout << "A" << endl;
 		count++;
 	}
 
@@ -1247,18 +1249,19 @@ CHalos* CHalos::master(){
 	//Send halo to processor as soon as a processor finishes
 	while (count < NrHalos) {
 		//cout << "-------------------------------------------------" << endl;
-		//cout << "Calculating for halo nr: " << count << "/" << NrHalos  << endl;
-		cout << "Calculating for halo nr: " << count << "/" << NrHalos << "\r" << flush;
+		cout << "Calculating for halo nr: " << count << "/" << NrHalos  << endl;
+		//cout << "Calculating for halo nr: " << count << "/" << NrHalos << "\r" << flush;
 		//cout << "-------------------------------------------------" << endl;
 		processor = MPI.listener(Req);
-		//cout << "Adding halo" << endl;
+		cout << "Adding halo" << endl;
 		
 		FinalHalos->addHalos(Array[processor-1]);
-		//cout << "B" << endl;
+		cout << "B" << endl;
 		if (Array[processor - 1] != NULL){
 			delete Array[processor-1];
 			Array[processor - 1] = NULL;
 		}
+		cout << "C" << endl;
 		Array[processor-1] =  Halos[count]->Halo2Array();
 
 		MPI.End(processor,0);
@@ -1336,26 +1339,26 @@ void CHalos::slave(){
 
 	while (true) {
 		if (MPI.ifEnd() == 1) break;
-		//cout << "at start" << endl;
+		cout << "at start" << endl;
 		HalosArray.recieve_slave();
 		int tmpLength = HalosArray.len();
-		initialize(&HalosArray);
+		//initialize(&HalosArray);
 		cout << "Splitting halos" << endl;
-		SplitHalos(count);
+		//SplitHalos(count);
 		//cout << "finshed with splitting" << endl;
 		//SplitMockHalos();
 		//Halos[0]->saveHalo("VelocitySplit1.dat");
 		//exit(1);
 		cout << "creating array" << endl;
-		tmpArray = Halos[0]->SubHalos2Array();
+		//tmpArray = Halos[0]->SubHalos2Array();
 		//tmpArray->print();
 		//exit(1);
 		//cout << "finshed with array" << endl;
 		cout << "sending array" << endl;
-		tmpArray->send_slave_modified(tmpLength);
+		//tmpArray->send_slave_modified(tmpLength);
 		
 		//out << "Halos found: " << tmpArray->get(0) << endl;
-		//HalosArray.send_slave_modified(tmpLength);
+		HalosArray.send_slave_modified(tmpLength);
 		if (tmpArray != NULL) {
 			delete tmpArray;
 			tmpArray = NULL;
@@ -1364,7 +1367,7 @@ void CHalos::slave(){
 		cout << "finished sending" << endl;
 		/*CHalos SlaveHalos(&HalosArray); // Assured memory leak
 		//SlaveHalos.initialize(&HalosArray);
-		SlaveHalos.SplitHalos();
+		SlaveHaloScleans.SplitHalos();
 		//SlaveHalos[0]->saveStructure("structureBig.dat");
 		SlaveHalos.getHalo(0)->SubHalos2Array()->send_slave_modified(tmpLength);
 		//SlaveHalos.clear();*/

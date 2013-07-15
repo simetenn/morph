@@ -98,7 +98,8 @@ void CHalo::kill(){
 		}
 	}
 
-	Halo.clear();
+	//Halo.clear();
+	Halo.kill();
 	NrParticles = 0;
 	Mass = 0;
 	MeanP.Set(0,0,0);
@@ -108,7 +109,7 @@ void CHalo::kill(){
 	ParticleSize = myConstants::constants.ParticleSize;
 
 	SubHalos.clear();
-	Halo.kill();
+	
 }
 
 
@@ -116,7 +117,8 @@ void CHalo::kill(){
 //[NrParticles, Mass, Mean position, Mean velocity, standard deviation of position,
 //standard deviation of velocity, ParticleArray 1, ParticleArray 2, ... , ParticleArray N]
 void CHalo::set(CArray* inArray){
-	clear();
+	//clear();
+	kill();
 	ParticleSize = myConstants::constants.ParticleSize;
 
 	//read NrParticles, Mass, Mean position, Mean velocity, standard deviation of position,
@@ -219,7 +221,8 @@ void CHalo::clear(){
 
 //Clear and remove particle information, but keeps halo information, like position and velocity
 void CHalo::clean() {
-	Halo.clear();
+	//Halo.clear();
+	Halo.kill();
 	//NrParticles = 0;
 	ParticleSize = myConstants::constants.ParticleSize;
 }
@@ -245,7 +248,7 @@ void CHalo::cleanSubHalos(){
 
 void CHalo::cleanAll() {
 	Halo.clear();
-	NrParticles = 0;
+	//NrParticles = 0;
 	ParticleSize = myConstants::constants.ParticleSize;
 }
 
@@ -253,7 +256,7 @@ void CHalo::cleanAll() {
 //Clear and remove particle information, but keeping halo information, like position and velocity
 //Does it recursivly for all SubHalos
 void CHalo::cleanSubHalosAll(){
-	cleanAll();
+	clean();
 
 	//recursivly goes through all subhalos
 	for (list<CHalo*>::iterator it = SubHalos.begin(); it != SubHalos.end(); it++) {
@@ -292,10 +295,12 @@ void CHalo::copy(CHalo* inHalo) {
 CArray*	 CHalo::Halo2Array(){
 	//CArray tmpArray(Halo.Particles2Array());
 	CArray* tmpArray = Halo.Particles2Array();
+	cout << "b" << endl;
 	double* Array = new double [tmpArray->len() + myConstants::constants.HaloSize];
 
 	Array[0] = NrParticles;
 	Array[1] = Mass;
+	
 	//Array[1] = Mvir;
 	for (int i = 0; i < MeanP.getDimensions(); i++) {
 		Array[2+i] = MeanP[i];
@@ -303,19 +308,22 @@ CArray*	 CHalo::Halo2Array(){
 		Array[8+i] = SigmaP[i];
 		Array[11+i] = SigmaV[i];
 	}
-
+	cout << "c" << endl;
 	for (int i = 0; i < tmpArray->len(); i++) {
 		Array[i + myConstants::constants.HaloSize] = tmpArray->get(i);
 	}
+	cout << "d" << endl;
 	CArray* tmpCArray = new CArray(tmpArray->len()+myConstants::constants.HaloSize, Array); //<-- kill
 	if (Array != NULL){
 		delete [] Array;
 		Array = NULL;
 	}
+	cout << "e" << endl;
 	if (tmpArray != NULL){
 		delete tmpArray;
 		tmpArray = NULL;
 	}
+	cout << "f" << endl;
 	return tmpCArray;
 }
 
@@ -1428,7 +1436,7 @@ int CHalo::mergeStatisticalSeedRec(){
 void CHalo::assignParticlesSeed(CParticles* allParticles){
 	//Find the halo each particle is closest to and assign the particle to that halo
 	for (list<CHalo*>::iterator it = SeedHalos.begin(); it != SeedHalos.end(); it++) {
-		(*it)->cleanSubHalosAll();
+		(*it)->cleanSubHalos();
 	}
 	vector<double> distances (SeedHalos.size());
 	CParticle* tmpParticle;
@@ -1862,19 +1870,19 @@ void CHalo::createSubHalos(int& count){
 	allParticles.copy(Halo);
 	SplitHalo();
 	cout << "Creating seed halos" << endl;
-	createSeedHalos();
+	//createSeedHalos();
 	cout << "Assigning particles to seed halos" << endl;
-	assignParticlesSeed(&allParticles);
+	//assignParticlesSeed(&allParticles);
 	cout << "Generating substructure" << endl;
-	generateSubstructure();
+	//generateSubstructure();
 	cout << "calculating mass" << endl;
-	calculateMass();
+	//calculateMass();
 	cout << "Calculating statistics, no mass" << endl;
-	CalculateStatisticsNoMass();
+	//CalculateStatisticsNoMass();
 	cout << "Unbinding particles" << endl;
-	UnbindAll(count);	
+	//UnbindAll(count);	
 	cout << "Calculating statistics, no mass" << endl;
-	CalculateStatisticsNoMass();
+	//CalculateStatisticsNoMass();
 	cout << "Finished creating subhalos" << endl;
 	//calculateVir2();
 	//calculateVirBeta();
