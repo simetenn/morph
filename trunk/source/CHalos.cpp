@@ -31,8 +31,8 @@ CHalos::CHalos(CArray* inArray){
 
 
 CHalos::~CHalos(){
-	//clear();
-	kill();
+	clear();
+	//kill();
 	//NrInHalo.clear();
 	//AllParticles.clear();
 }
@@ -43,8 +43,8 @@ CHalos::~CHalos(){
 //nr of particles of in halo N, halo array 1, halo array 2, ... halo array N]
 //When this is used kill() needs to be called explecitly
 void CHalos::initialize(CArray* inArray){
-	//Halos.clear();
-	kill();
+	Halos.clear();
+	//kill();
 	NrHalos = inArray->get(0);
 	ParticleSize = myConstants::constants.ParticleSize;
 	int particle_count = 1 + NrHalos;
@@ -1342,9 +1342,9 @@ void CHalos::slave(){
 		cout << "at start" << endl;
 		HalosArray.recieve_slave();
 		int tmpLength = HalosArray.len();
-		//initialize(&HalosArray);
+		initialize(&HalosArray);
 		cout << "Splitting halos" << endl;
-		//SplitHalos(count);
+		SplitHalos(count);
 		//cout << "finshed with splitting" << endl;
 		//SplitMockHalos();
 		//Halos[0]->saveHalo("VelocitySplit1.dat");
@@ -1363,7 +1363,7 @@ void CHalos::slave(){
 			delete tmpArray;
 			tmpArray = NULL;
 		}
-		kill();
+		//kill();
 		cout << "finished sending" << endl;
 		/*CHalos SlaveHalos(&HalosArray); // Assured memory leak
 		//SlaveHalos.initialize(&HalosArray);
