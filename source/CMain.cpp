@@ -11,7 +11,6 @@ void CMain::master() {
 	//exit(1);
 	//m.saveP("Halos.dat");
 	//m.loadHalos("singleHaloWithPhi2.bin");
-	//m.loadMax("lcdm1.bin");
 	//m.printHalos();
 	m.loadHalos("Halos.bin");
 	//m.loadHalos("singleHalo.dat");
@@ -26,12 +25,11 @@ void CMain::master() {
 	//m.FriendOfFriendGrid();
 	//m[0]->saveP("HaloSingle.dat");
 	//m.getHalo(1)->saveHalo("Velocity1.dat");
-	/*m[11869]->saveHaloBin("problemHalo.bin");
-	m[11870]->saveHaloBin("problemHalo2.bin");
-	m[11868]->saveHaloBin("problemHalo3.bin");*/
+	//m[0]->saveHaloBin("singleHalo.dat");
+
 	//exit(0);
 	//m.HaloSort();
-	//m.saveHalos("subsetHalos.bin");
+	//m.saveHalos("Halos.bin");
 	//m.getHalo(125)->calculateVirBeta();
 	//exit(1);
 	n = m.master();
@@ -45,16 +43,16 @@ void CMain::master() {
 	//n->CalculateAllStatistics();
 	
 	//n->HaloSort();
-	//cout <<"---------Here--------------" << endl;
-	//n->CalculatePhiSpherical();
+	/*cout <<"---------Here--------------" << endl;
+	n->CalculatePhiSpherical();
 	
-	/*for (int i = 0; i < n->getNrHalos(); i++) {
+	for (int i = 0; i < n->getNrHalos(); i++) {
 		ostringstream save;
 		save << "Phi"<< i << ".dat"; 
 		n->getHalo(i)->savePhi(save.str());
 		}*/
 	
-	//n->getHalo(0)->savePhi("Phi0.dat");
+	//n->getHalo(1)->savePhi("Phi1.dat");
 	//n->getHalo(10)->savePhi("Phi2.dat");
 	//n->getHalo(21)->savePhi("Phi3.dat");
 	//n->getHalo(41)->savePhi("Phi4.dat");
@@ -70,7 +68,7 @@ void CMain::master() {
 	n->saveMass("mass.dat");
 	n->saveP("HalosSingleSplit.dat");
 	//n->clear();
-	delete n;
+	//delete n;
 }
 
 void CMain::slave(){

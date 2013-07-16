@@ -179,10 +179,11 @@ void CParticle::setFlag(int inFlag){
 //Convert a particle to an array on the form:
 //[HaloID,Mass,Charge,Px,Py,Pz,Vx,Vy,Vz,Ax,Ay,Az]
 double* CParticle::Particle2Array(){
-	double * tmpArray = new double [myConstants::constants.ParticleSize]; //<- Memory leak
+	double * tmpArray = new double [ParticleSize]; //<- Memory leak
 	tmpArray[0] = HaloID;
 	tmpArray[1] = Mass;
 	//tmpArray[2] = Charge;
+	
 	for (int i = 0;i<P.getDimensions();i++){
 		tmpArray[i+2] = P[i];
 		tmpArray[i+5] = V[i];
