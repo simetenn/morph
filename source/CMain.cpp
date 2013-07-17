@@ -68,7 +68,7 @@ void CMain::master() {
 	n->saveMass("mass.dat");
 	n->saveP("HalosSingleSplit.dat");
 	//n->clear();
-	//delete n;
+	delete n;
 }
 
 void CMain::slave(){

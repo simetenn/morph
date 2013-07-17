@@ -10,14 +10,12 @@ CParticles::CParticles(){
 }
 
 CParticles::~CParticles(){
-	for (int i = 0; i < NrParticles;i++){
-		if ( Particles[i] != NULL){
-			delete Particles[i]; // <- correct?
-			Particles[i] = NULL;
-		}
-	}
+	/*for (int i = 0; i < NrParticles;i++){
+	  if ( Particles[i] != NULL)
+	  delete Particles[i]; // <- correct?
+	  }*/
 	//kill();
-	//clear();
+	clear();
 	//Particles.clear();
 }
 

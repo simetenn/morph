@@ -31,7 +31,7 @@ CHalos::CHalos(CArray* inArray){
 
 
 CHalos::~CHalos(){
-	//clear();
+	clear();
 	//kill();
 	//NrInHalo.clear();
 	//AllParticles.clear();
@@ -44,7 +44,7 @@ CHalos::~CHalos(){
 //When this is used kill() needs to be called explecitly
 void CHalos::initialize(CArray* inArray){
 	Halos.clear();
-	//kill();
+
 	NrHalos = inArray->get(0);
 	ParticleSize = myConstants::constants.ParticleSize;
 	int particle_count = 1 + NrHalos;
@@ -73,10 +73,8 @@ void CHalos::initialize(CArray* inArray){
 			delete[] tmpArray;
 			tmpArray = NULL;
 		}
-		
 
 		Halos.push_back(new CHalo(&tmpCArray));//kill
-
 	}
 }
 
@@ -225,7 +223,7 @@ void CHalos::removeHalo(int element){
 
 //Remove Halos with fewer particles than HaloLimit
 void CHalos::removeEmptyHalos(){
-	
+
 	vector<int> RemoveIndex;
 	for (int i = 0; i < NrInHalo.size(); i++) {
 		//cout << NrInHalo[i] << endl;
@@ -577,7 +575,7 @@ void CHalos::loadClaudio(string Filename){
 		delete[] block;
 		block = NULL;
 	}
-	
+
 	NrParticles = count;
 	NrInHalo.push_back(NrParticles);
 	LinkingLength = pow(1./NrParticles,1./3);
@@ -716,8 +714,6 @@ void CHalos::loadHalos(string Filename){
 	file.seekg (0, ios::beg);
 	file.read(buffer, size);
 
-	
-	
 	double* tmpArray = (double*)(buffer);
 	size = size / sizeof(double);
 	CArray inArray(size,tmpArray);
@@ -725,10 +721,6 @@ void CHalos::loadHalos(string Filename){
 	if (tmpArray != NULL) {
 		delete [] tmpArray;
 		tmpArray = NULL;
-	}
-	if (tmpArray != NULL) {
-		delete buffer;
-		buffer = NULL;
 	}
 
 	NrHalos = inArray[0];
@@ -766,7 +758,7 @@ void CHalos::loadHalos(string Filename){
 			delete tmpCArray;
 			tmpCArray = NULL;
 		}
-		
+
 	}
 
 	cout << "Finished loading particles from file" << endl;
@@ -1039,7 +1031,7 @@ void CHalos::FriendOfFriendGrid(){
 	cout << "---------------------------------" << endl;
 	cout << "Calculating Friend of Friend Grid" << endl;
 	cout << "." << endl;
-	cout << ".." << endl;	
+	cout << ".." << endl;
 	cout << "..." << endl;
 
 	//Using recursion to link all particles belonging to a halo
@@ -1062,7 +1054,7 @@ void CHalos::FriendOfFriendGrid(){
 			Particle->RemoveFromListGrid();
 			Particle->setFlag(1);
 			//int depth = 0;
-			
+
 			findNeighborsGrid(Particle, &tmpHalo);
 
 			//Only saving halos that has more than HaloLimit particles, updating NrInHalos
@@ -1266,7 +1258,7 @@ CHalos* CHalos::master(){
 		//cout << "-------------------------------------------------" << endl;
 		processor = MPI.listener(Req);
 		//cout << "Adding halo" << endl;
-		
+
 		FinalHalos->addHalos(Array[processor-1]);
 		//cout << "B" << endl;
 		if (Array[processor - 1] != NULL){
@@ -1283,7 +1275,7 @@ CHalos* CHalos::master(){
 		Array[processor-1]->front(1);
 
 		//Send the array and start listening for the response
-		
+
 		Array[processor-1]->send(processor);
 		//cout << "Listening for processor to finish" << endl;
 		Array[processor-1]->recieve(processor,&Req[processor-1]);
@@ -1320,15 +1312,15 @@ CHalos* CHalos::master(){
 	//cout << tmpIntArray[0] << endl;
 	//cout << count << endl;
 	/*int sum = 0;
-	for (int i = 0; i < size-1; i++) {
-		sum += tmpIntArray[i];
-		cout << tmpIntArray[i] << endl;
-	}
-	cout << "Total number of unbound particles: " << sum << endl;*/
+	  for (int i = 0; i < size-1; i++) {
+	  sum += tmpIntArray[i];
+	  cout << tmpIntArray[i] << endl;
+	  }
+	  cout << "Total number of unbound particles: " << sum << endl;*/
 	FinalHalos->removeEmptyHalos();
 
 	cout << "Total number of particles: " << FinalHalos->getNrParticles() << endl;
-	
+
 	return FinalHalos;
 }
 
@@ -1364,23 +1356,15 @@ void CHalos::slave(){
 		//exit(1);
 		//cout << "finshed with array" << endl;
 		tmpArray->send_slave_modified(tmpLength);
-		
+
 		//out << "Halos found: " << tmpArray->get(0) << endl;
 		//HalosArray.send_slave_modified(tmpLength);
 		if (tmpArray != NULL) {
 			delete tmpArray;
 			tmpArray = NULL;
 		}
+		kill();
 
-		for (int i = 0; i < NrHalos; i++) {
-			if (Halos[i] != NULL) {
-				delete Halos[i];
-				Halos[i] = NULL;
-			}
-		}
-		
-		//kill();
-		
 		/*CHalos SlaveHalos(&HalosArray); // Assured memory leak
 		//SlaveHalos.initialize(&HalosArray);
 		SlaveHalos.SplitHalos();
@@ -1391,10 +1375,10 @@ void CHalos::slave(){
 	}
 
 	/*kill();
-	int tmpIntArray[size-1];
-	//int send [1] = {count};
-	count = 2;
-	MPI_Gather(&count, 1, MPI_INT, &count, size-1, MPI_INT, 0, MPI_COMM_WORLD);*/
+	  int tmpIntArray[size-1];
+	  //int send [1] = {count};
+	  count = 2;
+	  MPI_Gather(&count, 1, MPI_INT, &count, size-1, MPI_INT, 0, MPI_COMM_WORLD);*/
 	cout << "Number of unbounded particles: " << count << endl;
 }
 

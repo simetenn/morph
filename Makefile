@@ -51,7 +51,7 @@ LIBS      +=
 CC         = mpic++
 
 # compiler specific flags
-CFLAGS     = -Wall -O0 -g -D$(TARGET)
+CFLAGS     = -Wall -O3 -D$(TARGET)
 # linker flags
 LDFLAGS    = -Wall
 
