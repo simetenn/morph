@@ -92,21 +92,30 @@ CParticle* CGrid::get(int x, int y, int z) {
 }
 
 CParticle* CGrid::getPeriodic(int x, int y, int z) {
-
-	x = x % Width;
-	y = y % Width;
-	z = z % Width;
+	/*cout << x << " " << y << " " << z << endl;
+	  cout << Width << endl;
+	  x = x % Width;
+	  y = y % Width;
+	  z = z % Width;
+	  cout << x << " " << y << " " << z << endl;
+	  cout << Grid.size() << " " << x + y*Width + z*Width*Width << endl;*/
+	if (x < 0) x += Width;
+	if (y < 0) y += Width;
+	if (z < 0) z += Width;
+	if (x >= Width) x -= Width;
+	if (y >= Width) y -= Width;
+	if (z >= Width) z -= Width;
 
 
 	return Grid[x + y*Width + z*Width*Width];
 }
 
 /*void CGrid::print(){
-	for (int i = 0; i < Width; i++){
-		for (int j = 0;j < Width; j++){
-			for (int k = 0;k < Width; k++){
-				Grid[i][j][k].print();
-			}
-		}
-	}
-	}*/
+  for (int i = 0; i < Width; i++){
+  for (int j = 0;j < Width; j++){
+  for (int k = 0;k < Width; k++){
+  Grid[i][j][k].print();
+  }
+  }
+  }
+  }*/

@@ -1268,14 +1268,15 @@ void CHalo::findNeighborsPhaseSpace(CParticle* inParticle, CHalo* inHalo, int L)
 	inHalo->addParticle(inParticle);
 
 	CHalo FriendList;
-
+	double distance;
 	//Loops through all particles and finds the ones
 	//within the linking length not assigned to a halo. Then adds them to a temporary halo
+	
 	list<CParticle*>::iterator itKeep;
 	for (list<CParticle*>::iterator it = linkParticles.begin(); it != linkParticles.end();) {
 		itKeep = it;
 		itKeep++;
-		double distance = inParticle->PhaseSpaceDistance(*it,&SigmaP,&SigmaV);
+		distance = inParticle->PhaseSpaceDistance(*it,&SigmaP,&SigmaV);
 		if (distance < L){
 			FriendList.addParticle(*it);
 			linkParticles.erase(it);
