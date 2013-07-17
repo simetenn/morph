@@ -85,7 +85,7 @@ CHalo::~CHalo(){
 	  }
 	  }*/
 	//clear();
-	//kill();
+	kill();
 }
 
 
@@ -98,8 +98,8 @@ void CHalo::kill(){
 		}
 	}
 
-	Halo.clear();
 	//Halo.kill();
+	Halo.clear();
 	NrParticles = 0;
 	Mass = 0;
 	MeanP.Set(0,0,0);
@@ -109,7 +109,7 @@ void CHalo::kill(){
 	ParticleSize = myConstants::constants.ParticleSize;
 
 	SubHalos.clear();
-	
+	//
 }
 
 
@@ -221,7 +221,6 @@ void CHalo::clear(){
 //Clear and remove particle information, but keeps halo information, like position and velocity
 void CHalo::clean() {
 	Halo.clear();
-	
 	//NrParticles = 0;
 	ParticleSize = myConstants::constants.ParticleSize;
 }
