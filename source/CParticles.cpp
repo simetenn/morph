@@ -22,8 +22,8 @@ CParticles::~CParticles(){
 	  if ( Particles[i] != NULL)
 	  delete Particles[i]; // <- correct?
 	  }*/
-	//kill();
-	clear();
+	kill();
+	//clear();
 	//Particles.clear();
 }
 
