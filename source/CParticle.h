@@ -66,7 +66,8 @@ class CParticle{
 
 	void setP(CVector inP);
 	void setV(CVector inV);
-
+	void setR(double inR);
+	double getR();
 
 	//Get the different values a particle has
 	//int getID();
@@ -119,7 +120,8 @@ class CParticle{
 	//static int ID_Generator;
 	CVector P,V,A;
 	int HaloID,ParticleSize,flag;
-	double Mass;
+	double Mass,r;
+	
 
 	//void Generate_ID();
 };

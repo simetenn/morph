@@ -392,8 +392,9 @@ void CHalos::loadBin(string Filename){
 	//Saving data into existing structure
 	//Saving all Particles into the first halo in Halos, get with Halos[0]
 	AllParticles.resize(count);
+	CParticle* tmpParticle; 
 	for (int i=0;i<count;i++) {
-		CParticle* tmpParticle = &AllParticles[i];
+		tmpParticle = &AllParticles[i];
 
 		tmpParticle->setPosition(block[i].P.x,block[i].P.y,block[i].P.z);
 		tmpParticle->setVelocity(block[i].V.x,block[i].V.y,block[i].V.z);
@@ -1235,9 +1236,9 @@ CHalos* CHalos::master(){
 
 		//Add how many particles in halo to be sent
 		//and that it only is one halo to the CArray
-		//cout << "before reverting to array" << endl;
+		cout << "before reverting to array" << endl;
 		Array[p-1] = Halos[count]->Halo2Array();
-		//cout << "after reverting" << endl;
+		cout << "after reverting" << endl;
 		Array[p-1]->front(NrInHalo[count]);
 		Array[p-1]->front(1);
 		MPI.End(p,0);
@@ -1253,11 +1254,11 @@ CHalos* CHalos::master(){
 	//Send halo to processor as soon as a processor finishes
 	while (count < NrHalos) {
 		//cout << "-------------------------------------------------" << endl;
-		//cout << "Calculating for halo nr: " << count << "/" << NrHalos  << endl;
-		cout << "Calculating for halo nr: " << count << "/" << NrHalos << "\r" << flush;
+		cout << "Calculating for halo nr: " << count << "/" << NrHalos  << endl;
+		//cout << "Calculating for halo nr: " << count << "/" << NrHalos << "\r" << flush;
 		//cout << "-------------------------------------------------" << endl;
 		processor = MPI.listener(Req);
-		//cout << "Adding halo" << endl;
+		cout << "Adding halo" << endl;
 
 		FinalHalos->addHalos(Array[processor-1]);
 		//cout << "B" << endl;
@@ -1346,8 +1347,9 @@ void CHalos::slave(){
 		HalosArray.recieve_slave();
 		int tmpLength = HalosArray.len();
 		initialize(&HalosArray);
+		cout << "finshed with initializing" << endl;
 		SplitHalos(count);
-		//cout << "finshed with splitting" << endl;
+		cout << "finshed with splitting" << endl;
 		//SplitMockHalos();
 		//Halos[0]->saveHalo("VelocitySplit1.dat");
 		//exit(1);
