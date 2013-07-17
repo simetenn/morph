@@ -40,7 +40,7 @@ class CParticles{
 	CParticle* get(int element);
 	//CParticle* getParticle(int element);
 	//Get Particles
-	vector<CParticle*>* getParticles();
+	vector<CParticle>* getParticles();
 
 	//Add a particle to CParticles
 	void addParticle(CParticle* inParticle);
@@ -62,14 +62,18 @@ class CParticles{
 	void RemoveFromList();
 	
 	//Copy a CParticles to a new CParticles object
-	void copy(CParticles& p); 
+	void copy(CParticles* p); 
 	//Clear and remove all information from CParticles, it does not delete particles from the memory
 	void clear();
 
 	//Delete all information from CParticles, also deletes particles from the memory
 	void kill();
+
+	void SortParticlesDistance(CVector& inMeanP);
+
+
 	
  protected:
-	vector<CParticle*> Particles;
+	vector<CParticle> Particles;
 	int NrParticles,ParticleSize,flag;
 };

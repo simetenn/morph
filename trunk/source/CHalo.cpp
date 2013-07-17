@@ -9,8 +9,8 @@ struct ParticleAndDistance{
 };
 
 //Sorts Mass and distance from center of halo f after distance from halo
-bool ParticleAndDistanceSortFunc(ParticleAndDistance* a, ParticleAndDistance* b){
-	return a->r < b->r;
+bool ParticleAndDistanceSortFunc(CParticle* a, CParticle* b){
+	return a->getR() < b->getR();
 }
 
 bool NrParticlesSortFunc(CHalo* a, CHalo* b){
@@ -98,8 +98,8 @@ void CHalo::kill(){
 		}
 	}
 
-	//Halo.kill();
-	Halo.clear();
+	Halo.kill();
+	//Halo.clear();
 	NrParticles = 0;
 	Mass = 0;
 	MeanP.Set(0,0,0);
@@ -117,7 +117,7 @@ void CHalo::kill(){
 //[NrParticles, Mass, Mean position, Mean velocity, standard deviation of position,
 //standard deviation of velocity, ParticleArray 1, ParticleArray 2, ... , ParticleArray N]
 void CHalo::set(CArray* inArray){
-	clear();
+	kill();
 	ParticleSize = myConstants::constants.ParticleSize;
 
 	//read NrParticles, Mass, Mean position, Mean velocity, standard deviation of position,
@@ -266,7 +266,7 @@ void CHalo::cleanSubHalosAll(){
 
 //Copy a CHalo object
 void CHalo::copy(CHalo* inHalo) {
-	Halo.copy(*inHalo->getParticles());
+	Halo.copy(inHalo->getParticles());
 	NrParticles = inHalo->getNrParticles();
 	Mass = inHalo->getMass();
 	MeanP = *inHalo->getMeanP();
@@ -274,7 +274,7 @@ void CHalo::copy(CHalo* inHalo) {
 	SigmaP = *inHalo->getSigmaP();
 	SigmaV = *inHalo->getSigmaV();
 	ParticleSize = myConstants::constants.ParticleSize;
-	r = *inHalo->getR();
+	//r = *inHalo->getR();
 	Phi = *inHalo->getPhi();
 	Mvir = inHalo->getMvir();
 	Rvir = inHalo->getRvir();
@@ -309,14 +309,17 @@ CArray*	 CHalo::Halo2Array(){
 		Array[i + myConstants::constants.HaloSize] = tmpArray->get(i);
 	}
 	CArray* tmpCArray = new CArray(tmpArray->len()+myConstants::constants.HaloSize, Array); //<-- kill
+
 	if (Array != NULL){
 		delete [] Array;
 		Array = NULL;
 	}
+	
 	if (tmpArray != NULL){
 		delete tmpArray;
 		tmpArray = NULL;
 	}
+	
 	return tmpCArray;
 }
 
@@ -607,10 +610,10 @@ double CHalo::getRvir(){
 	return Rvir;
 }
 
-//Return distance from center, sorted
+/*//Return distance from center, sorted
 vector<double>* CHalo::getR(){
 	return &r;
-}
+	}*/
 
 //Retturn gravitational potential, sorted as distance from center
 vector<double>* CHalo::getPhi(){
@@ -625,7 +628,7 @@ void CHalo::calculateVir(){
 	//cout << r[0] << " " << Rvir<<endl;
 	//cout << NrParticles << endl;
 	for (int i = 0; i < NrParticles; i++) {
-		if(r[i] > Rvir) {
+		if(Halo[i]->getR() > Rvir) {
 			break;
 		}
 		Mvir += Halo[i]->getMass();
@@ -633,7 +636,8 @@ void CHalo::calculateVir(){
 }
 
 void CHalo::calculateVir2(){
-	SortParticlesDistance();
+	//SortParticlesDistance();
+	Halo.SortParticlesDistance(MeanP);
 	Rvir = pow((Mass/(16./3.*atan(1)*myConstants::constants.ScaleDensity*myConstants::constants.RhoC)),1./3.);
 	Mvir = 0;
 	
@@ -643,7 +647,7 @@ void CHalo::calculateVir2(){
 	}
 	
 	for (int i = 0; i < NrParticles; i++) {
-		if(r[i] > Rvir) {
+		if(Halo[i]->getR() > Rvir) {
 			break;
 		}
 		Mvir += Halo[i]->getMass();
@@ -654,7 +658,7 @@ void CHalo::calculateVir2(){
 void CHalo::calculateVirBeta(){
 	CalculatePhiSpherical();
 	//SortParticlesDistance();
-	double maxR = r[NrParticles-1];
+	double maxR = Halo[NrParticles - 1]->getR();
 	int Shells;
 	if (myConstants::constants.NrShells > NrParticles/myConstants::constants.minParticlesShell) {
 		Shells = NrParticles/myConstants::constants.minParticlesShell;
@@ -680,7 +684,7 @@ void CHalo::calculateVirBeta(){
 	Rvir = -1;
 	int test = -1;
 	for (int n = 1; n <= Shells; n++) {
-		R = r[n*ParticlesShell];//maxR/(double)Shells*n;//
+		R = Halo[n*ParticlesShell]->getR();//r[n*ParticlesShell];//maxR/(double)Shells*n;//
 		//cout << n*ParticlesShell << endl;
 		//cout << maxR/(double)Shells*n << " " << endl;//<< r[n*ParticlesShell] << endl;
 		BetaR[n-1] = Beta(R);
@@ -704,7 +708,7 @@ void CHalo::calculateVirBeta(){
 	//cout << "here"<< endl;
 	Mvir = 0;
 	for (int i = 0; i < NrParticles; i++) {
-		if(r[i] > Rvir) {
+		if(Halo[i]->getR() > Rvir) {
 			break;
 		}
 		Mvir += Halo[i]->getMass();
@@ -731,7 +735,7 @@ double CHalo::Ps(double R){
 	int Nr;
 
 	for (Nr = 0; Nr < NrParticles; Nr++) {
-		if(r[Nr] > R) break;
+		if(Halo[Nr]->getR() > R) break;
 	}
 
 	for (int i = (int)(Nr*0.8); i < Nr; i++) {
@@ -748,7 +752,7 @@ double CHalo::Es(double R){
 double CHalo::Tr(double R){
 	double tmpTr = 0;
 	for (int i = 0; i < NrParticles; i++) {
-		if(r[i] > R) break;
+		if(Halo[i]->getR() > R) break;
 		tmpTr += getMass()*Halo[i]->getV().Length2();
 	}
 	return tmpTr/2.;
@@ -757,7 +761,7 @@ double CHalo::Tr(double R){
 double CHalo::Wr(double R){
 	double tmpWr = 0;
 	for (int i = 0; i < NrParticles; i++) {
-		if(r[i] > R) break;
+		if(Halo[i]->getR() > R) break;
 		tmpWr += getMass()*Phi[i];
 	}
 	return tmpWr;
@@ -768,7 +772,7 @@ double CHalo::Wr(double R){
 int CHalo::ParticlesOutsideVir(){
 	int i;
 	for (i = 0; i < NrParticles; i++) {
-		if(r[i] > Rvir) break;
+		if(Halo[i]->getR() > Rvir) break;
 	}
 	//cout << "NrParticles " << NrParticles << " Particles inside Rvir " << i <<endl;
 	return NrParticles-i-1;
@@ -861,7 +865,7 @@ void CHalo::addParticle(CParticle* inParticle){
 void CHalo::removeParticle(int element){
 	Mass -= Halo[element]->getMass();
 	Halo.removeParticle(element);
-	r.erase(r.begin()+element);
+	//r.erase(r.begin()+element);
 	Phi.erase(Phi.begin()+element);
 	NrParticles--;
 }
@@ -1102,7 +1106,7 @@ void CHalo::savePhi(string Filename){
 
 	//Saves data for each particle to file
 	for (int i = 0;i<NrParticles;i++){
-		file << Phi[i] << " " << r[i] << endl;
+		file << Phi[i] << " " << Halo[i]->getR() << endl;
 	}
 	file.close();
 }
@@ -1708,25 +1712,20 @@ void CHalo::mergeStatisticalRec(CHalo* prevHalo, int &flag){
 
 //Sorts the particles in the halo after distance from the center of the halo,
 void CHalo::SortParticlesDistance(){
-	vector<ParticleAndDistance*> data;
-
-	for (int i = 0; i < NrParticles; i++) {
-		ParticleAndDistance* tmpData = new ParticleAndDistance;
-		tmpData->r= (MeanP - Halo[i]->getP()).Length();
-		tmpData->Particle = Halo[i];
-		data.push_back(tmpData);
+	Halo.SortParticlesDistance(MeanP);
+	//exit(0);
+	/*for (int i = 0; i < NrParticles; i++) {
+		Halo[i]->setR((MeanP - Halo[i]->getP()).Length());
 	}
-
-	sort(data.begin(),data.end(),&ParticleAndDistanceSortFunc);
-
+	sort(data.begin(),data.end(),&ParticleAndDistanceSortFunc);*/
 	/*cout << "sorted particle distances " << endl;
 	  for (int i = 0; i < NrParticles; i++) {
 	  cout << data[i]->r << endl;
 	  }*/
-	Halo.clear();
-	r.resize(NrParticles);
-	//cout << "sorted particle distances " << endl;
-	for (int i = 0; i < NrParticles; i++) {
+	//Halo.kill();
+	//r.resize(NrParticles);
+	
+/*	for (int i = 0; i < NrParticles; i++) {
 		//cout << data[i]->r << endl;
 		Halo.addParticle(data[i]->Particle);
 
@@ -1735,7 +1734,7 @@ void CHalo::SortParticlesDistance(){
 			delete data[i];
 			data[i] = NULL;
 		}
-	}
+		}*/
 
 	/*cout << "sorted particle distances " << endl;
 	  for (int i = 0; i < NrParticles; i++) {
@@ -1747,9 +1746,10 @@ void CHalo::SortParticlesDistance(){
 
 //Calculate the gravitational potential using a spherical approximation
 void CHalo::CalculatePhiSpherical(){
-	//cout << "here" << endl;
-	SortParticlesDistance();
-
+	cout << "A" << endl;
+	//SortParticlesDistance();
+	Halo.SortParticlesDistance(MeanP);
+	cout << "B" << endl;
 
 	//Move this to the correct place to calulate virialisation stuff. Probably statistics somewhere
 	calculateVir();
@@ -1759,14 +1759,18 @@ void CHalo::CalculatePhiSpherical(){
 	double resPhi0 = Mvir/Rvir;
 	double prevPhi0 = resPhi0;
 	double Phi0;// = Mvir/Rvir;
-
+	double R;
+	double prevR = Halo[0]->getR();
+	
 	for (int i = 1; i < NrParticles-1; i++) {
-		if(r[i] > Rvir) break;
+		R = Halo[i]->getR();
+		if(R > Rvir) break;
 		M += Halo[i]->getMass();
-		Phi0 = M/(r[i]*r[i]);
-		resPhi0 += 0.5*(3*Phi0 - prevPhi0)*(r[i]-r[i-1]);
+		Phi0 = M/(R*R);
+		resPhi0 += 0.5*(3*Phi0 - prevPhi0)*(R - prevR);
 		//Phi0 += M/(r[i]*r[i])*(r[i]-r[i-1]);
 		prevPhi0 = Phi0;
+		prevR = R;
 		//Phi0 += Halo[i]->getMass()/(r[i]*r[i]);
 	}
 	//resPhi0 +=  Mvir/Rvir;
@@ -1785,16 +1789,20 @@ void CHalo::CalculatePhiSpherical(){
 	Phi[0] = resPhi0;
 	double prevPhi = resPhi0;
 	double nowPhi;
+	//double R;
+	prevR = Halo[0]->getR();
 	//nowPhi = myConstants::constants.G*M/(r[1]*r[1]);
 	//prevPhi = 0.5*(3*nowPhi - prevPhi)*(r[i+1]-r[i]) + Phi[i-1];
 	//Phi.push_back(myConstants::constants.G*Halo[1]->getMass()/(r[1]*r[1])*(r[1]-r[0]));
 	for (int i = 1; i < NrParticles; i++) {
+		R = Halo[i]->getR();
 		//Phi.push_back(myConstants::constants.G*Halo[i]->getMass()/(r[i]*r[i])+Phi[i-1]);
 		M += Halo[i]->getMass();
 		//Phi[i] = myConstants::constants.G*M/(r[i]*r[i])*(r[i]-r[i-1]) + Phi[i-1];
-		nowPhi = myConstants::constants.G*M/(r[i]*r[i]);
-		Phi[i] = 0.5*(3*nowPhi - prevPhi)*(r[i]-r[i-1]) + Phi[i-1];
+		nowPhi = myConstants::constants.G*M/(R*R);
+		Phi[i] = 0.5*(3*nowPhi - prevPhi)*(R - prevR) + Phi[i-1];
 		prevPhi = nowPhi;
+		prevR = R;
 	}
 
 	//cout << "PhiTot: " << Phi[NrParticles-1] << endl;
@@ -1827,8 +1835,9 @@ void CHalo::UnbindAll(int& count){
 
 //Method for unbinding particles from a single halo
 void CHalo::Unbind(int& count){
+	cout << "Calculating phi" << endl;
 	CalculatePhiSpherical();
-	//cout << " after vCalculatePhiSpherical();" << endl;
+	cout << " after CalculatePhiSpherical();" << endl;
 	vector<int> RemoveIndex;
 	//cout << "------------"<< count << "--------------" << endl;
 	for (int i = 0; i < NrParticles; i++) {
@@ -1846,11 +1855,13 @@ void CHalo::Unbind(int& count){
 
 	count += RemoveIndex.size();
 	//count++;
+	cout << "found particles to be removed" << endl;
+	cout << RemoveIndex.size() << endl;
 	//Be carefull, this is gona fuck me up royaly(with the RemoveIndex[i]-i)
 	for (int i = 0; i < RemoveIndex.size(); i++) {
 		removeParticle(RemoveIndex[i]-i);
 	}
-
+	cout << "removed particles" << endl;
 	if (RemoveIndex.size() > myConstants::constants.minUnbind and NrParticles >= myConstants::constants.HaloLimit) Unbind(count);
 }
 
@@ -1860,17 +1871,23 @@ void CHalo::Unbind(int& count){
 //Do the splitting of halos, assigning particles to all halos, and merge statisticaly equal halos
 void CHalo::createSubHalos(int& count){
 	CParticles allParticles;
-	allParticles.copy(Halo);
+	cout << "copying" << endl;
+	allParticles.copy(&Halo);
+	cout << "splitting" << endl;
 	SplitHalo();
-	//cout << "Creating seed halos" << endl;
+	cout << "Creating seed halos" << endl;
 	createSeedHalos();
-	//cout << "Assigning particles to seed halos" << endl;
+	cout << "Assigning particles to seed halos" << endl;
 	assignParticlesSeed(&allParticles);
+	cout << "Generating substructure" << endl;
 	generateSubstructure();
+	cout << "Calculating stuff" << endl;
 	calculateMass();
 	CalculateStatisticsNoMass();
+	cout << "Unbinding" << endl;
 	UnbindAll(count);
 	CalculateStatisticsNoMass();
+	cout << "finished" << endl;
 	//calculateVir2();
 	//calculateVirBeta();
 	/*assignParticles(&allParticles);

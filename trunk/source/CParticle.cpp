@@ -73,9 +73,9 @@ void CParticle::RemoveFromListGrid(){
 //Somehing weird with this???
 //Set the different values a particle has
 void CParticle::setHalo(int element){
-	if (element < 0){
+	/*if (element < 0){
 		cout << "Warning: This is negative, it should always be a positive number" << endl;
-	}
+		}*/
 	HaloID = element;
 }
 
@@ -83,6 +83,13 @@ void CParticle::setMass(double in_M){
 	Mass = in_M;
 }
 
+void CParticle::setR(double inR){
+	r = inR;
+}
+
+double CParticle::getR(){
+	return r;
+}
 
 /*void CParticle::setCharge(double in_C){
 	Charge = in_C;
@@ -91,6 +98,7 @@ void CParticle::setMass(double in_M){
 
 void CParticle::setPosition(double Px, double Py, double Pz){
 	P.Set(Px,Py,Pz);
+	
 }
 
 

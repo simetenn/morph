@@ -18,7 +18,7 @@ void CMain::master() {
 	//m.CalculateAllStatistics();
 	//m.printHalos();
 	//cout << m.getNrParticles() << endl;
-	//m.print();
+	//m.printHalos();
 	//exit(1);
 
 	
