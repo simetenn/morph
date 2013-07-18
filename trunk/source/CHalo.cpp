@@ -112,6 +112,21 @@ void CHalo::kill(){
 	//
 }
 
+void CHalo::singleKill(){
+	Halo.kill();
+	//Halo.clear();
+	NrParticles = 0;
+	Mass = 0;
+	MeanP.Set(0,0,0);
+	MeanV.Set(0,0,0);
+	SigmaP.Set(0,0,0);
+	SigmaV.Set(0,0,0);
+	ParticleSize = myConstants::constants.ParticleSize;
+
+	//SubHalos.clear();
+	//
+}
+
 
 //Set the values of a CHalo object from an array on the form:
 //[NrParticles, Mass, Mean position, Mean velocity, standard deviation of position,
@@ -220,7 +235,8 @@ void CHalo::clear(){
 
 //Clear and remove particle information, but keeps halo information, like position and velocity
 void CHalo::clean() {
-	Halo.clear();
+	//Halo.clear();
+	Halo.kill();
 	//NrParticles = 0;
 	ParticleSize = myConstants::constants.ParticleSize;
 }
@@ -228,8 +244,9 @@ void CHalo::clean() {
 void CHalo::eraseSubHalos(){
 	for (list<CHalo*>::iterator it = SubHalos.begin(); it != SubHalos.end(); it++) {
 		(*it)->eraseSubHalos();
+		(*it)->kill();
 	}
-	SubHalos.clear();
+	//SubHalos.clear();
 }
 
 
@@ -462,7 +479,8 @@ void CHalo::loadStructure(string Filename){
 //This recreates the halo structire from SubHalosStructure2Array()
 //If this is used I need to manually kill the halos stored in it.
 void CHalo::fromStructureArray(CArray* inArray){
-	clear();
+	//clear();
+	kill();
 	int NrHalos = inArray->get(0);
 	ParticleSize = myConstants::constants.ParticleSize;
 
@@ -1250,7 +1268,7 @@ void CHalo::FriendOfFriendPhaseSpace(){
 	while (!linkParticles.empty()){
 		Particle = linkParticles.begin();
 		linkParticles.erase(Particle);
-		tmpHalo.clear();
+		tmpHalo.kill();
 		//Calls findNeighbors to find the particles within linking distance
 
 		findNeighborsPhaseSpace(*Particle, &tmpHalo, L);
@@ -1461,6 +1479,7 @@ void CHalo::generateSubstructure(){
 	//sort(SeedHalos.begin(),SeedHalos.end(),&NrParticlesSortFunc);
 	vector<double> distances (SeedHalos.size());
 	vector<list<CHalo*>::iterator> iterators (SeedHalos.size());
+	
 	int index;
 	SeedHalos.sort(&NrParticlesSortFunc);
 
@@ -1469,6 +1488,7 @@ void CHalo::generateSubstructure(){
 	}
 
 	if (SeedHalos.size() == 1) {
+		//kill();
 		copy(*SeedHalos.begin());
 		SeedHalos.clear();
 		return;
@@ -1478,25 +1498,41 @@ void CHalo::generateSubstructure(){
 	int i;
 	list<CHalo*>::iterator lastIt;
 	for (list<CHalo*>::iterator it = SeedHalos.begin(); it != SeedHalos.end();it++) {
-		i = 0;
+		/*	i = 0;
+		//Calculate the distance for all halos that have more particles
 		for (list<CHalo*>::iterator it2 = it; it2 != SeedHalos.end(); it2++) {
-			if ((*it)->getNrParticles() < (*it2)->getNrParticles() && it2 != it) {
+			if ((*it)->getNrParticles() < (*it2)->getNrParticles()) {
 				//cout << (*it)->getNrParticles() << " " << (*it2)->getNrParticles() << endl;
 				distances[i] = (*it)->PhaseSpaceDistanceHaloHalo(*it2);
 				iterators[i] = it2;
 				i++;
 			}
 		}
+		//Find the index where the distance is smallest
 		index = min_element(distances.begin(), distances.begin() + i) - distances.begin();
+		cout << (*iterators[index])->getNrParticles() << " " << (*it)->getNrParticles() << endl;
 
-		if ((*iterators[index])->getNrParticles() != (*it)->getNrParticles()) {
+		//If the halo that us supposed to be attached isn't the last one 
+		if ((*iterators[index])->getNrParticles() != (*it)->getNrParticles() ) {
+			//if ((*iterators[index])->getNrParticles() !=  ) {
+				
+			//}
 			(*iterators[index])->attachSubHaloBack(*it);
-		}
-
+			}*/
 		lastIt = it;
 
 	}
+	
+	cout << "copying" << endl;
+	//singleKill();
 	copy(*lastIt);
+	//kill();
+	//(*lastIt)->singleKill();
+	/*cout << (*lastIt)->getNrParticles() << endl;
+	delete *lastIt;
+
+	cout << NrParticles << endl;
+	cout << (*lastIt)->getNrParticles() << endl;*/
 	SeedHalos.clear();
 }
 
@@ -1883,12 +1919,12 @@ void CHalo::createSubHalos(int& count){
 	cout << "Generating substructure" << endl;
 	generateSubstructure();
 	cout << "Calculating stuff" << endl;
-	calculateMass();
+	/*calculateMass();
 	CalculateStatisticsNoMass();
 	cout << "Unbinding" << endl;
 	UnbindAll(count);
 	CalculateStatisticsNoMass();
-	cout << "finished" << endl;
+	cout << "finished" << endl;*/
 	//calculateVir2();
 	//calculateVirBeta();
 	/*assignParticles(&allParticles);
@@ -1921,7 +1957,7 @@ void CHalo::createMockSubHalos(){
 			NrParticles--;
 		}
 		if (tmpHalo.getNrParticles() > 0) SubHalos.push_back(new CHalo(&tmpHalo));
-		tmpHalo.clear();
+		tmpHalo.kill();
 
 	}
 
@@ -1949,7 +1985,7 @@ void CHalo::createMockSubHalosRec(int NrSubHalos, int NrParticlesSubHalo, int Ma
 			inHalo.removeParticle(0);
 		}
 		if (tmpHalo.getNrParticles() >0) SubHalos.push_back(new CHalo(&tmpHalo));
-		tmpHalo.clear();
+		tmpHalo.kill();
 
 	}
 
