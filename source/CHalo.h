@@ -19,6 +19,8 @@ class CHalo{
 
 	//Kill all halos and subhalos and delete the particles from memory
 	void kill();
+	//Kill all halo and delete the particles from memory
+	void singleKill();
 	//Set the values of a CHalo object from an array on the form:
 	//[NrParticles, Mass, Mean position, Mean velocity, standard deviation of position,
 	//standard deviation of velocity, ParticleArray 1, ParticleArray 2, ... , ParticleArray N]
