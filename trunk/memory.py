@@ -57,9 +57,11 @@ for i in xrange(1,N):
     legend.append("Processor nr: " + str(i))
 
 #pylab.plot(t,data[:,1])
+
 pylab.legend(legend,loc=2)
 
 pylab.xlabel("Time [s]")
 pylab.ylabel("% Memory usage")
 pylab.savefig("slaves.png")
+
 

@@ -122,7 +122,7 @@ void CArray::linspace(double start, double end, int in_length){
 
 //Print CArray line by line
 void CArray::print(){
-	for (int i = 0; i < 20; i++) {
+	for (int i = 0; i < length; i++) {
 		cout << array[i] << endl;
 	}
 }

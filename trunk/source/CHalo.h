@@ -19,8 +19,6 @@ class CHalo{
 
 	//Kill all halos and subhalos and delete the particles from memory
 	void kill();
-	//Kill all halo and delete the particles from memory
-	void singleKill();
 	//Set the values of a CHalo object from an array on the form:
 	//[NrParticles, Mass, Mean position, Mean velocity, standard deviation of position,
 	//standard deviation of velocity, ParticleArray 1, ParticleArray 2, ... , ParticleArray N]
@@ -108,6 +106,12 @@ class CHalo{
 	int getNrParticles();
 	//Set NrParticles to count
 	void setNrParticles(int count);
+	void setMass(double inMass);
+	void setMeanP(double x, double y, double z);
+	void setMeanV(double x, double y, double z);
+	void setSigmaP(double x, double y, double z);
+	void setSigmaV(double x, double y, double z);
+
 	//return the number of subHalos
 	int getNrSubHalos();
 	//Calculate the total nNrParticles in all subhalos
@@ -163,6 +167,8 @@ class CHalo{
 
 	//Add a particle to the halo
 	void addParticle(CParticle* inParticle);
+	void addParticleSimple(CParticle* inParticle);
+
 	//Add a halo to the halo
 	void addHalo(CHalo* inHalo);
 	//Add several particles to the Halo
@@ -294,6 +300,6 @@ class CHalo{
 	list<CHalo*> SubHalos, SeedHalos;
 	list<CParticle*> linkParticles;
 	//New values, needs to be added support for the relevant MPI send/recieve routines
-	vector<double> Phi;
+	vector<double> r, Phi;
 	double Mvir,Rvir;
 };

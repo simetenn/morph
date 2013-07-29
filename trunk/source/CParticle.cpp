@@ -83,13 +83,6 @@ void CParticle::setMass(double in_M){
 	Mass = in_M;
 }
 
-void CParticle::setR(double inR){
-	r = inR;
-}
-
-double CParticle::getR(){
-	return r;
-}
 
 /*void CParticle::setCharge(double in_C){
 	Charge = in_C;
@@ -98,7 +91,6 @@ double CParticle::getR(){
 
 void CParticle::setPosition(double Px, double Py, double Pz){
 	P.Set(Px,Py,Pz);
-	
 }
 
 
