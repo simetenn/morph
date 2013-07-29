@@ -173,13 +173,13 @@ class CHalos{
 
 
  protected:
-	//vector<CParticle> AllParticles;
+	vector<CParticle> AllParticles;
 	int NrHalos,ParticleSize, NrParticles;
 	double LinkingLength;
 	CParticles allParticles;
 	CParticle* searchParticle;
 	CGrid Grid;
-	//list<CParticle*> linkParticles;
+
 	vector<int> NrInHalo;
 	vector<CHalo*> Halos;
 };

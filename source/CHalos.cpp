@@ -31,8 +31,8 @@ CHalos::CHalos(CArray* inArray){
 
 
 CHalos::~CHalos(){
-	//clear();
-	kill();
+	clear();
+	//kill();
 	//NrInHalo.clear();
 	//AllParticles.clear();
 }
@@ -42,40 +42,110 @@ CHalos::~CHalos(){
 //nr of halos, nr of particles in halo 1, nr of particles in halo 2, ... ,
 //nr of particles of in halo N, halo array 1, halo array 2, ... halo array N]
 //When this is used kill() needs to be called explecitly
+/*void CHalos::initialize(CArray* inArray){
+  Halos.clear();
+
+  NrHalos = inArray->get(0);
+  ParticleSize = myConstants::constants.ParticleSize;
+  int particle_count = 1 + NrHalos;
+  NrParticles = (inArray->len() - 1 - NrHalos - NrHalos*myConstants::constants.HaloSize)/ParticleSize;
+
+  for (int i = 0; i < NrHalos; i++){
+  //Set halo data such as position, velocity ...
+  NrInHalo.push_back(inArray->get(1+i));
+  double* tmpArray = new double [NrInHalo[i]*ParticleSize + myConstants::constants.HaloSize];
+  for (int l = 0; l < myConstants::constants.HaloSize; l++){
+  tmpArray[l] = inArray->get(particle_count);
+  particle_count++;
+  }
+
+  //Set data for each particle in the halo
+  for (int j = 0; j < NrInHalo[i];j++){
+  for (int k = 0; k < ParticleSize;k++){
+  tmpArray[j*ParticleSize+k+myConstants::constants.HaloSize] = inArray->get(particle_count);
+  particle_count++;
+  }
+  }
+
+  CArray tmpCArray(NrInHalo[i]*ParticleSize + myConstants::constants.HaloSize, tmpArray);
+
+  if (tmpArray != NULL) {
+  delete[] tmpArray;
+  tmpArray = NULL;
+  }
+
+  Halos.push_back(new CHalo(&tmpCArray));//kill
+  }
+  }*/
+
+//Initializes all values in CHalos from an in array on the form:
+//nr of halos, nr of particles in halo 1, nr of particles in halo 2, ... ,
+//nr of particles of in halo N, halo array 1, halo array 2, ... halo array N]
+//When this is used kill() needs to be called explecitly
 void CHalos::initialize(CArray* inArray){
-	//Halos.clear();
-	kill();
+	//cout << "A" << endl;
+	Halos.clear();
+
 	NrHalos = inArray->get(0);
 	ParticleSize = myConstants::constants.ParticleSize;
 	int particle_count = 1 + NrHalos;
+	int count = 0;
 	NrParticles = (inArray->len() - 1 - NrHalos - NrHalos*myConstants::constants.HaloSize)/ParticleSize;
 
+	AllParticles.clear();
+	AllParticles.resize(NrParticles);
+
+	CParticle* tmpParticle;
+	CHalo* tmpHalo;
+	//cout << "B" << endl;
+	//cout << NrParticles << endl;
+	//Initialize particle data
 	for (int i = 0; i < NrHalos; i++){
+		//cout << "For halo nr: " << i << endl;
 		//Set halo data such as position, velocity ...
 		NrInHalo.push_back(inArray->get(1+i));
-		double* tmpArray = new double [NrInHalo[i]*ParticleSize + myConstants::constants.HaloSize];
-		for (int l = 0; l < myConstants::constants.HaloSize; l++){
-			tmpArray[l] = inArray->get(particle_count);
-			particle_count++;
-		}
+		//double* tmpArray = new double [NrInHalo[i]*ParticleSize + myConstants::constants.HaloSize];
 
-		//Set data for each particle in the halo
+		Halos.push_back(new CHalo());
+		tmpHalo = Halos[i];
+		tmpHalo->setNrParticles(inArray->get(particle_count));
+		tmpHalo->setMass(inArray->get(particle_count + 1));
+		tmpHalo->setMeanP(inArray->get(particle_count + 2),
+						  inArray->get(particle_count + 3),
+						  inArray->get(particle_count + 4));
+		tmpHalo->setMeanV(inArray->get(particle_count + 5),
+						  inArray->get(particle_count + 6),
+						  inArray->get(particle_count + 7));
+		tmpHalo->setSigmaP(inArray->get(particle_count + 8),
+						   inArray->get(particle_count + 9),
+						   inArray->get(particle_count + 10));
+		tmpHalo->setSigmaV(inArray->get(particle_count + 11),
+						   inArray->get(particle_count + 12),
+						   inArray->get(particle_count + 13));
+
+		particle_count += myConstants::constants.HaloSize;
+		//cout << "Before assigning data to particle" << endl;
 		for (int j = 0; j < NrInHalo[i];j++){
-			for (int k = 0; k < ParticleSize;k++){
-				tmpArray[j*ParticleSize+k+myConstants::constants.HaloSize] = inArray->get(particle_count);
-				particle_count++;
-			}
+			//cout << "For particle nr: " << count << endl;
+			tmpParticle = &AllParticles[count];
+
+			tmpParticle->setHalo(inArray->get(particle_count));
+			tmpParticle->setMass(inArray->get(particle_count + 1));
+			tmpParticle->setPosition(inArray->get(particle_count + 2),
+									 inArray->get(particle_count + 3),
+									 inArray->get(particle_count + 4));
+			tmpParticle->setVelocity(inArray->get(particle_count + 5),
+									 inArray->get(particle_count + 6),
+									 inArray->get(particle_count + 7));
+			tmpParticle->setAcceleration(inArray->get(particle_count + 8),
+										 inArray->get(particle_count + 9),
+										 inArray->get(particle_count + 10));
+			tmpHalo->addParticleSimple(tmpParticle);
+			particle_count += ParticleSize;
+			count++;
 		}
-
-		CArray tmpCArray(NrInHalo[i]*ParticleSize + myConstants::constants.HaloSize, tmpArray);
-
-		if (tmpArray != NULL) {
-			delete[] tmpArray;
-			tmpArray = NULL;
-		}
-
-		Halos.push_back(new CHalo(&tmpCArray));//kill
 	}
+	//cout << "Finished initializing" << endl;
 }
 
 
@@ -90,7 +160,7 @@ void CHalos::clear(){
 		}
 	}
 	NrInHalo.clear();
-	//AllParticles.clear();
+	AllParticles.clear();
 	searchParticle=NULL;
 	NrParticles = 0;
 	NrHalos = 0;
@@ -99,15 +169,14 @@ void CHalos::clear(){
 //Remove all data from CHalos, also deletes all loaded particles from memory
 void CHalos::kill(){
 	for (int i = 0; i < NrHalos; i++) {
-		//Halos[i]->kill();
+		Halos[i]->kill();
 		if (Halos[i] != NULL) {
 			delete Halos[i];
 			Halos[i] = NULL;
 		}
 	}
-	Halos.clear();
 	NrInHalo.clear();
-	//AllParticles.clear();
+	AllParticles.clear();
 	searchParticle=NULL;
 	NrParticles = 0;
 	NrHalos = 0;
@@ -365,159 +434,158 @@ void CHalos::CalculatePhiSpherical(){
 
 
 //Load a binary file from a N-body simulation into memory. Our format
-/*void CHalos::loadBin(string Filename){
-  ifstream file((myConstants::constants.inData + Filename).c_str(), ios::in | ios::binary);
+void CHalos::loadBin(string Filename){
+	ifstream file((myConstants::constants.inData + Filename).c_str(), ios::in | ios::binary);
 
-  cout << "---------------------------------" << endl;
-  cout << "Reading file " << Filename << endl;
+	cout << "---------------------------------" << endl;
+	cout << "Reading file " << Filename << endl;
 
-  unsigned int count = -1;
+	unsigned int count = -1;
 
-  //Reading binary file into memory
-  file.read((char *)&count, sizeof(unsigned int));
-  particle_save* block = new particle_save[count];
-  file.read((char *)block, sizeof(particle_save)*count);
+	//Reading binary file into memory
+	file.read((char *)&count, sizeof(unsigned int));
+	particle_save* block = new particle_save[count];
+	file.read((char *)block, sizeof(particle_save)*count);
 
-  double ParticleMass = myConstants::constants.RhoC*myConstants::constants.OmegaD*pow(myConstants::constants.BoxSize,3)/count;
+	double ParticleMass = myConstants::constants.RhoC*myConstants::constants.OmegaD*pow(myConstants::constants.BoxSize,3)/count;
 
-  Halos.clear();
-  NrInHalo.clear();
-  NrHalos = 1;
+	Halos.clear();
+	NrInHalo.clear();
+	NrHalos = 1;
 
-  CHalo* tmpHalo = new CHalo(); // <---- kill
-  Halos.push_back(tmpHalo);
+	CHalo* tmpHalo = new CHalo(); // <---- kill
+	Halos.push_back(tmpHalo);
 
-  cout << "Copying data ..." << endl;
-  cout << "Nr of particles: "<< count << endl;
+	cout << "Copying data ..." << endl;
+	cout << "Nr of particles: "<< count << endl;
 
-  //Saving data into existing structure
-  //Saving all Particles into the first halo in Halos, get with Halos[0]
-  AllParticles.resize(count);
-  CParticle* tmpParticle;
-  for (int i=0;i<count;i++) {
-  tmpParticle = &AllParticles[i];
+	//Saving data into existing structure
+	//Saving all Particles into the first halo in Halos, get with Halos[0]
+	AllParticles.resize(count);
+	for (int i=0;i<count;i++) {
+		CParticle* tmpParticle = &AllParticles[i];
 
-  tmpParticle->setPosition(block[i].P.x,block[i].P.y,block[i].P.z);
-  tmpParticle->setVelocity(block[i].V.x,block[i].V.y,block[i].V.z);
-  tmpParticle->setAcceleration(0,0,0);
-  tmpParticle->setMass(ParticleMass);
+		tmpParticle->setPosition(block[i].P.x,block[i].P.y,block[i].P.z);
+		tmpParticle->setVelocity(block[i].V.x,block[i].V.y,block[i].V.z);
+		tmpParticle->setAcceleration(0,0,0);
+		tmpParticle->setMass(ParticleMass);
 
-  tmpHalo->addParticle(tmpParticle);
-  }
+		tmpHalo->addParticle(tmpParticle);
+	}
 
-  cout << "Done loading!" << endl;
-  cout << "---------------------------------" << endl;
-  file.close();
-  if (block != NULL) {
-  delete[] block;
-  block = NULL;
-  }
-  NrParticles = count;
-  NrInHalo.push_back(NrParticles);
-  LinkingLength = pow(1./NrParticles,1./3);
-  }*/
+	cout << "Done loading!" << endl;
+	cout << "---------------------------------" << endl;
+	file.close();
+	if (block != NULL) {
+		delete[] block;
+		block = NULL;
+	}
+	NrParticles = count;
+	NrInHalo.push_back(NrParticles);
+	LinkingLength = pow(1./NrParticles,1./3);
+}
 
 
 
 
 
 //Load a Gadget 2 formated binary file.
-/*void CHalos::loadGadget(string Filename) {
-  fstream file((myConstants::constants.inData + Filename).c_str(), ios::in | ios::binary);
-  unsigned int dummy;
+void CHalos::loadGadget(string Filename) {
+	fstream file((myConstants::constants.inData + Filename).c_str(), ios::in | ios::binary);
+	unsigned int dummy;
 
 
-  Halos.clear();
-  NrInHalo.clear();
-  NrHalos = 1;
+	Halos.clear();
+	NrInHalo.clear();
+	NrHalos = 1;
 
 
-  CHalo* tmpHalo = new CHalo(); // <---- kill
-  Halos.push_back(tmpHalo);
+	CHalo* tmpHalo = new CHalo(); // <---- kill
+	Halos.push_back(tmpHalo);
 
-  gadget_header header;
+	gadget_header header;
 
-  //Read the header file
-  file.read((char *)&dummy, sizeof(dummy));
-  file.read((char *)&header, sizeof(gadget_header));
-  file.read((char *)&dummy, sizeof(dummy));
+	//Read the header file
+	file.read((char *)&dummy, sizeof(dummy));
+	file.read((char *)&header, sizeof(gadget_header));
+	file.read((char *)&dummy, sizeof(dummy));
 
-  int NrParticles = 0;
-  for (int i=0;i<6;i++) {
-  NrParticles+=header.npartTotal[i];
-  //cout << header.mass[i] << endl;
-  }
+	int NrParticles = 0;
+	for (int i=0;i<6;i++) {
+		NrParticles+=header.npartTotal[i];
+		//cout << header.mass[i] << endl;
+	}
 
-  header.BoxSize = header.BoxSize/myConstants::constants.convDistance;
+	header.BoxSize = header.BoxSize/myConstants::constants.convDistance;
 
-  //double ParticleMass = myConstants::constants.RhoC*myConstants::constants.OmegaD*pow(BoxSize,3)/count;
+	//double ParticleMass = myConstants::constants.RhoC*myConstants::constants.OmegaD*pow(BoxSize,3)/count;
 
-  cout << header.BoxSize << endl;
+	cout << header.BoxSize << endl;
 
-  cout << "Copying data ..." << endl;
-  cout << "Nr of particles: "<< NrParticles << endl;
+	cout << "Copying data ..." << endl;
+	cout << "Nr of particles: "<< NrParticles << endl;
 
-  AllParticles.resize(NrParticles);
-
-
-  //Read all positions from file and set the mass for each particle
-  int pos = 0;
-  float P[3];
-  for(int k=0;k<6;k++) {
-  for(int n=0;n<header.npart[k];n++) {
-  CParticle* tmpParticle = &AllParticles[pos];
-  file.read((char *) &P, sizeof(float)*3);
-  tmpParticle->setPosition(P[0],P[1],P[2]);
-  tmpParticle->setMass(header.mass[k]*myConstants::constants.convMass);
-  tmpHalo->addParticle(tmpParticle);
-  pos++;
-  }
-  }
-  file.read((char *)&dummy, sizeof(dummy));
+	AllParticles.resize(NrParticles);
 
 
-  //Read all velocities from file
-  pos = 0;
-  for(int k=0;k<6;k++) {
-  for(int n=0;n<header.npart[k];n++) {
-  file.read((char *)&P, sizeof(float)*3);
-  tmpHalo[0][pos]->setVelocity(P[0]/myConstants::constants.convVelocity,P[1]/myConstants::constants.convVelocity,P[2]/myConstants::constants.convVelocity);
-  tmpHalo[0][pos]->setAcceleration(0,0,0);
-  pos++;
-  }
-  }
-
-  /*file.read((char *)&dummy, sizeof(dummy));
-  pos = 0;
-  for(int k=0;k<6;k++) {
-  for(int n=0;n<header.npart[k];n++) {
-  file.read((char *)&dummy, sizeof(int));
-  //objects[pos].V = CVector(P[0],P[1],P[2])/(Cosmology->UniverseSize*1000);// - CVector(0.5,0.5,0.5);
-  }
-  }
-  file.read((char *)&dummy, sizeof(dummy));
-  float mass;
-  for(int k=0;k<6;k++) {
-  for(int n=0;n<header.npart[k];n++) {
-  file.read((char *)&mass, sizeof(float));
-  //objects[pos].V = CVector(P[0],P[1],P[2])/(Cosmology->UniverseSize*1000);// - CVector(0.5,0.5,0.5);
-  tmpHalo[0][pos]->setMass(mass*1e10);
-  //cout << mass << endl;
-  pos++;
-  }
-  }*/
+	//Read all positions from file and set the mass for each particle
+	int pos = 0;
+	float P[3];
+	for(int k=0;k<6;k++) {
+		for(int n=0;n<header.npart[k];n++) {
+			CParticle* tmpParticle = &AllParticles[pos];
+			file.read((char *) &P, sizeof(float)*3);
+			tmpParticle->setPosition(P[0],P[1],P[2]);
+			tmpParticle->setMass(header.mass[k]*myConstants::constants.convMass);
+			tmpHalo->addParticle(tmpParticle);
+			pos++;
+		}
+	}
+	file.read((char *)&dummy, sizeof(dummy));
 
 
+	//Read all velocities from file
+	pos = 0;
+	for(int k=0;k<6;k++) {
+		for(int n=0;n<header.npart[k];n++) {
+			file.read((char *)&P, sizeof(float)*3);
+			tmpHalo[0][pos]->setVelocity(P[0]/myConstants::constants.convVelocity,P[1]/myConstants::constants.convVelocity,P[2]/myConstants::constants.convVelocity);
+			tmpHalo[0][pos]->setAcceleration(0,0,0);
+			pos++;
+		}
+	}
 
-/*file.close();
+	/*file.read((char *)&dummy, sizeof(dummy));
+	  pos = 0;
+	  for(int k=0;k<6;k++) {
+	  for(int n=0;n<header.npart[k];n++) {
+	  file.read((char *)&dummy, sizeof(int));
+	  //objects[pos].V = CVector(P[0],P[1],P[2])/(Cosmology->UniverseSize*1000);// - CVector(0.5,0.5,0.5);
+	  }
+	  }
+	  file.read((char *)&dummy, sizeof(dummy));
+	  float mass;
+	  for(int k=0;k<6;k++) {
+	  for(int n=0;n<header.npart[k];n++) {
+	  file.read((char *)&mass, sizeof(float));
+	  //objects[pos].V = CVector(P[0],P[1],P[2])/(Cosmology->UniverseSize*1000);// - CVector(0.5,0.5,0.5);
+	  tmpHalo[0][pos]->setMass(mass*1e10);
+	  //cout << mass << endl;
+	  pos++;
+	  }
+	  }*/
 
-  scalePositions(1./1000.);
 
-  NrInHalo.push_back(NrParticles);
-  LinkingLength = pow(1./NrParticles,1./3);
-  CalculateAllStatistics();
 
-  }*/
+	file.close();
+
+	scalePositions(1./1000.);
+
+	NrInHalo.push_back(NrParticles);
+	LinkingLength = pow(1./NrParticles,1./3);
+	CalculateAllStatistics();
+
+}
 
 
 
@@ -542,16 +610,13 @@ void CHalos::loadClaudio(string Filename){
 
 	double ParticleMass = myConstants::constants.RhoC*myConstants::constants.OmegaD*pow(myConstants::constants.BoxSize,3)/count;
 
-	NrParticles = count;
-
+	Halos.clear();
+	NrInHalo.clear();
 	NrHalos = 1;
-	Halos.resize(NrHalos);
-	NrInHalo.resize(NrHalos);
-	NrInHalo[0] = NrParticles;
 
 
-
-
+	CHalo* tmpHalo = new CHalo(); // <--- kill
+	Halos.push_back(tmpHalo);
 
 	cout << "Copying data ..." << endl;
 	cout << "Nr of particles: "<< count << endl;
@@ -559,111 +624,97 @@ void CHalos::loadClaudio(string Filename){
 	//Saving data into existing structure
 	//Saving all Particles into the first halo in Halos, get with Halos[0]
 
-	//AllParticles.resize(count);
+	AllParticles.resize(count);
 
 	CParticle* tmpParticle;
-	int sizeArray = myConstants::constants.HaloSize + NrParticles*myConstants::constants.ParticleSize;
-	CArray Array(sizeArray);
-	Array[0] = NrParticles;
+	for (int i=0;i<count;i++) {
+		tmpParticle = &AllParticles[i];
 
-	for (int i = 1; i < myConstants::constants.HaloSize; i++) {
-		Array[i] = 0;
+		tmpParticle->setPosition(block[i].P.x,block[i].P.y,block[i].P.z);
+		tmpParticle->setVelocity(block[i].V.x,block[i].V.y,block[i].V.z);
+		tmpParticle->setAcceleration(0,0,0);
+		tmpParticle->setMass(ParticleMass);
+
+		tmpHalo->addParticle(tmpParticle);
 	}
-
-	for (int i = 0; i < NrParticles-1; i++) {
-		Array[myConstants::constants.HaloSize + i*myConstants::constants.ParticleSize + 0] = -1;
-		Array[myConstants::constants.HaloSize + i*myConstants::constants.ParticleSize + 1] = ParticleMass;
-		Array[myConstants::constants.HaloSize + i*myConstants::constants.ParticleSize + 2] = block[i].P.x;
-		Array[myConstants::constants.HaloSize + i*myConstants::constants.ParticleSize + 3] = block[i].P.y;
-		Array[myConstants::constants.HaloSize + i*myConstants::constants.ParticleSize + 4] = block[i].P.z;
-		Array[myConstants::constants.HaloSize + i*myConstants::constants.ParticleSize + 5] = block[i].V.x;
-		Array[myConstants::constants.HaloSize + i*myConstants::constants.ParticleSize + 6] = block[i].V.y;
-		Array[myConstants::constants.HaloSize + i*myConstants::constants.ParticleSize + 7] = block[i].V.z;
-		Array[myConstants::constants.HaloSize + i*myConstants::constants.ParticleSize + 8] = 0;
-		Array[myConstants::constants.HaloSize + i*myConstants::constants.ParticleSize + 9] = 0;
-		Array[myConstants::constants.HaloSize + i*myConstants::constants.ParticleSize + 10] = 0;
-	}
-
-	Halos[0] = new CHalo(&Array);
 
 	cout << "Done loading!" << endl;
 	cout << "---------------------------------" << endl;
-
 	file.close();
-
 	if (block != NULL) {
 		delete[] block;
 		block = NULL;
 	}
 
+	NrParticles = count;
+	NrInHalo.push_back(NrParticles);
 	LinkingLength = pow(1./NrParticles,1./3);
-	cout << NrParticles << " " << LinkingLength << endl;
 }
 
 
 //Load a binary file from a N-body simulation into memory. Claudio's format, converted from ramses file
-/*void CHalos::loadMax(string Filename){
-  ifstream file((myConstants::constants.inData + Filename).c_str(), ios::in | ios::binary | ios::ate);
+void CHalos::loadMax(string Filename){
+	ifstream file((myConstants::constants.inData + Filename).c_str(), ios::in | ios::binary | ios::ate);
 
-  cout << "---------------------------------" << endl;
-  cout << "Reading file " << Filename << endl;
+	cout << "---------------------------------" << endl;
+	cout << "Reading file " << Filename << endl;
 
-  unsigned int count = -1;
+	unsigned int count = -1;
 
-  ifstream::pos_type size;
-  //Reading binary file into memory
-  size = file.tellg();
-  file.seekg (0, ios::beg);
+	ifstream::pos_type size;
+	//Reading binary file into memory
+	size = file.tellg();
+	file.seekg (0, ios::beg);
 
-  count = (int)(size/ (double)sizeof(particle_max));
+	count = (int)(size/ (double)sizeof(particle_max));
 
-  particle_max* block = new particle_max[count];
-  file.read((char *)block, sizeof(particle_max)*count);
+	particle_max* block = new particle_max[count];
+	file.read((char *)block, sizeof(particle_max)*count);
 
-  double ParticleMass = myConstants::constants.Mass;
-  //myConstants::constants.RhoC*myConstants::constants.OmegaD*pow(myConstants::constants.BoxSize,3)/count;
+	double ParticleMass = myConstants::constants.Mass;
+	//myConstants::constants.RhoC*myConstants::constants.OmegaD*pow(myConstants::constants.BoxSize,3)/count;
 
-  Halos.clear();
-  NrInHalo.clear();
-  NrHalos = 1;
+	Halos.clear();
+	NrInHalo.clear();
+	NrHalos = 1;
 
 
-  CHalo* tmpHalo = new CHalo(); // <--- kill
-  Halos.push_back(tmpHalo);
+	CHalo* tmpHalo = new CHalo(); // <--- kill
+	Halos.push_back(tmpHalo);
 
-  cout << "Copying data ..." << endl;
-  cout << "Nr of particles: "<< count << endl;
+	cout << "Copying data ..." << endl;
+	cout << "Nr of particles: "<< count << endl;
 
-  //Saving data into existing structure
-  //Saving all Particles into the first halo in Halos, get with Halos[0]
+	//Saving data into existing structure
+	//Saving all Particles into the first halo in Halos, get with Halos[0]
 
-  AllParticles.resize(count);
+	AllParticles.resize(count);
 
-  CParticle* tmpParticle;
-  for (int i=0;i<count;i++) {
-  tmpParticle = &AllParticles[i];
+	CParticle* tmpParticle;
+	for (int i=0;i<count;i++) {
+		tmpParticle = &AllParticles[i];
 
-  tmpParticle->setPosition(block[i].P.x,block[i].P.y,block[i].P.z);
-  tmpParticle->setVelocity(block[i].V.x/myConstants::constants.convVelocity,block[i].V.y/myConstants::constants.convVelocity,block[i].V.z/myConstants::constants.convVelocity);
-  //tmpParticle->getV().print();
-  //tmpParticle->setAcceleration(block[i].An.x + block[i].A5.x,block[i].An.y + block[i].A5.y,block[i].An.z + block[i].A5.z);
-  tmpParticle->setAcceleration(block[i].Phi,block[i].An.y + block[i].A5.y,block[i].An.z + block[i].A5.z);
-  tmpParticle->setMass(ParticleMass);
+		tmpParticle->setPosition(block[i].P.x,block[i].P.y,block[i].P.z);
+		tmpParticle->setVelocity(block[i].V.x/myConstants::constants.convVelocity,block[i].V.y/myConstants::constants.convVelocity,block[i].V.z/myConstants::constants.convVelocity);
+		//tmpParticle->getV().print();
+		//tmpParticle->setAcceleration(block[i].An.x + block[i].A5.x,block[i].An.y + block[i].A5.y,block[i].An.z + block[i].A5.z);
+		tmpParticle->setAcceleration(block[i].Phi,block[i].An.y + block[i].A5.y,block[i].An.z + block[i].A5.z);
+		tmpParticle->setMass(ParticleMass);
 
-  tmpHalo->addParticle(tmpParticle);
-  }
+		tmpHalo->addParticle(tmpParticle);
+	}
 
-  cout << "Done loading!" << endl;
-  cout << "---------------------------------" << endl;
-  file.close();
-  if (block != NULL) {
-  delete[] block;
-  block = NULL;
-  }
-  NrParticles = count;
-  NrInHalo.push_back(NrParticles);
-  LinkingLength = pow(1./NrParticles,1./3);
-  }*/
+	cout << "Done loading!" << endl;
+	cout << "---------------------------------" << endl;
+	file.close();
+	if (block != NULL) {
+		delete[] block;
+		block = NULL;
+	}
+	NrParticles = count;
+	NrInHalo.push_back(NrParticles);
+	LinkingLength = pow(1./NrParticles,1./3);
+}
 
 
 
@@ -677,9 +728,8 @@ void CHalos::loadData(string Filename){
 
 	string line;
 
-	//Halos.clear();
-	//NrInHalo.clear();
-	kill();
+	Halos.clear();
+	NrInHalo.clear();
 	NrHalos = 1;
 	CHalo* tmpHalo = new CHalo(); // <--- kill
 	Halos.push_back(tmpHalo);
@@ -726,10 +776,9 @@ void CHalos::loadHalos(string Filename){
 	ifstream file((myConstants::constants.inData + Filename).c_str(), ios::in | ios::binary | ios::ate);
 
 	string line;
-	//Halos.clear();
-	//NrInHalo.clear();
-	kill();
-	
+	Halos.clear();
+	NrInHalo.clear();
+
 	long size = file.tellg();
 	char* buffer = new char [size];
 	file.seekg (0, ios::beg);
@@ -1013,23 +1062,15 @@ void CHalos::findNeighbors(CParticle* inParticle, CHalo* inHalo){
 //Friend of Friend methode that uses a grid to speed up the calculations
 //Scales as something*log(N)
 void CHalos::FriendOfFriendGrid(){
-	scalePositions(1./myConstants::constants.BoxSize);
-
-	CHalo* oldHalo = Halos[0];
-
-	allParticles = *oldHalo->getParticles();
-	oldHalo->kill();
-	cout << allParticles.getNrParticles()<< endl;
-	cout << oldHalo->getNrParticles() << endl;;
-	exit(1);
-	searchParticle = oldHalo->get(0);//allParticles[0];
+	allParticles = *Halos[0]->getParticles();
+	searchParticle = allParticles[0];
 	CParticle* Particle = searchParticle;
 
 	//Create a linked list of all particles
 	Particle->prev=NULL;
 	for (int i=1; i < NrParticles;i++){
 		Particle->setFlag(0);
-		Particle->next = oldHalo->get(i);//allParticles[i];
+		Particle->next = allParticles[i];
 		Particle->next->prev = Particle;
 		Particle = Particle->next;
 	}
@@ -1046,14 +1087,14 @@ void CHalos::FriendOfFriendGrid(){
 	CVector min(-1,-1,-1);
 	CVector max(1,1,1);
 
-
+	scalePositions(1./myConstants::constants.BoxSize);
 
 	//Uncomment to manually set the linking length
 	//LinkingLength = myConstants::constants.LinkingLength;
 
 	int Width = (int) (2./LinkingLength);
 	Grid.initialize(&min,&max,Width);
-	Grid.Populate(oldHalo->getParticles());
+	Grid.Populate(Halos[0]->getParticles());
 
 
 	cout << "Finished initializing grid" << endl;
@@ -1069,50 +1110,37 @@ void CHalos::FriendOfFriendGrid(){
 	Halos.clear();
 	NrInHalo.clear();
 
-	int count = 0;
+	//int count = 0;
 
-	/*while (true) {
-	  Particle = findParticle();
-	  //cout << "B" << endl;
-	  if (Particle == NULL) break;
-	  Particle->setFlag(1);
-	  count++;
-	  }
-	  //cout << count << endl;
-	  exit(1);*/
 	//cout << "A" << endl;
 	while (true){
 		Particle = findParticle();
 		//cout << "B" << endl;
 		if (Particle == NULL) break;
-		//else {
-		//Calls findNeighbors to find the particles within
-		//linkingsort(LinkingLengths.begin(),LinkingLengths.end())
-		tmpHalo.kill();
-		//Particle->RemoveFromListGrid();
-		//inParticle->RemoveFromList();
-		//Particle->setFlag(1);
-		//int depth = 0;
+		else {
+			//Calls findNeighbors to find the particles within
+			//linkingsort(LinkingLengths.begin(),LinkingLengths.end())
+			tmpHalo.clear();
+			Particle->RemoveFromListGrid();
+			Particle->setFlag(1);
+			//int depth = 0;
 
-		findNeighborsGrid(Particle, &tmpHalo);
+			findNeighborsGrid(Particle, &tmpHalo);
 
-		//Only saving halos that has more than HaloLimit particles, updating NrInHalos
-		cout << tmpHalo.getNrParticles() << endl;
-		count += tmpHalo.getNrParticles();
-		if (tmpHalo.getNrParticles() >= myConstants::constants.HaloLimit) {
-			Halos.push_back(new CHalo(&tmpHalo)); // <--- kill
-			NrInHalo.push_back(tmpHalo.getNrParticles());
+			//Only saving halos that has more than HaloLimit particles, updating NrInHalos
+			//count += tmpHalo.getNrParticles();
+			if (tmpHalo.getNrParticles() >= myConstants::constants.HaloLimit) {
+				Halos.push_back(new CHalo(&tmpHalo)); // <--- kill
+				NrInHalo.push_back(tmpHalo.getNrParticles());
+			}
 		}
-		//}
 	}
-
+	//cout << "C" << endl;
 	NrHalos = Halos.size();
-
-	cout << "total nr Particles original halo: " << Halos[0]->getNrParticles() << endl;
 
 	Grid.clear();
 
-	cout << "Have all particles survived?: "<< count << endl;
+	//cout << "Have all particles survived?: "<< count << endl;
 
 	cout << "Finished calculating Friend of Friend" << endl;
 	cout << "---------------------------------" << endl;
@@ -1142,8 +1170,6 @@ void CHalos::FriendOfFriendGrid(){
 void CHalos::findNeighborsGrid(CParticle* inParticle, CHalo* inHalo){
 	inHalo->addParticle(inParticle);
 	inParticle->RemoveFromList();
-	inParticle->RemoveFromListGrid();
-	inParticle->setFlag(1);
 
 	CVector Position = Grid.getPosition(inParticle);
 	CHalo FriendList;
@@ -1181,8 +1207,7 @@ void CHalos::findNeighborsGrid(CParticle* inParticle, CHalo* inHalo){
 						if (distance < L){
 							tmpParticle->setFlag(1);
 							FriendList.addParticle(tmpParticle);
-							//tmpParticle->RemoveFromListGrid();
-							//tmpParticle->RemoveFromList();
+							tmpParticle->RemoveFromListGrid();
 						}
 					}
 					tmpParticle = next;
@@ -1207,8 +1232,7 @@ void CHalos::findNeighborsGrid(CParticle* inParticle, CHalo* inHalo){
 							if (distance < L){
 								tmpParticle->setFlag(1);
 								FriendList.addParticle(tmpParticle);
-								//tmpParticle->RemoveFromListGrid();
-								//tmpParticle->RemoveFromList();
+								tmpParticle->RemoveFromListGrid();
 							}
 						}
 						tmpParticle = next;
@@ -1224,6 +1248,7 @@ void CHalos::findNeighborsGrid(CParticle* inParticle, CHalo* inHalo){
 		findNeighborsGrid(FriendList[i], inHalo);
 	}
 }
+
 
 
 
@@ -1280,9 +1305,9 @@ CHalos* CHalos::master(){
 
 		//Add how many particles in halo to be sent
 		//and that it only is one halo to the CArray
-		cout << "before reverting to array" << endl;
+		//cout << "before reverting to array" << endl;
 		Array[p-1] = Halos[count]->Halo2Array();
-		cout << "after reverting" << endl;
+		//cout << "after reverting" << endl;
 		Array[p-1]->front(NrInHalo[count]);
 		Array[p-1]->front(1);
 		MPI.End(p,0);
@@ -1298,35 +1323,32 @@ CHalos* CHalos::master(){
 	//Send halo to processor as soon as a processor finishes
 	while (count < NrHalos) {
 		//cout << "-------------------------------------------------" << endl;
-		cout << "Calculating for halo nr: " << count << "/" << NrHalos	<< endl;
-		//cout << "Calculating for halo nr: " << count << "/" << NrHalos << "\r" << flush;
+		//cout << "Calculating for halo nr: " << count << "/" << NrHalos  << endl;
+		cout << "Calculating for halo nr: " << count << "/" << NrHalos << "\r" << flush;
 		//cout << "-------------------------------------------------" << endl;
 		processor = MPI.listener(Req);
-		cout << "Adding halo" << endl;
+		//cout << "Adding halo" << endl;
 
 		FinalHalos->addHalos(Array[processor-1]);
-		cout << "B" << endl;
+		//cout << "B" << endl;
 		if (Array[processor - 1] != NULL){
 			delete Array[processor-1];
 			Array[processor - 1] = NULL;
 		}
-		cout << "C" << endl;
 		Array[processor-1] =  Halos[count]->Halo2Array();
 
 		MPI.End(processor,0);
-		cout << "D" << endl;
+
 		//Add how many particles in halo to be sent
 		//and that it only is one halo to the CArray
 		Array[processor-1]->front(NrInHalo[count]);
 		Array[processor-1]->front(1);
-		cout << "E" << endl;
-		Array[processor-1]->print();
+
 		//Send the array and start listening for the response
-		cout << processor << endl;
+
 		Array[processor-1]->send(processor);
 		//cout << "Listening for processor to finish" << endl;
 		Array[processor-1]->recieve(processor,&Req[processor-1]);
-		cout << "F" << endl;
 		count++;
 
 	}
@@ -1390,33 +1412,30 @@ void CHalos::slave(){
 
 	while (true) {
 		if (MPI.ifEnd() == 1) break;
-		cout << "at start" << endl;
+		//cout << "at start" << endl;
 		HalosArray.recieve_slave();
 		int tmpLength = HalosArray.len();
 		initialize(&HalosArray);
-		cout << "finshed with initializing" << endl;
 		SplitHalos(count);
-		cout << "finshed with splitting" << endl;
+		//cout << "finshed with splitting" << endl;
 		//SplitMockHalos();
 		//Halos[0]->saveHalo("VelocitySplit1.dat");
 		//exit(1);
-		//tmpArray = Halos[0]->SubHalos2Array();
+		tmpArray = Halos[0]->SubHalos2Array();
 		//tmpArray->print();
 		//exit(1);
 		//cout << "finshed with array" << endl;
-		//tmpArray->send_slave_modified(tmpLength);
+		tmpArray->send_slave_modified(tmpLength);
 
 		//out << "Halos found: " << tmpArray->get(0) << endl;
-		HalosArray.send_slave_modified(tmpLength);
-		cout << "Array sendt" << endl;
-		/*if (tmpArray != NULL) {
+		//HalosArray.send_slave_modified(tmpLength);
+		if (tmpArray != NULL) {
 			delete tmpArray;
 			tmpArray = NULL;
-			}*/
+		}
+		HalosArray.del();
 		kill();
-		
-		//Halos.clear();
-		//delete &HalosArray;
+
 		/*CHalos SlaveHalos(&HalosArray); // Assured memory leak
 		//SlaveHalos.initialize(&HalosArray);
 		SlaveHalos.SplitHalos();
