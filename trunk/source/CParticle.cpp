@@ -16,21 +16,21 @@ CParticle::CParticle(){
 	P.Set(0,0,0);
 	V.Set(0,0,0);
 	A.Set(0,0,0);
-	HaloID = -1;
+	Phi = 0;
 	next = prev = nextGrid = prevGrid = NULL;
 	
 }
  
 
 //Create a particle from an array on the following form:
-//[HaloID,Mass,Px,Py,Pz,Vx,Vy,Vz,Ax,Ay,Az]
+//[Phi,Mass,Px,Py,Pz,Vx,Vy,Vz,Ax,Ay,Az]
 CParticle::CParticle(double* inArray){
 	//Some way to test if length of the array is equal to particle size
 	//Generate_ID();
 
 	ParticleSize =  myConstants::constants.ParticleSize;
 
-	HaloID = inArray[0];
+	Phi = inArray[0];
 	Mass = inArray[1];
 	//Charge = inArray[2];
 	P.Set(inArray[2],inArray[3],inArray[4]);
@@ -72,12 +72,17 @@ void CParticle::RemoveFromListGrid(){
 
 //Somehing weird with this???
 //Set the different values a particle has
-void CParticle::setHalo(int element){
+void CParticle::setPhi(double element){
 	/*if (element < 0){
 		cout << "Warning: This is negative, it should always be a positive number" << endl;
 		}*/
-	HaloID = element;
+	Phi = element;
 }
+
+double CParticle::getPhi(){
+	return Phi;
+}
+
 
 void CParticle::setMass(double in_M){
 	Mass = in_M;
@@ -104,7 +109,7 @@ void CParticle::setAcceleration(double Ax, double Ay, double Az){
 }
 
 void CParticle::setData(vector<double> data){
-	HaloID = data[0];
+	Phi = data[0];
 	Mass = data[1];
 	//Charge = data[2];
 
@@ -133,7 +138,7 @@ void CParticle::setV(CVector inV){
 	}*/
 
 int CParticle::getHalo(){
-	return HaloID;
+	return Phi;
 }
 
 double CParticle::getMass(){
@@ -177,10 +182,10 @@ void CParticle::setFlag(int inFlag){
 
 
 //Convert a particle to an array on the form:
-//[HaloID,Mass,Charge,Px,Py,Pz,Vx,Vy,Vz,Ax,Ay,Az]
+//[Phi,Mass,Charge,Px,Py,Pz,Vx,Vy,Vz,Ax,Ay,Az]
 double* CParticle::Particle2Array(){
 	double * tmpArray = new double [ParticleSize]; //<- Memory leak
-	tmpArray[0] = HaloID;
+	tmpArray[0] = Phi;
 	tmpArray[1] = Mass;
 	//tmpArray[2] = Charge;
 	
@@ -226,7 +231,7 @@ double CParticle::PhaseSpaceDistance(CParticle* p2, CVector* inSigmaP, CVector* 
 void CParticle::print(){
 	cout << "------------------------------------" << endl;
 	//cout << "Particle ID: " << ID << endl;
-	cout << "Halo ID: " << HaloID << endl;
+	cout << "Halo ID: " << Phi << endl;
 	cout << "Mass: " << Mass << endl;
 	//cout << "Charge: " << Charge << endl;
 	cout << "Position:	   ";
@@ -243,7 +248,7 @@ void CParticle::print(){
 
 //Test if a particle has been assigned a halo
 int CParticle::gotHalo(){
-	if (HaloID != -1 ) {
+	if (Phi != -1 ) {
 		return 1;
 	}
 	else {
@@ -253,12 +258,12 @@ int CParticle::gotHalo(){
 
 
 
-//Decreases the HaloID by one. Used by my inefficient FoF code
+//Decreases the Phi by one. Used by my inefficient FoF code
 void CParticle::decreaseHalo(){
-	HaloID--;
+	Phi--;
 	
-	if (HaloID < 0){
-		cout << "Warning: HaloID=" << HaloID << "This is negative, it should always be a positive number !" << endl;
+	if (Phi < 0){
+		cout << "Warning: Phi=" << Phi << "This is negative, it should always be a positive number !" << endl;
 	}
 }
 
