@@ -129,7 +129,7 @@ void CHalos::initialize(CArray* inArray){
 			//cout << "For particle nr: " << count << endl;
 			tmpParticle = &AllParticles[count];
 
-			tmpParticle->setHalo(inArray->get(particle_count));
+			tmpParticle->setPhi(inArray->get(particle_count));
 			tmpParticle->setMass(inArray->get(particle_count + 1));
 			tmpParticle->setPosition(inArray->get(particle_count + 2),
 									 inArray->get(particle_count + 3),
@@ -693,12 +693,18 @@ void CHalos::loadMax(string Filename){
 	CParticle* tmpParticle;
 	for (int i=0;i<count;i++) {
 		tmpParticle = &AllParticles[i];
-
-		tmpParticle->setPosition(block[i].P.x,block[i].P.y,block[i].P.z);
-		tmpParticle->setVelocity(block[i].V.x/myConstants::constants.convVelocity,block[i].V.y/myConstants::constants.convVelocity,block[i].V.z/myConstants::constants.convVelocity);
+		tmpParticle->setPhi(block[i].Phi);
+		tmpParticle->setPosition(block[i].P.x,
+								 block[i].P.y,
+								 block[i].P.z);
+		tmpParticle->setVelocity(block[i].V.x/myConstants::constants.convVelocity,
+								 block[i].V.y/myConstants::constants.convVelocity,
+								 block[i].V.z/myConstants::constants.convVelocity);
 		//tmpParticle->getV().print();
 		//tmpParticle->setAcceleration(block[i].An.x + block[i].A5.x,block[i].An.y + block[i].A5.y,block[i].An.z + block[i].A5.z);
-		tmpParticle->setAcceleration(block[i].Phi,block[i].An.y + block[i].A5.y,block[i].An.z + block[i].A5.z);
+		tmpParticle->setAcceleration(block[i].An.x + block[i].A5.x,
+									 block[i].An.y + block[i].A5.y,
+									 block[i].An.z + block[i].A5.z);
 		tmpParticle->setMass(ParticleMass);
 
 		tmpHalo->addParticle(tmpParticle);

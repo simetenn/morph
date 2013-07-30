@@ -54,7 +54,9 @@ class CParticle{
 	//LinkedList ListIterator, GridIterator;
 
 	//Set the different values a particle has
-	void setHalo(int element);
+	void setPhi(double element);
+	double getPhi();
+
 	void setMass(double in_M);
 	//void setCharge(double in_C);
 	void setPosition(double Px, double Py, double Pz);
@@ -85,7 +87,7 @@ class CParticle{
 
 
 	//Convert a particle to an array on the form:
-	//[HaloID,Mass,Charge,Px,Py,Pz,Vx,Vy,Vz,Ax,Ay,Az]
+	//[Phi,Mass,Charge,Px,Py,Pz,Vx,Vy,Vz,Ax,Ay,Az]
 	double* Particle2Array();
 
 	//Calculate the kinetic energy of a particle
@@ -108,7 +110,7 @@ class CParticle{
 
 	//Test if a particle has been assigned a halo
 	int gotHalo();
-	//Decreases the HaloID by one. Used by my inefficient FoF code
+	//Decreases the Phi by one. Used by my inefficient FoF code
 	void decreaseHalo();
 
 
@@ -118,8 +120,8 @@ class CParticle{
  protected:
 	//static int ID_Generator;
 	CVector P,V,A;
-	int HaloID,ParticleSize,flag;
-	double Mass;
+	int ParticleSize,flag;
+	double Mass,Phi;
 
 	//void Generate_ID();
 };
