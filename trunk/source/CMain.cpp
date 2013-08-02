@@ -20,7 +20,6 @@ void CMain::master() {
 	//cout << m.getNrParticles() << endl;
 	//m.print();
 	//exit(1);
-
 	m.FriendOfFriendGrid();
 	//m[0]->saveP("HaloSingle.dat");
 	//m.getHalo(1)->saveHalo("Velocity1.dat");

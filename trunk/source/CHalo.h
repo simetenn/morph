@@ -293,7 +293,7 @@ class CHalo{
 
  protected:
 	CParticles Halo;
-	CVector MeanP,MeanV, SigmaP, SigmaV;
+	CVector MeanP,MeanV, MeanA, SigmaP, SigmaV;
 	double Mass;
 	int ParticleSize, NrParticles;
 	CParticle* searchParticle;

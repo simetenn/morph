@@ -1439,7 +1439,7 @@ void CHalos::slave(){
 			delete tmpArray;
 			tmpArray = NULL;
 		}
-		HalosArray.del();
+		//HalosArray.del();
 		kill();
 
 		/*CHalos SlaveHalos(&HalosArray); // Assured memory leak
