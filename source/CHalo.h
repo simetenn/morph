@@ -46,7 +46,8 @@ class CHalo{
 	//Clear and remove particle information, but keeping halo information, like position and velocity
 	//Does it recursivly for all SubHalos
 	void cleanSubHalos();
-
+	void clearSubHalos();
+	
 	void eraseSubHalos();
 
 
@@ -131,6 +132,7 @@ class CHalo{
 	void calculateVir();
 	void calculateVir2();
 	void calculateVirBeta();
+	void calculateVirBetaSeed();
 	double Beta(double R);
 	double Volume(double R);
 	double Ps(double R);
