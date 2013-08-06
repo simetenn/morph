@@ -490,10 +490,9 @@ void CHalos::loadHans(){
 
 	int NrParticles = 16777216;
 
-
-
 	Halos.clear();
 	NrInHalo.clear();
+
 	CHalo* tmpHalo = new CHalo(); // <--- kill
 	Halos.push_back(tmpHalo);
 	NrHalos = 1;
@@ -565,6 +564,9 @@ void CHalos::loadHans(){
 		}
 		infile.close();
 	}
+
+	cout << "Particles read: " << ntot <<endl;
+	
 	NrInHalo.push_back(NrParticles);
 	LinkingLength = pow(1./NrParticles,1./3);
 }
