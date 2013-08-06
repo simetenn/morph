@@ -512,7 +512,7 @@ void CHalos::loadHans(){
 	int i, j, ntot;
 
 	ntot = 0;
-
+	
 	// Loop over datafiles
 	for(i=1;i<=N;i++){
 		string tstr;
@@ -546,7 +546,7 @@ void CHalos::loadHans(){
 				for(j=0;j<3;j++) infile >> a[j];
 
 
-				tmpParticle = &AllParticles[i];
+				tmpParticle = &AllParticles[ntot];
 				tmpParticle->setPhi(0);
 				tmpParticle->setPosition(x[0]*myConstants::constants.convDistance,
 										 x[1]*myConstants::constants.convDistance,
