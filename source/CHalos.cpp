@@ -537,8 +537,7 @@ void CHalos::loadHans(){
 				infile >> x[0];
 				if(infile.eof()) break;
 
-				ntot++;
-
+				
 				// Read inn a single particle
 				for(j=1;j<3;j++) infile >> x[j];
 				for(j=0;j<3;j++) infile >> v[j];
@@ -559,6 +558,9 @@ void CHalos::loadHans(){
 											 a[2]*myConstants::constants.convAcceleration);
 				tmpParticle->setMass(myConstants::constants.Mass);
 				tmpHalo->addParticle(tmpParticle);
+
+				ntot++;
+
 
 			}
 		}
