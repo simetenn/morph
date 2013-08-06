@@ -543,16 +543,16 @@ void CHalos::loadHans(){
 
 				tmpParticle = &AllParticles[i];
 				tmpParticle->setPhi(0);
-				tmpParticle->setPosition(x[0],
-										 x[1],
-										 x[2]);
-				tmpParticle->setVelocity(v[0]/myConstants::constants.convVelocity,
-										 v[1]/myConstants::constants.convVelocity,
-										 v[0]/myConstants::constants.convVelocity);
+				tmpParticle->setPosition(x[0]*myConstants::constants.convDistance,
+										 x[1]*myConstants::constants.convDistance,
+										 x[2]*myConstants::constants.convDistance);
+				tmpParticle->setVelocity(v[0]*myConstants::constants.convVelocity,
+										 v[1]*myConstants::constants.convVelocity,
+										 v[0]*myConstants::constants.convVelocity);
 
-				tmpParticle->setAcceleration(v[0]/myConstants::constants.convAcceleration,
-											 a[1]/myConstants::constants.convAcceleration,
-											 a[2]/myConstants::constants.convAcceleration);
+				tmpParticle->setAcceleration(v[0]*myConstants::constants.convAcceleration,
+											 a[1]*myConstants::constants.convAcceleration,
+											 a[2]*myConstants::constants.convAcceleration);
 				tmpParticle->setMass(myConstants::constants.Mass);
 				tmpHalo->addParticle(tmpParticle);
 
