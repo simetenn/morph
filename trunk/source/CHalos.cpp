@@ -486,7 +486,83 @@ void CHalos::loadBin(string Filename){
 }
 
 
+void CHalos::loadHans(){
 
+	int NrParticles = 16777216;
+
+	CHalo* tmpHalo = new CHalo(); // <--- kill
+	Halos.push_back(tmpHalo);
+
+	AllParticles.resize(NrParticles);
+
+	CParticle* tmpParticle;
+
+	int N = 128;
+	string PATH ="/mn/stornext/d3/hansw/LCDM_128/LCDM1_Allinfo/data_";
+
+
+	string filename;
+	ifstream infile;
+	double x[3], v[3], a[3];
+	int i, j, ntot;
+
+	ntot = 0;
+
+	// Loop over datafiles
+	for(i=1;i<=N;i++){
+		string tstr;
+
+		// Make filename
+		if(i<10){
+			filename = "0000";
+		} else if(i<100){
+			filename = "000";
+		} else if(i<1000){
+			filename = "00";
+		} else {
+			filename = "0";
+		}
+		tstr = static_cast<ostringstream*>( &(ostringstream() << i ) )->str();
+		filename = PATH + filename + tstr;
+
+		infile.open(filename.c_str());
+		if(infile){
+			cout << "Now opening: " << filename << endl;
+			while(!infile.eof()){
+				// Test if we are at EOF
+				infile >> x[0];
+				if(infile.eof()) break;
+
+				ntot++;
+
+				// Read inn a single particle
+				for(j=1;j<3;j++) infile >> x[j];
+				for(j=0;j<3;j++) infile >> v[j];
+				for(j=0;j<3;j++) infile >> a[j];
+
+
+				tmpParticle = &AllParticles[i];
+				tmpParticle->setPhi(0);
+				tmpParticle->setPosition(x[0],
+										 x[1],
+										 x[2]);
+				tmpParticle->setVelocity(v[0]/myConstants::constants.convVelocity,
+										 v[1]/myConstants::constants.convVelocity,
+										 v[0]/myConstants::constants.convVelocity);
+
+				tmpParticle->setAcceleration(v[0]/myConstants::constants.convAcceleration,
+											 a[1]/myConstants::constants.convAcceleration,
+											 a[2]/myConstants::constants.convAcceleration);
+				tmpParticle->setMass(myConstants::constants.Mass);
+				tmpHalo->addParticle(tmpParticle);
+
+			}
+		}
+		infile.close();
+	}
+	NrInHalo.push_back(NrParticles);
+	LinkingLength = pow(1./NrParticles,1./3);
+}
 
 
 //Load a Gadget 2 formated binary file.
