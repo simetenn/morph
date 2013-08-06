@@ -493,6 +493,10 @@ void CHalos::loadHans(){
 	CHalo* tmpHalo = new CHalo(); // <--- kill
 	Halos.push_back(tmpHalo);
 
+	Halos.clear();
+	NrInHalo.clear();
+	NrHalos = 1;
+	
 	AllParticles.resize(NrParticles);
 
 	CParticle* tmpParticle;
