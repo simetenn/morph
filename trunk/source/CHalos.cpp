@@ -702,9 +702,12 @@ void CHalos::loadMax(string Filename){
 								 block[i].V.z/myConstants::constants.convVelocity);
 		//tmpParticle->getV().print();
 		//tmpParticle->setAcceleration(block[i].An.x + block[i].A5.x,block[i].An.y + block[i].A5.y,block[i].An.z + block[i].A5.z);
-		tmpParticle->setAcceleration(block[i].An.x + block[i].A5.x,
-									 block[i].An.y + block[i].A5.y,
-									 block[i].An.z + block[i].A5.z);
+		tmpParticle->setAcceleration((block[i].An.x + block[i].A5.x)
+									 /myConstants::constants.convAcceleration,
+									 (block[i].An.y + block[i].A5.y)
+									 /myConstants::constants.convAcceleration,
+									 (block[i].An.z + block[i].A5.z)
+									 /myConstants::constants.convAcceleration);
 		tmpParticle->setMass(ParticleMass);
 
 		tmpHalo->addParticle(tmpParticle);
@@ -1307,7 +1310,7 @@ CHalos* CHalos::master(){
 
 	//Initialize, sending one halo to each processor
 	for (int p = 1; p < size; p++){
-		cout << "Initializing for halo nr: " << count << endl;
+		cout << "Initializing for halo nr: " << count << "\r" << flush;;
 
 		//Add how many particles in halo to be sent
 		//and that it only is one halo to the CArray

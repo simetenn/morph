@@ -126,13 +126,15 @@ class CHalo{
 	//Return distance from center, sorted
 	vector<double>* getR();
 	//Retturn gravitational potential, sorted as distance from center
-	vector<double>* getPhi();
+	//vector<double>* getPhi();
 
 	//Calculate the Virialization mass and radius
 	void calculateVir();
 	void calculateVir2();
 	void calculateVirBeta();
 	void calculateVirBetaSeed();
+	void calculateVirBetaSpherical();
+	void calculateVirBetaSeedSpherical();
 	double Beta(double R);
 	double Volume(double R);
 	double Ps(double R);
@@ -277,6 +279,7 @@ class CHalo{
 	void SortParticlesDistance();
 	//Calculate the gravitational potential using a spherical approximation
 	void CalculatePhiSpherical();
+	void CalculatePhi();
 
 	//Unbind particles for the halo and all subhalos
 	void UnbindAll(int& count);
@@ -302,6 +305,6 @@ class CHalo{
 	list<CHalo*> SubHalos, SeedHalos;
 	list<CParticle*> linkParticles;
 	//New values, needs to be added support for the relevant MPI send/recieve routines
-	vector<double> r, Phi;
+	vector<double> r;// Phi;
 	double Mvir,Rvir;
 };

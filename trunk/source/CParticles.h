@@ -59,6 +59,8 @@ class CParticles{
 	void setFlag(int inFlag);
 	int getFlag();
 
+	void calculatePhi(CVector& MeanP);
+	
 	void setNrParticles(int Nr);
 
 	
