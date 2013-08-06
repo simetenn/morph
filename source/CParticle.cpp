@@ -210,6 +210,11 @@ void CParticle::Move(double dt){
 }
 
 
+double CParticle::calculatePhi(CVector& MeanP){
+	return (P - MeanP).Dot(A);
+}
+
+
 double CParticle::Ekin(){
 	return 0.5*Mass*V.Length2();
 }

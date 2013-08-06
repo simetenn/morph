@@ -192,6 +192,12 @@ int CParticles::getFlag(){
 	//}
 }
 
+void CParticles::calculatePhi(CVector& MeanP){
+	for (int i = 0; i < NrParticles; i++) {
+		Particles[i]->calculatePhi(MeanP);
+	}
+}
+
 
 void CParticles::setNrParticles(int Nr){
 	NrParticles = Nr;
