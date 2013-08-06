@@ -3,6 +3,11 @@
 #include "CHalo.h"
 #include "CGrid.h"
 
+
+#include<stdio.h>
+#include<stdlib.h>
+#include <sstream>
+
 //Particle save structure, keeps only P and V. Used to read from Claudio's format
 struct particle_save {
 	CVector_bare P, V;
@@ -116,6 +121,9 @@ class CHalos{
 	//Load a Gadget 2 formated binary file.
 	void loadGadget(string Filename);
 	void loadMax(string Filename);
+	void loadHans();
+
+
 	
 	//Scale all positions with a number
 	void scalePositions(double scale);
