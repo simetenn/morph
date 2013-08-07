@@ -1990,7 +1990,9 @@ void CHalo::UnbindAll(int& count){
 
 //Method for unbinding particles from a single halo
 void CHalo::Unbind(int& count){
-	CalculatePhiSpherical();
+	//CalculatePhiSpherical();
+	SortParticlesDistance();
+	CalculatePhi();
 	//SortParticlesDistance();
 	vector<int> RemoveIndex;
 	for (int i = 0; i < NrParticles; i++) {
