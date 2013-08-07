@@ -1246,8 +1246,8 @@ void CHalo::del(string Filename){
 
 //Calculate the Phase-Space distance between a halo and a particle
 double CHalo::PhaseSpaceDistanceHalo(CParticle* inParticle){
-	double rvir2 = pow((Mass/(16./3.*atan(1)*myConstants::constants.ScaleDensity*myConstants::constants.RhoC)),2./3.);
-	//double rvir2 = Rvir*Rvir;
+	//double rvir2 = pow((Mass/(16./3.*atan(1)*myConstants::constants.ScaleDensity*myConstants::constants.RhoC)),2./3.);
+	double rvir2 = Rvir*Rvir;
 	
 	//double tmp = sqrt((inParticle->getP() - MeanP).Length2()/rvir2 + (inParticle->getV() - MeanV).Length2()/SigmaV.Length2());
 	return sqrt((inParticle->getP() - MeanP).Length2()/rvir2 + (inParticle->getV() - MeanV).Length2()/SigmaV.Length2());
@@ -1257,8 +1257,8 @@ double CHalo::PhaseSpaceDistanceHalo(CParticle* inParticle){
 
 //Calculate the Phase-Space distance between a halo and a particle
 double CHalo::PhaseSpaceDistanceHaloHalo(CHalo* inHalo){
-	double rvir2 = pow((Mass/(16./3.*atan(1)*myConstants::constants.ScaleDensity*myConstants::constants.RhoC)),2./3.);
-	//double rvir2 = Rvir*Rvir;
+	//double rvir2 = pow((Mass/(16./3.*atan(1)*myConstants::constants.ScaleDensity*myConstants::constants.RhoC)),2./3.);
+	double rvir2 = Rvir*Rvir;
 	//double tmp = sqrt((inParticle->getP() - MeanP).Length2()/rvir2 + (inParticle->getV() - MeanV).Length2()/SigmaV.Length2());
 	return sqrt((*inHalo->getMeanP() - MeanP).Length2()/rvir2 + (*inHalo->getMeanV() - MeanV).Length2()/SigmaV.Length2());
 	//return sqrt((inParticle->getP() - MeanP).Length2()/inSigmaP->Length2() +	(inParticle->getV() - MeanV).Length2()/inSigmaV->Length2());
@@ -1492,7 +1492,7 @@ void CHalo::createSeedHalos(){
 	mergeStatisticalSeed();
 	//cout << "here" << endl;
 	calculateVirBetaSeedSpherical();
-	//calculateVirBetaSeed();
+	calculateVirBetaSeed();
 	//cout << "Assigning particles to seed halos" << endl;
 
 	cleanSubHalos();
@@ -1990,10 +1990,9 @@ void CHalo::UnbindAll(int& count){
 
 //Method for unbinding particles from a single halo
 void CHalo::Unbind(int& count){
-	//CalculatePhiSpherical();
-	SortParticlesDistance();
-	CalculatePhi();
+	CalculatePhiSpherical();
 	//SortParticlesDistance();
+	//CalculatePhi();
 	vector<int> RemoveIndex;
 	for (int i = 0; i < NrParticles; i++) {
 		if ((Halo[i]->getV() - MeanV).Length2() > 2*abs(Halo[i]->getPhi())) {
