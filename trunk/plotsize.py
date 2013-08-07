@@ -1,6 +1,6 @@
 import pylab as p
 
-path = "/home/simen/Master/mybody-mpi/data/"
+path = "./outData/"
 filenameMine = "size.dat"
 #Read data from files
 mineData = p.loadtxt(path + filenameMine)

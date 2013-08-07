@@ -12,6 +12,7 @@ void CMain::master() {
 	//m.saveP("Halos.dat");
 	//m.loadHalos("singleHaloWithPhi2.bin");
 	//m.printHalos();
+	//m.loadHalos("LCDM1.bin");
 	m.loadHalos("Halos.bin");
 	//m.loadHalos("singleHalo.dat");
 	//m.loadGadget("multisubhalo_nfw.bin");
