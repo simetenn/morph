@@ -488,7 +488,7 @@ void CHalos::loadBin(string Filename){
 
 void CHalos::loadHans(){
 
-	int NrParticles = 16777216;
+	NrParticles = 16777216;
 
 	Halos.clear();
 	NrInHalo.clear();
@@ -531,7 +531,7 @@ void CHalos::loadHans(){
 
 		infile.open(filename.c_str());
 		if(infile){
-			cout << "Now opening: " << filename << endl;
+			cout << "Now opening: " << filename << "\r" << flush;
 			while(!infile.eof()){
 				// Test if we are at EOF
 				infile >> x[0];
