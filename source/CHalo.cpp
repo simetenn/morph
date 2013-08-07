@@ -1491,7 +1491,7 @@ void CHalo::createSeedHalos(){
 
 	mergeStatisticalSeed();
 	//cout << "here" << endl;
-	calculateVirBetaSeedSpherical();
+	//calculateVirBetaSeedSpherical();
 	calculateVirBetaSeed();
 	//cout << "Assigning particles to seed halos" << endl;
 
@@ -1990,9 +1990,9 @@ void CHalo::UnbindAll(int& count){
 
 //Method for unbinding particles from a single halo
 void CHalo::Unbind(int& count){
-	CalculatePhiSpherical();
-	//SortParticlesDistance();
-	//CalculatePhi();
+	//CalculatePhiSpherical();
+	SortParticlesDistance();
+	CalculatePhi();
 	vector<int> RemoveIndex;
 	for (int i = 0; i < NrParticles; i++) {
 		if ((Halo[i]->getV() - MeanV).Length2() > 2*abs(Halo[i]->getPhi())) {
