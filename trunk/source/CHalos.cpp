@@ -925,6 +925,8 @@ void CHalos::loadHalos(string Filename){
 
 	}
 
+	LinkingLength = pow(1./NrParticles,1./3);
+
 	cout << "Finished loading particles from file" << endl;
 	cout << "---------------------------------" << endl;
 }
