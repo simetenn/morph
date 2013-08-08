@@ -211,7 +211,7 @@ void CParticle::Move(double dt){
 
 
 double CParticle::calculatePhi(CVector& MeanP){
-	return (P - MeanP).Dot(A);
+	Phi = (P - MeanP).Dot(A);
 }
 
 
