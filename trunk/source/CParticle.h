@@ -106,7 +106,7 @@ class CParticle{
 	//Print out all the information contained in one particle
 	void print();
 
-	double calculatePhi(CVector& MeanP);
+	void calculatePhi(CVector& MeanP);
 
 
 	//Test if a particle has been assigned a halo
