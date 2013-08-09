@@ -12,7 +12,7 @@ class Constants {
 	int LinkingLenghtScale, ArrayExtraSize, NrShells, minParticlesShell;
 	double b,PhaseDistance,f,LinkingLength,rhovir, HaloSeed, BoxSize;
 	double ScaleDensity, RhoC, OmegaD, Mass, G;
-	double convMass, convDistance, convVelocity, convAcceleration, BetaVirThreshold;
+	double convMass, convDistance, convVelocity, convAcceleration, convPhi, BetaVirThreshold;
 	string inFile, outFile,haloFile, DataFile;
 	string source, inData, outData, outSize,outPosition,outPhi, outBounding;
 	
@@ -58,6 +58,7 @@ class Constants {
 		convDistance = IniFile.getdouble("convDistance");
 		convVelocity = IniFile.getdouble("convVelocity");
 		convAcceleration = IniFile.getdouble("convAcceleration");
+		convPhi = IniFile.getdouble("convPhi");
 		NrShells = IniFile.getdouble("NrShells");
 		minParticlesShell = IniFile.getdouble("minParticlesShell");
 		BetaVirThreshold = IniFile.getdouble("BetaVirThreshold");

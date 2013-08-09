@@ -1,7 +1,7 @@
 import pylab as p
 import sys
 
-path = "/home/simen/Master/mybody-mpi/outData/"
+path = "./outData/"
 filenameMine = "mass.dat"
 
 
