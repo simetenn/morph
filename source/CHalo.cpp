@@ -1967,8 +1967,22 @@ void CHalo::CalculatePhiSpherical(){
 
 
 void CHalo::CalculatePhi(){
+	SortParticlesDistance();
 	Halo.calculatePhi(MeanP);
 }
+
+void CHalo::ScalePhi(){
+	SortParticlesDistance();
+	double scale = 0;
+	for (int i = NrParticles-5; i < NrParticles; i++) {
+		scale += Halo[i]->getPhi();
+	}
+	scale = scale/5;
+	for (int i = 0; i < NrParticles; i++) {
+		Halo[i]->setPhi(Halo[0]->getPhi()-scale);
+	}
+}
+
 
 
 //Unbind particles for the halo and all subhalos
@@ -1991,8 +2005,8 @@ void CHalo::UnbindAll(int& count){
 //Method for unbinding particles from a single halo
 void CHalo::Unbind(int& count){
 	//CalculatePhiSpherical();
-	SortParticlesDistance();
-	CalculatePhi();
+	//CalculatePhi();
+	//ScalePhi();
 	vector<int> RemoveIndex;
 	for (int i = 0; i < NrParticles; i++) {
 		if ((Halo[i]->getV() - MeanV).Length2() > 2*abs(Halo[i]->getPhi())) {
