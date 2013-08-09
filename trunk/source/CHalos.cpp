@@ -778,21 +778,21 @@ void CHalos::loadMax(string Filename){
 	CParticle* tmpParticle;
 	for (int i=0;i<count;i++) {
 		tmpParticle = &AllParticles[i];
-		tmpParticle->setPhi(block[i].Phi);
+		tmpParticle->setPhi(block[i].Phi*myConstants::constants.convPhi);
 		tmpParticle->setPosition(block[i].P.x,
 								 block[i].P.y,
 								 block[i].P.z);
-		tmpParticle->setVelocity(block[i].V.x/myConstants::constants.convVelocity,
-								 block[i].V.y/myConstants::constants.convVelocity,
-								 block[i].V.z/myConstants::constants.convVelocity);
+		tmpParticle->setVelocity(block[i].V.x*myConstants::constants.convVelocity,
+								 block[i].V.y*myConstants::constants.convVelocity,
+								 block[i].V.z*myConstants::constants.convVelocity);
 		//tmpParticle->getV().print();
 		//tmpParticle->setAcceleration(block[i].An.x + block[i].A5.x,block[i].An.y + block[i].A5.y,block[i].An.z + block[i].A5.z);
 		tmpParticle->setAcceleration((block[i].An.x + block[i].A5.x)
-									 /myConstants::constants.convAcceleration,
+									 *myConstants::constants.convAcceleration,
 									 (block[i].An.y + block[i].A5.y)
-									 /myConstants::constants.convAcceleration,
+									 *myConstants::constants.convAcceleration,
 									 (block[i].An.z + block[i].A5.z)
-									 /myConstants::constants.convAcceleration);
+									 *myConstants::constants.convAcceleration);
 		tmpParticle->setMass(ParticleMass);
 
 		tmpHalo->addParticle(tmpParticle);
@@ -1546,7 +1546,7 @@ void CHalos::slave(){
 	  //int send [1] = {count};
 	  count = 2;
 	  MPI_Gather(&count, 1, MPI_INT, &count, size-1, MPI_INT, 0, MPI_COMM_WORLD);*/
-	cout << "Number of unbounded particles: " << count << endl;
+	//cout << "Number of unbounded particles: " << count << endl;
 }
 
 
