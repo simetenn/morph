@@ -280,6 +280,7 @@ class CHalo{
 	//Calculate the gravitational potential using a spherical approximation
 	void CalculatePhiSpherical();
 	void CalculatePhi();
+	void ScalePhi();
 
 	//Unbind particles for the halo and all subhalos
 	void UnbindAll(int& count);
