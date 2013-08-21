@@ -10,6 +10,7 @@ class Constants {
 	int ParticleSize, HaloLimit,Width,NrLinking;
 	int HaloSize,NrParticles2File, MaxHalos, NrParticlesDouble, minUnbind;
 	int LinkingLenghtScale, ArrayExtraSize, NrShells, minParticlesShell;
+	int unbindingMethod;
 	double b,PhaseDistance,f,LinkingLength,rhovir, HaloSeed, BoxSize;
 	double ScaleDensity, RhoC, OmegaD, Mass, G;
 	double convMass, convDistance, convVelocity, convAcceleration, convPhi, BetaVirThreshold;
@@ -20,13 +21,7 @@ class Constants {
 		//Load ini-file
 		CIniFile IniFile;
 
-		#ifndef UIO
 		IniFile.load("mybody.ini");
-		#endif
-		
-		#ifdef UIO
-		IniFile.load("mybodyUiO.ini");
-		#endif
 		
 		//Load ints
 		ParticleSize = IniFile.getdouble("ParticleSize");
@@ -41,6 +36,7 @@ class Constants {
 		LinkingLenghtScale = IniFile.getdouble("LinkingLenghtScale");
 		ArrayExtraSize = IniFile.getdouble("ArrayExtraSize");
 		minUnbind = IniFile.getdouble("minUnbind");
+		unbindingMethod = IniFile.getdouble("unbindingMethod");
 		
 		//Load doubles
 		b = IniFile.getdouble("b");
@@ -63,6 +59,7 @@ class Constants {
 		minParticlesShell = IniFile.getdouble("minParticlesShell");
 		BetaVirThreshold = IniFile.getdouble("BetaVirThreshold");
 		
+		
 		//Load strings
 		inFile = IniFile.getstring("inFile");
 		outFile = IniFile.getstring("outFile");
@@ -75,7 +72,7 @@ class Constants {
 		outPosition = IniFile.getstring("outPosition");
 		outPhi = IniFile.getstring("outPhi");
 		outBounding = IniFile.getstring("outBounding");
-		//outBounding = IniFile.getstring("outBonding");
+		
 	}
 };
 

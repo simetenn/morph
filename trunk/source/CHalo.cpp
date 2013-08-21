@@ -2004,6 +2004,21 @@ void CHalo::UnbindAll(int& count){
 
 //Method for unbinding particles from a single halo
 void CHalo::Unbind(int& count){
+	if (myConstants::constants.unbindingMethod == 1 ) {
+		CalculatePhiSpherical();
+	}	
+	else if (myConstants::constants.unbindingMethod == 2 ) {
+		CalculatePhi();
+	}
+	else if (myConstants::constants.unbindingMethod == 3 ) {
+		SortParticlesDistance();
+	}
+	else if (myConstants::constants.unbindingMethod == 4 ) {
+		ScalePhi();
+	}
+	else  {
+		cout << "Error: No unbinding method with the chosen name" << endl;
+	}
 	//CalculatePhiSpherical();
 	//CalculatePhi();
 	//ScalePhi();
@@ -2059,9 +2074,11 @@ void CHalo::createSubHalos(int& count){
 	calculateMass();
 	CalculateStatisticsNoMass();
 	//SortParticlesDistance();
-	UnbindAll(count);
-	calculateMass();
-	CalculateStatisticsNoMass();
+	if(myConstants::constants.unbindingMethod != 0 ){
+		UnbindAll(count);
+		calculateMass();
+		CalculateStatisticsNoMass();
+	}
 	//CalculateStatistics();
 	//calculateVir2();
 	//calculateVirBeta();
