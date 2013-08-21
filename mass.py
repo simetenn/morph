@@ -5,14 +5,14 @@ path = "./outData/"
 filenameMine = "mass.dat"
 
 
-filenameRockstar = "halos_0.ascii"
-filenameAmiga = "amiga.dat"
+filenameRockstar = ""
+#filenameAmiga = "amiga.dat"
 #Read data from files
 
 data = []
 
 rockstarData = p.loadtxt(path + filenameRockstar)
-amigaData = p.loadtxt(path + filenameAmiga)
+#amigaData = p.loadtxt(path + filenameAmiga)
 
 data.append(p.sort(rockstarData[:,2])[::-1])
 data.append(p.sort(amigaData[:,3])[::-1])
