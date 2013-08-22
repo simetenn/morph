@@ -2014,7 +2014,7 @@ void CHalo::Unbind(int& count){
 		SortParticlesDistance();
 	}
 	else if (myConstants::constants.unbindingMethod == 4 ) {
-		ScalePhi();
+		ScalePhi(;)f
 	}
 	else  {
 		cout << "Error: No unbinding method with the chosen name" << endl;
