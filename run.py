@@ -4,7 +4,7 @@ def run(ScaleDensity,b,f):
     import pylab as p
     import shutil, subprocess
     
-    path = "/data/"
+    path = "/outData/"
     savepath = "./plots/compare/"
     inifilename = "mybody.ini"
 
