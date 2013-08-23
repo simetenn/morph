@@ -2,7 +2,7 @@ import pylab as p
 
 path = "/home/simen/Master/mybody-mpi/outData/"
 filenameMine = "mass.dat"
-filenameRockstar = "halos_0.ascii"
+filenameRockstar = "rockstar128.dat"
 filenameAmiga = "amiga.dat"
 #Read data from files
 mineData = p.loadtxt(path + filenameMine)

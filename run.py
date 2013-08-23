@@ -8,7 +8,7 @@ def run(ScaleDensity,b,f):
     savepath = "./plots/compare/"
     inifilename = "mybody.ini"
 
-    filenameMine = "size.dat"
+    filenameMine = "mass.dat"
     filenameRockstar = "rockstar128.dat"
     filenameAmiga = "amiga.dat"
 
@@ -40,19 +40,21 @@ def run(ScaleDensity,b,f):
     rockstarData = p.loadtxt(path + filenameRockstar)
     amigaData = p.loadtxt(path + filenameAmiga)
 
-    sortedDataR = p.sort(rockstarData[:,1])[::-1]
+    sortedDataR = p.sort(rockstarData[:,2])[::-1]
     sortedData = p.sort(mineData)[::-1]
-    sortedDataA = p.sort(amigaData[:,4])[::-1]
+    sortedDataA = p.sort(amigaData[:,3])[::-1]
 
 
     p.figure()
     p.loglog(sortedData,range(1,len(sortedData)+1))
     p.loglog(sortedDataR,range(1,len(sortedDataR)+1))
     p.loglog(sortedDataA,range(1,len(sortedDataA)+1))
-    p.legend(("mine","Rockstar","AMIGA"))
+    p.legend(("MORPH","Rockstar","AMIGA"))
+    p.xlabel("log(Mass) Msun")
+    p.ylabel("log(Nr of halos with mass <= Mass)")
     name = "MassFunction_ScaleDensity="+ str(ScaleDensity) + "_b=" + str(b) + "_f="+str(f)
     p.savefig(savepath+name+".png")
-
+    shutil.move(path+"mass.dat", path +"Mass_Scale="+ str(ScaleDensity) + "_b=" + str(b) + "_f="+str(f) +".dat")
 
 
     
@@ -60,9 +62,13 @@ def runTime(Particle,Scale):
     import pylab as p
     import shutil, subprocess, time
     
-    path = "/home/simen/Master/mybody-mpi/data/"
-    savepath = "/home/simen/Master/mybody-mpi/"
+    path = "./outData/"
+    savepath = "./plots/compare/"
     inifilename = "mybody.ini"
+
+    filenameMine = "mass.dat"
+    filenameRockstar = "rockstar128.dat"
+    filenameAmiga = "amiga.dat"
     
     inifile = open(inifilename, 'r')
     tmpinifile = open(inifilename + ".tmp", "w")
@@ -83,8 +89,30 @@ def runTime(Particle,Scale):
     #Run my halofinder
     #print "Running for: " +"ScaleDensity="+ str(ScaleDensity) + " b=" + str(b) + " f="+str(f)
     t1 = time.clock();
-    subprocess.call(["mpirun","-n","2", "./main"])
+    subprocess.call(["mpirun","-n","2", "./MORPH"])
     t2 = time.clock();
+
+
+    mineData = p.loadtxt(path + filenameMine)
+    rockstarData = p.loadtxt(path + filenameRockstar)
+    amigaData = p.loadtxt(path + filenameAmiga)
+
+    sortedDataR = p.sort(rockstarData[:,2])[::-1]
+    sortedData = p.sort(mineData)[::-1]
+    sortedDataA = p.sort(amigaData[:,3])[::-1]
+
+
+    p.figure()
+    p.loglog(sortedData,range(1,len(sortedData)+1))
+    p.loglog(sortedDataR,range(1,len(sortedDataR)+1))
+    p.loglog(sortedDataA,range(1,len(sortedDataA)+1))
+    p.legend(("MORPH","Rockstar","AMIGA"))
+    p.xlabel("log(Mass) Msun")
+    p.ylabel("log(Nr of halos with mass <= Mass)")
+    name = "MassFunction_Scale="+ str(Scale) + "_Particles=" + str(Particle)
+    p.savefig(savepath+name+".png")
+
+    shutil.move(path+"mass.dat", path +"Mass_Scale="+ str(Scale) + "_Particles=" + str(Particle) + ".dat")
     
     return t2-t1
 
@@ -97,7 +125,7 @@ def runAll(ScaleDensity, b, f, Particle, Scale):
     savepath = "./plots/compare/"
     inifilename = "mybody.ini"
 
-    filenameMine = "size.dat"
+    filenameMine = "mass.dat"
     filenameRockstar = "halos_0.ascii"
     filenameAmiga = "amiga.dat"
 
@@ -133,21 +161,23 @@ def runAll(ScaleDensity, b, f, Particle, Scale):
     rockstarData = p.loadtxt(path + filenameRockstar)
     amigaData = p.loadtxt(path + filenameAmiga)
 
-    sortedDataR = p.sort(rockstarData[:,1])[::-1]
+    sortedDataR = p.sort(rockstarData[:,2])[::-1]
     sortedData = p.sort(mineData)[::-1]
-    sortedDataA = p.sort(amigaData[:,4])[::-1]
+    sortedDataA = p.sort(amigaData[:,3])[::-1]
 
 
     p.figure()
     p.loglog(sortedData,range(1,len(sortedData)+1))
     p.loglog(sortedDataR,range(1,len(sortedDataR)+1))
     p.loglog(sortedDataA,range(1,len(sortedDataA)+1))
+    p.xlabel("log(Mass) Msun")
+    p.ylabel("log(Nr of halos with mass <= Mass)")
     p.legend(("mine","Rockstar","AMIGA"))
     name = "MassFunction_ScaleDensity="+ str(ScaleDensity) + "_b=" + str(b) + "_f="+str(f) + "_Scale=" +str(Scale) + "_Double="+str(double)
     p.savefig(savepath+name+".png")
 
 
-
+"""
 ScaleDensity = [360]#range(300,400,20)
 b = p.linspace(0.2,0.3,12)
 f = p.linspace(0.5,0.9,4)
@@ -160,7 +190,7 @@ count = 1.
 
 for i in ScaleDensity:
     for j in b:
-        for k in f:
+e        for k in f:
             for l in Particles:
                 for m in Scales:
                     print "__________________________________________"
@@ -185,10 +215,11 @@ f.write("Nr   Scale   Time\n")
 for i in Particles:
     for j in Scales:
         print str(count/runs*100)+"%"
-        string = str(i) + "   " + str(j) + "   " + str(0)+"\n"
+        time = runTime(i,j)
+        string = str(i) + "   " + str(j) + "   " + str(time)+"\n"
         f.write(string)
         count += 1
 print "__________________________________________"
-""""
+
 f.close()
 #run(ScaleDensity[0],b[0],f[0])
