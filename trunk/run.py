@@ -51,7 +51,7 @@ def run(ScaleDensity,b,f):
     p.loglog(sortedDataA,range(1,len(sortedDataA)+1))
     p.legend(("MORPH","Rockstar","AMIGA"))
     p.xlabel("log(Mass) Msun")
-    p.ylabel("log(Nr of halos with mass <= Mass)")
+    p.ylabel("log(Nr of halos with mass >= Mass)")
     name = "MassFunction_ScaleDensity="+ str(ScaleDensity) + "_b=" + str(b) + "_f="+str(f)
     p.savefig(savepath+name+".png")
     shutil.move(path+"mass.dat", path +"Mass_Scale="+ str(ScaleDensity) + "_b=" + str(b) + "_f="+str(f) +".dat")
@@ -108,7 +108,7 @@ def runTime(Particle,Scale):
     p.loglog(sortedDataA,range(1,len(sortedDataA)+1))
     p.legend(("MORPH","Rockstar","AMIGA"))
     p.xlabel("log(Mass) Msun")
-    p.ylabel("log(Nr of halos with mass <= Mass)")
+    p.ylabel("log(Nr of halos with mass >= Mass)")
     name = "MassFunction_Scale="+ str(Scale) + "_Particles=" + str(Particle)
     p.savefig(savepath+name+".png")
 
@@ -171,34 +171,30 @@ def runAll(ScaleDensity, b, f, Particle, Scale):
     p.loglog(sortedDataR,range(1,len(sortedDataR)+1))
     p.loglog(sortedDataA,range(1,len(sortedDataA)+1))
     p.xlabel("log(Mass) Msun")
-    p.ylabel("log(Nr of halos with mass <= Mass)")
+    p.ylabel("log(Nr of halos with mass >= Mass)")
     p.legend(("mine","Rockstar","AMIGA"))
     name = "MassFunction_ScaleDensity="+ str(ScaleDensity) + "_b=" + str(b) + "_f="+str(f) + "_Scale=" +str(Scale) + "_Double="+str(double)
     p.savefig(savepath+name+".png")
 
 
-"""
+#"""
 ScaleDensity = [360]#range(300,400,20)
-b = p.linspace(0.2,0.3,12)
-f = p.linspace(0.5,0.9,4)
-Scales = range(1,7)#range(300,400,20)
-Particles = range(10,51,5)
-runs = len(ScaleDensity)*len(b)*len(f)*len(Scales)*len(Particles)
+b = p.linspace(0.2,0.3,11)
+f = p.linspace(0.5,0.9,5)
+runs = len(ScaleDensity)*len(b)*len(f)
 count = 1.
 
 
 
 for i in ScaleDensity:
     for j in b:
-e        for k in f:
-            for l in Particles:
-                for m in Scales:
-                    print "__________________________________________"
-                    print
-                    print str(count/runs*100)+"%"
-                    print "__________________________________________"
-                    runAll(i,j,k,l,m)
-                    count += 1
+        for k in f:
+            print "__________________________________________"
+            print
+            print str(count/runs*100)+"%"
+            print "__________________________________________"
+            run(i,j,k)
+            count += 1
                     
 """
 
@@ -220,6 +216,6 @@ for i in Particles:
         f.write(string)
         count += 1
 print "__________________________________________"
-
+"""
 f.close()
 #run(ScaleDensity[0],b[0],f[0])
