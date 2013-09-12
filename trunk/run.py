@@ -1,11 +1,12 @@
 import pylab as p
+import time
 
 def run(ScaleDensity,b,f):
     import pylab as p
     import shutil, subprocess
     
-    path = "/outData/"
-    savepath = "./plots/compare/"
+    path = "./outData/"
+    savepath = "./plots/compare3/"
     inifilename = "mybody.ini"
 
     filenameMine = "mass.dat"
@@ -88,11 +89,10 @@ def runTime(Particle,Scale):
 
     #Run my halofinder
     #print "Running for: " +"ScaleDensity="+ str(ScaleDensity) + " b=" + str(b) + " f="+str(f)
-    t1 = time.clock();
+    t1 = time.time();
     subprocess.call(["mpirun","-n","2", "./MORPH"])
-    t2 = time.clock();
-
-
+    t2 = time.time();
+    """
     mineData = p.loadtxt(path + filenameMine)
     rockstarData = p.loadtxt(path + filenameRockstar)
     amigaData = p.loadtxt(path + filenameAmiga)
@@ -113,7 +113,7 @@ def runTime(Particle,Scale):
     p.savefig(savepath+name+".png")
 
     shutil.move(path+"mass.dat", path +"Mass_Scale="+ str(Scale) + "_Particles=" + str(Particle) + ".dat")
-    
+    """
     return t2-t1
 
 
@@ -175,16 +175,20 @@ def runAll(ScaleDensity, b, f, Particle, Scale):
     p.legend(("mine","Rockstar","AMIGA"))
     name = "MassFunction_ScaleDensity="+ str(ScaleDensity) + "_b=" + str(b) + "_f="+str(f) + "_Scale=" +str(Scale) + "_Double="+str(double)
     p.savefig(savepath+name+".png")
+    
 
 
 #"""
 ScaleDensity = [360]#range(300,400,20)
-b = p.linspace(0.2,0.3,11)
+b = [0.21]#p.linspace(0.2,0.3,11)
 f = p.linspace(0.5,0.9,5)
 runs = len(ScaleDensity)*len(b)*len(f)
 count = 1.
 
 
+#"""
+file = open("times.dat","w")
+file.write("f   Time\n")
 
 for i in ScaleDensity:
     for j in b:
@@ -193,13 +197,19 @@ for i in ScaleDensity:
             print
             print str(count/runs*100)+"%"
             print "__________________________________________"
+            t1 = time.time();
             run(i,j,k)
+            t2 = time.time();
+            
+            string = str(k) + "   " + str(t2-t1)+"\n"
+            file.write(string)
+            
             count += 1
                     
 """
 
 Scales = range(1,7)#range(300,400,20)
-Particles = range(10,51,5)
+Particles = range(10,101,10)
 runs = len(Scales)*len(Particles)
 count = 1.
 results = p.zeros((3,runs))
@@ -217,5 +227,5 @@ for i in Particles:
         count += 1
 print "__________________________________________"
 """
-f.close()
+file.close()
 #run(ScaleDensity[0],b[0],f[0])
