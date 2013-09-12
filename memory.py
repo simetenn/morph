@@ -1,6 +1,6 @@
 import subprocess, sys, time, pylab, numpy
 
-N = 2;
+N = 3
 
 def getMemory():
     p = subprocess.Popen(["ps", "-C", "MORPH", "v"], stdout=subprocess.PIPE, 

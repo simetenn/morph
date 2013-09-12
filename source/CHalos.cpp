@@ -1187,7 +1187,6 @@ void CHalos::FriendOfFriendGrid(){
 
 	//Uncomment to manually set the linking length
 	//LinkingLength = myConstants::constants.LinkingLength;
-
 	int Width = (int) (2./LinkingLength);
 	Grid.initialize(&min,&max,Width);
 	Grid.Populate(Halos[0]->getParticles());
@@ -1484,9 +1483,19 @@ CHalos* CHalos::master(){
 	  }
 	  cout << "Total number of unbound particles: " << sum << endl;*/
 	FinalHalos->removeEmptyHalos();
-
+	int tmp = -1;
+	int unbound [size];
+	int totalUnbound = 0;
+	MPI_Gather(&tmp, 1, MPI_INT, unbound, 1, MPI_INT, 0, MPI_COMM_WORLD);
+	
+	for (int i = 1; i < size; i++) {
+		totalUnbound += unbound[i];
+	}
+	
 	cout << "Total number of particles: " << FinalHalos->getNrParticles() << endl;
-
+	cout << "Unbound percentage: " <<
+		((double)totalUnbound)/(FinalHalos->getNrParticles()+totalUnbound)*100 << endl;
+	
 	return FinalHalos;
 }
 
@@ -1531,7 +1540,7 @@ void CHalos::slave(){
 		}
 		//HalosArray.del();
 		kill();
-
+		
 		/*CHalos SlaveHalos(&HalosArray); // Assured memory leak
 		//SlaveHalos.initialize(&HalosArray);
 		SlaveHalos.SplitHalos();
@@ -1540,7 +1549,8 @@ void CHalos::slave(){
 		//SlaveHalos.clear();*/
 		//cout << "ready for a new iteration" << endl;
 	}
-
+	//cout << count << endl;
+	MPI_Gather(&count, 1, MPI_INT, NULL, 1, MPI_INT, 0, MPI_COMM_WORLD);
 	/*kill();
 	  int tmpIntArray[size-1];
 	  //int send [1] = {count};

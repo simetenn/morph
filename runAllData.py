@@ -4,6 +4,8 @@ def run(name, method):
     
     path = "./outData/"
     inifilename = "mybody.ini"
+
+    
     
     inifile = open(inifilename, 'r')
     tmpinifile = open(inifilename + ".tmp", "w")
@@ -11,6 +13,8 @@ def run(name, method):
     for line in inifile:
         if line[0:18] == "unbindingMethod = ":
             line = "unbindingMethod = " + str(method)+"\n "
+        if line[0:9] == "inFile = ":
+            line = "inFile = " + str(name)+"\n "
             
         tmpinifile.write(line)
     

@@ -2018,8 +2018,8 @@ void CHalo::Unbind(int& count){
 	}
 	else  {
 		cout << "Error: No unbinding method with the chosen name" << endl;
-	}
-	//CalculatePhiSpherical();
+		}
+	CalculatePhiSpherical();
 	//CalculatePhi();
 	//ScalePhi();
 	vector<int> RemoveIndex;
