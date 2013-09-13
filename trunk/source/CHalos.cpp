@@ -1493,8 +1493,7 @@ CHalos* CHalos::master(){
 	}
 	
 	cout << "Total number of particles: " << FinalHalos->getNrParticles() << endl;
-	ofstream file;
-	file.open(myConstants::constants.outData + myConstants::constants.outBounding, ios::out | ios::app);
+	fstream file((myConstants::constants.outData + myConstants::constants.outBounding).c_str(), ios::out | ios::app);
 	file << myConstants::constants.inFile << " "
 		 << myConstants::constants.unbindingMethod << " "
 		 << ((double)totalUnbound)/(FinalHalos->getNrParticles()+totalUnbound)*100 << endl;
