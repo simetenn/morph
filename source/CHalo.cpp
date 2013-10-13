@@ -630,6 +630,7 @@ vector<double>* CHalo::getR(){
 
 //Calculate the Virialization mass and radius
 void CHalo::calculateVir(){
+  SortParticlesDistance();
 	Rvir = pow((Mass/(16./3.*atan(1)*myConstants::constants.ScaleDensity*myConstants::constants.RhoC)),1./3.);
 	Mvir = 0;
 	//cout << r[0] << " " << Rvir<<endl;
@@ -1033,7 +1034,7 @@ void CHalo::CalculateStatistics(){
 		SigmaV = SigmaV.sqrt()/(NrParticles-1);
 	}
 
-	//calculateVirBeta();
+	calculateVirBeta();
 
 }
 
@@ -1070,7 +1071,7 @@ void CHalo::CalculateStatisticsNoMass(){
 	for (list<CHalo*>::iterator it = SubHalos.begin(); it != SubHalos.end(); it++) {
 		(*it)->CalculateStatisticsNoMass();
 	}
-	//calculateVirBeta();
+	calculateVirBeta();
 
 }
 
@@ -1216,6 +1217,7 @@ void CHalo::saveHaloStatX(fstream& fileName, int& HaloID){
 
 //save the data for a single halo to file
 void CHalo::savePhi(string Filename){
+  SortParticlesDistance();
 	fstream file;
 
 	file.open((myConstants::constants.outData + Filename).c_str(), ios::out);
@@ -1246,7 +1248,7 @@ void CHalo::del(string Filename){
 
 //Calculate the Phase-Space distance between a halo and a particle
 double CHalo::PhaseSpaceDistanceHalo(CParticle* inParticle){
-	//double rvir2 = pow((Mass/(16./3.*atan(1)*myConstants::constants.ScaleDensity*myConstants::constants.RhoC)),2./3.);
+  //double rvir2 = pow((Mass/(16./3.*atan(1)*myConstants::constants.ScaleDensity*myConstants::constants.RhoC)),2./3.);
 	double rvir2 = Rvir*Rvir;
 	
 	//double tmp = sqrt((inParticle->getP() - MeanP).Length2()/rvir2 + (inParticle->getV() - MeanV).Length2()/SigmaV.Length2());
@@ -1257,7 +1259,7 @@ double CHalo::PhaseSpaceDistanceHalo(CParticle* inParticle){
 
 //Calculate the Phase-Space distance between a halo and a particle
 double CHalo::PhaseSpaceDistanceHaloHalo(CHalo* inHalo){
-	//double rvir2 = pow((Mass/(16./3.*atan(1)*myConstants::constants.ScaleDensity*myConstants::constants.RhoC)),2./3.);
+  //double rvir2 = pow((Mass/(16./3.*atan(1)*myConstants::constants.ScaleDensity*myConstants::constants.RhoC)),2./3.);
 	double rvir2 = Rvir*Rvir;
 	//double tmp = sqrt((inParticle->getP() - MeanP).Length2()/rvir2 + (inParticle->getV() - MeanV).Length2()/SigmaV.Length2());
 	return sqrt((*inHalo->getMeanP() - MeanP).Length2()/rvir2 + (*inHalo->getMeanV() - MeanV).Length2()/SigmaV.Length2());
@@ -2074,11 +2076,13 @@ void CHalo::createSubHalos(int& count){
 	calculateMass();
 	CalculateStatisticsNoMass();
 	//SortParticlesDistance();
+	
 	if(myConstants::constants.unbindingMethod != 0 ){
-		UnbindAll(count);
-		calculateMass();
-		CalculateStatisticsNoMass();
+	  UnbindAll(count);
+	  calculateMass();
+	  CalculateStatisticsNoMass();
 	}
+
 	//CalculateStatistics();
 	//calculateVir2();
 	//calculateVirBeta();

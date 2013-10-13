@@ -10,8 +10,8 @@ except:
     #name = "positions_all.dat"
 #print "Using file: " + name 
 
-path = "/home/simen/Master/mybody-mpi/outData/"
-savepath = "/home/simen/Master/mybody-mpi/plots/compare/"
+path = "./outData/"
+savepath = "./plots/"
     
 particles = [] 
 with open(path+name, "r") as infile:
@@ -46,6 +46,6 @@ for i in xrange(int(max(particles[:,-1]))+1):
     ax.set_zlabel('Z-position [Mpc/h]')
     ax.set_title("Positions")
     name = "SingleHalo"+ str(i)
-    p.savefig(savepath+name+".png")
+    p.savefig(savepath+name[:-4]+".png")
     #p.show()
 

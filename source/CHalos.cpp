@@ -1023,6 +1023,25 @@ void CHalos::saveMass(string Filename){
 	file.close();
 }
 
+//Save the size of all the halos to a txt fil
+void CHalos::saveData(string Filename){
+	fstream file;
+	CVector tmpP;
+	file.open((myConstants::constants.outData + Filename).c_str(), ios::out);
+	vector<double>* tmp;
+	//Saves position data for each particle to file
+	for (int i = 0;i < NrHalos; i++){
+	  tmp = Halos[i]->getR();
+	  file << Halos[i]->getMass() << " " << tmp->at(tmp->size()-1) << " ";
+	  file << Halos[i]->getRvir() << " " << Halos[i]->getMvir() << " ";
+	  Halos[i]->calculateVir();
+	  file << Halos[i]->getRvir() << " " << Halos[i]->getMvir() << endl;;
+	}
+	file.close();
+}
+
+
+
 //Save halos into a text file, as a array
 void CHalos::saveHalos(string Filename){
 	fstream file;
@@ -1045,7 +1064,7 @@ void CHalos::saveHalos(string Filename){
 //Calculate halo statistics for all halos
 void CHalos::CalculateAllStatistics(){
 	for (int i = 0; i < NrHalos; i++) {
-		Halos[i]->CalculateStatistics();
+		Halos[i]->CalculateStatisticsNoMass();
 	}
 }
 
@@ -1487,7 +1506,7 @@ CHalos* CHalos::master(){
 	int unbound [size];
 	int totalUnbound = 0;
 	MPI_Gather(&tmp, 1, MPI_INT, unbound, 1, MPI_INT, 0, MPI_COMM_WORLD);
-	
+	cout << "Gathering data" << endl;
 	for (int i = 1; i < size; i++) {
 		totalUnbound += unbound[i];
 	}
@@ -1556,6 +1575,7 @@ void CHalos::slave(){
 		//cout << "ready for a new iteration" << endl;
 	}
 	//cout << count << endl;
+	
 	MPI_Gather(&count, 1, MPI_INT, NULL, 1, MPI_INT, 0, MPI_COMM_WORLD);
 	/*kill();
 	  int tmpIntArray[size-1];
