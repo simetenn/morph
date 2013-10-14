@@ -1033,9 +1033,9 @@ void CHalos::saveData(string Filename){
 	for (int i = 0;i < NrHalos; i++){
 	  tmp = Halos[i]->getR();
 	  file << Halos[i]->getMass() << " " << tmp->at(tmp->size()-1) << " ";
-	  file << Halos[i]->getRvir() << " " << Halos[i]->getMvir() << " ";
+	  file << Halos[i]->getMvir() << " " << Halos[i]->getRvir() << " ";
 	  Halos[i]->calculateVir();
-	  file << Halos[i]->getRvir() << " " << Halos[i]->getMvir() << endl;;
+	  file << Halos[i]->getMvir() << " " << Halos[i]->getRvir() << endl;;
 	}
 	file.close();
 }
