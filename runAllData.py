@@ -25,14 +25,14 @@ def run(name, method):
 
     #Run my halofinder
     #print "Running for: " +"ScaleDensity="+ str(ScaleDensity) + " b=" + str(b) + " f="+str(f)
-    #subprocess.call(["mpirun","-n","50", "./MORPH"])
+    subprocess.call(["mpirun","-n","50", "./MORPH"])
     
     #Read data from files
     filename = "Data_" + name[:-4] + "_UnbindingMethod=" + str(method)
     shutil.move(path + "data.dat", path + filename + ".dat")
     filename2 = "Mass_" + name[:-4] + "_UnbindingMethod=" + str(method)
     shutil.move(path + "mass.dat", path + filename2 + ".dat")
-    sys.exit(1)
+    
 
 
 #names = ["lcdm1.bin"]

@@ -27,7 +27,7 @@ void CMain::master() {
 	m.FriendOfFriendGrid();
 	m.HaloSort();
 
-	m[50]->saveP("positions50.dat");
+	/*m[50]->saveP("positions50.dat");
 	m[150]->saveP("positions150.dat");
 	m[250]->saveP("positions250.dat");
 	m[350]->saveP("positions350.dat");
@@ -35,7 +35,7 @@ void CMain::master() {
 	m[1000]->saveP("positions1000.dat");
 	m[2000]->saveP("positions2000.dat");
 	m[5000]->saveP("positions5000.dat");
-	m[10000]->saveP("positions10000.dat");
+	m[10000]->saveP("positions10000.dat");*/
 
 
 	/*m[50]->savePhi("PhiSingle1.dat");
@@ -102,7 +102,7 @@ void CMain::master() {
 	//n->saveSize(myConstants::constants.outSize);
 	n->CalculateAllStatistics();
 	n->saveMass("mass.dat");
-	n->save("data.dat");
+	n->saveData("data.dat");
 	
 
 	//n->saveP("HalosSingleSplit.dat");
