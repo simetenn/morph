@@ -32,22 +32,6 @@ void CMPI::initialize_CMPI(int argc, char **argv){
 
 
 CMPI::~CMPI(){
-	//delete[] master_receive_array;
-	//delete[] slave_receive_array;
-	//delete[] result;
-
-	//if (Req_receive != NULL){
-	//delete[] Req_receive;
-	//}
-
-	/*if (results != NULL){
-	  for (int p=0; p < size; p++){
-	  delete[] results[p];
-	  }
-	  delete[] results;
-	  }*/
-
-	//delete[] Stat_receive;
 }
 
 //send an array from the master processor to a slave processor
@@ -72,7 +56,7 @@ double* CMPI::receive_array_master(int processor, int& master_length, MPI_Reques
 	//Create an array longer than needed to avoid having to send the length back
 	//from the master processor
 	master_length += (1+myConstants::constants.HaloSize)*myConstants::constants.MaxHalos;
-	double* master_receive_array = new double [master_length]; //<- Memory leak
+	double* master_receive_array = new double [master_length];
 
 	//Recieve the array, non blocking
 	MPI_Irecv(master_receive_array,master_length, MPI_DOUBLE,processor,processor+3*size,MPI_COMM_WORLD, Req);
@@ -90,10 +74,9 @@ void CMPI::send_array_slave(double* slave_send_array, int length){
 //Recieve an array in the Slave process from the Master process
 double* CMPI::receive_array_slave(int& slave_length){
 	MPI_Status Stat;
-	//slave_length =0;
+
 	MPI_Recv(&slave_length,1,MPI_INT,0,rank,MPI_COMM_WORLD,&Stat);
-	
-	//cout << "MPI: TRALALALALA "<< slave_length << endl;
+
 	double* slave_receive_array = new double [slave_length]; //<- memory leak
 	MPI_Recv(slave_receive_array,slave_length,MPI_DOUBLE,0,rank+size,MPI_COMM_WORLD,&Stat);
 	

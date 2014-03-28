@@ -151,6 +151,8 @@ int CArray::len(){
 }
 
 //Return a given element of the array, the element can be changed
+//Use outcommented code if testing if inside boundary of array is
+//wanted
 double& CArray::operator[](int element){
 	/*if (array == NULL){
 	  throw "Array not initialized";
@@ -167,7 +169,9 @@ double& CArray::operator[](int element){
 }
 
 
-//Get a given element of the array,
+//Get a given element of the array
+//Use outcommented code if testing if inside boundary of array is
+//wanted
 double CArray::get(int element){
 	/*if (array == NULL){
 	  cout << "Array not initialized" << endl;
@@ -189,14 +193,17 @@ double CArray::get(int element){
 
 
 //Set a given element of the array,
+//Use outcommented code if testing if inside boundary of array is
+//wanted
 void CArray::set(int element,double value){
-	if (element >= length || element < -length) {
+	/*if (element >= length || element < -length) {
 		cout << "Index out of bounds" << endl;
 		throw "Index out of bounds";
 	}
 	else {
-		array[element] = value;
-	}
+	*/
+	array[element] = value;
+	//}
 }
 
 
@@ -300,7 +307,6 @@ void CArray::front(double in_value){
 		tmp[i] = array[i-1];
 	}
 	
-	//	memcpy(&tmp[1],array,sizeof(double)*(length));
 	tmp[0] = in_value;
 
 	if (array != NULL) {

@@ -87,12 +87,8 @@ class CVector{
 	//Calculate the sum of a vector
 	double Sum() const;
 
-	//returns the quadrant the vector is in
-	//double Quadrant();
 
  protected:
 	//int Dimensions;
-	//vector<double> Vector;
 	double _x,_y,_z;
-
 };

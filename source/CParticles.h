@@ -38,12 +38,12 @@ class CParticles{
 	CParticle* operator[](int element);
 	//Return particle nr #element
 	CParticle* get(int element);
-	//CParticle* getParticle(int element);
 	//Get Particles
 	vector<CParticle*>* getParticles();
 
 	//Add a particle to CParticles
 	void addParticle(CParticle* inParticle);
+	//Add a particle to CParticles, withouth updating the other halo information
 	void addParticleSimple(CParticle* inParticle);
 	//Add several particles to CParticles
 	void addParticles(CParticles* inParticles);
@@ -59,8 +59,10 @@ class CParticles{
 	void setFlag(int inFlag);
 	int getFlag();
 
+	//Calculate the gravitational potential of all particles, using the paricles acceleration
 	void calculatePhi(CVector& MeanP);
 	
+	//Set Nr of particles
 	void setNrParticles(int Nr);
 
 	
