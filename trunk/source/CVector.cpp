@@ -28,8 +28,6 @@ CVector::CVector(vector<double> inVector){
 
 
 CVector::CVector(const CVector& inVector){
-	double d = inVector.x();
-
 	_x= inVector.x();
 	_y= inVector.y();
 	_z= inVector.z();
@@ -39,8 +37,6 @@ CVector::CVector(const CVector& inVector){
 
 CVector::~CVector(){
 }
-
-
 
 
 
@@ -202,17 +198,3 @@ double CVector::y()  const {
 double CVector::z() const {
 	return _z;
 }
-
-
-/*double CVector::Quadrant(){
-
-	if (Vector[0] > 0 &&  Vector[1] > 0 && Vector[2] < 0) return 1;		  //x+,y+,z-
-	else if (Vector[0] > 0 &&  Vector[1] < 0 && Vector[2] < 0) return 2;  //x+,y-,z-
-	else if (Vector[0] > 0 &&  Vector[1] < 0 && Vector[2] > 0) return 3;  //x+,y-,z+
-	else if (Vector[0] < 0 &&  Vector[1] > 0 && Vector[2] > 0) return 4;  //x-,y+,z+
-	else if (Vector[0] < 0 &&  Vector[1] > 0 && Vector[2] < 0) return 5;  //x-,y+,z-
-	else if (Vector[0] < 0 &&  Vector[1] < 0 && Vector[2] < 0) return 6;  //x-,y-,z-
-	else if (Vector[0] < 0 &&  Vector[1] < 0 && Vector[2] > 0) return 7;  //x-,y-,z+
-	else return 0;														  //x+,y+,z+
-	//The last else might be dangerous
-	}*/

@@ -10,13 +10,7 @@ CParticles::CParticles(){
 }
 
 CParticles::~CParticles(){
-	/*for (int i = 0; i < NrParticles;i++){
-	  if ( Particles[i] != NULL)
-	  delete Particles[i]; // <- correct?
-	  }*/
-	//kill();
 	clear();
-	//Particles.clear();
 }
 
 
@@ -39,7 +33,7 @@ CParticles::CParticles(CArray* inArray){
 			tmpArray[j] = inArray->get(ParticleSize*i+j);
 		}
 
-		CParticle* tmpParticle = new CParticle(tmpArray); // <----- kill -Checked
+		CParticle* tmpParticle = new CParticle(tmpArray);
 		Particles.push_back(tmpParticle);
 	}
 	if (tmpArray != NULL) {
@@ -69,7 +63,7 @@ void CParticles::set(CArray* inArray){
 			tmpArray[j] = inArray->get(ParticleSize*i+j);
 		}
 
-		CParticle * tmpParticle = new CParticle(tmpArray);	// <----- kill
+		CParticle * tmpParticle = new CParticle(tmpArray);
 		Particles.push_back(tmpParticle);
 	}
 
@@ -121,7 +115,7 @@ CParticle* CParticles::get(int element){
 	}
 }
 
-
+//Get Particles
 vector<CParticle*>* CParticles::getParticles() {
 	return &Particles;
 }
@@ -133,6 +127,7 @@ void CParticles::addParticle(CParticle* inParticle){
 	Particles.push_back(inParticle);
 }
 
+//Add a particle to CParticles, withouth updating the other halo information
 void CParticles::addParticleSimple(CParticle* inParticle){
 	Particles.push_back(inParticle);
 }
@@ -159,7 +154,7 @@ void CParticles::removeParticle(int element){
 //Convert CParticles to a CArray on the form
 //[ParticleArray 1, ParticleArray 2, ParticleArray 3, ... , ParticleArray N]
 CArray* CParticles::Particles2Array(){
-	CArray* Array = new CArray (ParticleSize*NrParticles); // <--- kill
+	CArray* Array = new CArray (ParticleSize*NrParticles);
 	double* tmpArray;
 	for (int i = 0; i < NrParticles;i++){
 		tmpArray = Particles[i]->Particle2Array();
@@ -187,18 +182,16 @@ void CParticles::setFlag(int inFlag){
 
 int CParticles::getFlag(){
 	return flag;
-	//for (int i = 0; i < NrParticles; i++) {
-	//	Particles[i]->setFlag(inFlag);
-	//}
 }
 
+//Calculate the gravitational potential of all particles, using the paricles acceleration
 void CParticles::calculatePhi(CVector& MeanP){
 	for (int i = 0; i < NrParticles; i++) {
 		Particles[i]->calculatePhi(MeanP);
 	}
 }
 
-
+//Set Nr of particles
 void CParticles::setNrParticles(int Nr){
 	NrParticles = Nr;
 }

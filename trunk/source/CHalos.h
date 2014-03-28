@@ -15,6 +15,7 @@ struct particle_save {
 	
 };
 
+//Particle save structure. Used to read from Max's format
 struct particle_max {
 	CVector_bare P, V;
 	double ID, Phi;
@@ -120,7 +121,11 @@ class CHalos{
 	void loadHalos(string Filename);
 	//Load a Gadget 2 formated binary file.
 	void loadGadget(string Filename);
+	//Load a binary file from a N-body simulation into memory.
+	//Claudio's format, converted from ramses file
 	void loadMax(string Filename);
+	//Load a binary file from a N-body simulation into memory.
+	//Hans's format, converted from ramses file
 	void loadHans();
 
 

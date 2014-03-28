@@ -62,6 +62,4 @@ class CMPI {
 	int size, rank, argc, currentcount;
 	char **argv;
 	MPI_Request* endReq;
-	
-
 };

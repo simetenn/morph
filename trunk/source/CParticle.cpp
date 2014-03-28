@@ -9,10 +9,7 @@ using namespace std;
 CParticle::CParticle(){
 	ParticleSize =  myConstants::constants.ParticleSize;
 	
-	//CVector P,V,A;
 	Mass = 1;
-	//Charge = 0;
-	//Generate_ID();
 	P.Set(0,0,0);
 	V.Set(0,0,0);
 	A.Set(0,0,0);
@@ -26,13 +23,10 @@ CParticle::CParticle(){
 //[Phi,Mass,Px,Py,Pz,Vx,Vy,Vz,Ax,Ay,Az]
 CParticle::CParticle(double* inArray){
 	//Some way to test if length of the array is equal to particle size
-	//Generate_ID();
-
 	ParticleSize =  myConstants::constants.ParticleSize;
 
 	Phi = inArray[0];
 	Mass = inArray[1];
-	//Charge = inArray[2];
 	P.Set(inArray[2],inArray[3],inArray[4]);
 	V.Set(inArray[5],inArray[6],inArray[7]);
 	A.Set(inArray[8],inArray[9],inArray[10]);
@@ -59,6 +53,9 @@ void CParticle::RemoveFromList(){
 	prev =  NULL;
 }
 
+
+
+//Removes the particle from the grid linked list
 void CParticle::RemoveFromListGrid(){
 	if (nextGrid != NULL){
 		nextGrid->prevGrid = prevGrid;
@@ -70,28 +67,15 @@ void CParticle::RemoveFromListGrid(){
 	prevGrid =  NULL;
 }
 
-//Somehing weird with this???
 //Set the different values a particle has
 void CParticle::setPhi(double element){
-	/*if (element < 0){
-		cout << "Warning: This is negative, it should always be a positive number" << endl;
-		}*/
 	Phi = element;
 }
-
-double CParticle::getPhi(){
-	return Phi;
-}
-
 
 void CParticle::setMass(double in_M){
 	Mass = in_M;
 }
 
-
-/*void CParticle::setCharge(double in_C){
-	Charge = in_C;
-	}*/
 
 
 void CParticle::setPosition(double Px, double Py, double Pz){
@@ -111,7 +95,6 @@ void CParticle::setAcceleration(double Ax, double Ay, double Az){
 void CParticle::setData(vector<double> data){
 	Phi = data[0];
 	Mass = data[1];
-	//Charge = data[2];
 
 	for (int i = 0;i<P.getDimensions();i++){
 		P[i] = data[i+2];
@@ -133,9 +116,10 @@ void CParticle::setV(CVector inV){
 
 
 //Get the different values a particle has
-/*int CParticle::getID(){
-	return ID;
-	}*/
+
+double CParticle::getPhi(){
+	return Phi;
+}
 
 int CParticle::getHalo(){
 	return Phi;
@@ -187,7 +171,6 @@ double* CParticle::Particle2Array(){
 	double * tmpArray = new double [ParticleSize]; //<- Memory leak
 	tmpArray[0] = Phi;
 	tmpArray[1] = Mass;
-	//tmpArray[2] = Charge;
 	
 	for (int i = 0;i<P.getDimensions();i++){
 		tmpArray[i+2] = P[i];
@@ -209,22 +192,22 @@ void CParticle::Move(double dt){
 	}
 }
 
-
+//Calculate the gravitational energy of a particle, utilizing the particle acceleration
 void CParticle::calculatePhi(CVector& MeanP){
 	Phi = (P - MeanP).Dot(A);
 }
 
-
+//Calculate the kinetic energy of a particle
 double CParticle::Ekin(){
 	return 0.5*Mass*V.Length2();
 }
 
-
+//Calculate the momentum of a particle
 CVector CParticle::Momentum(){
 	return (V*Mass);
 }
 
-
+//CalculatePhaseSpaceDistance between 2 particles
 double CParticle::PhaseSpaceDistance(CParticle* p2, CVector* inSigmaP, CVector* inSigmaV){
 	return sqrt((P - p2->getP()).Length2()/inSigmaP->Length2() +  (V - p2->getV()).Length2()/inSigmaV->Length2());
 }
@@ -235,10 +218,8 @@ double CParticle::PhaseSpaceDistance(CParticle* p2, CVector* inSigmaP, CVector* 
 //Print out all the information contained in one particle
 void CParticle::print(){
 	cout << "------------------------------------" << endl;
-	//cout << "Particle ID: " << ID << endl;
 	cout << "Halo ID: " << Phi << endl;
 	cout << "Mass: " << Mass << endl;
-	//cout << "Charge: " << Charge << endl;
 	cout << "Position:	   ";
 	P.print();
 	cout << "Velocity:	   ";
@@ -271,8 +252,3 @@ void CParticle::decreaseHalo(){
 		cout << "Warning: Phi=" << Phi << "This is negative, it should always be a positive number !" << endl;
 	}
 }
-
-
-/*void CParticle::Generate_ID(){
-	ID = ID_Generator++;
-	}*/

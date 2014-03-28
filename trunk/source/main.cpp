@@ -11,19 +11,20 @@ int main(int argc, char **argv){
 
 
 	if (rank == 0) {
+		//Run the master process
 		CMain m;
 		m.master();
 		
 		MPI_Barrier(MPI_COMM_WORLD);
 		MPI_Finalize();
-	}
-
-	else {
-
+	} else {
+		//Run the slave processes
 		CMain s;
 		s.slave();
+
 		MPI_Barrier(MPI_COMM_WORLD);
 		MPI_Finalize();
 	}
+	
 	return 0;
 }

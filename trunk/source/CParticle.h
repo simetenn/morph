@@ -4,25 +4,6 @@
 #include "Constants.h"
 
 
-/*class LinkedList{
- public:
-	LinkedList(){
-		next = prev = NULL;
-	}
-	
-	CParticle *next,*prev; 
-
-	void RemoveList{
-		if (next)
-			next->prev = prev;
-
-		if (prev)
-			prev->next = next;
-	}
-	};*/
-
-
-
 class CParticle{
  public:
 
@@ -36,7 +17,6 @@ class CParticle{
 
 	//Attatch a particle to the particle list
 	void attachParticle(CParticle* p){
-		//CParticle* oldNext = nextGrid;
 		p->nextGrid = nextGrid;
 		if (nextGrid != NULL)
 			nextGrid->prevGrid = p;
@@ -49,30 +29,28 @@ class CParticle{
 	CParticle* next,*prev,*nextGrid,*prevGrid;
 	//Removes the particle from a linked list
 	void RemoveFromList();
+	//Removes the particle from the grid linked list
 	void RemoveFromListGrid();
 	
 	//LinkedList ListIterator, GridIterator;
 
 	//Set the different values a particle has
 	void setPhi(double element);
-	double getPhi();
-
 	void setMass(double in_M);
-	//void setCharge(double in_C);
 	void setPosition(double Px, double Py, double Pz);
 	void setVelocity(double Vx, double Vy, double Vz);
 	void setAcceleration(double Ax, double Ay, double Az);
 
 	//Set all data, given by a vector
 	void setData(vector<double> data);
-
+	
 	void setP(CVector inP);
 	void setV(CVector inV);
 
 
 	//Get the different values a particle has
-	//int getID();
 	int getHalo();
+	double getPhi();
 	double getMass();
 	CVector& getP();
 	CVector& getV();
@@ -92,7 +70,7 @@ class CParticle{
 
 	//Calculate the kinetic energy of a particle
 	double Ekin();
-	//Calculate the momentumof a particle
+	//Calculate the momentum of a particle
 	CVector Momentum();
 	//Move the particle one timestep
 	void Move(double dt);
@@ -106,6 +84,7 @@ class CParticle{
 	//Print out all the information contained in one particle
 	void print();
 
+	//Calculate the gravitational energy of a particle, utilizing the particle acceleration
 	void calculatePhi(CVector& MeanP);
 
 
@@ -115,16 +94,10 @@ class CParticle{
 	void decreaseHalo();
 
 
-	//put this private, and get the code to work in some way.
-	
-
  protected:
-	//static int ID_Generator;
 	CVector P,V,A;
 	int ParticleSize,flag;
 	double Mass,Phi;
-
-	//void Generate_ID();
 };
 
 
